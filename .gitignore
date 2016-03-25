@@ -1,2 +1,10 @@
+# for testing, ignore these
+
+# dev stuff
+.tags
+.R_tags
+.*.swp
+.*.swo
+
 fromo.Rcheck
 fromo*tar.gz
