@@ -1,0 +1,17 @@
+Package: fromo
+Type: Package
+Title: Fast Robust Moments
+Version: 0.1.0
+Date: 2016-03-25
+Author: Steven E. Pav
+Maintainer: Steven E. Pav <shabbychef@gmail.com>
+Description: Fast computation of moments via Rcpp. Supports computation on
+   vectors and matrices, and Monoidal append of moments (NYI).
+License: LGPL-3
+Imports:
+    Rcpp (>= 0.12.3)
+LinkingTo: Rcpp
+Suggests:
+    moments,
+    microbenchmark
+RoxygenNote: 5.0.1
