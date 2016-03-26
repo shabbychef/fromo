@@ -154,6 +154,47 @@ NumericVector wrapMoments(SEXP v, int ord, bool na_rm) {
     }
 }
 
+// specialization of the above for the case of ord=2
+// this function returns a NumericVector of:
+//   the number of elements, 
+//   the mean, and 
+//   an (ord - 1)-vector consisting of the
+//   2nd through ord'th centered sum, defined
+//   as sum_j (v[j] - mean)^i
+template <typename T,typename iterT>
+NumericVector quasiWelford(T v,
+                           bool na_rm = false) {
+    double nextv, nel, nelm, della, delnel;
+    const int ord=2;
+
+    // preallocated with zeros:
+    NumericVector xret(1+ord);
+
+    for (iterT it = v.begin(); it != v.end(); ++it) {
+        nextv = double(*it);
+        if (! (na_rm && ISNAN(nextv))) {
+            della = nextv - xret[1];
+            nelm = xret[0];
+            nel = ++xret[0];
+            delnel = della / nel;
+            xret[1] += delnel;
+            xret[2] += delnel * delnel * nelm * (nelm + 1.0);
+        }
+    }
+
+    return xret;
+}
+
+// wrap the call:
+NumericVector wrapWelford(SEXP v, bool na_rm) {
+    switch (TYPEOF(v)) {
+        case  INTSXP: { return quasiWelford<IntegerVector,IntegerVector::iterator>(v, na_rm); }
+        case REALSXP: { return quasiWelford<NumericVector,NumericVector::iterator>(v, na_rm); }
+        case  LGLSXP: { return quasiWelford<LogicalVector,LogicalVector::iterator>(v, na_rm); }
+        default: stop("Unsupported input type");
+    }
+}
+
 #define COMP_SD(preval) (sqrt(preval[2]/(preval[0]-1.0)))
 #define COMP_SKEW(preval) (sqrt(preval[0]) * preval[3] / pow(preval[2],1.5))
 #define COMP_EXKURT(preval) ((preval[0] * preval[4] / (pow(preval[2],2.0))) - 3.0)
@@ -215,7 +256,8 @@ NumericVector wrapMoments(SEXP v, int ord, bool na_rm) {
 //' @export
 // [[Rcpp::export]]
 NumericVector sd3(SEXP v, bool na_rm=false) {
-    NumericVector preval = wrapMoments(v, 2, na_rm);
+    //NumericVector preval = wrapMoments(v, 2, na_rm);
+    NumericVector preval = wrapWelford(v, na_rm);
     NumericVector vret = NumericVector::create(COMP_SD(preval),
                                                preval[1],
                                                preval[0]);
