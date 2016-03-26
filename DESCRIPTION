@@ -12,6 +12,7 @@ Imports:
     Rcpp (>= 0.12.3)
 LinkingTo: Rcpp
 Suggests:
+    testthat,
     moments,
     microbenchmark
 RoxygenNote: 5.0.1
