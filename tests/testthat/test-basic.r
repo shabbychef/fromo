@@ -42,6 +42,16 @@ test_that("they run",{#FOLDUP
 	skew4(x)
 	kurt5(x)
 
+	y <- as.integer(x)
+	sd3(y)
+	skew4(y)
+	kurt5(y)
+
+	z <- as.logical(y)
+	sd3(z)
+	skew4(z)
+	kurt5(z)
+
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
@@ -56,25 +66,37 @@ test_that("sanity",{#FOLDUP
 	expect_equal(length(sid),3)
 	expect_equal(length(ske),4)
 	expect_equal(length(krt),5)
-	# length
-	expect_equal(length(x),sid[3])
-	expect_equal(sid[3],ske[4])
-	expect_equal(ske[4],krt[5])
 
 	# compare computations to gold standard
+	# length
+	expect_equal(sid[3],length(x))
+	expect_equal(sid[3],ske[4])
+	expect_equal(sid[3],krt[5])
+
+	# mean
 	expect_equal(sid[2],mean(x),tolerance=1e-9)
 	expect_equal(sid[2],ske[3],tolerance=1e-9)
 	expect_equal(sid[2],krt[4],tolerance=1e-9)
 
+	# standard dev
 	expect_equal(sid[1],ske[2],tolerance=1e-9)
 	expect_equal(sid[1],krt[3],tolerance=1e-9)
 	expect_equal(sid[1],sd(x),tolerance=1e-9)
 
+	# skew
 	expect_equal(ske[1],krt[2],tolerance=1e-9)
+
+	if (require(moments)) {
+		# skew
+		expect_equal(ske[1],skewness(x),tolerance=1e-9)
+		# kurtosis
+		expect_equal(krt[1],kurtosis(x) - 3.0,tolerance=1e-9)
+	}
 
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+# 2FIX: check the effects of NA
 #UNFOLD
 
 #for vim modeline: (do not edit)
