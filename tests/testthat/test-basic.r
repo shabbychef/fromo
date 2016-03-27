@@ -35,7 +35,7 @@ THOROUGHNESS <- getOption('test.thoroughness',1.0)
 #UNFOLD
 
 context("code runs at all")#FOLDUP
-test_that("they run",{#FOLDUP
+test_that("sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("569dd47d-f9e5-40e4-b2ac-e5dbb4771a53")
 	x <- rnorm(100)
 	sd3(x)
@@ -52,10 +52,40 @@ test_that("they run",{#FOLDUP
 	skew4(z)
 	kurt5(z)
 
+	q <- c('a','b','c')
+	expect_error(sd3(q))
+	expect_error(skew4(q))
+	expect_error(kurt5(q))
+
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
-test_that("sanity",{#FOLDUP
+test_that("running sd, skew, kurt run without error",{#FOLDUP
+	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
+	x <- rnorm(100)
+	run_sd3(x)
+	run_skew4(x)
+	run_kurt5(x)
+
+	y <- as.integer(x)
+	run_sd3(y)
+	run_skew4(y)
+	run_kurt5(y)
+
+	z <- as.logical(y)
+	run_sd3(z)
+	run_skew4(z)
+	run_kurt5(z)
+
+	q <- c('a','b','c')
+	expect_error(run_sd3(q))
+	expect_error(run_skew4(q))
+	expect_error(run_kurt5(q))
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("sd, skew, kurt are correct",{#FOLDUP
 	set.char.seed("c4007dba-2010-481e-abe5-f07d3ce94eb4")
 	x <- rnorm(1000)
 
