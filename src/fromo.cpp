@@ -222,6 +222,10 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //' 
 //' @param v a vector
 //' @param na_rm whether to remove NA, false by default.
+//' @param used_df the number of degrees of freedom consumed, used in the denominator
+//' of the centered moments computation. These are subtracted from the number of
+//' observations.
+//' @param max_order the maximum order of the centered moment to be computed.
 //'
 //' @details
 //'
@@ -305,11 +309,27 @@ NumericVector kurt5(NumericVector v, bool na_rm=false) {
     return vret;
 }
 
+// return the centered moments up to order max_order
+//' @rdname firstmoments
+//' @export
+// [[Rcpp::export]]
+NumericVector cent_moments(NumericVector v, int max_order=5, int used_df=1, bool na_rm=false) {
+    NumericVector preval = wrapMoments(v, max_order, na_rm);
+    NumericVector vret = NumericVector(1+max_order);
+    vret[max_order] = preval[0];
+    vret[max_order-1] = preval[1];
+    for (int mmm=2;mmm <= max_order;mmm++) {
+        vret[max_order-mmm] = preval[mmm] / (preval[0] - used_df);
+    }
+    return vret;
+}
 
 /*******************************************************************************
  * running moments
  */
 
+// to keep it DRY, this function has a bunch of variants,
+// depending on the templated bools in the vanilla form,
 // this function returns a NumericMatrix with as many rows
 // as elements in the input, and ord+1 columns.
 // unlike the quasiMoments code, the *last* column
@@ -326,10 +346,14 @@ NumericVector kurt5(NumericVector v, bool na_rm=false) {
 // for computational efficiency, we add and subtract
 // observations. this can lead to roundoff issues,
 // especially in the subtraction of observations.
-// the algorhtm checks for negative second moment and
+// the algorithm checks for negative second moment and
 // starts afresh when encountered. Also, the computation
 // is periodically restarted.
-template <typename T>
+//
+// in other forms, depending on templated bools, this
+// computes the centered input, the rescaled input, the z-scored input
+// or a t-scored input, as matrices with a single column.
+template <typename T,bool ret_mat,bool ret_scald,bool ret_cent,bool ret_z,bool ret_t>
 NumericMatrix runningQMoments(T v,
                               int ord = 3,
                               int winsize = NA_INTEGER,
@@ -347,7 +371,13 @@ NumericMatrix runningQMoments(T v,
 
     // preallocated with zeros; should
     // probably be NA?
-    NumericMatrix xret(numel,1+ord);
+    int ncols;
+    if (ret_mat) {
+        ncols = 1+ord;
+    } else {
+        ncols = 1;
+    }
+    NumericMatrix xret(numel,ncols);
     // this is the current estimate, fill it in as we go.
     NumericVector vret(1+ord);
 
@@ -435,18 +465,33 @@ NumericMatrix runningQMoments(T v,
         }
         // fill in the value in the output.//FOLDUP
         // backwards!
-        if (vret[0] >= ord) {
-            for (mmm=0;mmm <= ord;++mmm) {
-                xret(iii,ord-mmm) = vret[mmm];
+        if (ret_mat) {
+            if (vret[0] >= ord) {
+                for (mmm=0;mmm <= ord;++mmm) {
+                    xret(iii,ord-mmm) = vret[mmm];
+                }
+            } else {
+                for (mmm=0;mmm <= vret[0];++mmm) {
+                    xret(iii,ord-mmm) = vret[mmm];
+                }
+                for (mmm=vret[0]+1;mmm <= ord;++mmm) {
+                    xret(iii,ord-mmm) = NAN;
+                }
             }
-        } else {
-            for (mmm=0;mmm <= vret[0];++mmm) {
-                xret(iii,ord-mmm) = vret[mmm];
-            }
-            for (mmm=vret[0]+1;mmm <= ord;++mmm) {
-                xret(iii,ord-mmm) = NAN;
-            }
-        }//UNFOLD
+        } 
+        if (ret_cent) {
+            xret(iii,0) = nextv - vret[ord-1];
+        }
+        if (ret_scald) {
+            xret(iii,0) = (nextv) / (sqrt(vret[ord-2] / (vret[ord]-1.0)));
+        }
+        if (ret_z) {
+            xret(iii,0) = (nextv - vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord]-1.0)));
+        }
+        if (ret_t) {
+            xret(iii,0) = (nextv - vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord] * (vret[ord]-1.0))));
+        }
+        //UNFOLD
     }
 
     return xret;
@@ -455,9 +500,9 @@ NumericMatrix runningQMoments(T v,
 // wrap the call:
 NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period, bool na_rm) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMoments<IntegerVector>(v, ord, winsize, recom_period, na_rm); }
-        case REALSXP: { return runningQMoments<NumericVector>(v, ord, winsize, recom_period, na_rm); }
-        case  LGLSXP: { return runningQMoments<LogicalVector>(v, ord, winsize, recom_period, na_rm); }
+        case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false>(v, ord, winsize, recom_period, na_rm); }
+        case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false>(v, ord, winsize, recom_period, na_rm); }
+        case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false>(v, ord, winsize, recom_period, na_rm); }
         default: stop("Unsupported input type");
     }
 }

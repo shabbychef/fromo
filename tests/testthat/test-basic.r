@@ -38,21 +38,24 @@ context("code runs at all")#FOLDUP
 test_that("sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("569dd47d-f9e5-40e4-b2ac-e5dbb4771a53")
 	x <- rnorm(100)
-	sd3(x)
-	skew4(x)
-	kurt5(x)
-
 	y <- as.integer(x)
-	sd3(y)
-	skew4(y)
-	kurt5(y)
-
 	z <- as.logical(y)
-	sd3(z)
-	skew4(z)
-	kurt5(z)
-
 	q <- c('a','b','c')
+
+	for (na_rm in c(FALSE,TRUE)) {
+		sd3(x,na_rm=na_rm)
+		skew4(x,na_rm=na_rm)
+		kurt5(x,na_rm=na_rm)
+
+		sd3(y,na_rm=na_rm)
+		skew4(y,na_rm=na_rm)
+		kurt5(y,na_rm=na_rm)
+
+		sd3(z,na_rm=na_rm)
+		skew4(z,na_rm=na_rm)
+		kurt5(z,na_rm=na_rm)
+	}
+
 	expect_error(sd3(q))
 	expect_error(skew4(q))
 	expect_error(kurt5(q))

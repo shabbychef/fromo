@@ -6,5 +6,8 @@
 .*.swp
 .*.swo
 
+*.so
+*.o
+
 fromo.Rcheck
 fromo*tar.gz

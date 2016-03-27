@@ -41,6 +41,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// cent_moments
+NumericVector cent_moments(NumericVector v, int max_order, int used_df, bool na_rm);
+RcppExport SEXP fromo_cent_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    __result = Rcpp::wrap(cent_moments(v, max_order, used_df, na_rm));
+    return __result;
+END_RCPP
+}
 // run_sd3
 NumericMatrix run_sd3(SEXP v, int winsize, int recoper, bool na_rm);
 RcppExport SEXP fromo_run_sd3(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {

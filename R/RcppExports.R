@@ -8,6 +8,10 @@
 #' 
 #' @param v a vector
 #' @param na_rm whether to remove NA, false by default.
+#' @param used_df the number of degrees of freedom consumed, used in the denominator
+#' of the centered moments computation. These are subtracted from the number of
+#' observations.
+#' @param max_order the maximum order of the centered moment to be computed.
 #'
 #' @details
 #'
@@ -67,6 +71,12 @@ skew4 <- function(v, na_rm = FALSE) {
 #' @export
 kurt5 <- function(v, na_rm = FALSE) {
     .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm)
+}
+
+#' @rdname firstmoments
+#' @export
+cent_moments <- function(v, max_order = 5L, used_df = 1L, na_rm = FALSE) {
+    .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
 }
 
 #' @title
