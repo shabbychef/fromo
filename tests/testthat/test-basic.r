@@ -63,21 +63,26 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 test_that("running sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
 	x <- rnorm(200)
-	run_sd3(x)
-	run_skew4(x)
-	run_kurt5(x)
-
 	y <- as.integer(x)
-	run_sd3(y)
-	run_skew4(y)
-	run_kurt5(y)
-
 	z <- as.logical(y)
-	run_sd3(z)
-	run_skew4(z)
-	run_kurt5(z)
-
 	q <- c('a','b','c')
+
+	for (winsize in c(20,Inf)) {
+		for (na_rm in c(FALSE,TRUE)) {
+			run_sd3(x,winsize=winsize,na_rm=na_rm)
+			run_skew4(x,winsize=winsize,na_rm=na_rm)
+			run_kurt5(x,winsize=winsize,na_rm=na_rm)
+
+			run_sd3(y,winsize=winsize,na_rm=na_rm)
+			run_skew4(y,winsize=winsize,na_rm=na_rm)
+			run_kurt5(y,winsize=winsize,na_rm=na_rm)
+
+			run_sd3(z,winsize=winsize,na_rm=na_rm)
+			run_skew4(z,winsize=winsize,na_rm=na_rm)
+			run_kurt5(z,winsize=winsize,na_rm=na_rm)
+		}
+	}
+
 	expect_error(run_sd3(q))
 	expect_error(run_skew4(q))
 	expect_error(run_kurt5(q))
