@@ -62,7 +62,7 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 })#UNFOLD
 test_that("running sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
-	x <- rnorm(100)
+	x <- rnorm(200)
 	run_sd3(x)
 	run_skew4(x)
 	run_kurt5(x)
