@@ -314,6 +314,7 @@ NumericVector kurt5(NumericVector v, bool na_rm=false) {
 //' @export
 // [[Rcpp::export]]
 NumericVector cent_moments(NumericVector v, int max_order=5, int used_df=1, bool na_rm=false) {
+    if (max_order < 1) { stop("must give largeish max_order"); }
     NumericVector preval = wrapMoments(v, max_order, na_rm);
     NumericVector vret = NumericVector(1+max_order);
     vret[max_order] = preval[0];
@@ -353,7 +354,7 @@ NumericVector cent_moments(NumericVector v, int max_order=5, int used_df=1, bool
 // in other forms, depending on templated bools, this
 // computes the centered input, the rescaled input, the z-scored input
 // or a t-scored input, as matrices with a single column.
-template <typename T,bool ret_mat,bool ret_scald,bool ret_cent,bool ret_z,bool ret_t>
+template <typename T,bool ret_mat,bool ret_cent,bool ret_scald,bool ret_z,bool ret_t>
 NumericMatrix runningQMoments(T v,
                               int ord = 3,
                               int winsize = NA_INTEGER,
@@ -588,6 +589,63 @@ NumericMatrix run_kurt5(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na
         preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
         preval(iii,1) = sqrt(preval(iii,4)) * preval(iii,1) / pow(preval(iii,2),1.5);
         preval(iii,2) = sqrt(preval(iii,2)/(preval(iii,4)-1.0));
+    }
+    return preval;
+}
+
+// center the input
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_centered(SEXP v, int winsize=NA_INTEGER, int recoper=1000, bool na_rm=false) {
+    NumericMatrix preval;
+    switch (TYPEOF(v)) {
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false>(v, 1, winsize, recoper, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false>(v, 1, winsize, recoper, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false>(v, 1, winsize, recoper, na_rm); break; }
+        default: stop("Unsupported input type");
+    }
+    return preval;
+}
+// scale the input
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_scaled(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+    NumericMatrix preval;
+    switch (TYPEOF(v)) {
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false>(v, 2, winsize, recoper, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false>(v, 2, winsize, recoper, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false>(v, 2, winsize, recoper, na_rm); break; }
+        default: stop("Unsupported input type");
+    }
+    return preval;
+}
+// zscore the input
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_zscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+    NumericMatrix preval;
+    switch (TYPEOF(v)) {
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false>(v, 2, winsize, recoper, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false>(v, 2, winsize, recoper, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false>(v, 2, winsize, recoper, na_rm); break; }
+        default: stop("Unsupported input type");
+    }
+    return preval;
+}
+// tscore the input
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_tscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+    NumericMatrix preval;
+    switch (TYPEOF(v)) {
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true>(v, 2, winsize, recoper, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true>(v, 2, winsize, recoper, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true>(v, 2, winsize, recoper, na_rm); break; }
+        default: stop("Unsupported input type");
     }
     return preval;
 }

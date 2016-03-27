@@ -141,3 +141,27 @@ run_kurt5 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
     .Call('fromo_run_kurt5', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
 }
 
+#' @rdname runningmoments
+#' @export
+run_centered <- function(v, winsize = NA_integer_, recoper = 1000L, na_rm = FALSE) {
+    .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+}
+
+#' @rdname runningmoments
+#' @export
+run_scaled <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+    .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+}
+
+#' @rdname runningmoments
+#' @export
+run_zscored <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+    .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+}
+
+#' @rdname runningmoments
+#' @export
+run_tscored <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+    .Call('fromo_run_tscored', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+}
+

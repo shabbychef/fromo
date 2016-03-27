@@ -2,9 +2,13 @@
 
 export(cent_moments)
 export(kurt5)
+export(run_centered)
 export(run_kurt5)
+export(run_scaled)
 export(run_sd3)
 export(run_skew4)
+export(run_tscored)
+export(run_zscored)
 export(sd3)
 export(skew4)
 exportPattern("^[[:alpha:]]+")

@@ -46,43 +46,47 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 		sd3(x,na_rm=na_rm)
 		skew4(x,na_rm=na_rm)
 		kurt5(x,na_rm=na_rm)
+		cent_moments(x,max_order=5L,used_df=1L,na_rm=na_rm)
 
 		sd3(y,na_rm=na_rm)
 		skew4(y,na_rm=na_rm)
 		kurt5(y,na_rm=na_rm)
+		cent_moments(y,max_order=5L,used_df=1L,na_rm=na_rm)
 
 		sd3(z,na_rm=na_rm)
 		skew4(z,na_rm=na_rm)
 		kurt5(z,na_rm=na_rm)
+		cent_moments(z,max_order=5L,used_df=1L,na_rm=na_rm)
 	}
 
 	expect_error(sd3(q))
 	expect_error(skew4(q))
 	expect_error(kurt5(q))
+	expect_error(cent_moments(q))
 
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
 test_that("running sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
-	x <- rnorm(200)
+	x <- rnorm(300)
 	y <- as.integer(x)
 	z <- as.logical(y)
 	q <- c('a','b','c')
 
-	for (winsize in c(20,Inf)) {
+	for (winsize in c(100,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
-			run_sd3(x,winsize=winsize,na_rm=na_rm)
-			run_skew4(x,winsize=winsize,na_rm=na_rm)
-			run_kurt5(x,winsize=winsize,na_rm=na_rm)
+			run_sd3(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_skew4(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_kurt5(x,winsize=winsize,recoper=50L,na_rm=na_rm)
 
-			run_sd3(y,winsize=winsize,na_rm=na_rm)
-			run_skew4(y,winsize=winsize,na_rm=na_rm)
-			run_kurt5(y,winsize=winsize,na_rm=na_rm)
+			run_sd3(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_skew4(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_kurt5(y,winsize=winsize,recoper=50L,na_rm=na_rm)
 
-			run_sd3(z,winsize=winsize,na_rm=na_rm)
-			run_skew4(z,winsize=winsize,na_rm=na_rm)
-			run_kurt5(z,winsize=winsize,na_rm=na_rm)
+			run_sd3(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_skew4(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_kurt5(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 		}
 	}
 
