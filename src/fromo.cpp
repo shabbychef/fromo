@@ -86,7 +86,11 @@ const int bincoef[30][30] = {
  {        1,        28,       378,      3276,     20475,     98280,    376740,   1184040,   3108105,   6906900,  13123110,  21474180,  30421755,  37442160,  40116600,  37442160,  30421755,  21474180,  13123110,   6906900,   3108105,   1184040,    376740,     98280,     20475,      3276,       378,        28,         1,         0},
  {        1,        29,       406,      3654,     23751,    118755,    475020,   1560780,   4292145,  10015005,  20030010,  34597290,  51895935,  67863915,  77558760,  77558760,  67863915,  51895935,  34597290,  20030010,  10015005,   4292145,   1560780,    475020,    118755,     23751,      3654,       406,        29,         1},
  };
+#define MAX(a,b) ((a>b)? a:b)
+#define MIN(a,b) ((a<b)? a:b)
+
 #endif /* __DEF_FROMO__ */
+
 
 #include <Rcpp.h>
 using namespace Rcpp;
@@ -97,9 +101,12 @@ using namespace Rcpp;
 //   an (ord - 1)-vector consisting of the
 //   2nd through ord'th centered sum, defined
 //   as sum_j (v[j] - mean)^i
-template <typename T,typename iterT>
+// if top < 0, take the length of v.
+template <typename T>
 NumericVector quasiMoments(T v,
                            int ord = 3,
+                           int bottom = 0,
+                           int top = -1,
                            bool na_rm = false) {
     double nextv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
 
@@ -108,9 +115,13 @@ NumericVector quasiMoments(T v,
 
     // preallocated with zeros:
     NumericVector xret(1+ord);
+    
+    if ((top < 0) || (top > v.size())) {
+        top = v.size(); 
+    }
 
-    for (iterT it = v.begin(); it != v.end(); ++it) {
-        nextv = double(*it);
+    for (int iii=bottom;iii < top;++iii) {
+        nextv = v[iii];
         if (! (na_rm && ISNAN(nextv))) {
             della = nextv - xret[1];
             nelm = xret[0];
@@ -146,10 +157,11 @@ NumericVector quasiMoments(T v,
 
 // wrap the call:
 NumericVector wrapMoments(SEXP v, int ord, bool na_rm) {
+    // FML, I cannot figure out how to get v.length()
     switch (TYPEOF(v)) {
-        case  INTSXP: { return quasiMoments<IntegerVector,IntegerVector::iterator>(v, ord, na_rm); }
-        case REALSXP: { return quasiMoments<NumericVector,NumericVector::iterator>(v, ord, na_rm); }
-        case  LGLSXP: { return quasiMoments<LogicalVector,LogicalVector::iterator>(v, ord, na_rm); }
+        case  INTSXP: { return quasiMoments<IntegerVector>(v, ord, 0, -1, na_rm); }
+        case REALSXP: { return quasiMoments<NumericVector>(v, ord, 0, -1, na_rm); }
+        case  LGLSXP: { return quasiMoments<LogicalVector>(v, ord, 0, -1, na_rm); }
         default: stop("Unsupported input type");
     }
 }
@@ -253,6 +265,7 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //' @template etc
 //' @template ref-romo
 //' @rdname firstmoments
+//' @seealso runningmoments
 //' @export
 // [[Rcpp::export]]
 NumericVector sd3(SEXP v, bool na_rm=false) {
@@ -290,6 +303,248 @@ NumericVector kurt5(NumericVector v, bool na_rm=false) {
                                                preval[1],
                                                preval[0]);
     return vret;
+}
+
+
+/*******************************************************************************
+ * running moments
+ */
+
+// this function returns a NumericMatrix with as many rows
+// as elements in the input, and ord+1 columns.
+// unlike the quasiMoments code, the *last* column
+// is the number of elements,
+// the last minus one is the mean and so on;
+// this simplifies the transformation to moments later.
+//
+//   the first column is the number of elements, 
+//   the second is the mean,
+//   the (ord + 1 - k)th is the k-1th centered sum, defined as
+//   as sum_j (v[j] - mean)^i
+//
+// moreover we adapt a sliding window of size winsize.
+// for computational efficiency, we add and subtract
+// observations. this can lead to roundoff issues,
+// especially in the subtraction of observations.
+// the algorhtm checks for negative second moment and
+// starts afresh when encountered. Also, the computation
+// is periodically restarted.
+template <typename T>
+NumericMatrix runningQMoments(T v,
+                              int ord = 3,
+                              int winsize = NA_INTEGER,
+                              int recom_period = 100, 
+                              bool na_rm = false) {
+    double nextv, prevv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
+
+    if (ord < 1) { stop("require positive order"); }
+    if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
+
+    int iii,jjj,mmm;
+    int runsize = 0;
+    int numel = v.size();
+    const bool infwin = IntegerVector::is_na(winsize);
+
+    // preallocated with zeros; should
+    // probably be NA?
+    NumericMatrix xret(numel,1+ord);
+    // this is the current estimate, fill it in as we go.
+    NumericVector vret(1+ord);
+
+    jjj = 0;
+    for (iii=0;iii < numel;++iii) {
+        nextv = double(v[iii]);
+        if (! (na_rm && ISNAN(nextv))) {//FOLDUP
+            della = nextv - vret[1];
+            nelm = vret[0];
+            nel = ++vret[0];
+            delnel = della / nel;
+            vret[1] += delnel;
+
+            if (nelm > 0) {//FOLDUP
+                drat = delnel * nelm;
+                ac_dn = pow(drat,ord);
+                ac_on = pow(-1.0 / nelm,ord-1);
+
+                for (int ppp=ord;ppp >= 2;ppp--) {
+                    vret[ppp] += ac_dn * (1.0 - ac_on);
+                    if (ppp > 2) {
+                        if (drat != 0) { ac_dn /= drat; }
+                        ac_on *= -nelm;
+                    }
+                    ac_de = -delnel;
+                    for (int qqq=1;qqq <= ppp-2;qqq++) {
+                        vret[ppp] += bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
+                        if (qqq < ppp - 2) {
+                            ac_de *= -delnel;
+                        }
+                    }
+                }
+            }//UNFOLD
+        }//UNFOLD
+        // possibly remove old observations. wheee
+        if ((!infwin) && (iii >= winsize)) {
+            if (runsize >= recom_period) {
+                vret = quasiMoments<T>(v, ord, iii - winsize + 1, iii+1, na_rm); 
+                runsize = 0;
+            } else {
+                prevv = double(v[jjj]);
+                if (! (na_rm && ISNAN(prevv))) {//FOLDUP
+                    della = prevv - vret[1];
+                    nelm = vret[0];
+                    nel = --vret[0];
+
+                    if (nel > 0) {
+                        delnel = della / nel;
+                        vret[1] -= delnel;
+                        // correct delta
+                        della = delnel * nelm;
+
+                        drat = delnel * nel;
+                        ac_dn = pow(drat,2);
+                        ac_on = - (nel);
+
+                        for (int ppp=2;ppp <= ord;ppp++) {
+                            vret[ppp] -= ac_dn * (1.0 - ac_on);
+                            if (ppp < ord) {
+                                ac_dn *= drat;
+                                ac_on /= -nel;
+                            }
+                            ac_de = -delnel;
+                            for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                vret[ppp] -= bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
+                                if (qqq < ppp - 2) {
+                                    ac_de *= -delnel;
+                                }
+                            }
+                        }
+                    } else {
+                        // else nel <= 0, meaning there are no observations.  reset vret to all zero
+                        for (mmm=0;mmm <= ord;++mmm) { vret[mmm] = 0.0; }
+                    }
+
+                    runsize++;
+                }//UNFOLD
+            }
+            // check for Heywood cases and recompute.//FOLDUP
+            if (((ord > 1) && (vret[2] <= 0.0)) || ((ord > 3) && (vret[4] <= 0.0))) {
+                vret = quasiMoments<T>(v, ord, iii - winsize + 1, iii+1, na_rm); 
+                runsize = 0;
+            }//UNFOLD
+            jjj++;
+        }
+        // fill in the value in the output.//FOLDUP
+        // backwards!
+        if (vret[0] >= ord) {
+            for (mmm=0;mmm <= ord;++mmm) {
+                xret(iii,ord-mmm) = vret[mmm];
+            }
+        } else {
+            for (mmm=0;mmm <= vret[0];++mmm) {
+                xret(iii,ord-mmm) = vret[mmm];
+            }
+            for (mmm=vret[0]+1;mmm <= ord;++mmm) {
+                xret(iii,ord-mmm) = NAN;
+            }
+        }//UNFOLD
+    }
+
+    return xret;
+}
+
+// wrap the call:
+NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period, bool na_rm) {
+    switch (TYPEOF(v)) {
+        case  INTSXP: { return runningQMoments<IntegerVector>(v, ord, winsize, recom_period, na_rm); }
+        case REALSXP: { return runningQMoments<NumericVector>(v, ord, winsize, recom_period, na_rm); }
+        case  LGLSXP: { return runningQMoments<LogicalVector>(v, ord, winsize, recom_period, na_rm); }
+        default: stop("Unsupported input type");
+    }
+}
+
+//' @title
+//' Compute first K moments over a sliding window
+//' @description
+//' Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
+//' an infinite or finite sliding window, returning a matrix.
+//' 
+//' @param v a vector
+//' @param winsize the window size. if NA, equivalent to infinity.
+//' @param recoper the recompute period. because subtraction of elements can cause
+//' loss of precision, the computation of moments is restarted periodically based on 
+//' this parameter. Larger values mean fewer restarts and faster, though less accurate
+//' results. Note that the code checks for negative second and fourth moments and
+//' recomputes when needed.
+//' @param na_rm whether to remove NA, false by default.
+//'
+//' @details
+//'
+//' Computes the number of elements, the mean, and the 2nd through kth
+//' centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
+//' are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
+//' In general they will \emph{not} match exactly with the 'standard'
+//' implementations, due to differences in roundoff.
+//'
+//' These methods are reasonably fast, on par with the 'standard' implementations.
+//' However, they will usually be faster than calling the various standard implementations
+//' more than once.
+//'
+//' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
+//' then a column of the mean, then a column of the number of (non-nan) elements in the input.
+//' When there are not sufficient (non-nan) elements for the computation, NaN are returned.
+//'
+//' @note
+//' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
+//' for Gaussian input.
+//'
+//' @examples
+//' x <- rnorm(1e5)
+//' run_sd3(x,10)
+//' run_skew4(x,10)
+//' run_kurt5(x,500)
+//'
+//' @template etc
+//' @template ref-romo
+//' @seealso firstmoments
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_sd3(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+    NumericMatrix preval = wrapRunningQMoments(v, 2, winsize, recoper, na_rm);
+    // fix the higher than mean columns;
+    for (int iii=0;iii < preval.nrow();++iii) {
+        preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-1.0));
+    }
+    return preval;
+}
+
+// return the skew, the standard deviation, the mean, and the dof
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_skew4(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+    NumericMatrix preval = wrapRunningQMoments(v, 3, winsize, recoper, na_rm);
+    // fix the higher than mean columns;
+    for (int iii=0;iii < preval.nrow();++iii) {
+        preval(iii,0) = sqrt(preval(iii,3)) * preval(iii,0) / pow(preval(iii,1),1.5);
+        preval(iii,1) = sqrt(preval(iii,1)/(preval(iii,3)-1.0));
+    }
+    return preval;
+}
+
+// return the //excess// kurtosis, skew, standard deviation, mean, and the dof
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_kurt5(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+    NumericMatrix preval = wrapRunningQMoments(v, 4, winsize, recoper, na_rm);
+    // fix the higher than mean columns;
+    for (int iii=0;iii < preval.nrow();++iii) {
+        preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
+        preval(iii,1) = sqrt(preval(iii,4)) * preval(iii,1) / pow(preval(iii,2),1.5);
+        preval(iii,2) = sqrt(preval(iii,2)/(preval(iii,4)-1.0));
+    }
+    return preval;
 }
 
 //for vim modeline: (do not edit)

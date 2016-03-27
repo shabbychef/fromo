@@ -41,3 +41,45 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// run_sd3
+NumericMatrix run_sd3(SEXP v, int winsize, int recoper, bool na_rm);
+RcppExport SEXP fromo_run_sd3(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type winsize(winsizeSEXP);
+    Rcpp::traits::input_parameter< int >::type recoper(recoperSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    __result = Rcpp::wrap(run_sd3(v, winsize, recoper, na_rm));
+    return __result;
+END_RCPP
+}
+// run_skew4
+NumericMatrix run_skew4(SEXP v, int winsize, int recoper, bool na_rm);
+RcppExport SEXP fromo_run_skew4(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type winsize(winsizeSEXP);
+    Rcpp::traits::input_parameter< int >::type recoper(recoperSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    __result = Rcpp::wrap(run_skew4(v, winsize, recoper, na_rm));
+    return __result;
+END_RCPP
+}
+// run_kurt5
+NumericMatrix run_kurt5(SEXP v, int winsize, int recoper, bool na_rm);
+RcppExport SEXP fromo_run_kurt5(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type winsize(winsizeSEXP);
+    Rcpp::traits::input_parameter< int >::type recoper(recoperSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    __result = Rcpp::wrap(run_kurt5(v, winsize, recoper, na_rm));
+    return __result;
+END_RCPP
+}

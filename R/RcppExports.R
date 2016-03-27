@@ -51,6 +51,7 @@
 #' @template etc
 #' @template ref-romo
 #' @rdname firstmoments
+#' @seealso runningmoments
 #' @export
 sd3 <- function(v, na_rm = FALSE) {
     .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm)
@@ -66,5 +67,67 @@ skew4 <- function(v, na_rm = FALSE) {
 #' @export
 kurt5 <- function(v, na_rm = FALSE) {
     .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm)
+}
+
+#' @title
+#' Compute first K moments over a sliding window
+#' @description
+#' Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
+#' an infinite or finite sliding window, returning a matrix.
+#' 
+#' @param v a vector
+#' @param winsize the window size. if NA, equivalent to infinity.
+#' @param recoper the recompute period. because subtraction of elements can cause
+#' loss of precision, the computation of moments is restarted periodically based on 
+#' this parameter. Larger values mean fewer restarts and faster, though less accurate
+#' results. Note that the code checks for negative second and fourth moments and
+#' recomputes when needed.
+#' @param na_rm whether to remove NA, false by default.
+#'
+#' @details
+#'
+#' Computes the number of elements, the mean, and the 2nd through kth
+#' centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
+#' are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
+#' In general they will \emph{not} match exactly with the 'standard'
+#' implementations, due to differences in roundoff.
+#'
+#' These methods are reasonably fast, on par with the 'standard' implementations.
+#' However, they will usually be faster than calling the various standard implementations
+#' more than once.
+#'
+#' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
+#' then a column of the mean, then a column of the number of (non-nan) elements in the input.
+#' When there are not sufficient (non-nan) elements for the computation, NaN are returned.
+#'
+#' @note
+#' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
+#' for Gaussian input.
+#'
+#' @examples
+#' x <- rnorm(1e5)
+#' run_sd3(x,10)
+#' run_skew4(x,10)
+#' run_kurt5(x,500)
+#'
+#' @template etc
+#' @template ref-romo
+#' @seealso firstmoments
+#' @rdname runningmoments
+#' @export
+run_sd3 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+    .Call('fromo_run_sd3', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+}
+
+#' @rdname runningmoments
+#' @export
+run_skew4 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+    .Call('fromo_run_skew4', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+}
+
+#' @rdname runningmoments
+#' @export
+run_kurt5 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+    .Call('fromo_run_kurt5', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
 }
 
