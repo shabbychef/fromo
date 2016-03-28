@@ -7,6 +7,7 @@
 .staging
 .tags
 .travis.yml
+^\..*installed
 cache
 m4
 Makefile
@@ -21,3 +22,4 @@ LICENSE
 docker
 \.o$
 \.so$
+\.crancheck$
