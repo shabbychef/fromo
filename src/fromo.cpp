@@ -329,6 +329,7 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=1, bool na_rm=fa
  * running moments
  */
 
+// 2FIX: allow a lookahead for smoothing purposes. weirdo.
 // to keep it DRY, this function has a bunch of variants,
 // depending on the templated bools in the vanilla form,
 // this function returns a NumericMatrix with as many rows
@@ -648,6 +649,55 @@ NumericMatrix run_tscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool 
         default: stop("Unsupported input type");
     }
     return preval;
+}
+
+NumericVector combineMoments(NumericVector ret1,const NumericVector ret2) {
+    double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+    double ac_nfoo,ac_n2,ac_mn1;
+    double ac_del,ac_mn2,ac_n1;
+
+    int ord = ret1.size() - 1;
+    int ppp,qqq;
+
+    n1 = ret1[0];
+    if (n1 <= 0) { return ret2; }
+    n2 = ret2[0];
+    if (n2 <= 0) { return ret1; }
+
+    ret1[0] += n2;
+    ntot = ret1[0];
+    n1rat = n1 / ntot;
+    n2rat = n2 / ntot;
+    del21 = ret2[1] - ret1[1];
+    mupart = del21 * n2rat;
+
+    ret1[1] += mupart;
+    nfoo = n1 * mupart;
+    ac_nfoo = pow(nfoo,ord);
+    ac_n2 = pow(n2,1-ord);
+    ac_mn1 = pow(-n1,1-ord);
+    for (ppp=ord;ppp >= 2;ppp--) {
+        //ret1[ppp] = ret1[ppp] + ret2[ppp] + (pow(nfoo,ppp) * (pow(n2,1-ppp) - pow(-n1,1-ppp)));
+        ret1[ppp] += ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+        if (ppp > 2) {
+            if (nfoo != 0) { ac_nfoo /= nfoo; }
+            ac_n2 *= n2;
+            ac_mn1 *= (-n1);
+        }
+        ac_del = del21;
+        ac_mn2 = -n2rat;
+        ac_n1 = n1rat;
+        for (int qqq=1;qqq <= (ppp-2); qqq++) {
+            //ret1[ppp] += bincoef[ppp][qqq] * pow(del21,qqq) * (pow(-n2/ntot,qqq) * ret1[ppp-qqq] + pow(n1/ntot,qqq) * ret2[ppp-qqq]);
+            ret1[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * ret1[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
+            if (qqq < (ppp-2)) {
+                ac_del *= del21;
+                ac_mn2 *= (-n2rat);
+                ac_n1  *= (n1rat);
+            }
+        }
+    }
+    return ret1;
 }
 
 //for vim modeline: (do not edit)
