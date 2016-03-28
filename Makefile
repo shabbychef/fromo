@@ -33,13 +33,15 @@ default : all
 
 ############## MARKERS ##############
 
-.PHONY   : build
+.PHONY   : build attributes
 .SUFFIXES: 
 .PRECIOUS: %.cpp
 
 ############ BUILD RULES ############
 
 build : $(PKG_TGZ)
+
+attributes : $(EXPORTS_CPP) ## build the file src/RcppExports.cpp
 
 $(EXPORTS_CPP) : $(SRC_CPP)
 	r -l Rcpp -e 'compileAttributes(".")'

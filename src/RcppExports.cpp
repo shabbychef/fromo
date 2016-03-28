@@ -18,36 +18,36 @@ BEGIN_RCPP
 END_RCPP
 }
 // skew4
-NumericVector skew4(NumericVector v, bool na_rm);
+NumericVector skew4(SEXP v, bool na_rm);
 RcppExport SEXP fromo_skew4(SEXP vSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     __result = Rcpp::wrap(skew4(v, na_rm));
     return __result;
 END_RCPP
 }
 // kurt5
-NumericVector kurt5(NumericVector v, bool na_rm);
+NumericVector kurt5(SEXP v, bool na_rm);
 RcppExport SEXP fromo_kurt5(SEXP vSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     __result = Rcpp::wrap(kurt5(v, na_rm));
     return __result;
 END_RCPP
 }
 // cent_moments
-NumericVector cent_moments(NumericVector v, int max_order, int used_df, bool na_rm);
+NumericVector cent_moments(SEXP v, int max_order, int used_df, bool na_rm);
 RcppExport SEXP fromo_cent_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
