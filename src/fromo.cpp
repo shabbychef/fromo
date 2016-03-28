@@ -286,7 +286,7 @@ NumericVector sd3(SEXP v, bool na_rm=false) {
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector skew4(NumericVector v, bool na_rm=false) {
+NumericVector skew4(SEXP v, bool na_rm=false) {
     NumericVector preval = wrapMoments(v, 3, na_rm);
     NumericVector vret = NumericVector::create(COMP_SKEW(preval),
                                                COMP_SD(preval),
@@ -299,7 +299,7 @@ NumericVector skew4(NumericVector v, bool na_rm=false) {
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector kurt5(NumericVector v, bool na_rm=false) {
+NumericVector kurt5(SEXP v, bool na_rm=false) {
     NumericVector preval = wrapMoments(v, 4, na_rm);
     NumericVector vret = NumericVector::create(COMP_EXKURT(preval),
                                                COMP_SKEW(preval),
@@ -313,7 +313,7 @@ NumericVector kurt5(NumericVector v, bool na_rm=false) {
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector cent_moments(NumericVector v, int max_order=5, int used_df=1, bool na_rm=false) {
+NumericVector cent_moments(SEXP v, int max_order=5, int used_df=1, bool na_rm=false) {
     if (max_order < 1) { stop("must give largeish max_order"); }
     NumericVector preval = wrapMoments(v, max_order, na_rm);
     NumericVector vret = NumericVector(1+max_order);
