@@ -466,8 +466,8 @@ NumericMatrix runningQMoments(T v,
             jjj++;
         }
         // fill in the value in the output.//FOLDUP
-        // backwards!
         if (ret_mat) {
+            // put them in backwards!
             if (vret[0] >= ord) {
                 for (mmm=0;mmm <= ord;++mmm) {
                     xret(iii,ord-mmm) = vret[mmm];
@@ -482,16 +482,16 @@ NumericMatrix runningQMoments(T v,
             }
         } 
         if (ret_cent) {
-            xret(iii,0) = nextv - vret[ord-1];
+            xret(iii,0) = nextv - vret[1];
         }
         if (ret_scald) {
-            xret(iii,0) = (nextv) / (sqrt(vret[ord-2] / (vret[ord]-1.0)));
+            xret(iii,0) = (nextv) / COMP_SD(vret);
         }
         if (ret_z) {
-            xret(iii,0) = (nextv - vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord]-1.0)));
+            xret(iii,0) = (nextv - vret[1]) / COMP_SD(vret);
         }
         if (ret_t) {
-            xret(iii,0) = (vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord] * (vret[ord]-1.0))));
+            xret(iii,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
         }
         //UNFOLD
     }
@@ -699,6 +699,8 @@ NumericVector combineMoments(NumericVector ret1,const NumericVector ret2) {
     }
     return ret1;
 }
+
+
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
