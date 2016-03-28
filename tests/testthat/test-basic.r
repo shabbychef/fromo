@@ -79,20 +79,37 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			run_sd3(x,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_skew4(x,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_kurt5(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_centered(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_scaled(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_zscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_tscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
 
 			run_sd3(y,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_skew4(y,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_kurt5(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_centered(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_scaled(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_zscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_tscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
 
 			run_sd3(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_skew4(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_kurt5(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_centered(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_scaled(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_zscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+
 		}
 	}
-
 	expect_error(run_sd3(q))
 	expect_error(run_skew4(q))
 	expect_error(run_kurt5(q))
+	expect_error(run_centered(q))
+	expect_error(run_scaled(q))
+	expect_error(run_zscored(q))
+	expect_error(run_tscored(q))
+
 
 	# sentinel
 	expect_true(TRUE)
