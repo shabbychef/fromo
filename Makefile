@@ -60,9 +60,6 @@ BUILD_ENV 				 = R_QPDF=$(R_QPDF) R_GSCMD=$(R_GSCMD) \
 
 ############ BUILD RULES ############
 
-duh : 
-	echo $(ALL_R)
-
 help:  ## generate this help message
 	@grep -E '^([a-zA-Z_-]+\s*)+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 

@@ -34,6 +34,12 @@ function finish() {
 git stash -q --keep-index
 
 trap finish EXIT
+ 
+# blame Hadley: http://r-pkgs.had.co.nz/release.html
+if [[ nodist/README.Rmd -nt README.md ]]; then
+  echo "README.md is out of date; please re-knit README.Rmd"
+  exit 1
+fi 
 
 # make attributes
 r -l Rcpp -e 'compileAttributes(".")'
