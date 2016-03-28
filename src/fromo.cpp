@@ -490,7 +490,7 @@ NumericMatrix runningQMoments(T v,
             xret(iii,0) = (nextv - vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord]-1.0)));
         }
         if (ret_t) {
-            xret(iii,0) = (nextv - vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord] * (vret[ord]-1.0))));
+            xret(iii,0) = (vret[ord-1]) / (sqrt(vret[ord-2] / (vret[ord] * (vret[ord]-1.0))));
         }
         //UNFOLD
     }

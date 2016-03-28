@@ -19,5 +19,5 @@ fromo.Rcheck
 unit_test.log
 LICENSE
 docker
-.o
-.so
+\.o$
+\.so$

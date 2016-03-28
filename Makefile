@@ -33,20 +33,22 @@ default : all
 
 ############## MARKERS ##############
 
-.PHONY   : 
+.PHONY   : build
 .SUFFIXES: 
 .PRECIOUS: %.cpp
 
 ############ BUILD RULES ############
 
+build : $(PKG_TGZ)
+
 $(EXPORTS_CPP) : $(SRC_CPP)
 	r -l Rcpp -e 'compileAttributes(".")'
 
 $(PKG_TGZ) : 
-	r -l devtools -e 'build();'
+	r -l devtools -e 'build(".");'
 
 $(ALL_RD) : 
-	r -l devtools -e 'document();'
+	r -l devtools -e 'document(".");'
 
 README.md : nodist/README.Rmd
 	r -l Rcpp -l knitr -l devtools -e 'build();install();setwd("$(<D)");knit("$(<F)");'
