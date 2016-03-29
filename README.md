@@ -81,7 +81,11 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 ## running moments
 
 Since an online algorithm is used, we can compute cumulative running moments. Moreover, we can 
-//remove// observations, and thus compute moments over a fixed length lookback window. A demonstration:
+//remove// observations, and thus compute moments over a fixed length lookback window. The code
+checks for negative even moments caused by roundoff, and restarts the computation to correct;
+periodic recomputation can be forced by an input parameter.
+
+A demonstration:
 
 
 ```r
@@ -156,3 +160,50 @@ cbind(alt5, k5[, 1])
 ## [20,]  1.193  1.193
 ```
 
+## running 'scale'
+
+Through template magic, the same code can perform running centering, scaling, z-scoring and so on:
+
+
+```r
+require(fromo)
+require(moments)
+require(microbenchmark)
+
+set.seed(1234)
+x <- rnorm(20)
+
+xz <- run_zscored(x, winsize = 10L)
+
+# trust but verify
+altz <- sapply(seq_along(x), function(iii) {
+    rowi <- max(1, iii - 10 + 1)
+    (x[iii] - mean(x[rowi:iii]))/sd(x[rowi:iii])
+}, simplify = TRUE)
+
+cbind(xz, altz)
+```
+
+```
+##              altz
+##  [1,]   NaN    NA
+##  [2,]  0.71  0.71
+##  [3,]  0.89  0.89
+##  [4,] -1.18 -1.18
+##  [5,]  0.56  0.56
+##  [6,]  0.55  0.55
+##  [7,] -0.26 -0.26
+##  [8,] -0.23 -0.23
+##  [9,] -0.23 -0.23
+## [10,] -0.51 -0.51
+## [11,] -0.17 -0.17
+## [12,] -0.59 -0.59
+## [13,] -0.19 -0.19
+## [14,]  0.84  0.84
+## [15,]  2.02  2.02
+## [16,]  0.49  0.49
+## [17,] -0.22 -0.22
+## [18,] -0.82 -0.82
+## [19,] -0.64 -0.64
+## [20,]  2.37  2.37
+```
