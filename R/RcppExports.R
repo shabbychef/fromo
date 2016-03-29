@@ -75,7 +75,7 @@ kurt5 <- function(v, na_rm = FALSE) {
 
 #' @rdname firstmoments
 #' @export
-cent_moments <- function(v, max_order = 5L, used_df = 1L, na_rm = FALSE) {
+cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
     .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
 }
 
@@ -86,13 +86,19 @@ cent_moments <- function(v, max_order = 5L, used_df = 1L, na_rm = FALSE) {
 #' an infinite or finite sliding window, returning a matrix.
 #' 
 #' @param v a vector
-#' @param winsize the window size. if NA, equivalent to infinity.
+#' @param winsize the window size. if given as finite integer or double, passed through.
+#' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
+#' to an infinite window size. If negative, an error will be thrown.
 #' @param recoper the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
 #' this parameter. Larger values mean fewer restarts and faster, though less accurate
 #' results. Note that the code checks for negative second and fourth moments and
 #' recomputes when needed.
 #' @param na_rm whether to remove NA, false by default.
+#' @param max_order the maximum order of the centered moment to be computed.
+#' @param used_df the number of degrees of freedom consumed, used in the denominator
+#' of the centered moments computation. These are subtracted from the number of
+#' observations.
 #' @param lookahead for some of the operations, the value is compared to 
 #' mean and standard deviation possibly using 'future' or 'past' information
 #' by means of a non-zero lookahead. Positive values mean data are taken from
@@ -129,43 +135,49 @@ cent_moments <- function(v, max_order = 5L, used_df = 1L, na_rm = FALSE) {
 #' @seealso firstmoments
 #' @rdname runningmoments
 #' @export
-run_sd3 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+run_sd3 <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
     .Call('fromo_run_sd3', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_skew4 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+run_skew4 <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
     .Call('fromo_run_skew4', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_kurt5 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+run_kurt5 <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
     .Call('fromo_run_kurt5', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_centered <- function(v, winsize = NA_integer_, recoper = 1000L, lookahead = 0L, na_rm = FALSE) {
+run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, used_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_cent_moments', PACKAGE = 'fromo', v, winsize, max_order, recoper, used_df, na_rm)
+}
+
+#' @rdname runningmoments
+#' @export
+run_centered <- function(v, winsize = NULL, recoper = 1000L, lookahead = 0L, na_rm = FALSE) {
     .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_scaled <- function(v, winsize = NA_integer_, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
+run_scaled <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
     .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_zscored <- function(v, winsize = NA_integer_, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
+run_zscored <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
     .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_tscored <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
+run_tscored <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
     .Call('fromo_run_tscored', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
 }
 

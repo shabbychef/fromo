@@ -18,7 +18,7 @@ MAINTAINER Steven E. Pav, shabbychef@gmail.com
 
 RUN (apt-get update -qq ; \
   DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -q -y --no-install-recommends \
-	qpdf ghostscript )
+	qpdf ghostscript texlive-latex-base texlive-fonts-recommended texlive-fonts-extra)
 
 # rinstall somethings...
 RUN /usr/local/bin/install2.r Rcpp testthat moments microbenchmark roxygen2 devtools knitr

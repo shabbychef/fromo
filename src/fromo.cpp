@@ -315,7 +315,7 @@ NumericVector kurt5(SEXP v, bool na_rm=false) {
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector cent_moments(SEXP v, int max_order=5, int used_df=1, bool na_rm=false) {
+NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false) {
     if (max_order < 1) { stop("must give largeish max_order"); }
     NumericVector preval = wrapMoments(v, max_order, na_rm);
     NumericVector vret = NumericVector(1+max_order);
@@ -546,6 +546,29 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period
     }
 }
 
+// helper function; takes a double or integer windowsize and interprets w/out warning or vomit.
+// if NULL, return NA_INTEGER;
+// if integer, pass through as i ;
+// if double, then 
+//   if Inf or NA, return NA_INTEGER;
+//   else convert to integer via as<int>( )
+int get_wins(SEXP winsize) {
+    if (Rf_isNull(winsize)) { return NA_INTEGER; }
+    switch (TYPEOF(winsize)) {
+        case  INTSXP: { return as<int>(winsize); break; }
+        case REALSXP: { 
+                          double wins = as<double>(winsize);
+                          if ((NumericVector::is_na(wins)) || 
+                              (traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
+                              return NA_INTEGER;
+                          }
+                          return (int)wins;
+                          break;
+                      }
+        default: stop("Unsupported input type");
+    }
+}
+
 //' @title
 //' Compute first K moments over a sliding window
 //' @description
@@ -553,13 +576,19 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period
 //' an infinite or finite sliding window, returning a matrix.
 //' 
 //' @param v a vector
-//' @param winsize the window size. if NA, equivalent to infinity.
+//' @param winsize the window size. if given as finite integer or double, passed through.
+//' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
+//' to an infinite window size. If negative, an error will be thrown.
 //' @param recoper the recompute period. because subtraction of elements can cause
 //' loss of precision, the computation of moments is restarted periodically based on 
 //' this parameter. Larger values mean fewer restarts and faster, though less accurate
 //' results. Note that the code checks for negative second and fourth moments and
 //' recomputes when needed.
 //' @param na_rm whether to remove NA, false by default.
+//' @param max_order the maximum order of the centered moment to be computed.
+//' @param used_df the number of degrees of freedom consumed, used in the denominator
+//' of the centered moments computation. These are subtracted from the number of
+//' observations.
 //' @param lookahead for some of the operations, the value is compared to 
 //' mean and standard deviation possibly using 'future' or 'past' information
 //' by means of a non-zero lookahead. Positive values mean data are taken from
@@ -597,8 +626,9 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_sd3(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
-    NumericMatrix preval = wrapRunningQMoments(v, 2, winsize, recoper, na_rm);
+NumericMatrix run_sd3(SEXP v, SEXP winsize = R_NilValue, int recoper=100, bool na_rm=false) {
+    int wins=get_wins(winsize);
+    NumericMatrix preval = wrapRunningQMoments(v, 2, wins, recoper, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-1.0));
@@ -610,8 +640,9 @@ NumericMatrix run_sd3(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_r
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_skew4(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
-    NumericMatrix preval = wrapRunningQMoments(v, 3, winsize, recoper, na_rm);
+NumericMatrix run_skew4(SEXP v, SEXP winsize = R_NilValue, int recoper=100, bool na_rm=false) {
+    int wins=get_wins(winsize);
+    NumericMatrix preval = wrapRunningQMoments(v, 3, wins, recoper, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,3)) * preval(iii,0) / pow(preval(iii,1),1.5);
@@ -624,8 +655,9 @@ NumericMatrix run_skew4(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_kurt5(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
-    NumericMatrix preval = wrapRunningQMoments(v, 4, winsize, recoper, na_rm);
+NumericMatrix run_kurt5(SEXP v, SEXP winsize = R_NilValue, int recoper=100, bool na_rm=false) {
+    int wins=get_wins(winsize);
+    NumericMatrix preval = wrapRunningQMoments(v, 4, wins, recoper, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
@@ -634,17 +666,36 @@ NumericMatrix run_kurt5(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na
     }
     return preval;
 }
+// return the centered moments down to the 2nd, then the mean, and the dof.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix run_cent_moments(SEXP v, SEXP winsize = R_NilValue, int max_order=5, int recoper=100, int used_df=0, bool na_rm=false) {
+    int wins=get_wins(winsize);
+    double denom;
+    double udf = (double)used_df;
+    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, recoper, na_rm);
+    // fix the higher than mean columns;
+    for (int iii=0;iii < preval.nrow();++iii) {
+        denom = preval(iii,0) - udf;
+        for (int mmm=0;mmm < (max_order-1);++mmm) {
+            preval(iii,mmm) = preval(iii,mmm) / denom;
+        }
+    }
+    return preval;
+}
 
 // center the input
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_centered(SEXP v, int winsize=NA_INTEGER, int recoper=1000, int lookahead=0, bool na_rm=false) {
+NumericMatrix run_centered(SEXP v, SEXP winsize = R_NilValue, int recoper=1000, int lookahead=0, bool na_rm=false) {
     NumericMatrix preval;
+    int wins=get_wins(winsize);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false>(v, 1, winsize, recoper, lookahead, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false>(v, 1, winsize, recoper, lookahead, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false>(v, 1, winsize, recoper, lookahead, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false>(v, 1, wins, recoper, lookahead, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false>(v, 1, wins, recoper, lookahead, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false>(v, 1, wins, recoper, lookahead, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -653,12 +704,13 @@ NumericMatrix run_centered(SEXP v, int winsize=NA_INTEGER, int recoper=1000, int
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_scaled(SEXP v, int winsize=NA_INTEGER, int recoper=100, int lookahead=0, bool na_rm=false) {
+NumericMatrix run_scaled(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int lookahead=0, bool na_rm=false) {
     NumericMatrix preval;
+    int wins=get_wins(winsize);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false>(v, 2, wins, recoper, lookahead, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false>(v, 2, wins, recoper, lookahead, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false>(v, 2, wins, recoper, lookahead, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -667,12 +719,13 @@ NumericMatrix run_scaled(SEXP v, int winsize=NA_INTEGER, int recoper=100, int lo
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_zscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, int lookahead=0, bool na_rm=false) {
+NumericMatrix run_zscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int lookahead=0, bool na_rm=false) {
     NumericMatrix preval;
+    int wins=get_wins(winsize);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false>(v, 2, wins, recoper, lookahead, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false>(v, 2, wins, recoper, lookahead, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false>(v, 2, wins, recoper, lookahead, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -681,12 +734,13 @@ NumericMatrix run_zscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, int l
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_tscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+NumericMatrix run_tscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, bool na_rm=false) {
     NumericMatrix preval;
+    int wins=get_wins(winsize);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true>(v, 2, winsize, recoper, 0, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true>(v, 2, winsize, recoper, 0, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true>(v, 2, winsize, recoper, 0, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true>(v, 2, wins, recoper, 0, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true>(v, 2, wins, recoper, 0, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true>(v, 2, wins, recoper, 0, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;

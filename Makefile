@@ -83,7 +83,7 @@ $(PKG_TGZ) : $(PKG_DEPS) .docker_img
 	$(DOCKER) run -it --rm --volume $(PWD):/srv:rw --entrypoint="R" $(USER)/$(PKG_LCNAME)-crancheck \
 		"CMD" "build" '$(BUILD_FLAGS)' "/srv"
 
-$(ALL_RD) : 
+$(ALL_RD) : $(EXPORTS_CPP)
 	r -l devtools -e 'document(".");'
 
 document : $(ALL_RD) ## build Rd files

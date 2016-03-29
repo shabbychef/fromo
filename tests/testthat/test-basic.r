@@ -69,47 +69,66 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 })#UNFOLD
 test_that("running sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
-	x <- rnorm(300)
+	x <- rnorm(100)
 	y <- as.integer(x)
 	z <- as.logical(y)
 	q <- c('a','b','c')
 
-	for (winsize in c(100,Inf)) {
+	for (winsize in c(50,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
 			run_sd3(x,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_skew4(x,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_kurt5(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_centered(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_scaled(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_zscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_tscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_cent_moments(x,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
 
 			run_sd3(y,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_skew4(y,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_kurt5(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_centered(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_scaled(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_zscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_tscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_cent_moments(y,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
 
 			run_sd3(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_skew4(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 			run_kurt5(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_centered(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_scaled(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_zscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-
+			run_cent_moments(z,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
 		}
 	}
 	expect_error(run_sd3(q))
 	expect_error(run_skew4(q))
 	expect_error(run_kurt5(q))
+	expect_error(run_cent_moments(q,max_order=5L))
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("running adjustments",{#FOLDUP
+	set.char.seed("e36291f6-70e0-4412-9c50-bc46b6ab8639")
+	x <- rnorm(100)
+	y <- as.integer(x)
+	z <- as.logical(y)
+	q <- c('a','b','c')
+
+	for (winsize in c(50,Inf)) {
+		for (na_rm in c(FALSE,TRUE)) {
+			run_centered(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_scaled(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_zscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_tscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+
+			run_centered(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_scaled(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_zscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_tscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+
+			run_centered(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_scaled(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_zscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+		}
+	}
 	expect_error(run_centered(q))
 	expect_error(run_scaled(q))
 	expect_error(run_zscored(q))
 	expect_error(run_tscored(q))
-
 
 	# sentinel
 	expect_true(TRUE)

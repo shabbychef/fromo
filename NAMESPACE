@@ -2,6 +2,7 @@
 
 export(cent_moments)
 export(kurt5)
+export(run_cent_moments)
 export(run_centered)
 export(run_kurt5)
 export(run_scaled)
