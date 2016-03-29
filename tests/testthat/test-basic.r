@@ -92,10 +92,36 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			run_cent_moments(z,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
 		}
 	}
+	for (min_df in c(2L,10L)) {
+		run_sd3(x,winsize=winsize,min_df=min_df)
+		run_skew4(x,winsize=winsize,min_df=min_df)
+		run_kurt5(x,winsize=winsize,min_df=min_df)
+		run_cent_moments(x,max_order=5L,winsize=winsize,min_df=min_df)
+
+		run_sd3(y,winsize=winsize,min_df=min_df)
+		run_skew4(y,winsize=winsize,min_df=min_df)
+		run_kurt5(y,winsize=winsize,min_df=min_df)
+		run_cent_moments(y,max_order=5L,winsize=winsize,min_df=min_df)
+
+		run_sd3(z,winsize=winsize,min_df=min_df)
+		run_skew4(z,winsize=winsize,min_df=min_df)
+		run_kurt5(z,winsize=winsize,min_df=min_df)
+		run_cent_moments(z,max_order=5L,winsize=winsize,min_df=min_df)
+	}
+
 	expect_error(run_sd3(q))
 	expect_error(run_skew4(q))
 	expect_error(run_kurt5(q))
 	expect_error(run_cent_moments(q,max_order=5L))
+
+	# make sure the Heywood branch gets hit
+	x <- rnorm(1e4,mean=1e9)
+	winsize <- 20L
+	recoper <- 500L
+	run_sd3(x,winsize=winsize,recoper=recoper)
+	run_skew4(x,winsize=winsize,recoper=recoper)
+	run_kurt5(x,winsize=winsize,recoper=recoper)
+	run_cent_moments(x,max_order=5L,winsize=winsize,recoper=recoper)
 
 	# sentinel
 	expect_true(TRUE)
