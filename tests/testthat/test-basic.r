@@ -125,10 +125,33 @@ test_that("running adjustments",{#FOLDUP
 			run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 		}
 	}
+	winsize <- 10L
+
+	for (na_rm in c(FALSE,TRUE)) {
+		run_centered(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_scaled(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_zscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_tscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+
+		run_centered(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_scaled(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_zscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_tscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+
+		run_centered(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_scaled(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_zscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+		run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+	}
+
 	expect_error(run_centered(q))
 	expect_error(run_scaled(q))
 	expect_error(run_zscored(q))
 	expect_error(run_tscored(q))
+
+	expect_error(run_tscored(x,winsize='FOO'))
+	expect_error(run_tscored(x,winsize=-20L))
+	expect_error(run_tscored(x,winsize=20L,recoper='FOO'))
 
 	# sentinel
 	expect_true(TRUE)

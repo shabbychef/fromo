@@ -52,7 +52,9 @@ if (require(devtools)) {
 
 # Basic Usage
 
-For now, check this out:
+## summary moments
+
+Here is a speed comparison of the basic moment computation
 
 ```{r babysteps,eval=TRUE,echo=TRUE}
 require(fromo)
@@ -82,5 +84,31 @@ microbenchmark(kurt5(x),
                skewness(x),
                sd(x),
                mean(x),times=10L)
+```
+
+## running moments
+
+Since an online algorithm is used, we can compute cumulative running moments. Moreover, we can 
+//remove// observations, and thus compute moments over a fixed length lookback window. A demonstration:
+
+```{r run1,eval=TRUE,echo=TRUE}
+require(fromo)
+require(moments)
+require(microbenchmark)
+
+set.seed(1234)
+x <- rnorm(20)
+
+k5 <- run_kurt5(x,winsize=10L)
+colnames(k5) <- c('excess_kurtosis','skew','stdev','mean','nobs')
+k5
+
+# trust but verify
+alt5 <- sapply(seq_along(x),function(iii) { 
+   rowi <- max(1,iii - 10 + 1)
+   kurtosis(x[rowi:iii]) - 3.0 },simplify=TRUE)
+
+cbind(alt5,k5[,1])
+
 ```
 

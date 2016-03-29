@@ -93,8 +93,8 @@ $(PKG_INSTALLED) : .%.installed : %.tar.gz
 
 installed : $(PKG_INSTALLED) ## install the package
 
-README.md : nodist/README.Rmd
-	r -l Rcpp -l knitr -l devtools -e 'build();install();setwd("$(<D)");knit("$(<F)");'
+README.md : nodist/README.Rmd $(PKG_INSTALLED)
+	r -l Rcpp -l knitr -l devtools -e 'setwd("$(<D)");if (require(knitr)) { knit("$(<F)") }'
 	mv nodist/README.md $@
 
 .docker_img : docker/Dockerfile
