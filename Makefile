@@ -32,11 +32,13 @@ EXPORTS_CPP				 = $(filter src/RcppExports%,$(ALL_CPP))
 ALL_R   					 = $(wildcard R/*.[rR])
 EXPORTS_R					 = $(filter R/RcppExports%,$(ALL_R))
 SRC_R   					 = $(filter-out R/RcppExports%,$(ALL_R))
+TEST_R  					 = $(wildcard tests/testthat/*.[rR])
 
 ALL_RD  					 = $(wildcard man/*.Rd)
 PKG_DEPS 					 = $(ALL_CPP)
 PKG_DEPS 					+= $(ALL_RD)
 PKG_DEPS 					+= $(ALL_R)
+PKG_DEPS 					+= $(TEST_R)
 PKG_DEPS 					+= DESCRIPTION NAMESPACE
 
 R_QPDF 						?= $(shell which qpdf)
