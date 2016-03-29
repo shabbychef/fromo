@@ -54,7 +54,7 @@ BUILD_ENV 				 = R_QPDF=$(R_QPDF) R_GSCMD=$(R_GSCMD) \
 ############## MARKERS ##############
 
 .PHONY   : help
-.PHONY   : build attributes
+.PHONY   : build attributes document
 .SUFFIXES: 
 .PRECIOUS: %.cpp .docker_img
 
@@ -85,6 +85,8 @@ $(PKG_TGZ) : $(PKG_DEPS) .docker_img
 
 $(ALL_RD) : 
 	r -l devtools -e 'document(".");'
+
+document : $(ALL_RD) ## build Rd files
 
 $(PKG_INSTALLED) : .%.installed : %.tar.gz
 	r -e 'install.packages("$<");'

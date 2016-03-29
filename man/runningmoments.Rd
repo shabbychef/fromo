@@ -16,11 +16,14 @@ run_skew4(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE)
 
 run_kurt5(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE)
 
-run_centered(v, winsize = NA_integer_, recoper = 1000L, na_rm = FALSE)
+run_centered(v, winsize = NA_integer_, recoper = 1000L, lookahead = 0L,
+  na_rm = FALSE)
 
-run_scaled(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE)
+run_scaled(v, winsize = NA_integer_, recoper = 100L, lookahead = 0L,
+  na_rm = FALSE)
 
-run_zscored(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE)
+run_zscored(v, winsize = NA_integer_, recoper = 100L, lookahead = 0L,
+  na_rm = FALSE)
 
 run_tscored(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE)
 }
@@ -36,6 +39,11 @@ results. Note that the code checks for negative second and fourth moments and
 recomputes when needed.}
 
 \item{na_rm}{whether to remove NA, false by default.}
+
+\item{lookahead}{for some of the operations, the value is compared to 
+mean and standard deviation possibly using 'future' or 'past' information
+by means of a non-zero lookahead. Positive values mean data are taken from
+the future.}
 }
 \value{
 a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
