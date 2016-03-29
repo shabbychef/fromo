@@ -115,9 +115,9 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(run_cent_moments(q,max_order=5L))
 
 	# make sure the Heywood branch gets hit
-	x <- rnorm(1e4,mean=1e9)
-	winsize <- 20L
-	recoper <- 500L
+	x <- rnorm(1e5,mean=1e10)
+	winsize <- 500L
+	recoper <- 100000L
 	run_sd3(x,winsize=winsize,recoper=recoper)
 	run_skew4(x,winsize=winsize,recoper=recoper)
 	run_kurt5(x,winsize=winsize,recoper=recoper)
