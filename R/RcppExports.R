@@ -93,6 +93,10 @@ cent_moments <- function(v, max_order = 5L, used_df = 1L, na_rm = FALSE) {
 #' results. Note that the code checks for negative second and fourth moments and
 #' recomputes when needed.
 #' @param na_rm whether to remove NA, false by default.
+#' @param lookahead for some of the operations, the value is compared to 
+#' mean and standard deviation possibly using 'future' or 'past' information
+#' by means of a non-zero lookahead. Positive values mean data are taken from
+#' the future.
 #'
 #' @details
 #'
@@ -143,20 +147,20 @@ run_kurt5 <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
 
 #' @rdname runningmoments
 #' @export
-run_centered <- function(v, winsize = NA_integer_, recoper = 1000L, na_rm = FALSE) {
-    .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_centered <- function(v, winsize = NA_integer_, recoper = 1000L, lookahead = 0L, na_rm = FALSE) {
+    .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_scaled <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
-    .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_scaled <- function(v, winsize = NA_integer_, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
+    .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_zscored <- function(v, winsize = NA_integer_, recoper = 100L, na_rm = FALSE) {
-    .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_zscored <- function(v, winsize = NA_integer_, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
+    .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
 }
 
 #' @rdname runningmoments

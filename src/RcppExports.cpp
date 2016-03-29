@@ -98,44 +98,47 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_centered
-NumericMatrix run_centered(SEXP v, int winsize, int recoper, bool na_rm);
-RcppExport SEXP fromo_run_centered(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {
+NumericMatrix run_centered(SEXP v, int winsize, int recoper, int lookahead, bool na_rm);
+RcppExport SEXP fromo_run_centered(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP lookaheadSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< int >::type winsize(winsizeSEXP);
     Rcpp::traits::input_parameter< int >::type recoper(recoperSEXP);
+    Rcpp::traits::input_parameter< int >::type lookahead(lookaheadSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    __result = Rcpp::wrap(run_centered(v, winsize, recoper, na_rm));
+    __result = Rcpp::wrap(run_centered(v, winsize, recoper, lookahead, na_rm));
     return __result;
 END_RCPP
 }
 // run_scaled
-NumericMatrix run_scaled(SEXP v, int winsize, int recoper, bool na_rm);
-RcppExport SEXP fromo_run_scaled(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {
+NumericMatrix run_scaled(SEXP v, int winsize, int recoper, int lookahead, bool na_rm);
+RcppExport SEXP fromo_run_scaled(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP lookaheadSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< int >::type winsize(winsizeSEXP);
     Rcpp::traits::input_parameter< int >::type recoper(recoperSEXP);
+    Rcpp::traits::input_parameter< int >::type lookahead(lookaheadSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    __result = Rcpp::wrap(run_scaled(v, winsize, recoper, na_rm));
+    __result = Rcpp::wrap(run_scaled(v, winsize, recoper, lookahead, na_rm));
     return __result;
 END_RCPP
 }
 // run_zscored
-NumericMatrix run_zscored(SEXP v, int winsize, int recoper, bool na_rm);
-RcppExport SEXP fromo_run_zscored(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP na_rmSEXP) {
+NumericMatrix run_zscored(SEXP v, int winsize, int recoper, int lookahead, bool na_rm);
+RcppExport SEXP fromo_run_zscored(SEXP vSEXP, SEXP winsizeSEXP, SEXP recoperSEXP, SEXP lookaheadSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< int >::type winsize(winsizeSEXP);
     Rcpp::traits::input_parameter< int >::type recoper(recoperSEXP);
+    Rcpp::traits::input_parameter< int >::type lookahead(lookaheadSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    __result = Rcpp::wrap(run_zscored(v, winsize, recoper, na_rm));
+    __result = Rcpp::wrap(run_zscored(v, winsize, recoper, lookahead, na_rm));
     return __result;
 END_RCPP
 }
