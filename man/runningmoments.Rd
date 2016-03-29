@@ -2,34 +2,19 @@
 % Please edit documentation in R/RcppExports.R
 \name{run_sd3}
 \alias{run_cent_moments}
-\alias{run_centered}
 \alias{run_kurt5}
-\alias{run_scaled}
 \alias{run_sd3}
 \alias{run_skew4}
-\alias{run_tscored}
-\alias{run_zscored}
 \title{Compute first K moments over a sliding window}
 \usage{
-run_sd3(v, winsize = NULL, recoper = 100L, na_rm = FALSE)
+run_sd3(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE)
 
-run_skew4(v, winsize = NULL, recoper = 100L, na_rm = FALSE)
+run_skew4(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE)
 
-run_kurt5(v, winsize = NULL, recoper = 100L, na_rm = FALSE)
+run_kurt5(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE)
 
 run_cent_moments(v, winsize = NULL, max_order = 5L, recoper = 100L,
-  used_df = 0L, na_rm = FALSE)
-
-run_centered(v, winsize = NULL, recoper = 1000L, lookahead = 0L,
-  na_rm = FALSE)
-
-run_scaled(v, winsize = NULL, recoper = 100L, lookahead = 0L,
-  na_rm = FALSE)
-
-run_zscored(v, winsize = NULL, recoper = 100L, lookahead = 0L,
-  na_rm = FALSE)
-
-run_tscored(v, winsize = NULL, recoper = 100L, na_rm = FALSE)
+  min_df = 0L, used_df = 0L, na_rm = FALSE)
 }
 \arguments{
 \item{v}{a vector}
@@ -44,6 +29,10 @@ this parameter. Larger values mean fewer restarts and faster, though less accura
 results. Note that the code checks for negative second and fourth moments and
 recomputes when needed.}
 
+\item{min_df}{the minimum df to return a value, otherwise \code{NaN} is returned.
+This can be used to prevent moments from being computed on too few observations.
+Defaults to zero, meaning no restriction.}
+
 \item{na_rm}{whether to remove NA, false by default.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
@@ -51,16 +40,11 @@ recomputes when needed.}
 \item{used_df}{the number of degrees of freedom consumed, used in the denominator
 of the centered moments computation. These are subtracted from the number of
 observations.}
-
-\item{lookahead}{for some of the operations, the value is compared to 
-mean and standard deviation possibly using 'future' or 'past' information
-by means of a non-zero lookahead. Positive values mean data are taken from
-the future.}
 }
 \value{
 a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
 then a column of the mean, then a column of the number of (non-nan) elements in the input.
-When there are not sufficient (non-nan) elements for the computation, NaN are returned.
+When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
 }
 \description{
 Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
@@ -70,22 +54,44 @@ an infinite or finite sliding window, returning a matrix.
 Computes the number of elements, the mean, and the 2nd through kth
 centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
 are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
-In general they will \emph{not} match exactly with the 'standard'
-implementations, due to differences in roundoff.
 
-These methods are reasonably fast, on par with the 'standard' implementations.
-However, they will usually be faster than calling the various standard implementations
-more than once.
+Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
+\eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
+excess kurtosis, skewness, standard deviation, mean or number of elements)
+of \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i}.
+Barring \code{NA} or \code{NaN}, this is over a window of size \code{winsize}.
+During the 'burn-in' phase, we take fewer elements.
 }
 \note{
 the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 for Gaussian input.
+
+The moment computations provided by fromo are 
+numerically robust, but will often \emph{not} provide the
+same results as the 'standard' implementations,
+due to differences in roundoff. We make every attempt to balance
+speed and robustness. User assumes all risk from using
+the fromo package.
 }
 \examples{
 x <- rnorm(1e5)
 run_sd3(x,10)
 run_skew4(x,10)
-run_kurt5(x,500)
+
+if (require(moments)) {
+    set.seed(123)
+    x <- rnorm(5e1)
+    winsize <- 10L
+    kt5 <- run_kurt5(x,winsize=winsize)
+    rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
+                xrang <- x[max(1,iii-winsize+1):iii]
+                c(moments::kurtosis(xrang)-3.0,moments::skewness(xrang),
+                sd(xrang),mean(xrang),length(xrang)) },
+             simplify=TRUE))
+    stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
+}
+
+run_cent_moments(x,winsize=100L,max_order=6L)
 
 }
 \author{
@@ -106,8 +112,5 @@ Cook, J. D. "Accurately computing running variance."
 Cook, J. D. "Comparing three methods of computing 
 standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
-}
-\seealso{
-firstmoments
 }
 

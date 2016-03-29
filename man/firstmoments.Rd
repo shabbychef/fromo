@@ -47,6 +47,13 @@ more than once.
 \note{
 the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 for Gaussian input.
+
+The moment computations provided by fromo are 
+numerically robust, but will often \emph{not} provide the
+same results as the 'standard' implementations,
+due to differences in roundoff. We make every attempt to balance
+speed and robustness. User assumes all risk from using
+the fromo package.
 }
 \examples{
 x <- rnorm(1e5)
@@ -87,8 +94,5 @@ Cook, J. D. "Accurately computing running variance."
 Cook, J. D. "Comparing three methods of computing 
 standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
-}
-\seealso{
-runningmoments
 }
 

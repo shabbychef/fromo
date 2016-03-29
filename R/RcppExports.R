@@ -55,7 +55,6 @@
 #' @template etc
 #' @template ref-romo
 #' @rdname firstmoments
-#' @seealso runningmoments
 #' @export
 sd3 <- function(v, na_rm = FALSE) {
     .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm)
@@ -96,29 +95,29 @@ cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #' recomputes when needed.
 #' @param na_rm whether to remove NA, false by default.
 #' @param max_order the maximum order of the centered moment to be computed.
+#' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
+#' This can be used to prevent moments from being computed on too few observations.
+#' Defaults to zero, meaning no restriction.
 #' @param used_df the number of degrees of freedom consumed, used in the denominator
 #' of the centered moments computation. These are subtracted from the number of
 #' observations.
-#' @param lookahead for some of the operations, the value is compared to 
-#' mean and standard deviation possibly using 'future' or 'past' information
-#' by means of a non-zero lookahead. Positive values mean data are taken from
-#' the future.
 #'
 #' @details
 #'
 #' Computes the number of elements, the mean, and the 2nd through kth
 #' centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
 #' are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
-#' In general they will \emph{not} match exactly with the 'standard'
-#' implementations, due to differences in roundoff.
 #'
-#' These methods are reasonably fast, on par with the 'standard' implementations.
-#' However, they will usually be faster than calling the various standard implementations
-#' more than once.
+#' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
+#' \eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
+#' excess kurtosis, skewness, standard deviation, mean or number of elements)
+#' of \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i}.
+#' Barring \code{NA} or \code{NaN}, this is over a window of size \code{winsize}.
+#' During the 'burn-in' phase, we take fewer elements.
 #'
 #' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
 #' then a column of the mean, then a column of the number of (non-nan) elements in the input.
-#' When there are not sufficient (non-nan) elements for the computation, NaN are returned.
+#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
 #'
 #' @note
 #' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
@@ -128,56 +127,134 @@ cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #' x <- rnorm(1e5)
 #' run_sd3(x,10)
 #' run_skew4(x,10)
-#' run_kurt5(x,500)
+#'
+#' if (require(moments)) {
+#'     set.seed(123)
+#'     x <- rnorm(5e1)
+#'     winsize <- 10L
+#'     kt5 <- run_kurt5(x,winsize=winsize)
+#'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
+#'                 xrang <- x[max(1,iii-winsize+1):iii]
+#'                 c(moments::kurtosis(xrang)-3.0,moments::skewness(xrang),
+#'                 sd(xrang),mean(xrang),length(xrang)) },
+#'              simplify=TRUE))
+#'     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
+#' }
+#'
+#' run_cent_moments(x,winsize=100L,max_order=6L)
 #'
 #' @template etc
 #' @template ref-romo
-#' @seealso firstmoments
 #' @rdname runningmoments
 #' @export
-run_sd3 <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
-    .Call('fromo_run_sd3', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_sd3 <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_sd3', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_skew4 <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
-    .Call('fromo_run_skew4', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_skew4 <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_skew4', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_kurt5 <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
-    .Call('fromo_run_kurt5', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_kurt5 <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_kurt5', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
 }
 
 #' @rdname runningmoments
 #' @export
-run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, used_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_cent_moments', PACKAGE = 'fromo', v, winsize, max_order, recoper, used_df, na_rm)
+run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, min_df = 0L, used_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_cent_moments', PACKAGE = 'fromo', v, winsize, max_order, recoper, min_df, used_df, na_rm)
 }
 
-#' @rdname runningmoments
+#' @title
+#' Compare data to moments computed over a sliding window.
+#' @description
+#' Computes moments over a sliding window, then adjusts the data accordingly, centering, or scaling,
+#' or z-scoring, and so on.
+#' 
+#' @inheritParams run_cent_moments
+#' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
+#' This can be used to prevent \emph{e.g.} Z-scores from being computed on only 3
+#' observations. Defaults to zero, meaning no restriction, which can result in 
+#' infinite Z-scores during the burn-in period.
+#' @param lookahead for some of the operations, the value is compared to 
+#' mean and standard deviation possibly using 'future' or 'past' information
+#' by means of a non-zero lookahead. Positive values mean data are taken from
+#' the future.
+#'
+#' @details
+#'
+#' Given the length \eqn{n} vector \eqn{x}, for
+#' a given index \eqn{i}, define \eqn{x^{(i)}}{x^(i)}
+#' as the vector of 
+#' \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i},
+#' where we do not run over the 'edge' of the vector. In code, this is essentially
+#' \code{x[(max(1,i-winsize+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
+#' and \eqn{n_i}{n_i} as, respectively, the sample mean, standard deviation and number of
+#' non-NA elements in \eqn{x^{(i)}}{x^(i)}. 
+#'
+#' We compute output vector \eqn{m} the same size as \eqn{x}. 
+#' For the 'centered' version of \eqn{x}, we have \eqn{m_i = x_i - \mu_i}{m_i = x_i - mu_i}.
+#' For the 'scaled' version of \eqn{x}, we have \eqn{m_i = x_i / \sigma_i}{m_i = x_i / sigma_i}.
+#' For the 'z-scored' version of \eqn{x}, we have \eqn{m_i = (x_i - \mu_i) / \sigma_i}{m_i = (x_i - mu_i) / sigma_i}.
+#' For the 't-scored' version of \eqn{x}, we have \eqn{m_i = \sqrt{n_i} \mu_i / \sigma_i}{m_i = sqrt(n_i) mu_i / sigma_i}.
+#'
+#' We also allow a 'lookahead' for some of these operations.
+#' If positive, the moments are computed using data from larger indices;
+#' if negative, from smaller indices. Letting \eqn{j = i + lookahead}{j = i + lookahead}:
+#' For the 'centered' version of \eqn{x}, we have \eqn{m_i = x_i - \mu_j}{m_i = x_i - mu_j}.
+#' For the 'scaled' version of \eqn{x}, we have \eqn{m_i = x_i / \sigma_j}{m_i = x_i / sigma_j}.
+#' For the 'z-scored' version of \eqn{x}, we have \eqn{m_i = (x_i - \mu_j) / \sigma_j}{m_i = (x_i - mu_j) / sigma_j}.
+#'
+#' @return a vector the same size as the input consisting of the adjusted version of the input.
+#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+#'
+#' @examples
+#'
+#' if (require(moments)) {
+#'     set.seed(123)
+#'     x <- rnorm(5e1)
+#'     winsize <- 10L
+#'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
+#'                   xrang <- x[max(1,iii-winsize+1):iii]
+#'                   c(sd(xrang),mean(xrang),length(xrang)) },
+#'                   simplify=TRUE))
+#'     rcent <- run_centered(x,winsize=winsize)
+#'     rscal <- run_scaled(x,winsize=winsize)
+#'     rzsco <- run_zscored(x,winsize=winsize)
+#'     rtsco <- run_tscored(x,winsize=winsize)
+#'     stopifnot(max(abs(rcent - (x - rm1[,2])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rscal - (x / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rzsco - ((x - rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rtsco - ((sqrt(rm1[,3]) * rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+#' }
+#'
+#' @template etc
+#' @template ref-romo
+#' @rdname runningadjustments
 #' @export
-run_centered <- function(v, winsize = NULL, recoper = 1000L, lookahead = 0L, na_rm = FALSE) {
-    .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
+run_centered <- function(v, winsize = NULL, recoper = 1000L, lookahead = 0L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, lookahead, min_df, na_rm)
 }
 
-#' @rdname runningmoments
+#' @rdname runningadjustments
 #' @export
-run_scaled <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
-    .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
+run_scaled <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, lookahead, min_df, na_rm)
 }
 
-#' @rdname runningmoments
+#' @rdname runningadjustments
 #' @export
-run_zscored <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, na_rm = FALSE) {
-    .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, lookahead, na_rm)
+run_zscored <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, lookahead, min_df, na_rm)
 }
 
-#' @rdname runningmoments
+#' @rdname runningadjustments
 #' @export
-run_tscored <- function(v, winsize = NULL, recoper = 100L, na_rm = FALSE) {
-    .Call('fromo_run_tscored', PACKAGE = 'fromo', v, winsize, recoper, na_rm)
+run_tscored <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
+    .Call('fromo_run_tscored', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
 }
 

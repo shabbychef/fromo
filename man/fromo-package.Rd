@@ -8,6 +8,13 @@
 Fast Robust Moments.
 }
 \note{
+The moment computations provided by fromo are 
+numerically robust, but will often \emph{not} provide the
+same results as the 'standard' implementations,
+due to differences in roundoff. We make every attempt to balance
+speed and robustness. User assumes all risk from using
+the fromo package.
+
 This package was developed as an exercise in learning Rcpp.
 }
 \section{Robust Moments}{

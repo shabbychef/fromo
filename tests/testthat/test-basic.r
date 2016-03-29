@@ -144,6 +144,23 @@ test_that("running adjustments",{#FOLDUP
 		run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
 	}
 
+	for (min_df in c(2L,10L)) {
+		run_centered(x,winsize=winsize,min_df=min_df)
+		run_scaled(x,winsize=winsize,min_df=min_df)
+		run_zscored(x,winsize=winsize,min_df=min_df)
+		run_tscored(x,winsize=winsize,min_df=min_df)
+
+		run_centered(y,winsize=winsize,min_df=min_df)
+		run_scaled(y,winsize=winsize,min_df=min_df)
+		run_zscored(y,winsize=winsize,min_df=min_df)
+		run_tscored(y,winsize=winsize,min_df=min_df)
+
+		run_centered(z,winsize=winsize,min_df=min_df)
+		run_scaled(z,winsize=winsize,min_df=min_df)
+		run_zscored(z,winsize=winsize,min_df=min_df)
+		run_tscored(z,winsize=winsize,min_df=min_df)
+	}
+
 	expect_error(run_centered(q))
 	expect_error(run_scaled(q))
 	expect_error(run_zscored(q))
