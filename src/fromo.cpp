@@ -326,6 +326,16 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fa
     return vret;
 }
 
+// return the centered moments up to order max_order
+//' @rdname firstmoments
+//' @export
+// [[Rcpp::export]]
+NumericVector raw_sums(SEXP v, int max_order=5, bool na_rm=false) {
+    if (max_order < 1) { stop("must give largeish max_order"); }
+    NumericVector preval = wrapMoments(v, max_order, na_rm);
+    return preval;
+}
+
 /*******************************************************************************
  * running moments
  */
@@ -841,55 +851,217 @@ NumericMatrix run_tscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, in
     return preval;
 }
 
-//NumericVector combineMoments(NumericVector ret1,const NumericVector ret2) {
-    //double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
-    //double ac_nfoo,ac_n2,ac_mn1;
-    //double ac_del,ac_mn2,ac_n1;
+//' @title
+//' Join or unjoin moments computations.
+//' @description
+//' 
+//'  set.seed(1234)
+//'  x1 <- rnorm(1e3,mean=1)
+//'  x2 <- rnorm(1e3,mean=1)
+//'  x3 <- c(x1,x2)
+//'  rs1 <- raw_sums(x1,6)
+//'  rs2 <- raw_sums(x2,6)
+//'  rs3 <- join_moments(rs1,rs2)
+//'  rs3alt <- raw_sums(x3,6)
+//'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
+//'  rs1alt <- unjoin_moments(rs3,rs2)
+//'  rs2alt <- unjoin_moments(rs3,rs1)
+//'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
+//'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
+//'
+//' @details
+//'
+//' @return a vector the same size as the input consisting of the adjusted version of the input.
+//' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+//'
+//' @examples
+//'
+//'
+//' @template etc
+//' @template ref-romo
+//' @rdname joinmoments 
+//' @export
+// [[Rcpp::export]]
+NumericVector join_moments(NumericVector ret1,NumericVector ret2) {
+    double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+    double ac_nfoo,ac_n2,ac_mn1;
+    double ac_del,ac_mn2,ac_n1;
 
-    //int ord = ret1.size() - 1;
-    //int ppp,qqq;
+    if (ret1.size() != ret2.size()) { stop("mismatch in sizes."); }
 
-    //n1 = ret1[0];
-    //if (n1 <= 0) { return ret2; }
-    //n2 = ret2[0];
-    //if (n2 <= 0) { return ret1; }
+    int ord = ret1.size() - 1;
+    int ppp,qqq;
 
-    //ret1[0] += n2;
-    //ntot = ret1[0];
-    //n1rat = n1 / ntot;
-    //n2rat = n2 / ntot;
-    //del21 = ret2[1] - ret1[1];
-    //mupart = del21 * n2rat;
+    n1 = ret1[0];
+    if (n1 <= 0) { return ret2; }
+    n2 = ret2[0];
+    if (n2 <= 0) { return ret1; }
 
-    //ret1[1] += mupart;
-    //nfoo = n1 * mupart;
-    //ac_nfoo = pow(nfoo,ord);
-    //ac_n2 = pow(n2,1-ord);
-    //ac_mn1 = pow(-n1,1-ord);
-    //for (ppp=ord;ppp >= 2;ppp--) {
-        ////ret1[ppp] = ret1[ppp] + ret2[ppp] + (pow(nfoo,ppp) * (pow(n2,1-ppp) - pow(-n1,1-ppp)));
-        //ret1[ppp] += ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
-        //if (ppp > 2) {
-            //if (nfoo != 0) { ac_nfoo /= nfoo; }
-            //ac_n2 *= n2;
-            //ac_mn1 *= (-n1);
+    NumericVector vret(ord+1);
+    // copy
+    for (ppp=0;ppp <= ord;++ppp) { vret[ppp] = ret1[ppp]; }
+
+    vret[0] += n2;
+    ntot = vret[0];
+    n1rat = n1 / ntot;
+    n2rat = n2 / ntot;
+    del21 = ret2[1] - vret[1];
+    mupart = del21 * n2rat;
+
+    vret[1] += mupart;
+    nfoo = n1 * mupart;
+    ac_nfoo = pow(nfoo,ord);
+    ac_n2 = pow(n2,1-ord);
+    ac_mn1 = pow(-n1,1-ord);
+    for (ppp=ord;ppp >= 2;ppp--) {
+        //vret[ppp] = vret[ppp] + ret2[ppp] + (pow(nfoo,ppp) * (pow(n2,1-ppp) - pow(-n1,1-ppp)));
+        vret[ppp] += ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+        if (ppp > 2) {
+            if (nfoo != 0) { ac_nfoo /= nfoo; }
+            ac_n2 *= n2;
+            ac_mn1 *= (-n1);
+        }
+        ac_del = del21;
+        ac_mn2 = -n2rat;
+        ac_n1 = n1rat;
+        for (int qqq=1;qqq <= (ppp-2); qqq++) {
+            //vret[ppp] += bincoef[ppp][qqq] * pow(del21,qqq) * (pow(-n2/ntot,qqq) * vret[ppp-qqq] + pow(n1/ntot,qqq) * ret2[ppp-qqq]);
+            vret[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * vret[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
+            if (qqq < (ppp-2)) {
+                ac_del *= del21;
+                ac_mn2 *= (-n2rat);
+                ac_n1  *= (n1rat);
+            }
+        }
+    }
+    return vret;
+}
+//' @rdname joinmoments 
+//' @export
+// [[Rcpp::export]]
+NumericVector unjoin_moments(NumericVector ret1,NumericVector ret2) {
+    // subtract ret2 from ret1 very important.
+    double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+    double ac_nfoo,ac_n2,ac_mn1;
+    double ac_del,ac_mn2,ac_n1;
+
+    if (ret1.size() != ret2.size()) { stop("mismatch in sizes."); }
+
+    int ord = ret1.size() - 1;
+    int ppp,qqq;
+
+    n1 = ret1[0];
+    n2 = ret2[0];
+    if (n2 <= 0) { return ret1; }
+    if (n2 > n1) { stop("cannot subtract more observations than were seen."); }
+
+    NumericVector vret(ord+1);
+    // would be better to check they are equal, but whatever;
+    if (n2 == n1) { 
+        // vret is all zero, just return it
+        return vret;
+    } else {
+        // else copy
+        for (ppp=0;ppp <= ord;++ppp) { vret[ppp] = ret1[ppp]; }
+    }
+
+    del21 = ret2[1] - vret[1];
+
+    ntot = vret[0];
+    vret[0] -= n2;
+    n1 = vret[0];
+
+    n1rat = n1 / ntot;
+    n2rat = n2 / ntot;
+
+    mupart = del21 / n1;
+    vret[1] -= mupart;
+    // correct della
+    del21 = mupart * ntot;
+
+    nfoo = n1 * mupart;
+
+    ac_nfoo = nfoo * nfoo;
+    ac_n2 = 1.0 / n2;
+    ac_mn1 = -1.0 / n1;
+    for (ppp=2;ppp <= ord;ppp++) {
+        vret[ppp] -= ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+        if (ppp < ord) {
+            ac_nfoo *= nfoo; 
+            ac_n2 /= n2;
+            ac_mn1 /= (-n1);
+        }
+        ac_del = del21;
+        ac_mn2 = -n2rat;
+        ac_n1 = n1rat;
+        for (int qqq=1;qqq <= (ppp-2); qqq++) {
+            vret[ppp] -= bincoef[ppp][qqq] * ac_del * (ac_mn2 * vret[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
+            if (qqq < (ppp-2)) {
+                ac_del *= del21;
+                ac_mn2 *= (-n2rat);
+                ac_n1  *= (n1rat);
+            }
+        }
+    }
+    return vret;
+}
+
+//typedef std::vector<double> dubvec;  // convenience typedef
+
+//class Moments {
+    //public:
+        //// truly empty
+        //Moments() : order(3), na_rm(false) {
+            //moments = Rcpp::NumericVector(1+order);
         //}
-        //ac_del = del21;
-        //ac_mn2 = -n2rat;
-        //ac_n1 = n1rat;
-        //for (int qqq=1;qqq <= (ppp-2); qqq++) {
-            ////ret1[ppp] += bincoef[ppp][qqq] * pow(del21,qqq) * (pow(-n2/ntot,qqq) * ret1[ppp-qqq] + pow(n1/ntot,qqq) * ret2[ppp-qqq]);
-            //ret1[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * ret1[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
-            //if (qqq < (ppp-2)) {
-                //ac_del *= del21;
-                //ac_mn2 *= (-n2rat);
-                //ac_n1  *= (n1rat);
+        //// empty
+        //Moments(int order) : order(order), na_rm(false) {
+            //moments = Rcpp::NumericVector(1+order);
+        //}
+        //Moments(int order, bool na_rm) : order(order), na_rm(na_rm) {
+            //moments = Rcpp::NumericVector(1+order);
+        //}
+        //// 'pure'
+        //Moments(dubvec input, int order, bool na_rm) : order(order), na_rm(na_rm) {
+            //moments = quasiMoments<dubvec>(input, order, 0, -1, na_rm);
+        //}
+        //// access the normalized moments
+        //NumericVector cent_moments(int used_df=1) {
+            //NumericVector vret = NumericVector(1+order);
+            //vret[order] = moments[0];
+            //vret[order-1] = moments[1];
+            //for (int mmm=2;mmm <= order;mmm++) {
+                //vret[order-mmm] = moments[mmm] / (moments[0] - used_df);
             //}
+            //return vret;
         //}
-    //}
-    //return ret1;
-//}
+        //// append operation; this is the guy that shits the bed.
+        //// much fun. do break. amaze.
+        //void join(const Moments& rhs) {
+            //moments = joinMoments(moments,rhs.moments);
+        //}
+        
+        //const int order;
+        //const bool na_rm;
+    //private:
+        //NumericVector moments;
+//};
 
+//RCPP_MODULE(moment_module) {
+    //class_<Moments>( "Moments" )
+
+    //.constructor()
+    //.constructor<int>()
+    //.constructor<int,bool>()
+    //.constructor<dubvec,int,bool>()
+
+    //.field_readonly("order", &Moments::order)
+    //.field_readonly("na_rm", &Moments::na_rm)
+
+    //.method("cent_moments", &Moments::cent_moments)
+    //.method("%:%", &Moments::join)
+    //;
+//}
 
 
 //for vim modeline: (do not edit)
