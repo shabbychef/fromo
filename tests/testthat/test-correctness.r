@@ -80,27 +80,35 @@ test_that("running ops are correct",{#FOLDUP
 	set.char.seed("967d2149-fbff-4d82-b227-ca3e1034bddb")
 	for (xlen in c(20,100)) {
 		x <- rnorm(xlen)
-		for (winsize in c(10,50,Inf)) {
+		for (winsize in c(5,50,Inf)) {
 			for (recoper in c(10,1000)) {
 				for (na_rm in c(FALSE,TRUE)) {
+					dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-winsize+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
+					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-winsize+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-winsize+1):iii],na.rm=na_rm) },simplify=TRUE)
+
+					fastv <- run_sd3(x,winsize=winsize,recoper=recoper,na_rm=na_rm)
+					dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
+					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
+
 					fastv <- run_centered(x,winsize=winsize,recoper=recoper,na_rm=na_rm)
 					# the dumb value:
-					dumbv <- sapply(seq_along(x),function(iii) { x[iii] - mean(x[max(1,iii-winsize+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumbv <- x - dumb_mean;
 					expect_equal(max(abs(dumbv - fastv)),0,tolerance=1e-12)
 
 					fastv <- run_scaled(x,winsize=winsize,recoper=recoper,na_rm=na_rm)
 					# the dumb value:
-					dumbv <- sapply(seq_along(x),function(iii) { x[iii] / sd(x[max(1,iii-winsize+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumbv <- x / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
 					fastv <- run_zscored(x,winsize=winsize,recoper=recoper,na_rm=na_rm)
 					# the dumb value:
-					dumbv <- sapply(seq_along(x),function(iii) { (x[iii] - mean(x[max(1,iii-winsize+1):iii],na.rm=na_rm)) / sd(x[max(1,iii-winsize+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumbv <- (x - dumb_mean) / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
 					fastv <- run_tscored(x,winsize=winsize,recoper=recoper,na_rm=na_rm)
 					# the dumb value:
-					dumbv <- sapply(seq_along(x),function(iii) { sqrt(min(winsize,iii)) * (mean(x[max(1,iii-winsize+1):iii],na.rm=na_rm)) / sd(x[max(1,iii-winsize+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumbv <- (dumb_mean * sqrt(dumb_count)) / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 				}
 			}

@@ -86,8 +86,8 @@ const int bincoef[30][30] = {
  {        1,        28,       378,      3276,     20475,     98280,    376740,   1184040,   3108105,   6906900,  13123110,  21474180,  30421755,  37442160,  40116600,  37442160,  30421755,  21474180,  13123110,   6906900,   3108105,   1184040,    376740,     98280,     20475,      3276,       378,        28,         1,         0},
  {        1,        29,       406,      3654,     23751,    118755,    475020,   1560780,   4292145,  10015005,  20030010,  34597290,  51895935,  67863915,  77558760,  77558760,  67863915,  51895935,  34597290,  20030010,  10015005,   4292145,   1560780,    475020,    118755,     23751,      3654,       406,        29,         1},
  };
-#define MAX(a,b) ((a>b)? a:b)
-#define MIN(a,b) ((a<b)? a:b)
+#define MAX(a,b) ((a>b)? (a):(b))
+#define MIN(a,b) ((a<b)? (a):(b))
 
 #endif /* __DEF_FROMO__ */
 
@@ -210,6 +210,8 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 #define COMP_SD(preval) (sqrt(preval[2]/(preval[0]-1.0)))
 #define COMP_SKEW(preval) (sqrt(preval[0]) * preval[3] / pow(preval[2],1.5))
 #define COMP_EXKURT(preval) ((preval[0] * preval[4] / (pow(preval[2],2.0))) - 3.0)
+
+#define COMP_CENTERED(x,preval) (x - preval[1])
 
 // for help on dispatch, see:
 // http://stackoverflow.com/a/25254680/164611
@@ -355,21 +357,29 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=1, bool na_rm=fa
 // in other forms, depending on templated bools, this
 // computes the centered input, the rescaled input, the z-scored input
 // or a t-scored input, as matrices with a single column.
+//
+// we have a lookahead option for the centered, scaled, and Z-scored
+// variants. Positive lookahead means take info from the future.
 template <typename T,bool ret_mat,bool ret_cent,bool ret_scald,bool ret_z,bool ret_t>
 NumericMatrix runningQMoments(T v,
                               int ord = 3,
                               int winsize = NA_INTEGER,
                               int recom_period = 100, 
+                              int lookahead = 0,
                               bool na_rm = false) {
-    double nextv, prevv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
+    double nextv, prevv, compv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
 
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
 
-    int iii,jjj,mmm;
-    int runsize = 0;
-    int numel = v.size();
     const bool infwin = IntegerVector::is_na(winsize);
+    if ((winsize < 1) && (!infwin)) { stop("must give positive winsize"); }
+
+    int iii,jjj,lll,mmm,ppp,qqq,tr_iii,tr_jjj;
+    int numel = v.size();
+    const bool non_aligned = (lookahead != 0);
+    // refers to the number of *subtractions* performed
+    int subcount = 0;
 
     // preallocated with zeros; should
     // probably be NA?
@@ -383,48 +393,67 @@ NumericMatrix runningQMoments(T v,
     // this is the current estimate, fill it in as we go.
     NumericVector vret(1+ord);
 
-    jjj = 0;
-    for (iii=0;iii < numel;++iii) {
-        nextv = double(v[iii]);
-        if (! (na_rm && ISNAN(nextv))) {//FOLDUP
-            della = nextv - vret[1];
-            nelm = vret[0];
-            nel = ++vret[0];
-            delnel = della / nel;
-            vret[1] += delnel;
+    // as an invariant, we will start the computation
+    // with vret, which is initialized as the summed
+    // means on [jjj,iii]
+    tr_iii = lookahead - 1;
+    tr_jjj = lookahead - winsize;
+    // sneakily set subcount large so we just recompute
+    // at head of loop. sneaky.
+    subcount = recom_period;
 
-            if (nelm > 0) {//FOLDUP
-                drat = delnel * nelm;
-                ac_dn = pow(drat,ord);
-                ac_on = pow(-1.0 / nelm,ord-1);
+    // now run through lll index
+    for (lll=0;lll < numel;++lll) {
+        tr_iii++;
+        // check subcount first and just recompute if needed.
+        if (subcount >= recom_period) {
+            // fix this
+            iii = MIN(numel-1,tr_iii);
+            jjj = MAX(0,tr_jjj+1);
+            if (jjj <= iii) {
+                vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+            }
+            subcount = 0;
+        } else {
+            if ((tr_iii < numel) && (tr_iii >= 0)) {
+                // add on nextv:
+                nextv = double(v[tr_iii]);
+                if (! (na_rm && ISNAN(nextv))) {//FOLDUP
+                    della = nextv - vret[1];
+                    nelm = vret[0];
+                    nel = ++vret[0];
+                    delnel = della / nel;
+                    vret[1] += delnel;
 
-                for (int ppp=ord;ppp >= 2;ppp--) {
-                    vret[ppp] += ac_dn * (1.0 - ac_on);
-                    if (ppp > 2) {
-                        if (drat != 0) { ac_dn /= drat; }
-                        ac_on *= -nelm;
-                    }
-                    ac_de = -delnel;
-                    for (int qqq=1;qqq <= ppp-2;qqq++) {
-                        vret[ppp] += bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
-                        if (qqq < ppp - 2) {
-                            ac_de *= -delnel;
+                    if (nelm > 0) {//FOLDUP
+                        drat = delnel * nelm;
+                        ac_dn = pow(drat,ord);
+                        ac_on = pow(-1.0 / nelm,ord-1);
+
+                        for (int ppp=ord;ppp >= 2;ppp--) {
+                            vret[ppp] += ac_dn * (1.0 - ac_on);
+                            if (ppp > 2) {
+                                if (drat != 0) { ac_dn /= drat; }
+                                ac_on *= -nelm;
+                            }
+                            ac_de = -delnel;
+                            for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                vret[ppp] += bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
+                                if (qqq < ppp - 2) {
+                                    ac_de *= -delnel;
+                                }
+                            }
                         }
-                    }
-                }
-            }//UNFOLD
-        }//UNFOLD
-        // possibly remove old observations. wheee
-        if ((!infwin) && (iii >= winsize)) {
-            if (runsize >= recom_period) {
-                vret = quasiMoments<T>(v, ord, iii - winsize + 1, iii+1, na_rm); 
-                runsize = 0;
-            } else {
-                prevv = double(v[jjj]);
+                    }//UNFOLD
+                }//UNFOLD
+            }
+            // remove prevv:
+            if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+                prevv = double(v[tr_jjj]);
                 if (! (na_rm && ISNAN(prevv))) {//FOLDUP
                     della = prevv - vret[1];
-                    nelm = vret[0];
                     nel = --vret[0];
+                    nelm = nel + 1;
 
                     if (nel > 0) {
                         delnel = della / nel;
@@ -433,8 +462,8 @@ NumericMatrix runningQMoments(T v,
                         della = delnel * nelm;
 
                         drat = delnel * nel;
-                        ac_dn = pow(drat,2);
-                        ac_on = - (nel);
+                        ac_dn = drat * drat;
+                        ac_on = - 1.0 / (nel);
 
                         for (int ppp=2;ppp <= ord;ppp++) {
                             vret[ppp] -= ac_dn * (1.0 - ac_on);
@@ -454,44 +483,52 @@ NumericMatrix runningQMoments(T v,
                         // else nel <= 0, meaning there are no observations.  reset vret to all zero
                         for (mmm=0;mmm <= ord;++mmm) { vret[mmm] = 0.0; }
                     }
-
-                    runsize++;
+                    // increment the subcount counter
+                    subcount++;
+                    // check for Heywood cases and recompute.//FOLDUP
+                    if (((ord > 1) && (vret[2] <= 0.0)) || ((ord > 3) && (vret[4] <= 0.0))) {
+                        iii = MIN(numel-1,tr_iii);
+                        jjj = MAX(0,tr_jjj+1);
+                        if (jjj <= iii) {
+                            vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+                        }
+                        subcount = 0;
+                    }//UNFOLD
                 }//UNFOLD
             }
-            // check for Heywood cases and recompute.//FOLDUP
-            if (((ord > 1) && (vret[2] <= 0.0)) || ((ord > 3) && (vret[4] <= 0.0))) {
-                vret = quasiMoments<T>(v, ord, iii - winsize + 1, iii+1, na_rm); 
-                runsize = 0;
-            }//UNFOLD
-            jjj++;
         }
+        tr_jjj++;
+
         // fill in the value in the output.//FOLDUP
         if (ret_mat) {
             // put them in backwards!
             if (vret[0] >= ord) {
                 for (mmm=0;mmm <= ord;++mmm) {
-                    xret(iii,ord-mmm) = vret[mmm];
+                    xret(lll,ord-mmm) = vret[mmm];
                 }
             } else {
                 for (mmm=0;mmm <= vret[0];++mmm) {
-                    xret(iii,ord-mmm) = vret[mmm];
+                    xret(lll,ord-mmm) = vret[mmm];
                 }
                 for (mmm=vret[0]+1;mmm <= ord;++mmm) {
-                    xret(iii,ord-mmm) = NAN;
+                    xret(lll,ord-mmm) = NAN;
                 }
             }
         } 
         if (ret_cent) {
-            xret(iii,0) = nextv - vret[1];
+            compv = double(v[lll]);
+            xret(lll,0) = COMP_CENTERED(compv,vret);
         }
         if (ret_scald) {
-            xret(iii,0) = (nextv) / COMP_SD(vret);
+            compv = double(v[lll]);
+            xret(lll,0) = (compv) / COMP_SD(vret);
         }
         if (ret_z) {
-            xret(iii,0) = (nextv - vret[1]) / COMP_SD(vret);
+            compv = double(v[lll]);
+            xret(lll,0) = COMP_CENTERED(compv,vret) / COMP_SD(vret);
         }
         if (ret_t) {
-            xret(iii,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
+            xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
         }
         //UNFOLD
     }
@@ -502,9 +539,9 @@ NumericMatrix runningQMoments(T v,
 // wrap the call:
 NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period, bool na_rm) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false>(v, ord, winsize, recom_period, na_rm); }
-        case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false>(v, ord, winsize, recom_period, na_rm); }
-        case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false>(v, ord, winsize, recom_period, na_rm); }
+        case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false>(v, ord, winsize, recom_period, 0, na_rm); }
+        case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false>(v, ord, winsize, recom_period, 0, na_rm); }
+        case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false>(v, ord, winsize, recom_period, 0, na_rm); }
         default: stop("Unsupported input type");
     }
 }
@@ -523,6 +560,10 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period
 //' results. Note that the code checks for negative second and fourth moments and
 //' recomputes when needed.
 //' @param na_rm whether to remove NA, false by default.
+//' @param lookahead for some of the operations, the value is compared to 
+//' mean and standard deviation possibly using 'future' or 'past' information
+//' by means of a non-zero lookahead. Positive values mean data are taken from
+//' the future.
 //'
 //' @details
 //'
@@ -598,12 +639,12 @@ NumericMatrix run_kurt5(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_centered(SEXP v, int winsize=NA_INTEGER, int recoper=1000, bool na_rm=false) {
+NumericMatrix run_centered(SEXP v, int winsize=NA_INTEGER, int recoper=1000, int lookahead=0, bool na_rm=false) {
     NumericMatrix preval;
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false>(v, 1, winsize, recoper, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false>(v, 1, winsize, recoper, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false>(v, 1, winsize, recoper, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false>(v, 1, winsize, recoper, lookahead, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false>(v, 1, winsize, recoper, lookahead, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false>(v, 1, winsize, recoper, lookahead, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -612,12 +653,12 @@ NumericMatrix run_centered(SEXP v, int winsize=NA_INTEGER, int recoper=1000, boo
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_scaled(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+NumericMatrix run_scaled(SEXP v, int winsize=NA_INTEGER, int recoper=100, int lookahead=0, bool na_rm=false) {
     NumericMatrix preval;
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false>(v, 2, winsize, recoper, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false>(v, 2, winsize, recoper, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false>(v, 2, winsize, recoper, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -626,12 +667,12 @@ NumericMatrix run_scaled(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool n
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_zscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
+NumericMatrix run_zscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, int lookahead=0, bool na_rm=false) {
     NumericMatrix preval;
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false>(v, 2, winsize, recoper, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false>(v, 2, winsize, recoper, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false>(v, 2, winsize, recoper, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false>(v, 2, winsize, recoper, lookahead, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -643,62 +684,62 @@ NumericMatrix run_zscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool 
 NumericMatrix run_tscored(SEXP v, int winsize=NA_INTEGER, int recoper=100, bool na_rm=false) {
     NumericMatrix preval;
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true>(v, 2, winsize, recoper, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true>(v, 2, winsize, recoper, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true>(v, 2, winsize, recoper, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true>(v, 2, winsize, recoper, 0, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true>(v, 2, winsize, recoper, 0, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true>(v, 2, winsize, recoper, 0, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
 }
 
-NumericVector combineMoments(NumericVector ret1,const NumericVector ret2) {
-    double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
-    double ac_nfoo,ac_n2,ac_mn1;
-    double ac_del,ac_mn2,ac_n1;
+//NumericVector combineMoments(NumericVector ret1,const NumericVector ret2) {
+    //double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+    //double ac_nfoo,ac_n2,ac_mn1;
+    //double ac_del,ac_mn2,ac_n1;
 
-    int ord = ret1.size() - 1;
-    int ppp,qqq;
+    //int ord = ret1.size() - 1;
+    //int ppp,qqq;
 
-    n1 = ret1[0];
-    if (n1 <= 0) { return ret2; }
-    n2 = ret2[0];
-    if (n2 <= 0) { return ret1; }
+    //n1 = ret1[0];
+    //if (n1 <= 0) { return ret2; }
+    //n2 = ret2[0];
+    //if (n2 <= 0) { return ret1; }
 
-    ret1[0] += n2;
-    ntot = ret1[0];
-    n1rat = n1 / ntot;
-    n2rat = n2 / ntot;
-    del21 = ret2[1] - ret1[1];
-    mupart = del21 * n2rat;
+    //ret1[0] += n2;
+    //ntot = ret1[0];
+    //n1rat = n1 / ntot;
+    //n2rat = n2 / ntot;
+    //del21 = ret2[1] - ret1[1];
+    //mupart = del21 * n2rat;
 
-    ret1[1] += mupart;
-    nfoo = n1 * mupart;
-    ac_nfoo = pow(nfoo,ord);
-    ac_n2 = pow(n2,1-ord);
-    ac_mn1 = pow(-n1,1-ord);
-    for (ppp=ord;ppp >= 2;ppp--) {
-        //ret1[ppp] = ret1[ppp] + ret2[ppp] + (pow(nfoo,ppp) * (pow(n2,1-ppp) - pow(-n1,1-ppp)));
-        ret1[ppp] += ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
-        if (ppp > 2) {
-            if (nfoo != 0) { ac_nfoo /= nfoo; }
-            ac_n2 *= n2;
-            ac_mn1 *= (-n1);
-        }
-        ac_del = del21;
-        ac_mn2 = -n2rat;
-        ac_n1 = n1rat;
-        for (int qqq=1;qqq <= (ppp-2); qqq++) {
-            //ret1[ppp] += bincoef[ppp][qqq] * pow(del21,qqq) * (pow(-n2/ntot,qqq) * ret1[ppp-qqq] + pow(n1/ntot,qqq) * ret2[ppp-qqq]);
-            ret1[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * ret1[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
-            if (qqq < (ppp-2)) {
-                ac_del *= del21;
-                ac_mn2 *= (-n2rat);
-                ac_n1  *= (n1rat);
-            }
-        }
-    }
-    return ret1;
-}
+    //ret1[1] += mupart;
+    //nfoo = n1 * mupart;
+    //ac_nfoo = pow(nfoo,ord);
+    //ac_n2 = pow(n2,1-ord);
+    //ac_mn1 = pow(-n1,1-ord);
+    //for (ppp=ord;ppp >= 2;ppp--) {
+        ////ret1[ppp] = ret1[ppp] + ret2[ppp] + (pow(nfoo,ppp) * (pow(n2,1-ppp) - pow(-n1,1-ppp)));
+        //ret1[ppp] += ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+        //if (ppp > 2) {
+            //if (nfoo != 0) { ac_nfoo /= nfoo; }
+            //ac_n2 *= n2;
+            //ac_mn1 *= (-n1);
+        //}
+        //ac_del = del21;
+        //ac_mn2 = -n2rat;
+        //ac_n1 = n1rat;
+        //for (int qqq=1;qqq <= (ppp-2); qqq++) {
+            ////ret1[ppp] += bincoef[ppp][qqq] * pow(del21,qqq) * (pow(-n2/ntot,qqq) * ret1[ppp-qqq] + pow(n1/ntot,qqq) * ret2[ppp-qqq]);
+            //ret1[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * ret1[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
+            //if (qqq < (ppp-2)) {
+                //ac_del *= del21;
+                //ac_mn2 *= (-n2rat);
+                //ac_n1  *= (n1rat);
+            //}
+        //}
+    //}
+    //return ret1;
+//}
 
 
 
