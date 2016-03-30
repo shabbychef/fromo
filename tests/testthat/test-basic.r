@@ -74,54 +74,54 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	z <- as.logical(y)
 	q <- c('a','b','c')
 
-	for (winsize in c(50,Inf)) {
+	for (window in c(50,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
-			run_sd3(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_skew4(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_kurt5(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_cent_moments(x,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
+			running_sd3(x,window=window,recoper=50L,na_rm=na_rm)
+			running_skew4(x,window=window,recoper=50L,na_rm=na_rm)
+			running_kurt5(x,window=window,recoper=50L,na_rm=na_rm)
+			running_cent_moments(x,max_order=5L,window=window,recoper=50L,na_rm=na_rm)
 
-			run_sd3(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_skew4(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_kurt5(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_cent_moments(y,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
+			running_sd3(y,window=window,recoper=50L,na_rm=na_rm)
+			running_skew4(y,window=window,recoper=50L,na_rm=na_rm)
+			running_kurt5(y,window=window,recoper=50L,na_rm=na_rm)
+			running_cent_moments(y,max_order=5L,window=window,recoper=50L,na_rm=na_rm)
 
-			run_sd3(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_skew4(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_kurt5(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_cent_moments(z,max_order=5L,winsize=winsize,recoper=50L,na_rm=na_rm)
+			running_sd3(z,window=window,recoper=50L,na_rm=na_rm)
+			running_skew4(z,window=window,recoper=50L,na_rm=na_rm)
+			running_kurt5(z,window=window,recoper=50L,na_rm=na_rm)
+			running_cent_moments(z,max_order=5L,window=window,recoper=50L,na_rm=na_rm)
 		}
 	}
 	for (min_df in c(2L,10L)) {
-		run_sd3(x,winsize=winsize,min_df=min_df)
-		run_skew4(x,winsize=winsize,min_df=min_df)
-		run_kurt5(x,winsize=winsize,min_df=min_df)
-		run_cent_moments(x,max_order=5L,winsize=winsize,min_df=min_df)
+		running_sd3(x,window=window,min_df=min_df)
+		running_skew4(x,window=window,min_df=min_df)
+		running_kurt5(x,window=window,min_df=min_df)
+		running_cent_moments(x,max_order=5L,window=window,min_df=min_df)
 
-		run_sd3(y,winsize=winsize,min_df=min_df)
-		run_skew4(y,winsize=winsize,min_df=min_df)
-		run_kurt5(y,winsize=winsize,min_df=min_df)
-		run_cent_moments(y,max_order=5L,winsize=winsize,min_df=min_df)
+		running_sd3(y,window=window,min_df=min_df)
+		running_skew4(y,window=window,min_df=min_df)
+		running_kurt5(y,window=window,min_df=min_df)
+		running_cent_moments(y,max_order=5L,window=window,min_df=min_df)
 
-		run_sd3(z,winsize=winsize,min_df=min_df)
-		run_skew4(z,winsize=winsize,min_df=min_df)
-		run_kurt5(z,winsize=winsize,min_df=min_df)
-		run_cent_moments(z,max_order=5L,winsize=winsize,min_df=min_df)
+		running_sd3(z,window=window,min_df=min_df)
+		running_skew4(z,window=window,min_df=min_df)
+		running_kurt5(z,window=window,min_df=min_df)
+		running_cent_moments(z,max_order=5L,window=window,min_df=min_df)
 	}
 
-	expect_error(run_sd3(q))
-	expect_error(run_skew4(q))
-	expect_error(run_kurt5(q))
-	expect_error(run_cent_moments(q,max_order=5L))
+	expect_error(running_sd3(q))
+	expect_error(running_skew4(q))
+	expect_error(running_kurt5(q))
+	expect_error(running_cent_moments(q,max_order=5L))
 
 	# make sure the Heywood branch gets hit
 	x <- rnorm(1e5,mean=1e10)
-	winsize <- 500L
+	window <- 500L
 	recoper <- 100000L
-	run_sd3(x,winsize=winsize,recoper=recoper)
-	run_skew4(x,winsize=winsize,recoper=recoper)
-	run_kurt5(x,winsize=winsize,recoper=recoper)
-	run_cent_moments(x,max_order=5L,winsize=winsize,recoper=recoper)
+	running_sd3(x,window=window,recoper=recoper)
+	running_skew4(x,window=window,recoper=recoper)
+	running_kurt5(x,window=window,recoper=recoper)
+	running_cent_moments(x,max_order=5L,window=window,recoper=recoper)
 
 	# sentinel
 	expect_true(TRUE)
@@ -133,68 +133,78 @@ test_that("running adjustments",{#FOLDUP
 	z <- as.logical(y)
 	q <- c('a','b','c')
 
-	for (winsize in c(50,Inf)) {
+	for (window in c(50,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
-			run_centered(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_scaled(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_zscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_tscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+			running_centered(x,window=window,recoper=50L,na_rm=na_rm)
+			running_scaled(x,window=window,recoper=50L,na_rm=na_rm)
+			running_zscored(x,window=window,recoper=50L,na_rm=na_rm)
+			running_sharpe(x,window=window,recoper=50L,na_rm=na_rm)
+			running_tstat(x,window=window,recoper=50L,na_rm=na_rm)
 
-			run_centered(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_scaled(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_zscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_tscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+			running_centered(y,window=window,recoper=50L,na_rm=na_rm)
+			running_scaled(y,window=window,recoper=50L,na_rm=na_rm)
+			running_zscored(y,window=window,recoper=50L,na_rm=na_rm)
+			running_sharpe(y,window=window,recoper=50L,na_rm=na_rm)
+			running_tstat(y,window=window,recoper=50L,na_rm=na_rm)
 
-			run_centered(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_scaled(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_zscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-			run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+			running_centered(z,window=window,recoper=50L,na_rm=na_rm)
+			running_scaled(z,window=window,recoper=50L,na_rm=na_rm)
+			running_zscored(z,window=window,recoper=50L,na_rm=na_rm)
+			running_sharpe(z,window=window,recoper=50L,na_rm=na_rm)
+			running_tstat(z,window=window,recoper=50L,na_rm=na_rm)
 		}
 	}
-	winsize <- 10L
+	window <- 10L
 
 	for (na_rm in c(FALSE,TRUE)) {
-		run_centered(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_scaled(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_zscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_tscored(x,winsize=winsize,recoper=50L,na_rm=na_rm)
+		running_centered(x,window=window,recoper=50L,na_rm=na_rm)
+		running_scaled(x,window=window,recoper=50L,na_rm=na_rm)
+		running_zscored(x,window=window,recoper=50L,na_rm=na_rm)
+		running_sharpe(x,window=window,recoper=50L,na_rm=na_rm)
+		running_tstat(x,window=window,recoper=50L,na_rm=na_rm)
 
-		run_centered(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_scaled(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_zscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_tscored(y,winsize=winsize,recoper=50L,na_rm=na_rm)
+		running_centered(y,window=window,recoper=50L,na_rm=na_rm)
+		running_scaled(y,window=window,recoper=50L,na_rm=na_rm)
+		running_zscored(y,window=window,recoper=50L,na_rm=na_rm)
+		running_sharpe(y,window=window,recoper=50L,na_rm=na_rm)
+		running_tstat(y,window=window,recoper=50L,na_rm=na_rm)
 
-		run_centered(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_scaled(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_zscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
-		run_tscored(z,winsize=winsize,recoper=50L,na_rm=na_rm)
+		running_centered(z,window=window,recoper=50L,na_rm=na_rm)
+		running_scaled(z,window=window,recoper=50L,na_rm=na_rm)
+		running_zscored(z,window=window,recoper=50L,na_rm=na_rm)
+		running_sharpe(z,window=window,recoper=50L,na_rm=na_rm)
+		running_tstat(z,window=window,recoper=50L,na_rm=na_rm)
 	}
 
 	for (min_df in c(2L,10L)) {
-		run_centered(x,winsize=winsize,min_df=min_df)
-		run_scaled(x,winsize=winsize,min_df=min_df)
-		run_zscored(x,winsize=winsize,min_df=min_df)
-		run_tscored(x,winsize=winsize,min_df=min_df)
+		running_centered(x,window=window,min_df=min_df)
+		running_scaled(x,window=window,min_df=min_df)
+		running_zscored(x,window=window,min_df=min_df)
+		running_sharpe(x,window=window,min_df=min_df)
+		running_tstat(x,window=window,min_df=min_df)
 
-		run_centered(y,winsize=winsize,min_df=min_df)
-		run_scaled(y,winsize=winsize,min_df=min_df)
-		run_zscored(y,winsize=winsize,min_df=min_df)
-		run_tscored(y,winsize=winsize,min_df=min_df)
+		running_centered(y,window=window,min_df=min_df)
+		running_scaled(y,window=window,min_df=min_df)
+		running_zscored(y,window=window,min_df=min_df)
+		running_sharpe(y,window=window,min_df=min_df)
+		running_tstat(y,window=window,min_df=min_df)
 
-		run_centered(z,winsize=winsize,min_df=min_df)
-		run_scaled(z,winsize=winsize,min_df=min_df)
-		run_zscored(z,winsize=winsize,min_df=min_df)
-		run_tscored(z,winsize=winsize,min_df=min_df)
+		running_centered(z,window=window,min_df=min_df)
+		running_scaled(z,window=window,min_df=min_df)
+		running_zscored(z,window=window,min_df=min_df)
+		running_sharpe(z,window=window,min_df=min_df)
+		running_tstat(z,window=window,min_df=min_df)
 	}
 
-	expect_error(run_centered(q))
-	expect_error(run_scaled(q))
-	expect_error(run_zscored(q))
-	expect_error(run_tscored(q))
+	expect_error(running_centered(q))
+	expect_error(running_scaled(q))
+	expect_error(running_zscored(q))
+	expect_error(running_sharpe(q))
+	expect_error(running_tstat(q))
 
-	expect_error(run_tscored(x,winsize='FOO'))
-	expect_error(run_tscored(x,winsize=-20L))
-	expect_error(run_tscored(x,winsize=20L,recoper='FOO'))
+	expect_error(running_tstat(x,window='FOO'))
+	expect_error(running_tstat(x,window=-20L))
+	expect_error(running_tstat(x,window=20L,recoper='FOO'))
 
 	# sentinel
 	expect_true(TRUE)

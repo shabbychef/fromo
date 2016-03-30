@@ -133,7 +133,7 @@ unjoin_moments <- function(ret3, ret2) {
 #' an infinite or finite sliding window, returning a matrix.
 #' 
 #' @param v a vector
-#' @param winsize the window size. if given as finite integer or double, passed through.
+#' @param window the window size. if given as finite integer or double, passed through.
 #' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 #' to an infinite window size. If negative, an error will be thrown.
 #' @param recoper the recompute period. because subtraction of elements can cause
@@ -159,8 +159,8 @@ unjoin_moments <- function(ret3, ret2) {
 #' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
 #' \eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
 #' excess kurtosis, skewness, standard deviation, mean or number of elements)
-#' of \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i}.
-#' Barring \code{NA} or \code{NaN}, this is over a window of size \code{winsize}.
+#' of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
+#' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
 #' During the 'burn-in' phase, we take fewer elements.
 #'
 #' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
@@ -173,48 +173,48 @@ unjoin_moments <- function(ret3, ret2) {
 #'
 #' @examples
 #' x <- rnorm(1e5)
-#' xs3 <- run_sd3(x,10)
-#' xs4 <- run_skew4(x,10)
+#' xs3 <- running_sd3(x,10)
+#' xs4 <- running_skew4(x,10)
 #'
 #' if (require(moments)) {
 #'     set.seed(123)
 #'     x <- rnorm(5e1)
-#'     winsize <- 10L
-#'     kt5 <- run_kurt5(x,winsize=winsize)
+#'     window <- 10L
+#'     kt5 <- running_kurt5(x,window=window)
 #'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
-#'                 xrang <- x[max(1,iii-winsize+1):iii]
+#'                 xrang <- x[max(1,iii-window+1):iii]
 #'                 c(moments::kurtosis(xrang)-3.0,moments::skewness(xrang),
 #'                 sd(xrang),mean(xrang),length(xrang)) },
 #'              simplify=TRUE))
 #'     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
 #' }
 #'
-#' xc6 <- run_cent_moments(x,winsize=100L,max_order=6L)
+#' xc6 <- running_cent_moments(x,window=100L,max_order=6L)
 #'
 #' @template etc
 #' @template ref-romo
 #' @rdname runningmoments
 #' @export
-run_sd3 <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_sd3', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
+running_sd3 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
+    .Call('fromo_running_sd3', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
 }
 
 #' @rdname runningmoments
 #' @export
-run_skew4 <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_skew4', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
+running_skew4 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
+    .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
 }
 
 #' @rdname runningmoments
 #' @export
-run_kurt5 <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_kurt5', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
+running_kurt5 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
+    .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
 }
 
 #' @rdname runningmoments
 #' @export
-run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, min_df = 0L, used_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_cent_moments', PACKAGE = 'fromo', v, winsize, max_order, recoper, min_df, used_df, na_rm)
+running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, recoper = 100L) {
+    .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, recoper)
 }
 
 #' @title
@@ -223,7 +223,7 @@ run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, 
 #' Computes moments over a sliding window, then adjusts the data accordingly, centering, or scaling,
 #' or z-scoring, and so on.
 #' 
-#' @inheritParams run_cent_moments
+#' @inheritParams running_cent_moments
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
 #' This can be used to prevent \emph{e.g.} Z-scores from being computed on only 3
 #' observations. Defaults to zero, meaning no restriction, which can result in 
@@ -238,9 +238,9 @@ run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, 
 #' Given the length \eqn{n} vector \eqn{x}, for
 #' a given index \eqn{i}, define \eqn{x^{(i)}}{x^(i)}
 #' as the vector of 
-#' \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i},
+#' \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i},
 #' where we do not run over the 'edge' of the vector. In code, this is essentially
-#' \code{x[(max(1,i-winsize+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
+#' \code{x[(max(1,i-window+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
 #' and \eqn{n_i}{n_i} as, respectively, the sample mean, standard deviation and number of
 #' non-NA elements in \eqn{x^{(i)}}{x^(i)}. 
 #'
@@ -265,44 +265,53 @@ run_cent_moments <- function(v, winsize = NULL, max_order = 5L, recoper = 100L, 
 #' if (require(moments)) {
 #'     set.seed(123)
 #'     x <- rnorm(5e1)
-#'     winsize <- 10L
+#'     window <- 10L
 #'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
-#'                   xrang <- x[max(1,iii-winsize+1):iii]
+#'                   xrang <- x[max(1,iii-window+1):iii]
 #'                   c(sd(xrang),mean(xrang),length(xrang)) },
 #'                   simplify=TRUE))
-#'     rcent <- run_centered(x,winsize=winsize)
-#'     rscal <- run_scaled(x,winsize=winsize)
-#'     rzsco <- run_zscored(x,winsize=winsize)
-#'     rtsco <- run_tscored(x,winsize=winsize)
+#'     rcent <- running_centered(x,window=window)
+#'     rscal <- running_scaled(x,window=window)
+#'     rzsco <- running_zscored(x,window=window)
+#'     rshrp <- running_sharpe(x,window=window)
+#'     rtsco <- running_tstat(x,window=window)
 #'     stopifnot(max(abs(rcent - (x - rm1[,2])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rscal - (x / rm1[,1])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rzsco - ((x - rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rshrp - (rm1[,2] / rm1[,1])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rtsco - ((sqrt(rm1[,3]) * rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
 #' }
 #'
+#' @seealso \code{\link{scale}}
 #' @template etc
 #' @template ref-romo
 #' @rdname runningadjustments
 #' @export
-run_centered <- function(v, winsize = NULL, recoper = 1000L, lookahead = 0L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_centered', PACKAGE = 'fromo', v, winsize, recoper, lookahead, min_df, na_rm)
+running_centered <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, recoper = 100L) {
+    .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, recoper)
 }
 
 #' @rdname runningadjustments
 #' @export
-run_scaled <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_scaled', PACKAGE = 'fromo', v, winsize, recoper, lookahead, min_df, na_rm)
+running_scaled <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, recoper = 100L) {
+    .Call('fromo_running_scaled', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, recoper)
 }
 
 #' @rdname runningadjustments
 #' @export
-run_zscored <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_zscored', PACKAGE = 'fromo', v, winsize, recoper, lookahead, min_df, na_rm)
+running_zscored <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, recoper = 100L) {
+    .Call('fromo_running_zscored', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, recoper)
 }
 
 #' @rdname runningadjustments
 #' @export
-run_tscored <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
-    .Call('fromo_run_tscored', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
+running_sharpe <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
+    .Call('fromo_running_sharpe', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
+}
+
+#' @rdname runningadjustments
+#' @export
+running_tstat <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
+    .Call('fromo_running_tstat', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
 }
 

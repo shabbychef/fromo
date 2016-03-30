@@ -125,7 +125,7 @@ require(microbenchmark)
 set.seed(1234)
 x <- rnorm(20)
 
-k5 <- run_kurt5(x,winsize=10L)
+k5 <- running_kurt5(x,window=10L)
 colnames(k5) <- c('excess_kurtosis','skew','stdev','mean','nobs')
 k5
 
@@ -150,7 +150,7 @@ require(microbenchmark)
 set.seed(1234)
 x <- rnorm(20)
 
-xz <- run_zscored(x,winsize=10L)
+xz <- running_zscored(x,window=10L)
 
 # trust but verify
 altz <- sapply(seq_along(x),function(iii) { 

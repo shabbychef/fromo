@@ -529,7 +529,7 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
 //   the (ord + 1 - k)th is the k-1th centered sum, defined as
 //   as sum_j (v[j] - mean)^i
 //
-// moreover we adapt a sliding window of size winsize.
+// moreover we adapt a sliding window of size window.
 // for computational efficiency, we add and subtract
 // observations. this can lead to roundoff issues,
 // especially in the subtraction of observations.
@@ -539,7 +539,7 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
 //
 // in other forms, depending on templated bools, this
 // computes the centered input, the rescaled input, the z-scored input
-// or a t-scored input, as matrices with a single column.
+// the running sharpe or running t-score, as matrices with a single column.
 //
 // we have a lookahead option for the centered, scaled, and Z-scored
 // variants. Positive lookahead means take info from the future.
@@ -550,10 +550,10 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
 // observations. these do the right thing wrt NA, BTW. some moments
 // come out as zero when computed on too few observations, and we blindly
 // return Inf or NaN in that case. set the min_df to correct for this.
-template <typename T,bool ret_mat,bool ret_cent,bool ret_scald,bool ret_z,bool ret_t>
+template <typename T,bool ret_mat,bool ret_cent,bool ret_scald,bool ret_z,bool ret_sr,bool ret_t>
 NumericMatrix runningQMoments(T v,
                               int ord = 3,
-                              int winsize = NA_INTEGER,
+                              int window = NA_INTEGER,
                               int recom_period = 100, 
                               int lookahead = 0,
                               const int min_df = 0,
@@ -565,11 +565,11 @@ NumericMatrix runningQMoments(T v,
 
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
-    const bool infwin = IntegerVector::is_na(winsize);
-    if ((winsize < 1) && (!infwin)) { stop("must give positive winsize"); }
+    const bool infwin = IntegerVector::is_na(window);
+    if ((window < 1) && (!infwin)) { stop("must give positive window"); }
 
     if (min_df < 0) { stop("require positive min_df"); }
-    if (!infwin && (min_df > winsize)) { stop("must have min_df <= winsize"); }
+    if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
     int iii,jjj,lll,mmm,ppp,qqq,tr_iii,tr_jjj;
     int numel = v.size();
@@ -589,7 +589,7 @@ NumericMatrix runningQMoments(T v,
     // with vret, which is initialized as the summed
     // means on [jjj,iii]
     tr_iii = lookahead - 1;
-    tr_jjj = lookahead - winsize;
+    tr_jjj = lookahead - window;
     // sneakily set subcount large so we just recompute
     // at head of loop. sneaky.
     subcount = recom_period;
@@ -726,6 +726,9 @@ NumericMatrix runningQMoments(T v,
                     compv = double(v[lll]);
                     xret(lll,0) = COMP_CENTERED(compv,vret) / COMP_SD(vret);
                 }
+                if (ret_sr) {
+                    xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0]-1.0)));
+                }
                 if (ret_t) {
                     xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
                 }
@@ -740,11 +743,11 @@ NumericMatrix runningQMoments(T v,
 }
 
 // wrap the call:
-NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period, const int min_df, bool na_rm) {
+NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period, const int min_df, bool na_rm) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false>(v, ord, winsize, recom_period, 0, min_df, na_rm); }
-        case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false>(v, ord, winsize, recom_period, 0, min_df, na_rm); }
-        case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false>(v, ord, winsize, recom_period, 0, min_df, na_rm); }
+        case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+        case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+        case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
         default: stop("Unsupported input type");
     }
 }
@@ -755,12 +758,12 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int winsize, int recom_period
 // if double, then 
 //   if Inf or NA, return NA_INTEGER;
 //   else convert to integer via as<int>( )
-int get_wins(SEXP winsize) {
-    if (Rf_isNull(winsize)) { return NA_INTEGER; }
-    switch (TYPEOF(winsize)) {
-        case  INTSXP: { return as<int>(winsize); break; }
+int get_wins(SEXP window) {
+    if (Rf_isNull(window)) { return NA_INTEGER; }
+    switch (TYPEOF(window)) {
+        case  INTSXP: { return as<int>(window); break; }
         case REALSXP: { 
-                          double wins = as<double>(winsize);
+                          double wins = as<double>(window);
                           if ((NumericVector::is_na(wins)) || 
                               (traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
                               return NA_INTEGER;
@@ -779,7 +782,7 @@ int get_wins(SEXP winsize) {
 //' an infinite or finite sliding window, returning a matrix.
 //' 
 //' @param v a vector
-//' @param winsize the window size. if given as finite integer or double, passed through.
+//' @param window the window size. if given as finite integer or double, passed through.
 //' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 //' to an infinite window size. If negative, an error will be thrown.
 //' @param recoper the recompute period. because subtraction of elements can cause
@@ -805,8 +808,8 @@ int get_wins(SEXP winsize) {
 //' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
 //' \eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
 //' excess kurtosis, skewness, standard deviation, mean or number of elements)
-//' of \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i}.
-//' Barring \code{NA} or \code{NaN}, this is over a window of size \code{winsize}.
+//' of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
+//' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
 //' During the 'burn-in' phase, we take fewer elements.
 //'
 //' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
@@ -819,31 +822,31 @@ int get_wins(SEXP winsize) {
 //'
 //' @examples
 //' x <- rnorm(1e5)
-//' xs3 <- run_sd3(x,10)
-//' xs4 <- run_skew4(x,10)
+//' xs3 <- running_sd3(x,10)
+//' xs4 <- running_skew4(x,10)
 //'
 //' if (require(moments)) {
 //'     set.seed(123)
 //'     x <- rnorm(5e1)
-//'     winsize <- 10L
-//'     kt5 <- run_kurt5(x,winsize=winsize)
+//'     window <- 10L
+//'     kt5 <- running_kurt5(x,window=window)
 //'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
-//'                 xrang <- x[max(1,iii-winsize+1):iii]
+//'                 xrang <- x[max(1,iii-window+1):iii]
 //'                 c(moments::kurtosis(xrang)-3.0,moments::skewness(xrang),
 //'                 sd(xrang),mean(xrang),length(xrang)) },
 //'              simplify=TRUE))
 //'     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
 //' }
 //'
-//' xc6 <- run_cent_moments(x,winsize=100L,max_order=6L)
+//' xc6 <- running_cent_moments(x,window=100L,max_order=6L)
 //'
 //' @template etc
 //' @template ref-romo
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_sd3(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int min_df=0, bool na_rm=false) {
-    int wins=get_wins(winsize);
+NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int recoper=100) {
+    int wins=get_wins(window);
     NumericMatrix preval = wrapRunningQMoments(v, 2, wins, recoper, min_df, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
@@ -856,8 +859,8 @@ NumericMatrix run_sd3(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int mi
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_skew4(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int min_df=0, bool na_rm=false) {
-    int wins=get_wins(winsize);
+NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int recoper=100) {
+    int wins=get_wins(window);
     NumericMatrix preval = wrapRunningQMoments(v, 3, wins, recoper, min_df, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
@@ -871,8 +874,8 @@ NumericMatrix run_skew4(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int 
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_kurt5(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int min_df=0, bool na_rm=false) {
-    int wins=get_wins(winsize);
+NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int recoper=100) {
+    int wins=get_wins(window);
     NumericMatrix preval = wrapRunningQMoments(v, 4, wins, recoper, min_df, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
@@ -886,8 +889,8 @@ NumericMatrix run_kurt5(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int 
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_cent_moments(SEXP v, SEXP winsize = R_NilValue, int max_order=5, int recoper=100, int min_df=0, int used_df=0, bool na_rm=false) {
-    int wins=get_wins(winsize);
+NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int recoper=100) {
+    int wins=get_wins(window);
     double denom;
     double udf = (double)used_df;
     NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, recoper, min_df, na_rm);
@@ -907,7 +910,7 @@ NumericMatrix run_cent_moments(SEXP v, SEXP winsize = R_NilValue, int max_order=
 //' Computes moments over a sliding window, then adjusts the data accordingly, centering, or scaling,
 //' or z-scoring, and so on.
 //' 
-//' @inheritParams run_cent_moments
+//' @inheritParams running_cent_moments
 //' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
 //' This can be used to prevent \emph{e.g.} Z-scores from being computed on only 3
 //' observations. Defaults to zero, meaning no restriction, which can result in 
@@ -922,9 +925,9 @@ NumericMatrix run_cent_moments(SEXP v, SEXP winsize = R_NilValue, int max_order=
 //' Given the length \eqn{n} vector \eqn{x}, for
 //' a given index \eqn{i}, define \eqn{x^{(i)}}{x^(i)}
 //' as the vector of 
-//' \eqn{x_{i-winsize+1},x_{i-winsize+2},...,x_{i}}{x_(i-winsize+1),x_(i-winsize+2),...,x_i},
+//' \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i},
 //' where we do not run over the 'edge' of the vector. In code, this is essentially
-//' \code{x[(max(1,i-winsize+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
+//' \code{x[(max(1,i-window+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
 //' and \eqn{n_i}{n_i} as, respectively, the sample mean, standard deviation and number of
 //' non-NA elements in \eqn{x^{(i)}}{x^(i)}. 
 //'
@@ -949,33 +952,36 @@ NumericMatrix run_cent_moments(SEXP v, SEXP winsize = R_NilValue, int max_order=
 //' if (require(moments)) {
 //'     set.seed(123)
 //'     x <- rnorm(5e1)
-//'     winsize <- 10L
+//'     window <- 10L
 //'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
-//'                   xrang <- x[max(1,iii-winsize+1):iii]
+//'                   xrang <- x[max(1,iii-window+1):iii]
 //'                   c(sd(xrang),mean(xrang),length(xrang)) },
 //'                   simplify=TRUE))
-//'     rcent <- run_centered(x,winsize=winsize)
-//'     rscal <- run_scaled(x,winsize=winsize)
-//'     rzsco <- run_zscored(x,winsize=winsize)
-//'     rtsco <- run_tscored(x,winsize=winsize)
+//'     rcent <- running_centered(x,window=window)
+//'     rscal <- running_scaled(x,window=window)
+//'     rzsco <- running_zscored(x,window=window)
+//'     rshrp <- running_sharpe(x,window=window)
+//'     rtsco <- running_tstat(x,window=window)
 //'     stopifnot(max(abs(rcent - (x - rm1[,2])),na.rm=TRUE) < 1e-12)
 //'     stopifnot(max(abs(rscal - (x / rm1[,1])),na.rm=TRUE) < 1e-12)
 //'     stopifnot(max(abs(rzsco - ((x - rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+//'     stopifnot(max(abs(rshrp - (rm1[,2] / rm1[,1])),na.rm=TRUE) < 1e-12)
 //'     stopifnot(max(abs(rtsco - ((sqrt(rm1[,3]) * rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
 //' }
 //'
+//' @seealso \code{\link{scale}}
 //' @template etc
 //' @template ref-romo
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_centered(SEXP v, SEXP winsize = R_NilValue, int recoper=1000, int lookahead=0, int min_df=0, bool na_rm=false) {
+NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int recoper=100) {
     NumericMatrix preval;
-    int wins=get_wins(winsize);
+    int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false>(v, 1, wins, recoper, lookahead, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false>(v, 1, wins, recoper, lookahead, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false>(v, 1, wins, recoper, lookahead, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false, false>(v, 1, wins, recoper, lookahead, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false, false>(v, 1, wins, recoper, lookahead, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false, false>(v, 1, wins, recoper, lookahead, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -984,13 +990,13 @@ NumericMatrix run_centered(SEXP v, SEXP winsize = R_NilValue, int recoper=1000, 
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_scaled(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int lookahead=0, int min_df=0, bool na_rm=false) {
+NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int recoper=100) {
     NumericMatrix preval;
-    int wins=get_wins(winsize);
+    int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -999,28 +1005,43 @@ NumericMatrix run_scaled(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_zscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int lookahead=0, int min_df=0, bool na_rm=false) {
+NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int recoper=100) {
     NumericMatrix preval;
-    int wins=get_wins(winsize);
+    int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false, false>(v, 2, wins, recoper, lookahead, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
 }
-// tscore the input
+// sharpe on the input
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix run_tscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, int min_df=0, bool na_rm=false) {
+NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int recoper=100) {
     NumericMatrix preval;
-    int wins=get_wins(winsize);
+    int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true, false>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true, false>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true, false>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
+        default: stop("Unsupported input type");
+    }
+    return preval;
+}
+// t stat of the input
+//' @rdname runningadjustments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int recoper=100) {
+    NumericMatrix preval;
+    int wins=get_wins(window);
+    switch (TYPEOF(v)) {
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, false, true>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, false, true>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, false, true>(v, 2, wins, recoper, 0, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;

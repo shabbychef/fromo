@@ -46,15 +46,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq mean median    uq    max neval cld
-##     kurt5(x) 184.6 199.0  223  214.5 247.4    304   100   a
-##     skew4(x) 109.0 121.3  136  130.8 146.8    291   100   a
-##       sd3(x)  14.5  17.2   20   19.1  21.5     43   100   a
-##     dumbk(x) 279.8 305.7  940  337.1 371.3 120142   200   a
-##  kurtosis(x) 121.5 130.7  146  145.0 158.7    193   100   a
-##  skewness(x) 121.8 132.4  149  146.1 164.2    194   100   a
-##        sd(x)  24.6  28.9   33   31.7  36.6     57   100   a
-##      mean(x)   5.2   6.8    8    7.6   8.5     22   100   a
+##         expr   min    lq  mean median    uq max neval   cld
+##     kurt5(x) 139.6 141.3 149.4  142.8 144.6 210   100    d 
+##     skew4(x)  81.5  83.2  89.9   84.3  85.9 176   100   c  
+##       sd3(x)  18.4  19.5  21.9   19.8  20.9  39   100  b   
+##     dumbk(x) 194.4 197.5 218.8  200.3 211.9 324   200     e
+##  kurtosis(x)  85.5  87.2  98.7   89.0  96.4 160   100   c  
+##  skewness(x)  85.4  87.3  93.4   88.1  89.4 163   100   c  
+##        sd(x)  14.5  16.2  19.1   17.1  18.2  52   100  b   
+##      mean(x)   3.8   4.2   5.2    4.6   5.3  13   100 a
 ```
 
 ```r
@@ -66,15 +66,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval     cld
-##     kurt5(x) 1815 1817 1820   1818 1821 1830    10      f 
-##     skew4(x) 1047 1047 1054   1054 1059 1067    10    d   
-##       sd3(x)  101  101  101    101  101  103    10   c    
-##     dumbk(x) 2194 2197 2205   2201 2208 2239    10       g
-##  kurtosis(x) 1083 1083 1091   1085 1086 1135    10     e  
-##  skewness(x) 1035 1036 1044   1037 1038 1108    10    d   
-##        sd(x)   58   58   58     58   58   59    10  b     
-##      mean(x)   19   19   19     19   19   20    10 a
+##         expr  min   lq mean median   uq  max neval    cld
+##     kurt5(x) 1392 1394 1454   1415 1466 1687    10     e 
+##     skew4(x)  801  808  817    814  832  836    10   c   
+##       sd3(x)  168  169  170    170  172  175    10  b    
+##     dumbk(x) 2332 2393 2509   2523 2594 2738    10      f
+##  kurtosis(x) 1170 1174 1206   1192 1206 1330    10    d  
+##  skewness(x) 1116 1142 1220   1230 1290 1353    10    d  
+##        sd(x)   46   47   49     48   49   55    10 a     
+##      mean(x)   16   16   16     16   17   17    10 a
 ```
 
 ## Monoid mumbo-jumbo
@@ -127,7 +127,7 @@ require(microbenchmark)
 set.seed(1234)
 x <- rnorm(20)
 
-k5 <- run_kurt5(x, winsize = 10L)
+k5 <- running_kurt5(x, window = 10L)
 colnames(k5) <- c("excess_kurtosis", "skew", "stdev", 
     "mean", "nobs")
 k5
@@ -204,7 +204,7 @@ require(microbenchmark)
 set.seed(1234)
 x <- rnorm(20)
 
-xz <- run_zscored(x, winsize = 10L)
+xz <- running_zscored(x, window = 10L)
 
 # trust but verify
 altz <- sapply(seq_along(x), function(iii) {
