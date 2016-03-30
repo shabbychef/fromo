@@ -9,19 +9,19 @@
 \title{Compare data to moments computed over a sliding window.}
 \usage{
 running_centered(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  lookahead = 0L, recoper = 100L)
+  lookahead = 0L, restart_period = 100L)
 
 running_scaled(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  lookahead = 0L, recoper = 100L)
+  lookahead = 0L, restart_period = 100L)
 
 running_zscored(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  lookahead = 0L, recoper = 100L)
+  lookahead = 0L, restart_period = 100L)
 
 running_sharpe(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  recoper = 100L)
+  restart_period = 100L)
 
 running_tstat(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  recoper = 100L)
+  restart_period = 100L)
 }
 \arguments{
 \item{v}{a vector}
@@ -42,7 +42,7 @@ mean and standard deviation possibly using 'future' or 'past' information
 by means of a non-zero lookahead. Positive values mean data are taken from
 the future.}
 
-\item{recoper}{the recompute period. because subtraction of elements can cause
+\item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
 this parameter. Larger values mean fewer restarts and faster, though less accurate
 results. Note that the code checks for negative second and fourth moments and

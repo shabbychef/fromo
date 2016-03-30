@@ -76,20 +76,20 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 
 	for (window in c(50,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
-			running_sd3(x,window=window,recoper=50L,na_rm=na_rm)
-			running_skew4(x,window=window,recoper=50L,na_rm=na_rm)
-			running_kurt5(x,window=window,recoper=50L,na_rm=na_rm)
-			running_cent_moments(x,max_order=5L,window=window,recoper=50L,na_rm=na_rm)
+			running_sd3(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_skew4(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_kurt5(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_cent_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
-			running_sd3(y,window=window,recoper=50L,na_rm=na_rm)
-			running_skew4(y,window=window,recoper=50L,na_rm=na_rm)
-			running_kurt5(y,window=window,recoper=50L,na_rm=na_rm)
-			running_cent_moments(y,max_order=5L,window=window,recoper=50L,na_rm=na_rm)
+			running_sd3(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_skew4(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_kurt5(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_cent_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
-			running_sd3(z,window=window,recoper=50L,na_rm=na_rm)
-			running_skew4(z,window=window,recoper=50L,na_rm=na_rm)
-			running_kurt5(z,window=window,recoper=50L,na_rm=na_rm)
-			running_cent_moments(z,max_order=5L,window=window,recoper=50L,na_rm=na_rm)
+			running_sd3(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_skew4(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_kurt5(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_cent_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 		}
 	}
 	for (min_df in c(2L,10L)) {
@@ -117,11 +117,11 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	# make sure the Heywood branch gets hit
 	x <- rnorm(1e5,mean=1e10)
 	window <- 500L
-	recoper <- 100000L
-	running_sd3(x,window=window,recoper=recoper)
-	running_skew4(x,window=window,recoper=recoper)
-	running_kurt5(x,window=window,recoper=recoper)
-	running_cent_moments(x,max_order=5L,window=window,recoper=recoper)
+	restart_period <- 100000L
+	running_sd3(x,window=window,restart_period=restart_period)
+	running_skew4(x,window=window,restart_period=restart_period)
+	running_kurt5(x,window=window,restart_period=restart_period)
+	running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period)
 
 	# sentinel
 	expect_true(TRUE)
@@ -135,45 +135,45 @@ test_that("running adjustments",{#FOLDUP
 
 	for (window in c(50,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
-			running_centered(x,window=window,recoper=50L,na_rm=na_rm)
-			running_scaled(x,window=window,recoper=50L,na_rm=na_rm)
-			running_zscored(x,window=window,recoper=50L,na_rm=na_rm)
-			running_sharpe(x,window=window,recoper=50L,na_rm=na_rm)
-			running_tstat(x,window=window,recoper=50L,na_rm=na_rm)
+			running_centered(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_scaled(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_zscored(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_tstat(x,window=window,restart_period=50L,na_rm=na_rm)
 
-			running_centered(y,window=window,recoper=50L,na_rm=na_rm)
-			running_scaled(y,window=window,recoper=50L,na_rm=na_rm)
-			running_zscored(y,window=window,recoper=50L,na_rm=na_rm)
-			running_sharpe(y,window=window,recoper=50L,na_rm=na_rm)
-			running_tstat(y,window=window,recoper=50L,na_rm=na_rm)
+			running_centered(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_scaled(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_zscored(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_tstat(y,window=window,restart_period=50L,na_rm=na_rm)
 
-			running_centered(z,window=window,recoper=50L,na_rm=na_rm)
-			running_scaled(z,window=window,recoper=50L,na_rm=na_rm)
-			running_zscored(z,window=window,recoper=50L,na_rm=na_rm)
-			running_sharpe(z,window=window,recoper=50L,na_rm=na_rm)
-			running_tstat(z,window=window,recoper=50L,na_rm=na_rm)
+			running_centered(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_scaled(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_zscored(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_tstat(z,window=window,restart_period=50L,na_rm=na_rm)
 		}
 	}
 	window <- 10L
 
 	for (na_rm in c(FALSE,TRUE)) {
-		running_centered(x,window=window,recoper=50L,na_rm=na_rm)
-		running_scaled(x,window=window,recoper=50L,na_rm=na_rm)
-		running_zscored(x,window=window,recoper=50L,na_rm=na_rm)
-		running_sharpe(x,window=window,recoper=50L,na_rm=na_rm)
-		running_tstat(x,window=window,recoper=50L,na_rm=na_rm)
+		running_centered(x,window=window,restart_period=50L,na_rm=na_rm)
+		running_scaled(x,window=window,restart_period=50L,na_rm=na_rm)
+		running_zscored(x,window=window,restart_period=50L,na_rm=na_rm)
+		running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm)
+		running_tstat(x,window=window,restart_period=50L,na_rm=na_rm)
 
-		running_centered(y,window=window,recoper=50L,na_rm=na_rm)
-		running_scaled(y,window=window,recoper=50L,na_rm=na_rm)
-		running_zscored(y,window=window,recoper=50L,na_rm=na_rm)
-		running_sharpe(y,window=window,recoper=50L,na_rm=na_rm)
-		running_tstat(y,window=window,recoper=50L,na_rm=na_rm)
+		running_centered(y,window=window,restart_period=50L,na_rm=na_rm)
+		running_scaled(y,window=window,restart_period=50L,na_rm=na_rm)
+		running_zscored(y,window=window,restart_period=50L,na_rm=na_rm)
+		running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm)
+		running_tstat(y,window=window,restart_period=50L,na_rm=na_rm)
 
-		running_centered(z,window=window,recoper=50L,na_rm=na_rm)
-		running_scaled(z,window=window,recoper=50L,na_rm=na_rm)
-		running_zscored(z,window=window,recoper=50L,na_rm=na_rm)
-		running_sharpe(z,window=window,recoper=50L,na_rm=na_rm)
-		running_tstat(z,window=window,recoper=50L,na_rm=na_rm)
+		running_centered(z,window=window,restart_period=50L,na_rm=na_rm)
+		running_scaled(z,window=window,restart_period=50L,na_rm=na_rm)
+		running_zscored(z,window=window,restart_period=50L,na_rm=na_rm)
+		running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm)
+		running_tstat(z,window=window,restart_period=50L,na_rm=na_rm)
 	}
 
 	for (min_df in c(2L,10L)) {
@@ -204,7 +204,7 @@ test_that("running adjustments",{#FOLDUP
 
 	expect_error(running_tstat(x,window='FOO'))
 	expect_error(running_tstat(x,window=-20L))
-	expect_error(running_tstat(x,window=20L,recoper='FOO'))
+	expect_error(running_tstat(x,window=20L,restart_period='FOO'))
 
 	# sentinel
 	expect_true(TRUE)

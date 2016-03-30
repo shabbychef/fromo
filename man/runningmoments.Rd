@@ -8,16 +8,16 @@
 \title{Compute first K moments over a sliding window}
 \usage{
 running_sd3(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  recoper = 100L)
+  restart_period = 100L)
 
 running_skew4(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  recoper = 100L)
+  restart_period = 100L)
 
 running_kurt5(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  recoper = 100L)
+  restart_period = 100L)
 
 running_cent_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0L, recoper = 100L)
+  min_df = 0L, used_df = 0L, restart_period = 100L)
 }
 \arguments{
 \item{v}{a vector}
@@ -32,7 +32,7 @@ to an infinite window size. If negative, an error will be thrown.}
 This can be used to prevent moments from being computed on too few observations.
 Defaults to zero, meaning no restriction.}
 
-\item{recoper}{the recompute period. because subtraction of elements can cause
+\item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
 this parameter. Larger values mean fewer restarts and faster, though less accurate
 results. Note that the code checks for negative second and fourth moments and

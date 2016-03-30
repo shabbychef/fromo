@@ -81,37 +81,37 @@ test_that("running ops are correct",{#FOLDUP
 	for (xlen in c(20,100)) {
 		x <- rnorm(xlen)
 		for (window in c(5,50,Inf)) {
-			for (recoper in c(10,1000)) {
+			for (restart_period in c(10,1000)) {
 				for (na_rm in c(FALSE,TRUE)) {
 					dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
 					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 
-					fastv <- running_sd3(x,window=window,recoper=recoper,na_rm=na_rm)
+					fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
 					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
 
-					fastv <- running_centered(x,window=window,recoper=recoper,na_rm=na_rm)
+					fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					# the dumb value:
 					dumbv <- x - dumb_mean;
 					expect_equal(max(abs(dumbv - fastv)),0,tolerance=1e-12)
 
-					fastv <- running_scaled(x,window=window,recoper=recoper,na_rm=na_rm)
+					fastv <- running_scaled(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					# the dumb value:
 					dumbv <- x / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_zscored(x,window=window,recoper=recoper,na_rm=na_rm)
+					fastv <- running_zscored(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					# the dumb value:
 					dumbv <- (x - dumb_mean) / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_sharpe(x,window=window,recoper=recoper,na_rm=na_rm)
+					fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					# the dumb value:
 					dumbv <- dumb_mean / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_tstat(x,window=window,recoper=recoper,na_rm=na_rm)
+					fastv <- running_tstat(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					# the dumb value:
 					dumbv <- (dumb_mean * sqrt(dumb_count)) / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)

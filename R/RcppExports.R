@@ -136,7 +136,7 @@ unjoin_moments <- function(ret3, ret2) {
 #' @param window the window size. if given as finite integer or double, passed through.
 #' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 #' to an infinite window size. If negative, an error will be thrown.
-#' @param recoper the recompute period. because subtraction of elements can cause
+#' @param restart_period the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
 #' this parameter. Larger values mean fewer restarts and faster, though less accurate
 #' results. Note that the code checks for negative second and fourth moments and
@@ -195,26 +195,26 @@ unjoin_moments <- function(ret3, ret2) {
 #' @template ref-romo
 #' @rdname runningmoments
 #' @export
-running_sd3 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
-    .Call('fromo_running_sd3', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
+running_sd3 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_sd3', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
-running_skew4 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
-    .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
+running_skew4 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
-running_kurt5 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
-    .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
+running_kurt5 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
-running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, recoper = 100L) {
-    .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, recoper)
+running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
 }
 
 #' @title
@@ -287,31 +287,31 @@ running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE
 #' @template ref-romo
 #' @rdname runningadjustments
 #' @export
-running_centered <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, recoper = 100L) {
-    .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, recoper)
+running_centered <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L) {
+    .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, restart_period)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_scaled <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, recoper = 100L) {
-    .Call('fromo_running_scaled', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, recoper)
+running_scaled <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L) {
+    .Call('fromo_running_scaled', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, restart_period)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_zscored <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, recoper = 100L) {
-    .Call('fromo_running_zscored', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, recoper)
+running_zscored <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L) {
+    .Call('fromo_running_zscored', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, restart_period)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_sharpe <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
-    .Call('fromo_running_sharpe', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
+running_sharpe <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_sharpe', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_tstat <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, recoper = 100L) {
-    .Call('fromo_running_tstat', PACKAGE = 'fromo', v, window, na_rm, min_df, recoper)
+running_tstat <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_tstat', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
 }
 
