@@ -205,9 +205,10 @@ test_that("join/unjoin",{#FOLDUP
 	set.seed(1234)
 	x1 <- rnorm(1e3,mean=1)
 	x2 <- rnorm(1e3,mean=1)
-	rs1 <- raw_sums(x1,6)
-	rs2 <- raw_sums(x2,6)
-	rs3 <- raw_sums(c(x1,x2),6)
+	max_ord <- 6L
+	rs1 <- cent_moments(x1,max_ord)
+	rs2 <- cent_moments(x2,max_ord)
+	rs3 <- cent_moments(c(x1,x2),max_ord)
 	rs3alt <- join_moments(rs1,rs2)
 	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
 

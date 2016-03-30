@@ -3,7 +3,6 @@
 \name{sd3}
 \alias{cent_moments}
 \alias{kurt5}
-\alias{raw_sums}
 \alias{sd3}
 \alias{skew4}
 \title{Compute first K moments}
@@ -15,8 +14,6 @@ skew4(v, na_rm = FALSE)
 kurt5(v, na_rm = FALSE)
 
 cent_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE)
-
-raw_sums(v, max_order = 5L, na_rm = FALSE)
 }
 \arguments{
 \item{v}{a vector}

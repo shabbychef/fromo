@@ -3,7 +3,6 @@
 export(cent_moments)
 export(join_moments)
 export(kurt5)
-export(raw_sums)
 export(run_cent_moments)
 export(run_centered)
 export(run_kurt5)

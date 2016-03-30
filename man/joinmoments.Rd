@@ -10,13 +10,13 @@ join_moments(ret1, ret2)
 unjoin_moments(ret3, ret2)
 }
 \arguments{
-\item{ret1}{an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+\item{ret1}{an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
 the count, the mean, then the k through ordth centered sum of some observations.}
 
-\item{ret2}{an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+\item{ret2}{an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
 the count, the mean, then the k through ordth centered sum of some observations.}
 
-\item{ret3}{an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+\item{ret3}{an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
 the count, the mean, then the k through ordth centered sum of some observations.}
 }
 \value{
@@ -40,9 +40,9 @@ the fromo package.
  x1 <- rnorm(1e3,mean=1)
  x2 <- rnorm(1e3,mean=1)
  max_ord <- 6L
- rs1 <- raw_sums(x1,max_ord)
- rs2 <- raw_sums(x2,max_ord)
- rs3 <- raw_sums(c(x1,x2),max_ord)
+ rs1 <- cent_moments(x1,max_ord)
+ rs2 <- cent_moments(x2,max_ord)
+ rs3 <- cent_moments(c(x1,x2),max_ord)
  rs3alt <- join_moments(rs1,rs2)
  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
  rs1alt <- unjoin_moments(rs3,rs2)

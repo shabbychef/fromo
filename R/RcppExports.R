@@ -78,10 +78,52 @@ cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
     .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
 }
 
-#' @rdname firstmoments
+#' @title
+#' Join or unjoin moments computations.
+#'
+#' @description
+#'
+#' Join or unjoin moments computations.
+#'
+#' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+#' the count, the mean, then the k through ordth centered sum of some observations.
+#' @param ret2 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+#' the count, the mean, then the k through ordth centered sum of some observations.
+#' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+#' the count, the mean, then the k through ordth centered sum of some observations.
+#'
+#'
+#' @return a vector the same size as the input consisting of the adjusted version of the input.
+#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+#'
+#' @examples
+#'
+#'  set.seed(1234)
+#'  x1 <- rnorm(1e3,mean=1)
+#'  x2 <- rnorm(1e3,mean=1)
+#'  max_ord <- 6L
+#'  rs1 <- cent_moments(x1,max_ord)
+#'  rs2 <- cent_moments(x2,max_ord)
+#'  rs3 <- cent_moments(c(x1,x2),max_ord)
+#'  rs3alt <- join_moments(rs1,rs2)
+#'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
+#'  rs1alt <- unjoin_moments(rs3,rs2)
+#'  rs2alt <- unjoin_moments(rs3,rs1)
+#'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
+#'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
+#'
+#' @template etc
+#' @template ref-romo
+#' @rdname joinmoments 
 #' @export
-raw_sums <- function(v, max_order = 5L, na_rm = FALSE) {
-    .Call('fromo_raw_sums', PACKAGE = 'fromo', v, max_order, na_rm)
+join_moments <- function(ret1, ret2) {
+    .Call('fromo_join_moments', PACKAGE = 'fromo', ret1, ret2)
+}
+
+#' @rdname joinmoments 
+#' @export
+unjoin_moments <- function(ret3, ret2) {
+    .Call('fromo_unjoin_moments', PACKAGE = 'fromo', ret3, ret2)
 }
 
 #' @title
@@ -262,53 +304,5 @@ run_zscored <- function(v, winsize = NULL, recoper = 100L, lookahead = 0L, min_d
 #' @export
 run_tscored <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = FALSE) {
     .Call('fromo_run_tscored', PACKAGE = 'fromo', v, winsize, recoper, min_df, na_rm)
-}
-
-#' @title
-#' Join or unjoin moments computations.
-#'
-#' @description
-#'
-#' Join or unjoin moments computations.
-#'
-#' @param ret1 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
-#' the count, the mean, then the k through ordth centered sum of some observations.
-#' @param ret2 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
-#' the count, the mean, then the k through ordth centered sum of some observations.
-#' @param ret3 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
-#' the count, the mean, then the k through ordth centered sum of some observations.
-#'
-#'
-#' @return a vector the same size as the input consisting of the adjusted version of the input.
-#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
-#'
-#' @examples
-#'
-#'  set.seed(1234)
-#'  x1 <- rnorm(1e3,mean=1)
-#'  x2 <- rnorm(1e3,mean=1)
-#'  max_ord <- 6L
-#'  rs1 <- raw_sums(x1,max_ord)
-#'  rs2 <- raw_sums(x2,max_ord)
-#'  rs3 <- raw_sums(c(x1,x2),max_ord)
-#'  rs3alt <- join_moments(rs1,rs2)
-#'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
-#'  rs1alt <- unjoin_moments(rs3,rs2)
-#'  rs2alt <- unjoin_moments(rs3,rs1)
-#'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
-#'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
-#'
-#' @template etc
-#' @template ref-romo
-#' @rdname joinmoments 
-#' @export
-join_moments <- function(ret1, ret2) {
-    .Call('fromo_join_moments', PACKAGE = 'fromo', ret1, ret2)
-}
-
-#' @rdname joinmoments 
-#' @export
-unjoin_moments <- function(ret3, ret2) {
-    .Call('fromo_unjoin_moments', PACKAGE = 'fromo', ret3, ret2)
 }
 
