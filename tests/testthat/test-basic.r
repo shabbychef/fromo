@@ -47,22 +47,26 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 		skew4(x,na_rm=na_rm)
 		kurt5(x,na_rm=na_rm)
 		cent_moments(x,max_order=5L,used_df=1L,na_rm=na_rm)
+		std_moments(x,max_order=5L,used_df=1L,na_rm=na_rm)
 
 		sd3(y,na_rm=na_rm)
 		skew4(y,na_rm=na_rm)
 		kurt5(y,na_rm=na_rm)
 		cent_moments(y,max_order=5L,used_df=1L,na_rm=na_rm)
+		std_moments(y,max_order=5L,used_df=1L,na_rm=na_rm)
 
 		sd3(z,na_rm=na_rm)
 		skew4(z,na_rm=na_rm)
 		kurt5(z,na_rm=na_rm)
 		cent_moments(z,max_order=5L,used_df=1L,na_rm=na_rm)
+		std_moments(z,max_order=5L,used_df=1L,na_rm=na_rm)
 	}
 
 	expect_error(sd3(q))
 	expect_error(skew4(q))
 	expect_error(kurt5(q))
 	expect_error(cent_moments(q))
+	expect_error(std_moments(q))
 
 	# sentinel
 	expect_true(TRUE)
@@ -80,16 +84,19 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			running_skew4(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_kurt5(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_cent_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+			running_std_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
 			running_sd3(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_kurt5(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_cent_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+			running_std_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
 			running_sd3(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_kurt5(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_cent_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+			running_std_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 		}
 	}
 	for (min_df in c(2L,10L)) {
@@ -97,22 +104,26 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		running_skew4(x,window=window,min_df=min_df)
 		running_kurt5(x,window=window,min_df=min_df)
 		running_cent_moments(x,max_order=5L,window=window,min_df=min_df)
+		running_std_moments(x,max_order=5L,window=window,min_df=min_df)
 
 		running_sd3(y,window=window,min_df=min_df)
 		running_skew4(y,window=window,min_df=min_df)
 		running_kurt5(y,window=window,min_df=min_df)
 		running_cent_moments(y,max_order=5L,window=window,min_df=min_df)
+		running_std_moments(y,max_order=5L,window=window,min_df=min_df)
 
 		running_sd3(z,window=window,min_df=min_df)
 		running_skew4(z,window=window,min_df=min_df)
 		running_kurt5(z,window=window,min_df=min_df)
 		running_cent_moments(z,max_order=5L,window=window,min_df=min_df)
+		running_std_moments(z,max_order=5L,window=window,min_df=min_df)
 	}
 
 	expect_error(running_sd3(q))
 	expect_error(running_skew4(q))
 	expect_error(running_kurt5(q))
 	expect_error(running_cent_moments(q,max_order=5L))
+	expect_error(running_std_moments(q,max_order=5L))
 
 	# make sure the Heywood branch gets hit
 	x <- rnorm(1e5,mean=1e10)
@@ -122,6 +133,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	running_skew4(x,window=window,restart_period=restart_period)
 	running_kurt5(x,window=window,restart_period=restart_period)
 	running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period)
+	running_std_moments(x,max_order=5L,window=window,restart_period=restart_period)
 
 	# sentinel
 	expect_true(TRUE)

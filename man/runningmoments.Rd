@@ -5,18 +5,22 @@
 \alias{running_kurt5}
 \alias{running_sd3}
 \alias{running_skew4}
+\alias{running_std_moments}
 \title{Compute first K moments over a sliding window}
 \usage{
-running_sd3(v, window = NULL, na_rm = FALSE, min_df = 0L,
+running_sd3(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L,
   restart_period = 100L)
 
 running_skew4(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L)
+  used_df = 1L, restart_period = 100L)
 
 running_kurt5(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L)
+  used_df = 1L, restart_period = 100L)
 
 running_cent_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
+  min_df = 0L, used_df = 0L, restart_period = 100L)
+
+running_std_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
   min_df = 0L, used_df = 0L, restart_period = 100L)
 }
 \arguments{
@@ -32,6 +36,10 @@ to an infinite window size. If negative, an error will be thrown.}
 This can be used to prevent moments from being computed on too few observations.
 Defaults to zero, meaning no restriction.}
 
+\item{used_df}{the number of degrees of freedom consumed, used in the denominator
+of the centered moments computation. These are subtracted from the number of
+observations.}
+
 \item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
 this parameter. Larger values mean fewer restarts and faster, though less accurate
@@ -39,10 +47,6 @@ results. Note that the code checks for negative second and fourth moments and
 recomputes when needed.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
-
-\item{used_df}{the number of degrees of freedom consumed, used in the denominator
-of the centered moments computation. These are subtracted from the number of
-observations.}
 }
 \value{
 a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,

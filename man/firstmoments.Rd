@@ -5,6 +5,7 @@
 \alias{kurt5}
 \alias{sd3}
 \alias{skew4}
+\alias{std_moments}
 \title{Compute first K moments}
 \usage{
 sd3(v, na_rm = FALSE)
@@ -14,6 +15,8 @@ skew4(v, na_rm = FALSE)
 kurt5(v, na_rm = FALSE)
 
 cent_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE)
+
+std_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE)
 }
 \arguments{
 \item{v}{a vector}
@@ -27,8 +30,16 @@ of the centered moments computation. These are subtracted from the number of
 observations.}
 }
 \value{
-a vector; the first elements are the kth, k-1th through 2nd standardized, centered moment,
-then the mean, then the number of (non-nan) elements in the input.
+a vector, filled out as follows:
+\describe{
+\item{sd3}{A vector of the (sample) standard devation, mean, and number of elements.}
+\item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
+\item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
+\item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
+ then standard devation, mean, and number of elements.}
+\item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
+ \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+}
 }
 \description{
 Compute the (standardized) 2nd through kth moments, the mean, and the number of elements.
@@ -45,7 +56,13 @@ However, they will usually be faster than calling the various standard implement
 more than once.
 }
 \note{
-the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
+The first centered (and standardized) moment is often defined to be identically 0. Instead \code{cent_moments}
+and \code{std_moments} returns the mean. 
+Similarly, the second standardized moments defined to be identically 1; \code{std_moments} instead returns the standard
+deviation. The reason is that a user can always decide to ignore the results and fill in a 0 or 1 as they need, but 
+could not efficiently compute the mean and standard deviation from scratch if we discard it.
+
+The kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 for Gaussian input.
 
 The moment computations provided by fromo are 
@@ -74,6 +91,7 @@ if (require(microbenchmark) && require(moments)) {
   print(kurt5(x) - dumbk(x))
   microbenchmark(dumbk(x),kurt5(x),times=10L)
 }
+y <- std_moments(x,6)
 
 }
 \author{

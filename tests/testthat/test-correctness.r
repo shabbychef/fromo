@@ -73,10 +73,58 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 		expect_equal(krt[1],kurtosis(x) - 3.0,tolerance=1e-9)
 	}
 
+	# 2FIX: add cent_moments and std_moments
+
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
 test_that("running ops are correct",{#FOLDUP
+	set.char.seed("7ffe0035-2d0c-4586-a1a5-6321c7cf8694")
+	for (xlen in c(20,100)) {
+		x <- rnorm(xlen)
+		for (window in c(15,50,Inf)) {
+			for (restart_period in c(20,1000)) {
+				for (na_rm in c(FALSE,TRUE)) {
+					dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
+					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_skew <- sapply(seq_along(x),function(iii) { moments::skewness(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_exkurt <- sapply(seq_along(x),function(iii) { moments::kurtosis(x[max(1,iii-window+1):iii],na.rm=na_rm) - 3.0 },simplify=TRUE)
+
+					dumb_cmom2 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=2) },simplify=TRUE)
+					dumb_cmom3 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=3) },simplify=TRUE)
+					dumb_cmom4 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=4) },simplify=TRUE)
+					dumb_cmom5 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=5) },simplify=TRUE)
+					dumb_cmom6 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=6) },simplify=TRUE)
+
+					fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
+					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
+
+					fastv <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dumb_skew,dumb_sd,dumb_mean,dumb_count)
+					expect_equal(max(abs(dumbv[3:xlen,] - fastv[3:xlen,])),0,tolerance=1e-11)
+
+					fastv <- running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dumb_exkurt,dumb_skew,dumb_sd,dumb_mean,dumb_count)
+					expect_equal(max(abs(dumbv[4:xlen,] - fastv[4:xlen,])),0,tolerance=1e-8)
+
+					fastv <- running_cent_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
+					expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+
+					fastv <- running_std_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dumb_cmom6 / (dumb_cmom2^3),dumb_cmom5 / (dumb_cmom2^2.5),dumb_cmom4 / (dumb_cmom2^2.0),dumb_cmom3 / (dumb_cmom2^1.5),sqrt(dumb_cmom2),dumb_mean,dumb_count)
+					expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+				}
+			}
+		}
+	}
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("running adjustments are correct",{#FOLDUP
 	set.char.seed("967d2149-fbff-4d82-b227-ca3e1034bddb")
 	for (xlen in c(20,100)) {
 		x <- rnorm(xlen)
@@ -86,10 +134,6 @@ test_that("running ops are correct",{#FOLDUP
 					dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
 					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
-
-					fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
-					dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
-					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
 
 					fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
 					# the dumb value:

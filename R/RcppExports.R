@@ -25,11 +25,25 @@
 #' However, they will usually be faster than calling the various standard implementations
 #' more than once.
 #'
-#' @return a vector; the first elements are the kth, k-1th through 2nd standardized, centered moment,
-#' then the mean, then the number of (non-nan) elements in the input.
+#' @return a vector, filled out as follows:
+#' \describe{
+#' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements.}
+#' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
+#' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
+#' \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
+#'  then standard devation, mean, and number of elements.}
+#' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
+#'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+#' }
 #'
 #' @note
-#' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
+#' The first centered (and standardized) moment is often defined to be identically 0. Instead \code{cent_moments}
+#' and \code{std_moments} returns the mean. 
+#' Similarly, the second standardized moments defined to be identically 1; \code{std_moments} instead returns the standard
+#' deviation. The reason is that a user can always decide to ignore the results and fill in a 0 or 1 as they need, but 
+#' could not efficiently compute the mean and standard deviation from scratch if we discard it.
+#' @note
+#' The kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 #' for Gaussian input.
 #'
 #' @examples
@@ -51,6 +65,7 @@
 #'   print(kurt5(x) - dumbk(x))
 #'   microbenchmark(dumbk(x),kurt5(x),times=10L)
 #' }
+#' y <- std_moments(x,6)
 #'
 #' @template etc
 #' @template ref-romo
@@ -76,6 +91,12 @@ kurt5 <- function(v, na_rm = FALSE) {
 #' @export
 cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
     .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+}
+
+#' @rdname firstmoments
+#' @export
+std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
+    .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
 }
 
 #' @title
@@ -195,26 +216,32 @@ unjoin_moments <- function(ret3, ret2) {
 #' @template ref-romo
 #' @rdname runningmoments
 #' @export
-running_sd3 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_sd3', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+running_sd3 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L, restart_period = 100L) {
+    .Call('fromo_running_sd3', PACKAGE = 'fromo', v, window, na_rm, min_df, used_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
-running_skew4 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+running_skew4 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L, restart_period = 100L) {
+    .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, na_rm, min_df, used_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
-running_kurt5 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+running_kurt5 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L, restart_period = 100L) {
+    .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, na_rm, min_df, used_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
 running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
     .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
+}
+
+#' @rdname runningmoments
+#' @export
+running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_std_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
 }
 
 #' @title

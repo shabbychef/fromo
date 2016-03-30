@@ -207,7 +207,8 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
     }
 }
 
-#define COMP_SD(preval) (sqrt(preval[2]/(preval[0]-1.0)))
+#define COMP_SD_TWO(preval,used_df) (sqrt(preval[2]/(preval[0]-used_df)))
+#define COMP_SD(preval) COMP_SD_TWO(preval,1.0)
 #define COMP_SKEW(preval) (sqrt(preval[0]) * preval[3] / pow(preval[2],1.5))
 #define COMP_EXKURT(preval) ((preval[0] * preval[4] / (pow(preval[2],2.0))) - 3.0)
 
@@ -241,11 +242,25 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //' However, they will usually be faster than calling the various standard implementations
 //' more than once.
 //'
-//' @return a vector; the first elements are the kth, k-1th through 2nd standardized, centered moment,
-//' then the mean, then the number of (non-nan) elements in the input.
+//' @return a vector, filled out as follows:
+//' \describe{
+//' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements.}
+//' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
+//' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
+//' \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
+//'  then standard devation, mean, and number of elements.}
+//' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
+//'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+//' }
 //'
 //' @note
-//' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
+//' The first centered (and standardized) moment is often defined to be identically 0. Instead \code{cent_moments}
+//' and \code{std_moments} returns the mean. 
+//' Similarly, the second standardized moments defined to be identically 1; \code{std_moments} instead returns the standard
+//' deviation. The reason is that a user can always decide to ignore the results and fill in a 0 or 1 as they need, but 
+//' could not efficiently compute the mean and standard deviation from scratch if we discard it.
+//' @note
+//' The kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 //' for Gaussian input.
 //'
 //' @examples
@@ -267,6 +282,7 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //'   print(kurt5(x) - dumbk(x))
 //'   microbenchmark(dumbk(x),kurt5(x),times=10L)
 //' }
+//' y <- std_moments(x,6)
 //'
 //' @template etc
 //' @template ref-romo
@@ -344,6 +360,27 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fa
     if (max_order < 1) { stop("must give largeish max_order"); }
     NumericVector preval = wrapMoments(v, max_order, na_rm);
     NumericVector vret = sums2revm(preval,(double)used_df);
+    return vret;
+}
+// return the standardized moments up to order max_order
+//' @rdname firstmoments
+//' @export
+// [[Rcpp::export]]
+NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false) {
+    if (max_order < 1) { stop("must give largeish max_order"); }
+    NumericVector preval = wrapMoments(v, max_order, na_rm);
+    double sigma = COMP_SD_TWO(preval,(double)used_df);
+    int mmm;
+    NumericVector vret(max_order+1);
+    for (mmm=0;mmm <= MIN(1,max_order);++mmm) {
+        vret[max_order-mmm] = preval[mmm];
+    }
+    if (max_order > 1) {
+        vret[max_order-2] = sigma;
+        for (mmm=3;mmm <= max_order;++mmm) {
+            vret[max_order-mmm] = preval[mmm] / pow(sigma,((double)mmm)/2.0);
+        }
+    }
     return vret;
 }
 
@@ -845,12 +882,13 @@ int get_wins(SEXP window) {
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
     int wins=get_wins(window);
+    double udf=(double)used_df;
     NumericMatrix preval = wrapRunningQMoments(v, 2, wins, restart_period, min_df, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
-        preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-1.0));
+        preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-udf));
     }
     return preval;
 }
@@ -859,13 +897,14 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, in
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
     int wins=get_wins(window);
+    double udf=(double)used_df;
     NumericMatrix preval = wrapRunningQMoments(v, 3, wins, restart_period, min_df, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,3)) * preval(iii,0) / pow(preval(iii,1),1.5);
-        preval(iii,1) = sqrt(preval(iii,1)/(preval(iii,3)-1.0));
+        preval(iii,1) = sqrt(preval(iii,1)/(preval(iii,3)-udf));
     }
     return preval;
 }
@@ -874,14 +913,15 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
     int wins=get_wins(window);
+    double udf=(double)used_df;
     NumericMatrix preval = wrapRunningQMoments(v, 4, wins, restart_period, min_df, na_rm);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
         preval(iii,1) = sqrt(preval(iii,4)) * preval(iii,1) / pow(preval(iii,2),1.5);
-        preval(iii,2) = sqrt(preval(iii,2)/(preval(iii,4)-1.0));
+        preval(iii,2) = sqrt(preval(iii,2)/(preval(iii,4)-udf));
     }
     return preval;
 }
@@ -892,13 +932,40 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
 NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
     int wins=get_wins(window);
     double denom;
-    double udf = (double)used_df;
+    double udf=(double)used_df;
     NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm);
-    // fix the higher than mean columns;
-    for (int iii=0;iii < preval.nrow();++iii) {
-        denom = preval(iii,0) - udf;
-        for (int mmm=0;mmm < (max_order-1);++mmm) {
-            preval(iii,mmm) = preval(iii,mmm) / denom;
+    if (max_order > 1) {
+        // fix the higher than mean columns;
+        for (int iii=0;iii < preval.nrow();++iii) {
+            denom = preval(iii,max_order) - udf;
+            for (int mmm=0;mmm < (max_order-1);++mmm) {
+                preval(iii,mmm) = preval(iii,mmm) / denom;
+            }
+        }
+    }
+    return preval;
+}
+
+// return the standardized moments down to the 3rd, then the standard deviation, the mean, and the dof.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+    int wins=get_wins(window);
+    double denom;
+    double udf = (double)used_df;
+    double sigma;
+    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm);
+    if (max_order > 1) {
+        // fix the higher than mean columns;
+        for (int iii=0;iii < preval.nrow();++iii) {
+            denom = preval(iii,max_order) - udf;
+            sigma = sqrt(preval(iii,max_order-2) / denom);
+            preval(iii,max_order-2) = sigma;
+
+            for (int mmm=0;mmm < (max_order-2);++mmm) {
+                preval(iii,mmm) = preval(iii,mmm) / (denom * pow(sigma,max_order-mmm));
+            }
         }
     }
     return preval;
