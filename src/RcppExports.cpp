@@ -206,14 +206,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // unjoin_moments
-NumericVector unjoin_moments(NumericVector ret1, NumericVector ret2);
-RcppExport SEXP fromo_unjoin_moments(SEXP ret1SEXP, SEXP ret2SEXP) {
+NumericVector unjoin_moments(NumericVector ret3, NumericVector ret2);
+RcppExport SEXP fromo_unjoin_moments(SEXP ret3SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< NumericVector >::type ret1(ret1SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type ret3(ret3SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ret2(ret2SEXP);
-    __result = Rcpp::wrap(unjoin_moments(ret1, ret2));
+    __result = Rcpp::wrap(unjoin_moments(ret3, ret2));
     return __result;
 END_RCPP
 }

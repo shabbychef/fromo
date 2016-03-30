@@ -266,29 +266,36 @@ run_tscored <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = 
 
 #' @title
 #' Join or unjoin moments computations.
-#' @description
-#' 
-#'  set.seed(1234)
-#'  x1 <- rnorm(1e3,mean=1)
-#'  x2 <- rnorm(1e3,mean=1)
-#'  x3 <- c(x1,x2)
-#'  rs1 <- raw_sums(x1,6)
-#'  rs2 <- raw_sums(x2,6)
-#'  rs3 <- join_moments(rs1,rs2)
-#'  rs3alt <- raw_sums(x3,6)
-#'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
-#'  rs1alt <- unjoin_moments(rs3,rs2)
-#'  rs2alt <- unjoin_moments(rs3,rs1)
-#'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
-#'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
+#'
+#' @param ret1 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+#' the count, the mean, then the k through ordth centered sum of some observations.
+#' @param ret2 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+#' the count, the mean, then the k through ordth centered sum of some observations.
+#' @param ret3 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+#' the count, the mean, then the k through ordth centered sum of some observations.
 #'
 #' @details
+#'
+#' merge or unmerge sums of centered variables.
 #'
 #' @return a vector the same size as the input consisting of the adjusted version of the input.
 #' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
 #'
 #' @examples
 #'
+#'  set.seed(1234)
+#'  x1 <- rnorm(1e3,mean=1)
+#'  x2 <- rnorm(1e3,mean=1)
+#'  max_ord <- 6L
+#'  rs1 <- raw_sums(x1,max_ord)
+#'  rs2 <- raw_sums(x2,max_ord)
+#'  rs3 <- raw_sums(c(x1,x2),max_ord)
+#'  rs3alt <- join_moments(rs1,rs2)
+#'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
+#'  rs1alt <- unjoin_moments(rs3,rs2)
+#'  rs2alt <- unjoin_moments(rs3,rs1)
+#'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
+#'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 #'
 #' @template etc
 #' @template ref-romo
@@ -300,7 +307,7 @@ join_moments <- function(ret1, ret2) {
 
 #' @rdname joinmoments 
 #' @export
-unjoin_moments <- function(ret1, ret2) {
-    .Call('fromo_unjoin_moments', PACKAGE = 'fromo', ret1, ret2)
+unjoin_moments <- function(ret3, ret2) {
+    .Call('fromo_unjoin_moments', PACKAGE = 'fromo', ret3, ret2)
 }
 

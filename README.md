@@ -8,7 +8,7 @@
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 
 Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
-Supports computation on vectors and matrices, and Monoidal append of moments (NYI).
+Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
 
 -- Steven E. Pav, shabbychef@gmail.com
 
@@ -47,15 +47,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval
-##     kurt5(x) 145.0 146.5 147.9  147.7 148.5 162   100
-##     skew4(x)  83.9  85.3  87.1   86.0  87.0 120   100
-##       sd3(x)  10.4  11.3  13.3   11.7  12.5 144   100
-##     dumbk(x) 199.2 209.9 214.7  212.0 218.1 327   200
-##  kurtosis(x)  86.9  91.6  95.0   92.6  93.9 256   100
-##  skewness(x)  87.4  92.3  94.4   93.4  95.1 115   100
-##        sd(x)  15.6  18.4  20.3   19.2  21.3  33   100
-##      mean(x)   3.7   4.3   5.1    4.7   5.2  18   100
+##         expr   min    lq mean median    uq    max neval cld
+##     kurt5(x) 184.6 199.0  223  214.5 247.4    304   100   a
+##     skew4(x) 109.0 121.3  136  130.8 146.8    291   100   a
+##       sd3(x)  14.5  17.2   20   19.1  21.5     43   100   a
+##     dumbk(x) 279.8 305.7  940  337.1 371.3 120142   200   a
+##  kurtosis(x) 121.5 130.7  146  145.0 158.7    193   100   a
+##  skewness(x) 121.8 132.4  149  146.1 164.2    194   100   a
+##        sd(x)  24.6  28.9   33   31.7  36.6     57   100   a
+##      mean(x)   5.2   6.8    8    7.6   8.5     22   100   a
 ```
 
 ```r
@@ -67,15 +67,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval
-##     kurt5(x) 1449 1456 1496   1472 1498 1623    10
-##     skew4(x)  820  821  830    826  831  854    10
-##       sd3(x)   85   85   86     85   85   93    10
-##     dumbk(x) 1718 1722 1769   1762 1808 1848    10
-##  kurtosis(x)  841  843  869    858  883  930    10
-##  skewness(x)  805  814  832    820  836  915    10
-##        sd(x)   49   49   51     50   51   57    10
-##      mean(x)   17   17   17     17   17   18    10
+##         expr  min   lq mean median   uq  max neval     cld
+##     kurt5(x) 1815 1817 1820   1818 1821 1830    10      f 
+##     skew4(x) 1047 1047 1054   1054 1059 1067    10    d   
+##       sd3(x)  101  101  101    101  101  103    10   c    
+##     dumbk(x) 2194 2197 2205   2201 2208 2239    10       g
+##  kurtosis(x) 1083 1083 1091   1085 1086 1135    10     e  
+##  skewness(x) 1035 1036 1044   1037 1038 1108    10    d   
+##        sd(x)   58   58   58     58   58   59    10  b     
+##      mean(x)   19   19   19     19   19   20    10 a
 ```
 
 ## running moments

@@ -853,29 +853,36 @@ NumericMatrix run_tscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, in
 
 //' @title
 //' Join or unjoin moments computations.
-//' @description
-//' 
-//'  set.seed(1234)
-//'  x1 <- rnorm(1e3,mean=1)
-//'  x2 <- rnorm(1e3,mean=1)
-//'  x3 <- c(x1,x2)
-//'  rs1 <- raw_sums(x1,6)
-//'  rs2 <- raw_sums(x2,6)
-//'  rs3 <- join_moments(rs1,rs2)
-//'  rs3alt <- raw_sums(x3,6)
-//'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
-//'  rs1alt <- unjoin_moments(rs3,rs2)
-//'  rs2alt <- unjoin_moments(rs3,rs1)
-//'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
-//'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
+//'
+//' @param ret1 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+//' the count, the mean, then the k through ordth centered sum of some observations.
+//' @param ret2 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+//' the count, the mean, then the k through ordth centered sum of some observations.
+//' @param ret3 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
+//' the count, the mean, then the k through ordth centered sum of some observations.
 //'
 //' @details
+//'
+//' merge or unmerge sums of centered variables.
 //'
 //' @return a vector the same size as the input consisting of the adjusted version of the input.
 //' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
 //'
 //' @examples
 //'
+//'  set.seed(1234)
+//'  x1 <- rnorm(1e3,mean=1)
+//'  x2 <- rnorm(1e3,mean=1)
+//'  max_ord <- 6L
+//'  rs1 <- raw_sums(x1,max_ord)
+//'  rs2 <- raw_sums(x2,max_ord)
+//'  rs3 <- raw_sums(c(x1,x2),max_ord)
+//'  rs3alt <- join_moments(rs1,rs2)
+//'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
+//'  rs1alt <- unjoin_moments(rs3,rs2)
+//'  rs2alt <- unjoin_moments(rs3,rs1)
+//'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
+//'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 //'
 //' @template etc
 //' @template ref-romo
@@ -939,20 +946,20 @@ NumericVector join_moments(NumericVector ret1,NumericVector ret2) {
 //' @rdname joinmoments 
 //' @export
 // [[Rcpp::export]]
-NumericVector unjoin_moments(NumericVector ret1,NumericVector ret2) {
-    // subtract ret2 from ret1 very important.
+NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
+    // subtract ret2 from ret3
     double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
     double ac_nfoo,ac_n2,ac_mn1;
     double ac_del,ac_mn2,ac_n1;
 
-    if (ret1.size() != ret2.size()) { stop("mismatch in sizes."); }
+    if (ret3.size() != ret2.size()) { stop("mismatch in sizes."); }
 
-    int ord = ret1.size() - 1;
+    int ord = ret3.size() - 1;
     int ppp,qqq;
 
-    n1 = ret1[0];
+    n1 = ret3[0];
     n2 = ret2[0];
-    if (n2 <= 0) { return ret1; }
+    if (n2 <= 0) { return ret3; }
     if (n2 > n1) { stop("cannot subtract more observations than were seen."); }
 
     NumericVector vret(ord+1);
@@ -962,10 +969,10 @@ NumericVector unjoin_moments(NumericVector ret1,NumericVector ret2) {
         return vret;
     } else {
         // else copy
-        for (ppp=0;ppp <= ord;++ppp) { vret[ppp] = ret1[ppp]; }
+        for (ppp=0;ppp <= ord;++ppp) { vret[ppp] = ret3[ppp]; }
     }
 
-    del21 = ret2[1] - vret[1];
+    mupart = ret2[1] - vret[1];
 
     ntot = vret[0];
     vret[0] -= n2;
@@ -974,12 +981,10 @@ NumericVector unjoin_moments(NumericVector ret1,NumericVector ret2) {
     n1rat = n1 / ntot;
     n2rat = n2 / ntot;
 
-    mupart = del21 / n1;
-    vret[1] -= mupart;
-    // correct della
-    del21 = mupart * ntot;
+    vret[1] -= (n2/n1) * mupart;
 
-    nfoo = n1 * mupart;
+    del21 = mupart / n1rat;
+    nfoo = mupart * n2;
 
     ac_nfoo = nfoo * nfoo;
     ac_n2 = 1.0 / n2;

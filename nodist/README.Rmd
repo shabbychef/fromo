@@ -37,7 +37,7 @@ opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 
 Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
-Supports computation on vectors and matrices, and Monoidal append of moments (NYI).
+Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
 
 -- Steven E. Pav, shabbychef@gmail.com
 
