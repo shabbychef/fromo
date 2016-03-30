@@ -69,27 +69,40 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// join_moments
-NumericVector join_moments(NumericVector ret1, NumericVector ret2);
-RcppExport SEXP fromo_join_moments(SEXP ret1SEXP, SEXP ret2SEXP) {
+// cent_sums
+NumericVector cent_sums(SEXP v, int max_order, bool na_rm);
+RcppExport SEXP fromo_cent_sums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    __result = Rcpp::wrap(cent_sums(v, max_order, na_rm));
+    return __result;
+END_RCPP
+}
+// join_cent_sums
+NumericVector join_cent_sums(NumericVector ret1, NumericVector ret2);
+RcppExport SEXP fromo_join_cent_sums(SEXP ret1SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector >::type ret1(ret1SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ret2(ret2SEXP);
-    __result = Rcpp::wrap(join_moments(ret1, ret2));
+    __result = Rcpp::wrap(join_cent_sums(ret1, ret2));
     return __result;
 END_RCPP
 }
-// unjoin_moments
-NumericVector unjoin_moments(NumericVector ret3, NumericVector ret2);
-RcppExport SEXP fromo_unjoin_moments(SEXP ret3SEXP, SEXP ret2SEXP) {
+// unjoin_cent_sums
+NumericVector unjoin_cent_sums(NumericVector ret3, NumericVector ret2);
+RcppExport SEXP fromo_unjoin_cent_sums(SEXP ret3SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericVector >::type ret3(ret3SEXP);
     Rcpp::traits::input_parameter< NumericVector >::type ret2(ret2SEXP);
-    __result = Rcpp::wrap(unjoin_moments(ret3, ret2));
+    __result = Rcpp::wrap(unjoin_cent_sums(ret3, ret2));
     return __result;
 END_RCPP
 }

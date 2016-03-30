@@ -385,17 +385,17 @@ NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fal
 }
 
 //' @title
-//' Join or unjoin moments computations.
+//' Centered sums; join and unjoined.
 //'
 //' @description
 //'
-//' Join or unjoin moments computations.
+//' Compute, join, or unjoin centered sums.
 //'
-//' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+//' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
-//' @param ret2 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+//' @param ret2 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
-//' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+//' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
 //'
 //'
@@ -408,22 +408,30 @@ NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fal
 //'  x1 <- rnorm(1e3,mean=1)
 //'  x2 <- rnorm(1e3,mean=1)
 //'  max_ord <- 6L
-//'  rs1 <- cent_moments(x1,max_ord)
-//'  rs2 <- cent_moments(x2,max_ord)
-//'  rs3 <- cent_moments(c(x1,x2),max_ord)
-//'  rs3alt <- join_moments(rs1,rs2)
+//'  rs1 <- cent_sums(x1,max_ord)
+//'  rs2 <- cent_sums(x2,max_ord)
+//'  rs3 <- cent_sums(c(x1,x2),max_ord)
+//'  rs3alt <- join_cent_sums(rs1,rs2)
 //'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
-//'  rs1alt <- unjoin_moments(rs3,rs2)
-//'  rs2alt <- unjoin_moments(rs3,rs1)
+//'  rs1alt <- unjoin_cent_sums(rs3,rs2)
+//'  rs2alt <- unjoin_cent_sums(rs3,rs1)
 //'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
 //'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 //'
 //' @template etc
 //' @template ref-romo
-//' @rdname joinmoments 
+//' @rdname centsums 
 //' @export
 // [[Rcpp::export]]
-NumericVector join_moments(NumericVector ret1,NumericVector ret2) {
+NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false) {
+    if (max_order < 1) { stop("must give largeish max_order"); }
+    NumericVector preval = wrapMoments(v, max_order, na_rm);
+    return preval;
+}
+//' @rdname centsums 
+//' @export
+// [[Rcpp::export]]
+NumericVector join_cent_sums(NumericVector ret1,NumericVector ret2) {
     double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
     double ac_nfoo,ac_n2,ac_mn1;
     double ac_del,ac_mn2,ac_n1;
@@ -438,26 +446,27 @@ NumericVector join_moments(NumericVector ret1,NumericVector ret2) {
     n2 = ret2[ord];
     if (n2 <= 0) { return ret1; }
     
-    NumericVector vret1 = revm2sums(ret1);
-    NumericVector vret2 = revm2sums(ret2);
+    // allocate output and copy;
+    NumericVector ret3(ord+1);
+    for (ppp=0;ppp<=ord;++ppp) { ret3[ppp] = ret1[ppp]; }
 
-    n1 = vret1[0];
-    n2 = vret2[0];
+    n1 = ret3[0];
+    n2 = ret2[0];
 
-    vret1[0] += n2;
-    ntot = vret1[0];
+    ret3[0] += n2;
+    ntot = ret3[0];
     n1rat = n1 / ntot;
     n2rat = n2 / ntot;
-    del21 = vret2[1] - vret1[1];
+    del21 = ret2[1] - ret3[1];
     mupart = del21 * n2rat;
 
-    vret1[1] += mupart;
+    ret3[1] += mupart;
     nfoo = n1 * mupart;
     ac_nfoo = pow(nfoo,ord);
     ac_n2 = pow(n2,1-ord);
     ac_mn1 = pow(-n1,1-ord);
     for (ppp=ord;ppp >= 2;ppp--) {
-        vret1[ppp] += vret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+        ret3[ppp] += ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
         if (ppp > 2) {
             if (nfoo != 0) { ac_nfoo /= nfoo; }
             ac_n2 *= n2;
@@ -467,7 +476,7 @@ NumericVector join_moments(NumericVector ret1,NumericVector ret2) {
         ac_mn2 = -n2rat;
         ac_n1 = n1rat;
         for (int qqq=1;qqq <= (ppp-2); qqq++) {
-            vret1[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * vret1[ppp-qqq] + ac_n1 * vret2[ppp-qqq]);
+            ret3[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * ret3[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
             if (qqq < (ppp-2)) {
                 ac_del *= del21;
                 ac_mn2 *= (-n2rat);
@@ -475,13 +484,12 @@ NumericVector join_moments(NumericVector ret1,NumericVector ret2) {
             }
         }
     }
-    NumericVector ret3 = sums2revm(vret1);
     return ret3;
 }
-//' @rdname joinmoments 
+//' @rdname centsums 
 //' @export
 // [[Rcpp::export]]
-NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
+NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
     // subtract ret2 from ret3
     double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
     double ac_nfoo,ac_n2,ac_mn1;
@@ -492,32 +500,32 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
     int ord = ret3.size() - 1;
     int ppp,qqq;
 
-    n1 = ret3[ord];
-    n2 = ret2[ord];
+    n1 = ret3[0];
+    n2 = ret2[0];
     if (n2 <= 0) { return ret3; }
     if (n2 > n1) { stop("cannot subtract more observations than were seen."); }
 
-    NumericVector vret(ord+1);
-    NumericVector vret2(ord+1);
+    // allocate output 
+    NumericVector ret1(ord+1);
     // would be better to check they are equal, but whatever;
     if (n2 == n1) { 
-        // vret is all zero, just return it
-        return vret;
+        // ret1 is all zero, and should be, so return it
+        return ret1;
     } else {
-        vret = revm2sums(ret3);
-        vret2 = revm2sums(ret2);
+        // copy
+        for (ppp=0;ppp<=ord;++ppp) { ret1[ppp] = ret3[ppp]; }
     }
 
-    mupart = vret2[1] - vret[1];
+    mupart = ret2[1] - ret1[1];
 
-    ntot = vret[0];
-    vret[0] -= n2;
-    n1 = vret[0];
+    ntot = ret1[0];
+    ret1[0] -= n2;
+    n1 = ret1[0];
 
     n1rat = n1 / ntot;
     n2rat = n2 / ntot;
 
-    vret[1] -= (n2/n1) * mupart;
+    ret1[1] -= (n2/n1) * mupart;
 
     del21 = mupart / n1rat;
     nfoo = mupart * n2;
@@ -526,7 +534,7 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
     ac_n2 = 1.0 / n2;
     ac_mn1 = -1.0 / n1;
     for (ppp=2;ppp <= ord;ppp++) {
-        vret[ppp] -= vret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+        ret1[ppp] -= ret2[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
         if (ppp < ord) {
             ac_nfoo *= nfoo; 
             ac_n2 /= n2;
@@ -536,7 +544,7 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
         ac_mn2 = -n2rat;
         ac_n1 = n1rat;
         for (int qqq=1;qqq <= (ppp-2); qqq++) {
-            vret[ppp] -= bincoef[ppp][qqq] * ac_del * (ac_mn2 * vret[ppp-qqq] + ac_n1 * vret2[ppp-qqq]);
+            ret1[ppp] -= bincoef[ppp][qqq] * ac_del * (ac_mn2 * ret1[ppp-qqq] + ac_n1 * ret2[ppp-qqq]);
             if (qqq < (ppp-2)) {
                 ac_del *= del21;
                 ac_mn2 *= (-n2rat);
@@ -544,7 +552,6 @@ NumericVector unjoin_moments(NumericVector ret3,NumericVector ret2) {
             }
         }
     }
-    NumericVector ret1 = sums2revm(vret);
     return ret1;
 }
 

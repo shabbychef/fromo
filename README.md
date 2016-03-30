@@ -85,27 +85,17 @@ Eventually this will be wrapped in an object; for now, there are `join` and `unj
 
 ```r
 set.seed(1234)
-x1 <- rnorm(10000, mean = 1)
-x2 <- rnorm(10000, mean = 1)
+x1 <- rnorm(1000, mean = 1)
+x2 <- rnorm(1000, mean = 1)
 max_ord <- 6L
-rs1 <- cent_moments(x1, max_ord)
-rs2 <- cent_moments(x2, max_ord)
-rs3 <- cent_moments(c(x1, x2), max_ord)
-print(data.frame(rbind(rs1, rs2, rs3)))
-```
-
-```
-##     X1    X2  X3       X4   X5   X6    X7
-## rs1 14 0.096 2.9 -0.00054 0.98 1.01 10000
-## rs2 15 0.144 3.0  0.01118 1.01 0.99 10000
-## rs3 14 0.118 2.9  0.00494 0.99 1.00 20000
-```
-
-```r
-rs3alt <- join_moments(rs1, rs2)
+rs1 <- cent_sums(x1, max_ord)
+rs2 <- cent_sums(x2, max_ord)
+rs3 <- cent_sums(c(x1, x2), max_ord)
+rs3alt <- join_cent_sums(rs1, rs2)
 stopifnot(max(abs(rs3 - rs3alt)) < 1e-07)
-rs1alt <- unjoin_moments(rs3, rs2)
-rs2alt <- unjoin_moments(rs3, rs1)
+
+rs1alt <- unjoin_cent_sums(rs3, rs2)
+rs2alt <- unjoin_cent_sums(rs3, rs1)
 stopifnot(max(abs(rs1 - rs1alt)) < 1e-07)
 stopifnot(max(abs(rs2 - rs2alt)) < 1e-07)
 ```

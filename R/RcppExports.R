@@ -100,17 +100,17 @@ std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 }
 
 #' @title
-#' Join or unjoin moments computations.
+#' Centered sums; join and unjoined.
 #'
 #' @description
 #'
-#' Join or unjoin moments computations.
+#' Compute, join, or unjoin centered sums.
 #'
-#' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+#' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
-#' @param ret2 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+#' @param ret2 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
-#' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_moments}}? consisting of
+#' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
 #'
 #'
@@ -123,28 +123,34 @@ std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #'  x1 <- rnorm(1e3,mean=1)
 #'  x2 <- rnorm(1e3,mean=1)
 #'  max_ord <- 6L
-#'  rs1 <- cent_moments(x1,max_ord)
-#'  rs2 <- cent_moments(x2,max_ord)
-#'  rs3 <- cent_moments(c(x1,x2),max_ord)
-#'  rs3alt <- join_moments(rs1,rs2)
+#'  rs1 <- cent_sums(x1,max_ord)
+#'  rs2 <- cent_sums(x2,max_ord)
+#'  rs3 <- cent_sums(c(x1,x2),max_ord)
+#'  rs3alt <- join_cent_sums(rs1,rs2)
 #'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
-#'  rs1alt <- unjoin_moments(rs3,rs2)
-#'  rs2alt <- unjoin_moments(rs3,rs1)
+#'  rs1alt <- unjoin_cent_sums(rs3,rs2)
+#'  rs2alt <- unjoin_cent_sums(rs3,rs1)
 #'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
 #'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 #'
 #' @template etc
 #' @template ref-romo
-#' @rdname joinmoments 
+#' @rdname centsums 
 #' @export
-join_moments <- function(ret1, ret2) {
-    .Call('fromo_join_moments', PACKAGE = 'fromo', ret1, ret2)
+cent_sums <- function(v, max_order = 5L, na_rm = FALSE) {
+    .Call('fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm)
 }
 
-#' @rdname joinmoments 
+#' @rdname centsums 
 #' @export
-unjoin_moments <- function(ret3, ret2) {
-    .Call('fromo_unjoin_moments', PACKAGE = 'fromo', ret3, ret2)
+join_cent_sums <- function(ret1, ret2) {
+    .Call('fromo_join_cent_sums', PACKAGE = 'fromo', ret1, ret2)
+}
+
+#' @rdname centsums 
+#' @export
+unjoin_cent_sums <- function(ret3, ret2) {
+    .Call('fromo_unjoin_cent_sums', PACKAGE = 'fromo', ret3, ret2)
 }
 
 #' @title
