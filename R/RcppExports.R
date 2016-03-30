@@ -35,9 +35,9 @@
 #' @examples
 #' x <- rnorm(1e5)
 #' sd3(x)[1] - sd(x)
-#'   skew4(x)[4] - length(x)
-#'   skew4(x)[3] - mean(x)
-#'   skew4(x)[2] - sd(x)
+#' skew4(x)[4] - length(x)
+#' skew4(x)[3] - mean(x)
+#' skew4(x)[2] - sd(x)
 #' if (require(moments)) {
 #'   skew4(x)[1] - skewness(x)
 #' }
@@ -131,8 +131,8 @@ raw_sums <- function(v, max_order = 5L, na_rm = FALSE) {
 #'
 #' @examples
 #' x <- rnorm(1e5)
-#' run_sd3(x,10)
-#' run_skew4(x,10)
+#' xs3 <- run_sd3(x,10)
+#' xs4 <- run_skew4(x,10)
 #'
 #' if (require(moments)) {
 #'     set.seed(123)
@@ -147,7 +147,7 @@ raw_sums <- function(v, max_order = 5L, na_rm = FALSE) {
 #'     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
 #' }
 #'
-#' run_cent_moments(x,winsize=100L,max_order=6L)
+#' xc6 <- run_cent_moments(x,winsize=100L,max_order=6L)
 #'
 #' @template etc
 #' @template ref-romo
@@ -267,6 +267,10 @@ run_tscored <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = 
 #' @title
 #' Join or unjoin moments computations.
 #'
+#' @description
+#'
+#' Join or unjoin moments computations.
+#'
 #' @param ret1 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
 #' @param ret2 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
@@ -274,9 +278,6 @@ run_tscored <- function(v, winsize = NULL, recoper = 100L, min_df = 0L, na_rm = 
 #' @param ret3 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
 #'
-#' @details
-#'
-#' merge or unmerge sums of centered variables.
 #'
 #' @return a vector the same size as the input consisting of the adjusted version of the input.
 #' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.

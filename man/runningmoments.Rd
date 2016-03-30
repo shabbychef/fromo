@@ -75,8 +75,8 @@ the fromo package.
 }
 \examples{
 x <- rnorm(1e5)
-run_sd3(x,10)
-run_skew4(x,10)
+xs3 <- run_sd3(x,10)
+xs4 <- run_skew4(x,10)
 
 if (require(moments)) {
     set.seed(123)
@@ -91,7 +91,7 @@ if (require(moments)) {
     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
 }
 
-run_cent_moments(x,winsize=100L,max_order=6L)
+xc6 <- run_cent_moments(x,winsize=100L,max_order=6L)
 
 }
 \author{

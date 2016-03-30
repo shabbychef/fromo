@@ -61,9 +61,9 @@ the fromo package.
 \examples{
 x <- rnorm(1e5)
 sd3(x)[1] - sd(x)
-  skew4(x)[4] - length(x)
-  skew4(x)[3] - mean(x)
-  skew4(x)[2] - sd(x)
+skew4(x)[4] - length(x)
+skew4(x)[3] - mean(x)
+skew4(x)[2] - sd(x)
 if (require(moments)) {
   skew4(x)[1] - skewness(x)
 }

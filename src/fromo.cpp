@@ -251,9 +251,9 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //' @examples
 //' x <- rnorm(1e5)
 //' sd3(x)[1] - sd(x)
-//'   skew4(x)[4] - length(x)
-//'   skew4(x)[3] - mean(x)
-//'   skew4(x)[2] - sd(x)
+//' skew4(x)[4] - length(x)
+//' skew4(x)[3] - mean(x)
+//' skew4(x)[2] - sd(x)
 //' if (require(moments)) {
 //'   skew4(x)[1] - skewness(x)
 //' }
@@ -644,8 +644,8 @@ int get_wins(SEXP winsize) {
 //'
 //' @examples
 //' x <- rnorm(1e5)
-//' run_sd3(x,10)
-//' run_skew4(x,10)
+//' xs3 <- run_sd3(x,10)
+//' xs4 <- run_skew4(x,10)
 //'
 //' if (require(moments)) {
 //'     set.seed(123)
@@ -660,7 +660,7 @@ int get_wins(SEXP winsize) {
 //'     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
 //' }
 //'
-//' run_cent_moments(x,winsize=100L,max_order=6L)
+//' xc6 <- run_cent_moments(x,winsize=100L,max_order=6L)
 //'
 //' @template etc
 //' @template ref-romo
@@ -854,6 +854,10 @@ NumericMatrix run_tscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, in
 //' @title
 //' Join or unjoin moments computations.
 //'
+//' @description
+//'
+//' Join or unjoin moments computations.
+//'
 //' @param ret1 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
 //' @param ret2 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
@@ -861,9 +865,6 @@ NumericMatrix run_tscored(SEXP v, SEXP winsize = R_NilValue, int recoper=100, in
 //' @param ret3 an \eqn{ord+1} vector as output by \code{\link{raw_sums}}? consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
 //'
-//' @details
-//'
-//' merge or unmerge sums of centered variables.
 //'
 //' @return a vector the same size as the input consisting of the adjusted version of the input.
 //' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.

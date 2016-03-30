@@ -23,8 +23,8 @@ the count, the mean, then the k through ordth centered sum of some observations.
 a vector the same size as the input consisting of the adjusted version of the input.
 When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
 }
-\details{
-merge or unmerge sums of centered variables.
+\description{
+Join or unjoin moments computations.
 }
 \note{
 The moment computations provided by fromo are 
