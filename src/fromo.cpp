@@ -339,19 +339,19 @@ NumericVector sums2revm(NumericVector input,double used_df=0.0) {
     }
     return output;
 }
-NumericVector revm2sums(NumericVector input,double used_df=0.0) {
-    int ord = input.size() - 1;
-    double nel = input[ord] - used_df;
-    int mmm;
-    NumericVector output(ord+1);
-    for (mmm=0;mmm <= MIN(1,ord);++mmm) {
-        output[mmm] = input[ord-mmm];
-    }
-    for (mmm=2;mmm <= ord;++mmm) {
-        output[mmm] = input[ord-mmm] * nel;
-    }
-    return output;
-}
+//NumericVector revm2sums(NumericVector input,double used_df=0.0) {
+//    int ord = input.size() - 1;
+//    double nel = input[ord] - used_df;
+//    int mmm;
+//    NumericVector output(ord+1);
+//    for (mmm=0;mmm <= MIN(1,ord);++mmm) {
+//        output[mmm] = input[ord-mmm];
+//    }
+//    for (mmm=2;mmm <= ord;++mmm) {
+//        output[mmm] = input[ord-mmm] * nel;
+//    }
+//    return output;
+//}
 // return the centered moments up to order max_order
 //' @rdname firstmoments
 //' @export

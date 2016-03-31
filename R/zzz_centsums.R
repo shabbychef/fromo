@@ -146,20 +146,13 @@ setGeneric('sums', signature="x", function(x) standardGeneric('sums'))
 #' @aliases sums,centsums-method
 setMethod('sums', 'centsums', function(x) x@sums )
 
-#' @rdname accessor-methods
-#' @aliases moments
-#' @exportMethod moments
-setGeneric('moments', function(x,type=c('central','raw','standardized')) standardGeneric('moments'))
-#' @rdname accessor-methods
-#' @aliases moments,centsums-method
-setMethod('moments', signature(x='centsums'),
-	function(x,type=c('central','raw','standardized')) {
+# used below
+.csums2moments <- function(c_sums,type=c('central','raw','standardized')) {
 		# add used_df
 		type <- match.arg(type)
-		c_sums <- x@sums
 		cmoments <- c(c_sums[1],c_sums[2:length(c_sums)] / c_sums[1])
 
-		retv <- switch(type,
+		switch(type,
 			raw={
 				retv <- cent2raw(cmoments)
 			},
@@ -177,9 +170,22 @@ setMethod('moments', signature(x='centsums'),
 					}
 					retv[2] <- 1.0
 				}
-				retv
 			})
 			retv
+}
+
+#' @rdname accessor-methods
+#' @aliases moments
+#' @exportMethod moments
+setGeneric('moments', function(x,type=c('central','raw','standardized')) standardGeneric('moments'))
+#' @rdname accessor-methods
+#' @aliases moments,centsums-method
+setMethod('moments', signature(x='centsums'),
+	function(x,type=c('central','raw','standardized')) {
+		# add used_df
+		type <- match.arg(type)
+		c_sums <- x@sums
+		retv <- .csums2moments(x@sums,type)
 	})
 
 
@@ -230,7 +236,7 @@ NULL
 setMethod('show', signature('centsums'), 
 					function(object) {
 						cat('class:', class(object), '\n')
-						cat(' moms:', moments(object,'central'), '\n')
+						cat(' moms:', .csums2moments(object@sums,'central'), '\n')
 					})
 #UNFOLD
 

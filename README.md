@@ -47,15 +47,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval   cld
-##     kurt5(x) 139.6 141.3 149.4  142.8 144.6 210   100    d 
-##     skew4(x)  81.5  83.2  89.9   84.3  85.9 176   100   c  
-##       sd3(x)  18.4  19.5  21.9   19.8  20.9  39   100  b   
-##     dumbk(x) 194.4 197.5 218.8  200.3 211.9 324   200     e
-##  kurtosis(x)  85.5  87.2  98.7   89.0  96.4 160   100   c  
-##  skewness(x)  85.4  87.3  93.4   88.1  89.4 163   100   c  
-##        sd(x)  14.5  16.2  19.1   17.1  18.2  52   100  b   
-##      mean(x)   3.8   4.2   5.2    4.6   5.3  13   100 a
+##         expr   min    lq  mean median    uq max neval
+##     kurt5(x) 145.0 146.5 147.9  147.7 148.5 162   100
+##     skew4(x)  83.9  85.3  87.1   86.0  87.0 120   100
+##       sd3(x)  10.4  11.3  13.3   11.7  12.5 144   100
+##     dumbk(x) 199.2 209.9 214.7  212.0 218.1 327   200
+##  kurtosis(x)  86.9  91.6  95.0   92.6  93.9 256   100
+##  skewness(x)  87.4  92.3  94.4   93.4  95.1 115   100
+##        sd(x)  15.6  18.4  20.3   19.2  21.3  33   100
+##      mean(x)   3.7   4.3   5.1    4.7   5.2  18   100
 ```
 
 ```r
@@ -67,24 +67,57 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval    cld
-##     kurt5(x) 1392 1394 1454   1415 1466 1687    10     e 
-##     skew4(x)  801  808  817    814  832  836    10   c   
-##       sd3(x)  168  169  170    170  172  175    10  b    
-##     dumbk(x) 2332 2393 2509   2523 2594 2738    10      f
-##  kurtosis(x) 1170 1174 1206   1192 1206 1330    10    d  
-##  skewness(x) 1116 1142 1220   1230 1290 1353    10    d  
-##        sd(x)   46   47   49     48   49   55    10 a     
-##      mean(x)   16   16   16     16   17   17    10 a
+##         expr  min   lq mean median   uq  max neval
+##     kurt5(x) 1449 1456 1496   1472 1498 1623    10
+##     skew4(x)  820  821  830    826  831  854    10
+##       sd3(x)   85   85   86     85   85   93    10
+##     dumbk(x) 1718 1722 1769   1762 1808 1848    10
+##  kurtosis(x)  841  843  869    858  883  930    10
+##  skewness(x)  805  814  832    820  836  915    10
+##        sd(x)   49   49   51     50   51   57    10
+##      mean(x)   17   17   17     17   17   18    10
 ```
 
 ## Monoid mumbo-jumbo
 
-Eventually this will be wrapped in an object; for now, there are `join` and `unjoin` methods:
+Store your moments in an object, and you can cat them together. (Eventually there will be
+an `unjoin` method.) These should satisfy 'monoidal homomorphism', meaning that concatenation
+and taking moments commute with each other. This is a small step of the way towards fast
+machine learning methods 
+(along the lines of Mike Izbicki's [Hlearn library](https://github.com/mikeizbicki/HLearn).)
+
+Some demo code:
 
 
 ```r
-set.seed(1234)
+set.seed(12345)
+x1 <- rnorm(1000, mean = 1)
+x2 <- rnorm(1000, mean = 1)
+max_ord <- 6L
+
+obj1 <- as.centsums(x1, max_ord)
+show(obj1)
+```
+
+```
+## class: centsums 
+##  moms: 0 1 -0.0059 3 0.25 13
+```
+
+```r
+# join them together
+obj1 <- as.centsums(x1, max_ord)
+obj2 <- as.centsums(x2, max_ord)
+obj3 <- as.centsums(c(x1, x2), max_ord)
+alt3 <- c(obj1, obj2)
+# it commutes!
+stopifnot(max(abs(sums(obj3) - sums(alt3))) < 1e-07)
+```
+
+We also have 'raw' join and unjoin methods, not nicely wrapped:
+
+```r
+set.seed(123)
 x1 <- rnorm(1000, mean = 1)
 x2 <- rnorm(1000, mean = 1)
 max_ord <- 6L

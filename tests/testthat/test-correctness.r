@@ -167,6 +167,26 @@ test_that("running adjustments are correct",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("join/unjoin",{#FOLDUP
+	set.char.seed("1325a51e-1584-4f89-9ea3-f15223a223d9")
+
+	x1 <- rnorm(1e3,mean=1)
+	x2 <- rnorm(1e3,mean=1)
+	max_ord <- 6L
+	rs1 <- cent_sums(x1,max_ord)
+	rs2 <- cent_sums(x2,max_ord)
+	rs3 <- cent_sums(c(x1,x2),max_ord)
+	rs3alt <- join_cent_sums(rs1,rs2)
+	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
+
+	rs1alt <- unjoin_cent_sums(rs3,rs2)
+	rs2alt <- unjoin_cent_sums(rs3,rs1)
+	expect_lt(max(abs(rs1 - rs1alt)),1e-7)
+	expect_lt(max(abs(rs2 - rs2alt)),1e-7)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
 # 2FIX: check the effects of NA
 #UNFOLD
 

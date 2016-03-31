@@ -88,10 +88,36 @@ microbenchmark(kurt5(x),
 
 ## Monoid mumbo-jumbo
 
-Eventually this will be wrapped in an object; for now, there are `join` and `unjoin` methods:
+Store your moments in an object, and you can cat them together. (Eventually there will be
+an `unjoin` method.) These should satisfy 'monoidal homomorphism', meaning that concatenation
+and taking moments commute with each other. This is a small step of the way towards fast
+machine learning methods 
+(along the lines of Mike Izbicki's [Hlearn library](https://github.com/mikeizbicki/HLearn).)
+
+Some demo code:
 
 ```{r monoid1,eval=TRUE,echo=TRUE}
-set.seed(1234)
+set.seed(12345)
+x1 <- rnorm(1e3,mean=1)
+x2 <- rnorm(1e3,mean=1)
+max_ord <- 6L
+
+obj1 <- as.centsums(x1,max_ord)
+show(obj1)
+
+# join them together
+obj1 <- as.centsums(x1,max_ord)
+obj2 <- as.centsums(x2,max_ord)
+obj3 <- as.centsums(c(x1,x2),max_ord)
+alt3 <- c(obj1,obj2)
+# it commutes!
+stopifnot(max(abs(sums(obj3) - sums(alt3))) < 1e-7)
+
+```
+
+We also have 'raw' join and unjoin methods, not nicely wrapped:
+```{r monoid2,eval=TRUE,echo=TRUE}
+set.seed(123)
 x1 <- rnorm(1e3,mean=1)
 x2 <- rnorm(1e3,mean=1)
 max_ord <- 6L
@@ -105,7 +131,6 @@ rs1alt <- unjoin_cent_sums(rs3,rs2)
 rs2alt <- unjoin_cent_sums(rs3,rs1)
 stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
 stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
-
 ```
 
 ## Running moments
