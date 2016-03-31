@@ -16,7 +16,8 @@ Description: Fast computation of moments via Rcpp. Supports computation on
    vectors and matrices, and Monoidal append of moments (NYI).
 License: LGPL-3
 Imports:
-    Rcpp (>= 0.12.3)
+    Rcpp (>= 0.12.3),
+    methods
 LinkingTo: Rcpp
 Suggests:
     testthat,

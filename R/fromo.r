@@ -59,7 +59,7 @@
 #' @docType package
 #' @title fast robust moments
 #' @keywords package
-#' @import Rcpp
+#' @import Rcpp methods
 #' @useDynLib fromo
 #' @importFrom Rcpp evalCpp
 #' @exportPattern "^[[:alpha:]]+"
