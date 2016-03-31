@@ -2,6 +2,7 @@
 % Please edit documentation in R/centsums.R
 \name{c.centsums}
 \alias{c.centsums}
+\title{concatenate centsums objects}
 \usage{
 \\method{c}{centsums}(...)
 }

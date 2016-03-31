@@ -180,6 +180,7 @@ setMethod('moments', signature(x='centsums'),
 			retv
 	})
 
+#' @title concatenate centsums objects
 #' @rdname centsums-concat
 #' @method c centsums
 #' @export
