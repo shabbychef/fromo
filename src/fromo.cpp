@@ -441,17 +441,14 @@ NumericVector join_cent_sums(NumericVector ret1,NumericVector ret2) {
     int ord = ret1.size() - 1;
     int ppp,qqq;
 
-    n1 = ret1[ord];
+    n1 = ret1[0];
     if (n1 <= 0) { return ret2; }
-    n2 = ret2[ord];
+    n2 = ret2[0];
     if (n2 <= 0) { return ret1; }
     
     // allocate output and copy;
     NumericVector ret3(ord+1);
     for (ppp=0;ppp<=ord;++ppp) { ret3[ppp] = ret1[ppp]; }
-
-    n1 = ret3[0];
-    n2 = ret2[0];
 
     ret3[0] += n2;
     ntot = ret3[0];
