@@ -137,11 +137,11 @@ as.centsums.default <- function(x, order=3, na.rm=TRUE) {
 #' @template etc
 #' @name accessor
 #' @rdname accessor-methods
-#' @aliases val
-#' @exportMethod val
+#' @aliases sums
+#' @exportMethod sums
 setGeneric('sums', signature="x", function(x) standardGeneric('sums'))
 #' @rdname accessor-methods
-#' @aliases val,centsums-method
+#' @aliases sums,centsums-method
 setMethod('sums', 'centsums', function(x) x@sums )
 
 #' @rdname accessor-methods

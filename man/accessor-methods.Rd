@@ -5,9 +5,8 @@
 \alias{accessor}
 \alias{moments}
 \alias{moments,centsums-method}
+\alias{sums}
 \alias{sums,centsums-method}
-\alias{val}
-\alias{val,centsums-method}
 \title{Accessor methods.}
 \usage{
 sums(x)
