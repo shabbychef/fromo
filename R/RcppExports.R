@@ -112,7 +112,7 @@ std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #' the count, the mean, then the k through ordth centered sum of some observations.
 #' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
-#'
+#' @inheritParams cent_moments
 #'
 #' @return a vector the same size as the input consisting of the adjusted version of the input.
 #' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.

@@ -103,15 +103,16 @@ centsums <- function(sums,order=NULL) {
 #'
 #' @usage
 #'
-#' as.centsums(x, order=3, na_rm=TRUE)
+#' as.centsums(x, order=3, na.rm=TRUE)
 #'
 #' @param x a numeric, array, or matrix.
+#' @param na.rm whether to remove \code{NA}.
 #' @inheritParams centsums
 #' @return A centsums object.
 #' @template etc
 #' @examples 
 #' set.seed(123)
-#' x <- rnorm(x,1000)
+#' x <- rnorm(1000)
 #' cs <- as.centsums(x, order=5)
 #' @rdname as.centsums
 #' @export as.centsums
@@ -134,6 +135,7 @@ as.centsums.default <- function(x, order=3, na.rm=TRUE) {
 #' Access slot data from a \code{centsums} object.
 #'
 #' @param x a \code{centsums} object.
+#' @param type the type of moment to compute.
 #' @template etc
 #' @name accessor
 #' @rdname accessor-methods
@@ -180,16 +182,24 @@ setMethod('moments', signature(x='centsums'),
 			retv
 	})
 
-#' @title concatenate centsums objects
+# do not export this.
+.join2 <- function(x,y) {
+	x@sums <- join_cent_sums(x@sums,y@sums)
+	x
+}
+
+#' @title concatenate centsums objects.
+#' @description 
+#'
+#' Concatenate centsums objects.
+#'
+#' @param ... \code{centsums} objects
 #' @rdname centsums-concat
 #' @method c centsums
 #' @export
 #' @usage \\method{c}{centsums}(...)
-c.centsums <- function(x, ...) { 
-	if (length(list(...)) > 0) {
-		tailv <- c(...)
-		x@sums <- join_cent_sums(x@sums,tailv@sums)
-	}
+c.centsums <- function(...) { 
+	Reduce(.join2,list(...))
 	x
 } 
 
@@ -208,7 +218,7 @@ c.centsums <- function(x, ...) {
 #' @param object a \code{centsums} object.
 #' @examples 
 #' set.seed(123)
-#' x <- rnorm(x,1000)
+#' x <- rnorm(1000)
 #' obj <- as.centsums(x, order=5)
 #' obj
 #' @template etc

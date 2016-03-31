@@ -13,6 +13,12 @@ join_cent_sums(ret1, ret2)
 unjoin_cent_sums(ret3, ret2)
 }
 \arguments{
+\item{v}{a vector}
+
+\item{max_order}{the maximum order of the centered moment to be computed.}
+
+\item{na_rm}{whether to remove NA, false by default.}
+
 \item{ret1}{an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 the count, the mean, then the k through ordth centered sum of some observations.}
 
