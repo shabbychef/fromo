@@ -196,6 +196,7 @@ setMethod('moments', signature(x='centsums'),
 #'
 #' @param ... \code{centsums} objects
 #' @rdname centsums-concat
+#' @seealso join_cent_sums
 #' @method c centsums
 #' @export
 #' @usage \\method{c}{centsums}(...)
@@ -206,6 +207,24 @@ c.centsums <- function(...) {
 	}
 	x <- Reduce(.join2,list(...))
 } 
+#' @title unconcatenate centsums objects.
+#' @description 
+#'
+#' Unconcatenate centsums objects.
+#'
+#' @param x a \code{centsums} objects
+#' @param y a \code{centsums} objects
+#' @seealso unjoin_cent_sums
+#' @rdname centsums-unconcat
+#' @exportMethod %-%
+setGeneric('%-%', function(x,y) standardGeneric('%-%'))
+#' @rdname centsums-unconcat
+#' @aliases %-%,centsums,centsums-method
+setMethod('%-%', signature(x='centsums',y='centsums'),
+	function(x,y) {
+		x@sums <- unjoin_cent_sums(x@sums,y@sums)
+		return(x)
+	})
 
 # show#FOLDUP
 # 2FIX: add documentation and export
@@ -234,9 +253,12 @@ NULL
 #' @rdname show-methods
 #' @aliases show,centsums-method
 setMethod('show', signature('centsums'), 
+# 2FIX: add cumulants?
 					function(object) {
-						cat('class:', class(object), '\n')
-						cat(' moms:', .csums2moments(object@sums,'central'), '\n')
+						cat('          class:', class(object), '\n')
+						cat('    raw moments:', .csums2moments(object@sums,'raw'), '\n')
+						cat('central moments:', .csums2moments(object@sums,'central'), '\n')
+						cat('    std moments:', .csums2moments(object@sums,'standardized'), '\n')
 					})
 #UNFOLD
 

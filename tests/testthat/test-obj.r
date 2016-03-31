@@ -69,6 +69,11 @@ test_that("monoidal homomorphism",{#FOLDUP
 	zalt <- c(xobj,yobj)
 	expect_equal(sums(zalt),sums(zobj),tolerance=1e-9)
 
+	xalt <- zobj %-% yobj
+	yalt <- zobj %-% xobj
+	expect_equal(sums(xalt),sums(xobj),tolerance=1e-9)
+	expect_equal(sums(yalt),sums(yobj),tolerance=1e-9)
+
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD

@@ -91,17 +91,20 @@ Some demo code:
 
 ```r
 set.seed(12345)
-x1 <- rnorm(1000, mean = 1)
-x2 <- rnorm(1000, mean = 1)
+x1 <- runif(100)
+x2 <- rnorm(100, mean = 1)
 max_ord <- 6L
 
 obj1 <- as.centsums(x1, max_ord)
+# display:
 show(obj1)
 ```
 
 ```
-## class: centsums 
-##  moms: 0 1 -0.0059 3 0.25 13
+##           class: centsums 
+##     raw moments: 100 0.0051 0.09 -0.00092 0.014 -0.00043 0.0027 
+## central moments: 0 0.09 -0.0023 0.014 -0.00079 0.0027 
+##     std moments: 0 1 -0.086 1.8 -0.33 3.8
 ```
 
 ```r
@@ -112,6 +115,11 @@ obj3 <- as.centsums(c(x1, x2), max_ord)
 alt3 <- c(obj1, obj2)
 # it commutes!
 stopifnot(max(abs(sums(obj3) - sums(alt3))) < 1e-07)
+# unjoin them, with this one weird operator:
+alt2 <- obj3 %-% obj1
+alt1 <- obj3 %-% obj2
+stopifnot(max(abs(sums(obj2) - sums(alt2))) < 1e-07)
+stopifnot(max(abs(sums(obj1) - sums(alt1))) < 1e-07)
 ```
 
 We also have 'raw' join and unjoin methods, not nicely wrapped:
