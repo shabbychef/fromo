@@ -62,6 +62,7 @@
 #' @import Rcpp methods
 #' @useDynLib fromo
 #' @importFrom Rcpp evalCpp
+#' @importFrom methods new 
 #' @exportPattern "^[[:alpha:]]+"
 #'
 NULL

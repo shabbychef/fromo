@@ -170,8 +170,8 @@ setMethod('moments', signature(x='centsums'),
 			standardized={
 				retv <- cmoments[2:length(cmoments)]
 				retv[1] <- 0.0
-				if (length(v) > 1) {
-					if (length(v) > 2) {
+				if (length(retv) > 1) {
+					if (length(retv) > 2) {
 						sigma2 <- retv[2]
 						retv[3:length(retv)] <- retv[3:length(retv)] / (sigma2 ^ ((3:length(retv))/2.0))
 					}
@@ -182,11 +182,6 @@ setMethod('moments', signature(x='centsums'),
 			retv
 	})
 
-# do not export this.
-.join2 <- function(x,y) {
-	x@sums <- join_cent_sums(x@sums,y@sums)
-	x
-}
 
 #' @title concatenate centsums objects.
 #' @description 
@@ -199,8 +194,11 @@ setMethod('moments', signature(x='centsums'),
 #' @export
 #' @usage \\method{c}{centsums}(...)
 c.centsums <- function(...) { 
-	Reduce(.join2,list(...))
-	x
+	.join2 <- function(x,y) {
+		x@sums <- join_cent_sums(x@sums,y@sums)
+		x
+	}
+	x <- Reduce(.join2,list(...))
 } 
 
 # show#FOLDUP

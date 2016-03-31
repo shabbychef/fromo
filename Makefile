@@ -119,5 +119,8 @@ check: $(PKG_CRANCHECK) ## check the package as CRAN.
 DESCRIPTION : % : m4/%.m4 Makefile ## build the DESCRIPTION file
 	m4 -I ./m4 -DVERSION=$(VERSION) -DDATE=$(TODAY) -DPKG_NAME=$(PKG_NAME) $< > $@
 
+NAMESPACE : DESCRIPTION $(ALL_R) ## build the NAMESPACE file
+	r -l roxygen2 -e 'if (require(roxygen2)) { roxygenize(package.dir="$(<D)") }'
+
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:tags=.tags;:syn=make:ft=make:ai:si:cin:nu:fo=croqt:cino=p0t0c5(0:
