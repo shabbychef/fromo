@@ -348,3 +348,18 @@ running_tstat <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_
     .Call('fromo_running_tstat', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
 }
 
+#' @title
+#' Convert between different types of moments, raw, central, standardized.
+#' @description
+#' Given raw or central or standardized moments, convert to another type.
+#' 
+#' @param input a vector of the count, then the mean, then the \code{2} through \code{k}
+#' raw or central moments.
+#'
+#' @template etc
+#' @rdname moment_conversions
+#' @export
+cent2raw <- function(input) {
+    .Call('fromo_cent2raw', PACKAGE = 'fromo', input)
+}
+

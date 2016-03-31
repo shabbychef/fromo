@@ -266,3 +266,14 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// cent2raw
+NumericVector cent2raw(NumericVector input);
+RcppExport SEXP fromo_cent2raw(SEXP inputSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type input(inputSEXP);
+    __result = Rcpp::wrap(cent2raw(input));
+    return __result;
+END_RCPP
+}

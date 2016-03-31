@@ -1121,6 +1121,34 @@ NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
     return preval;
 }
 
+//' @title
+//' Convert between different types of moments, raw, central, standardized.
+//' @description
+//' Given raw or central or standardized moments, convert to another type.
+//' 
+//' @param input a vector of the count, then the mean, then the \code{2} through \code{k}
+//' raw or central moments.
+//'
+//' @template etc
+//' @rdname moment_conversions
+//' @export
+// [[Rcpp::export]]
+NumericVector cent2raw(NumericVector input) {
+    int ord = input.length() - 1;
+    NumericVector output(ord+1);
+    int ppp,qqq;
+    output[0] = input[0];
+    if (ord > 0) { 
+        output[1] = input[1];
+        for (ppp=2;ppp<=ord;++ppp) {
+            output[ppp] = pow(output[1],ppp);
+            for (qqq=2;qqq<=ppp;++qqq) {
+                output[ppp] += bincoef[ppp][qqq] * input[qqq] * pow(output[1],ppp-qqq);
+            }
+        }
+    }
+    return output;
+}
 
 //typedef std::vector<double> dubvec;  // convenience typedef
 
