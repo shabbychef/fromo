@@ -13,3 +13,4 @@ fromo.Rcheck
 fromo*tar.gz
 fromo*crancheck
 .docker_img
+cache

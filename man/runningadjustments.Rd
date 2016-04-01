@@ -8,8 +8,8 @@
 \alias{running_zscored}
 \title{Compare data to moments computed over a sliding window.}
 \usage{
-running_centered(v, window = NULL, na_rm = FALSE, max_ord_only = FALSE,
-  min_df = 0L, lookahead = 0L, restart_period = 100L)
+running_centered(v, window = NULL, na_rm = FALSE, min_df = 0L,
+  lookahead = 0L, restart_period = 100L)
 
 running_scaled(v, window = NULL, na_rm = FALSE, min_df = 0L,
   lookahead = 0L, restart_period = 100L)
@@ -31,9 +31,6 @@ If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equ
 to an infinite window size. If negative, an error will be thrown.}
 
 \item{na_rm}{whether to remove NA, false by default.}
-
-\item{max_ord_only}{for \code{running_centered}, if this flag is set, only compute
-the maximum order centered moment, and return in a vector.}
 
 \item{min_df}{the minimum df to return a value, otherwise \code{NaN} is returned.
 This can be used to prevent \emph{e.g.} Z-scores from being computed on only 3
