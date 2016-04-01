@@ -151,18 +151,21 @@ test_that("running adjustments",{#FOLDUP
 			running_scaled(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_zscored(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
 			running_tstat(x,window=window,restart_period=50L,na_rm=na_rm)
 
 			running_centered(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_scaled(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_zscored(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
 			running_tstat(y,window=window,restart_period=50L,na_rm=na_rm)
 
 			running_centered(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_scaled(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_zscored(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
 			running_tstat(z,window=window,restart_period=50L,na_rm=na_rm)
 		}
 	}
@@ -173,18 +176,21 @@ test_that("running adjustments",{#FOLDUP
 		running_scaled(x,window=window,restart_period=50L,na_rm=na_rm)
 		running_zscored(x,window=window,restart_period=50L,na_rm=na_rm)
 		running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm)
+		running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
 		running_tstat(x,window=window,restart_period=50L,na_rm=na_rm)
 
 		running_centered(y,window=window,restart_period=50L,na_rm=na_rm)
 		running_scaled(y,window=window,restart_period=50L,na_rm=na_rm)
 		running_zscored(y,window=window,restart_period=50L,na_rm=na_rm)
 		running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm)
+		running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
 		running_tstat(y,window=window,restart_period=50L,na_rm=na_rm)
 
 		running_centered(z,window=window,restart_period=50L,na_rm=na_rm)
 		running_scaled(z,window=window,restart_period=50L,na_rm=na_rm)
 		running_zscored(z,window=window,restart_period=50L,na_rm=na_rm)
 		running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm)
+		running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
 		running_tstat(z,window=window,restart_period=50L,na_rm=na_rm)
 	}
 
@@ -193,18 +199,21 @@ test_that("running adjustments",{#FOLDUP
 		running_scaled(x,window=window,min_df=min_df)
 		running_zscored(x,window=window,min_df=min_df)
 		running_sharpe(x,window=window,min_df=min_df)
+		running_sharpe(x,window=window,min_df=min_df,compute_se=TRUE)
 		running_tstat(x,window=window,min_df=min_df)
 
 		running_centered(y,window=window,min_df=min_df)
 		running_scaled(y,window=window,min_df=min_df)
 		running_zscored(y,window=window,min_df=min_df)
 		running_sharpe(y,window=window,min_df=min_df)
+		running_sharpe(y,window=window,min_df=min_df,compute_se=TRUE)
 		running_tstat(y,window=window,min_df=min_df)
 
 		running_centered(z,window=window,min_df=min_df)
 		running_scaled(z,window=window,min_df=min_df)
 		running_zscored(z,window=window,min_df=min_df)
 		running_sharpe(z,window=window,min_df=min_df)
+		running_sharpe(z,window=window,min_df=min_df,compute_se=TRUE)
 		running_tstat(z,window=window,min_df=min_df)
 	}
 

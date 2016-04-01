@@ -237,17 +237,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // running_sharpe
-NumericMatrix running_sharpe(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
-RcppExport SEXP fromo_running_sharpe(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_sharpe(SEXP v, SEXP window, bool na_rm, bool compute_se, int min_df, int restart_period);
+RcppExport SEXP fromo_running_sharpe(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP compute_seSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< bool >::type compute_se(compute_seSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    __result = Rcpp::wrap(running_sharpe(v, window, na_rm, min_df, restart_period));
+    __result = Rcpp::wrap(running_sharpe(v, window, na_rm, compute_se, min_df, restart_period));
     return __result;
 END_RCPP
 }

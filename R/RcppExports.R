@@ -265,6 +265,8 @@ running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE,
 #' mean and standard deviation possibly using 'future' or 'past' information
 #' by means of a non-zero lookahead. Positive values mean data are taken from
 #' the future.
+#' @param compute_se for the running_sharpe, return an extra column of the
+#' standard error, as computed by Mertens' correction.
 #'
 #' @details
 #'
@@ -308,11 +310,20 @@ running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE,
 #'     rzsco <- running_zscored(x,window=window)
 #'     rshrp <- running_sharpe(x,window=window)
 #'     rtsco <- running_tstat(x,window=window)
+#'     rsrse <- running_sharpe(x,window=window,compute_se=TRUE)
 #'     stopifnot(max(abs(rcent - (x - rm1[,2])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rscal - (x / rm1[,1])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rzsco - ((x - rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rshrp - (rm1[,2] / rm1[,1])),na.rm=TRUE) < 1e-12)
 #'     stopifnot(max(abs(rtsco - ((sqrt(rm1[,3]) * rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rsrse[,1] - rshrp),na.rm=TRUE) < 1e-12)
+#'
+#'     rm2 <- t(sapply(seq_len(length(x)),function(iii) { 
+#'                   xrang <- x[max(1,iii-window+1):iii]
+#'                   c(kurtosis(xrang)-3.0,skewness(xrang)) },
+#'                   simplify=TRUE))
+#'     mertens_se <- sqrt((1 + ((2 + rm2[,1])/4) * rshrp^2 - rm2[,2]*rshrp) / rm1[,3])
+#'     stopifnot(max(abs(rsrse[,2] - mertens_se),na.rm=TRUE) < 1e-12)
 #' }
 #'
 #' @seealso \code{\link{scale}}
@@ -338,8 +349,8 @@ running_zscored <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookah
 
 #' @rdname runningadjustments
 #' @export
-running_sharpe <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_sharpe', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+running_sharpe <- function(v, window = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_sharpe', PACKAGE = 'fromo', v, window, na_rm, compute_se, min_df, restart_period)
 }
 
 #' @rdname runningadjustments
