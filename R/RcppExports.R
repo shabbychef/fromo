@@ -265,8 +265,10 @@ running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE,
 #' mean and standard deviation possibly using 'future' or 'past' information
 #' by means of a non-zero lookahead. Positive values mean data are taken from
 #' the future.
-#' @param compute_se for the running_sharpe, return an extra column of the
+#' @param compute_se for \code{running_sharpe}, return an extra column of the
 #' standard error, as computed by Mertens' correction.
+#' @param max_ord_only for \code{running_centered}, if this flag is set, only compute
+#' the maximum order centered moment, and return in a vector.
 #'
 #' @details
 #'
@@ -331,8 +333,8 @@ running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE,
 #' @template ref-romo
 #' @rdname runningadjustments
 #' @export
-running_centered <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L) {
-    .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, na_rm, min_df, lookahead, restart_period)
+running_centered <- function(v, window = NULL, na_rm = FALSE, max_ord_only = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L) {
+    .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, na_rm, max_ord_only, min_df, lookahead, restart_period)
 }
 
 #' @rdname runningadjustments

@@ -23,9 +23,14 @@ opts_chunk$set(fig.width=7,fig.height=6,dpi=100,out.width='700px',out.height='60
 # this would be for figures:
 #opts_chunk$set(out.width='.8\\textwidth')
 # for text wrapping:
-options(width=64,digits=2)
+options(width=96,digits=2)
 opts_chunk$set(size="small")
 opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
+library(ggplot2)
+library(fromo)
+library(dplyr)
+library(moments)
+library(microbenchmark)
 
 ```
 
@@ -36,6 +41,7 @@ opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
 [![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 ![wat](https://img.shields.io/badge/the%20dog-ate%20my%20homework-blue.svg)
+![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
 Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
@@ -172,7 +178,7 @@ cbind(alt5,k5[,1])
 
 ## Running 'scale' operations
 
-Through template magic, the same code can perform running centering, scaling, z-scoring and so on:
+Through template magic, the same code was modified to perform running centering, scaling, z-scoring and so on:
 
 ```{r run2,eval=TRUE,echo=TRUE}
 require(fromo)
@@ -191,4 +197,68 @@ altz <- sapply(seq_along(x),function(iii) {
   simplify=TRUE)
 
 cbind(xz,altz)
+```
+
+A list of the available functions:
+
+* `running_centered` : from the current value, subtract the mean over the trailing window.
+* `running_scaled`: divide the current value by the standard deviation over the trailing window.
+* `running_zscored`: from the current value, subtract the mean then divide by the standard deviation over the trailing window.
+* `running_sharpe`: divide the mean by the standard deviation over the trailing window. There is a boolean flag to
+also compute and return the Mertens' form of the standard error of the Sharpe ratio over the trailing window in the second
+column.
+* `running_tstat`: compute the t-stat over the trailing window.
+
+The functions `running_centered`, `running_scaled` and `running_zscored` take an optional `lookahead` parameter that
+allows you to peek ahead (or behind if negative) to the computed moments for comparing against the current value. These
+are not supported for `running_sharpe` or `running_tstat` because they do not have an idea of the 'current value'.
+
+Here is an example of using the lookahead to z-score some data, compared to a purely time-safe lookback. Around a timestamp
+of 1000, you can see the difference in outcomes from the two methods:
+
+```{r toy_zscore,cache=TRUE,eval=TRUE,echo=TRUE,dpi=200,out.width='600px',out.height='500px'}
+set.seed(1235)
+z <- rnorm(1500,mean=0,sd=0.090)
+x <- exp(cumsum(z)) - 1
+
+xz_look <- running_zscored(x,window=301,lookahead=150)
+xz_safe <- running_zscored(x,window=301,lookahead=0)
+df <- data.frame(timestamp=seq_along(x),raw=x,lookahead=xz_look,lookback=xz_safe)
+
+library(tidyr)
+gdf <- gather(df,key='smoothing',value='x',-timestamp)
+
+library(ggplot2)
+ph <- ggplot(gdf,aes(x=timestamp,y=x,group=smoothing,colour=smoothing)) + 
+	geom_line()
+print(ph)
+```
+
+## Efficiency
+
+We make every attempt to balance numerical robustness, computational efficiency and memory usage. As a bit of 
+strawman-bashing, here we microbenchmark the running Z-score computation against the naive algorithm:
+
+```{r strawman_timing,eval=TRUE,echo=TRUE}
+require(fromo)
+require(moments)
+require(microbenchmark)
+
+set.seed(4422)
+x <- rnorm(1e4)
+
+dumb_zscore <- function(x,window) {
+	altz <- sapply(seq_along(x),function(iii) { 
+		rowi <- max(1,iii - window + 1)
+		xrang <- x[rowi:iii]
+		(x[iii] - mean(xrang)) / sd(xrang)
+  },simplify=TRUE)
+}
+
+val1 <- running_zscored(x,250)
+val2 <- dumb_zscore(x,250)
+stopifnot(max(abs(val1-val2),na.rm=TRUE) <= 1e-14)
+
+microbenchmark(running_zscored(x,250),
+							 dumb_zscore(x,250))
 ```

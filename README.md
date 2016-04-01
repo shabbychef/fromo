@@ -7,6 +7,7 @@
 [![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 ![wat](https://img.shields.io/badge/the%20dog-ate%20my%20homework-blue.svg)
+![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
 Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
@@ -49,15 +50,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval
-##     kurt5(x) 145.0 146.5 147.9  147.7 148.5 162   100
-##     skew4(x)  83.9  85.3  87.1   86.0  87.0 120   100
-##       sd3(x)  10.4  11.3  13.3   11.7  12.5 144   100
-##     dumbk(x) 199.2 209.9 214.7  212.0 218.1 327   200
-##  kurtosis(x)  86.9  91.6  95.0   92.6  93.9 256   100
-##  skewness(x)  87.4  92.3  94.4   93.4  95.1 115   100
-##        sd(x)  15.6  18.4  20.3   19.2  21.3  33   100
-##      mean(x)   3.7   4.3   5.1    4.7   5.2  18   100
+##         expr   min    lq  mean median    uq max neval    cld
+##     kurt5(x) 137.6 139.7 142.8  140.5 141.3 205   100     e 
+##     skew4(x)  79.4  80.9  84.4   81.8  83.2 142   100    d  
+##       sd3(x)  10.0  10.7  11.7   11.3  11.8  21   100  b    
+##     dumbk(x) 188.5 196.8 206.1  199.7 205.7 481   200      f
+##  kurtosis(x)  83.7  86.9  89.2   87.5  89.1 133   100    d  
+##  skewness(x)  83.5  87.1  89.6   88.1  89.5 126   100    d  
+##        sd(x)  13.8  16.5  18.1   17.3  18.2  34   100   c   
+##      mean(x)   3.6   4.1   4.7    4.3   4.8  14   100 a
 ```
 
 ```r
@@ -69,15 +70,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval
-##     kurt5(x) 1449 1456 1496   1472 1498 1623    10
-##     skew4(x)  820  821  830    826  831  854    10
-##       sd3(x)   85   85   86     85   85   93    10
-##     dumbk(x) 1718 1722 1769   1762 1808 1848    10
-##  kurtosis(x)  841  843  869    858  883  930    10
-##  skewness(x)  805  814  832    820  836  915    10
-##        sd(x)   49   49   51     50   51   57    10
-##      mean(x)   17   17   17     17   17   18    10
+##         expr  min   lq mean median   uq  max neval     cld
+##     kurt5(x) 1385 1387 1408   1410 1425 1430    10      f 
+##     skew4(x)  787  792  798    796  802  816    10    d   
+##       sd3(x)   81   81   82     82   82   84    10   c    
+##     dumbk(x) 1638 1656 1679   1683 1695 1721    10       g
+##  kurtosis(x)  807  813  822    819  826  841    10     e  
+##  skewness(x)  771  775  786    785  790  827    10    d   
+##        sd(x)   47   48   48     48   48   50    10  b     
+##      mean(x)   16   16   16     16   16   17    10 a
 ```
 
 ## Monoid mumbo-jumbo
@@ -227,7 +228,7 @@ cbind(alt5, k5[, 1])
 
 ## Running 'scale' operations
 
-Through template magic, the same code can perform running centering, scaling, z-scoring and so on:
+Through template magic, the same code was modified to perform running centering, scaling, z-scoring and so on:
 
 
 ```r
@@ -271,4 +272,80 @@ cbind(xz, altz)
 ## [18,] -0.82 -0.82
 ## [19,] -0.64 -0.64
 ## [20,]  2.37  2.37
+```
+
+A list of the available functions:
+
+* `running_centered` : from the current value, subtract the mean over the trailing window.
+* `running_scaled`: divide the current value by the standard deviation over the trailing window.
+* `running_zscored`: from the current value, subtract the mean then divide by the standard deviation over the trailing window.
+* `running_sharpe`: divide the mean by the standard deviation over the trailing window. There is a boolean flag to
+also compute and return the Mertens' form of the standard error of the Sharpe ratio over the trailing window in the second
+column.
+* `running_tstat`: compute the t-stat over the trailing window.
+
+The functions `running_centered`, `running_scaled` and `running_zscored` take an optional `lookahead` parameter that
+allows you to peek ahead (or behind if negative) to the computed moments for comparing against the current value. These
+are not supported for `running_sharpe` or `running_tstat` because they do not have an idea of the 'current value'.
+
+Here is an example of using the lookahead to z-score some data, compared to a purely time-safe lookback. Around a timestamp
+of 1000, you can see the difference in outcomes from the two methods:
+
+
+```r
+set.seed(1235)
+z <- rnorm(1500, mean = 0, sd = 0.09)
+x <- exp(cumsum(z)) - 1
+
+xz_look <- running_zscored(x, window = 301, lookahead = 150)
+xz_safe <- running_zscored(x, window = 301, lookahead = 0)
+df <- data.frame(timestamp = seq_along(x), raw = x, 
+    lookahead = xz_look, lookback = xz_safe)
+
+library(tidyr)
+gdf <- gather(df, key = "smoothing", value = "x", -timestamp)
+
+library(ggplot2)
+ph <- ggplot(gdf, aes(x = timestamp, y = x, group = smoothing, 
+    colour = smoothing)) + geom_line()
+print(ph)
+```
+
+<img src="github_extra/figure/toy_zscore-1.png" title="plot of chunk toy_zscore" alt="plot of chunk toy_zscore" width="600px" height="500px" />
+
+## Efficiency
+
+We make every attempt to balance numerical robustness, computational efficiency and memory usage. As a bit of 
+strawman-bashing, here we microbenchmark the running Z-score computation against the naive algorithm:
+
+
+```r
+require(fromo)
+require(moments)
+require(microbenchmark)
+
+set.seed(4422)
+x <- rnorm(10000)
+
+dumb_zscore <- function(x, window) {
+    altz <- sapply(seq_along(x), function(iii) {
+        rowi <- max(1, iii - window + 1)
+        xrang <- x[rowi:iii]
+        (x[iii] - mean(xrang))/sd(xrang)
+    }, simplify = TRUE)
+}
+
+val1 <- running_zscored(x, 250)
+val2 <- dumb_zscore(x, 250)
+stopifnot(max(abs(val1 - val2), na.rm = TRUE) <= 1e-14)
+
+microbenchmark(running_zscored(x, 250), dumb_zscore(x, 
+    250))
+```
+
+```
+## Unit: microseconds
+##                     expr    min     lq   mean median     uq    max neval cld
+##  running_zscored(x, 250)    767    773    840    794    837   1354   100  a 
+##      dumb_zscore(x, 250) 212418 221888 233803 230396 240998 286202   100   b
 ```

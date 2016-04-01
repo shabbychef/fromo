@@ -106,6 +106,8 @@ installed : $(PKG_INSTALLED) ## install the package
 README.md : nodist/README.Rmd $(PKG_INSTALLED)
 	r -l Rcpp -l knitr -l devtools -e 'setwd("$(<D)");if (require(knitr)) { knit("$(<F)") }'
 	mv nodist/README.md $@
+	@mkdir -p github_extra
+	@rsync -av nodist/github_extra/ github_extra/
 
 .docker_img : docker/Dockerfile  ## build the docker image
 	$(DOCKER) build --rm -t $(USER)/$(PKG_LCNAME)-crancheck docker

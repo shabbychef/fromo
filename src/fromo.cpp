@@ -954,11 +954,15 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
     }
     return preval;
 }
+// @param max_ord_only for \code{running_cent_moments}, if this flag is set, only compute
+// the maximum order centered moment, and return in a vector.
+// NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, bool max_ord_only=false, 
 // return the centered moments down to the 2nd, then the mean, and the dof.
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, 
+                                   int min_df=0, int used_df=0, int restart_period=100) {
     int wins=get_wins(window);
     double denom;
     double udf=(double)used_df;
@@ -1015,7 +1019,7 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_orde
 //' mean and standard deviation possibly using 'future' or 'past' information
 //' by means of a non-zero lookahead. Positive values mean data are taken from
 //' the future.
-//' @param compute_se for the running_sharpe, return an extra column of the
+//' @param compute_se for \code{running_sharpe}, return an extra column of the
 //' standard error, as computed by Mertens' correction.
 //'
 //' @details
