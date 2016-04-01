@@ -39,6 +39,8 @@ opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
 
 Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
+Computations are via the Welford-Terriberry algorithm, as described by
+[Bennett _et al._](https://www.semanticscholar.org/paper/Numerically-stable-single-pass-parallel-statistics-Bennett-Grout/a83ed72a5ba86622d5eb6395299b46d51c901265)
 
 -- Steven E. Pav, shabbychef@gmail.com
 
