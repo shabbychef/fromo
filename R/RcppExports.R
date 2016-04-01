@@ -190,9 +190,17 @@ unjoin_cent_sums <- function(ret3, ret2) {
 #' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
 #' During the 'burn-in' phase, we take fewer elements.
 #'
-#' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
-#' then a column of the mean, then a column of the number of (non-nan) elements in the input.
-#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+#' @return Typically a matrix, where the first columns are the kth, k-1th through 2nd standardized, 
+#' centered moments, then a column of the mean, then a column of the number of (non-nan) elements in the input,
+#' with the following exceptions:
+#' \describe{
+#' \item{running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
+#' only a column of the maximum order centered moment is returned.}
+#' \item{running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
+#' and the count. There is not yet an option for \code{max_order_only}, but probably should be.}
+#' \item{running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
+#' (which is the variance) cumulant, then the mean, and the count.}
+#' }
 #'
 #' @note
 #' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
@@ -238,10 +246,18 @@ running_kurt5 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df 
     .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, na_rm, min_df, used_df, restart_period)
 }
 
+#' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
+#' the maximum order centered moment, and return in a vector.
 #' @rdname runningmoments
 #' @export
-running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
+running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, max_order_only, min_df, used_df, restart_period)
+}
+
+#' @rdname runningmoments
+#' @export
+running_cumulants <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_cumulants', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
 }
 
 #' @rdname runningmoments

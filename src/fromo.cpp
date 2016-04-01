@@ -593,7 +593,12 @@ NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
 // come out as zero when computed on too few observations, and we blindly
 // return Inf or NaN in that case. set the min_df to correct for this.
 // srmer is 'Sharpe ratio and Mertens standard error'
-template <typename T,bool ret_mat,bool ret_cent,bool ret_scald,bool ret_z,bool ret_sr,bool ret_t,bool ret_srmer>
+//
+// in summary:
+// ret_mat return a rows x (1+ord) matrix of the running centered sums
+// ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
+// ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
+template <typename T,bool ret_mat,bool ret_extreme,bool ret_cent,bool ret_scald,bool ret_z,bool ret_sr,bool ret_t,bool ret_srmer>
 NumericMatrix runningQMoments(T v,
                               int ord = 3,
                               int window = NA_INTEGER,
@@ -634,7 +639,7 @@ NumericMatrix runningQMoments(T v,
     int ncols;
     if (ret_mat) { 
         ncols = 1+ord; 
-    } else if (ret_srmer) {
+    } else if (ret_extreme || ret_srmer) {
         ncols = 2; 
     } else {
         ncols = 1; 
@@ -771,6 +776,20 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,mmm) = NAN;
                 }
             }
+        } else if (ret_extreme) {
+            if (vret[0] >= min_df) {
+                // put them in backwards!
+                if (vret[0] >= ord) {
+                    xret(lll,0) = vret[ord];
+                    xret(lll,1) = vret[0];
+                } else {
+                    xret(lll,0) = vret[ord];
+                    xret(lll,1) = NAN;
+                }
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+            }
         } else {
             if (vret[0] >= min_df) {
                 if (ret_cent) {
@@ -809,12 +828,21 @@ NumericMatrix runningQMoments(T v,
 }
 
 // wrap the call:
-NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period, const int min_df, bool na_rm) {
-    switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
-        case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
-        case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
-        default: stop("Unsupported input type");
+NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period, const int min_df, bool na_rm, bool max_order_only) {
+    if (max_order_only) {
+        switch (TYPEOF(v)) {
+            case  INTSXP: { return runningQMoments<IntegerVector, false, true, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+            case REALSXP: { return runningQMoments<NumericVector, false, true, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+            case  LGLSXP: { return runningQMoments<LogicalVector, false, true, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+            default: stop("Unsupported input type");
+        }
+    } else {
+        switch (TYPEOF(v)) {
+            case  INTSXP: { return runningQMoments<IntegerVector, true, false, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+            case REALSXP: { return runningQMoments<NumericVector, true, false, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+            case  LGLSXP: { return runningQMoments<LogicalVector, true, false, false, false, false, false, false, false>(v, ord, window, recom_period, 0, min_df, na_rm); }
+            default: stop("Unsupported input type");
+        }
     }
 }
 
@@ -878,9 +906,17 @@ int get_wins(SEXP window) {
 //' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
 //' During the 'burn-in' phase, we take fewer elements.
 //'
-//' @return a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
-//' then a column of the mean, then a column of the number of (non-nan) elements in the input.
-//' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+//' @return Typically a matrix, where the first columns are the kth, k-1th through 2nd standardized, 
+//' centered moments, then a column of the mean, then a column of the number of (non-nan) elements in the input,
+//' with the following exceptions:
+//' \describe{
+//' \item{running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
+//' only a column of the maximum order centered moment is returned.}
+//' \item{running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
+//' and the count. There is not yet an option for \code{max_order_only}, but probably should be.}
+//' \item{running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
+//' (which is the variance) cumulant, then the mean, and the count.}
+//' }
 //'
 //' @note
 //' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
@@ -914,7 +950,7 @@ int get_wins(SEXP window) {
 NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
     int wins=get_wins(window);
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, 2, wins, restart_period, min_df, na_rm);
+    NumericMatrix preval = wrapRunningQMoments(v, 2, wins, restart_period, min_df, na_rm, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-udf));
@@ -929,7 +965,7 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, in
 NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
     int wins=get_wins(window);
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, 3, wins, restart_period, min_df, na_rm);
+    NumericMatrix preval = wrapRunningQMoments(v, 3, wins, restart_period, min_df, na_rm, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,3)) * preval(iii,0) / pow(preval(iii,1),1.5);
@@ -945,7 +981,7 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
 NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
     int wins=get_wins(window);
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, 4, wins, restart_period, min_df, na_rm);
+    NumericMatrix preval = wrapRunningQMoments(v, 4, wins, restart_period, min_df, na_rm, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
@@ -954,25 +990,38 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
     }
     return preval;
 }
-// @param max_ord_only for \code{running_cent_moments}, if this flag is set, only compute
-// the maximum order centered moment, and return in a vector.
-// NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, bool max_ord_only=false, 
 // return the centered moments down to the 2nd, then the mean, and the dof.
+//' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
+//' the maximum order centered moment, and return in a vector.
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, 
+NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, bool max_order_only=false, 
                                    int min_df=0, int used_df=0, int restart_period=100) {
     int wins=get_wins(window);
+    int ncolm1,ncolm2;
     double denom;
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm);
+    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm, max_order_only);
+    ncolm1 = preval.ncol() - 1;
+    ncolm2 = ncolm1 - 1;
     if (max_order > 1) {
-        // fix the higher than mean columns;
-        for (int iii=0;iii < preval.nrow();++iii) {
-            denom = preval(iii,max_order) - udf;
-            for (int mmm=0;mmm < (max_order-1);++mmm) {
-                preval(iii,mmm) = preval(iii,mmm) / denom;
+        if (max_order_only) {
+            // 2FIX: this is not as space efficient as it could be,
+            // and a bit of a mess!
+            NumericMatrix retval(Dimension(preval.nrow(),1));
+            for (int iii=0;iii < preval.nrow();++iii) {
+                denom = preval(iii,1) - udf;
+                retval(iii,0) = preval(iii,0) / denom;
+            }
+            return retval;
+        } else {
+            // fix the higher than mean columns;
+            for (int iii=0;iii < preval.nrow();++iii) {
+                denom = preval(iii,ncolm1) - udf;
+                for (int mmm=0;mmm < ncolm2;++mmm) {
+                    preval(iii,mmm) = preval(iii,mmm) / denom;
+                }
             }
         }
     }
@@ -983,12 +1032,36 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_ord
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
+NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+    NumericMatrix cumulants = running_cent_moments(v, window, max_order, na_rm, false, min_df, used_df, restart_period);
+    NumericVector temp_moments(1+max_order);
+    int iii,jjj,mmm,ppp;
+    // moments to cumulants. it's a snap! (c.f. PDQutils)
+    for (iii=0;iii < cumulants.nrow();++iii) {
+        // copy the row to avoid writeover; bleah;
+        for (jjj=0;jjj <= max_order;++jjj) {
+            temp_moments(jjj) = cumulants(iii,jjj);
+        }
+        for (jjj=4;jjj <= max_order;++jjj) {
+            // compute the jth order cumulant.
+            for (mmm=2;mmm <= jjj-2;mmm++) {
+                cumulants(iii,max_order-jjj) -= bincoef[jjj-1][mmm-1] * cumulants(iii,max_order-mmm) * temp_moments(max_order-(jjj-mmm));
+            }
+        }
+    }
+    return cumulants;
+}
+
+// return the cumulants down to the 2nd, then the standard deviation, the mean, and the dof.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
 NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
     int wins=get_wins(window);
     double denom;
     double udf = (double)used_df;
     double sigma;
-    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm);
+    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm, false);
     if (max_order > 1) {
         // fix the higher than mean columns;
         for (int iii=0;iii < preval.nrow();++iii) {
@@ -1090,9 +1163,9 @@ NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, bool na_rm=fals
     NumericMatrix preval;
     int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -1105,9 +1178,9 @@ NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, bool na_rm=false,
     NumericMatrix preval;
     int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -1120,9 +1193,9 @@ NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, bool na_rm=false
     NumericMatrix preval;
     int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;
@@ -1136,16 +1209,16 @@ NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, bool na_rm=false,
     int wins=get_wins(window);
     if (compute_se) {
         switch (TYPEOF(v)) {
-            case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm); break; }
-            case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm); break; }
-            case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm); break; }
+            case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm); break; }
+            case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm); break; }
+            case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm); break; }
             default: stop("Unsupported input type");
         }
     } else {
         switch (TYPEOF(v)) {
-            case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
-            case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
-            case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
+            case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
+            case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
+            case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
             default: stop("Unsupported input type");
         }
     }
@@ -1159,9 +1232,9 @@ NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
     NumericMatrix preval;
     int wins=get_wins(window);
     switch (TYPEOF(v)) {
-        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
-        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
-        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
+        case  INTSXP: { preval = runningQMoments<IntegerVector, false, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
+        case REALSXP: { preval = runningQMoments<NumericVector, false, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
+        case  LGLSXP: { preval = runningQMoments<LogicalVector, false, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm); break; }
         default: stop("Unsupported input type");
     }
     return preval;

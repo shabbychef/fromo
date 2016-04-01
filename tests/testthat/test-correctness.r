@@ -113,9 +113,25 @@ test_that("running ops are correct",{#FOLDUP
 					dumbv <- cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
 					expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
 
+					fastv <- running_cent_moments(x,window=window,max_order=6L,max_order_only=TRUE,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- dumb_cmom6
+					expect_equal(max(abs(dumbv - fastv)[-(1:6)]),0,tolerance=1e-8)
+
 					fastv <- running_std_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
 					dumbv <- cbind(dumb_cmom6 / (dumb_cmom2^3),dumb_cmom5 / (dumb_cmom2^2.5),dumb_cmom4 / (dumb_cmom2^2.0),dumb_cmom3 / (dumb_cmom2^1.5),sqrt(dumb_cmom2),dumb_mean,dumb_count)
 					expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+
+					# cumulants
+					if (require(PDQutils)) {
+						fastv <- running_cumulants(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+						pre_dumbv <- cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
+						dumbv <- t(sapply(seq_along(x),function(iii) { 
+														rv <- rev(PDQutils::moment2cumulant(c(0,rev(pre_dumbv[iii,1:(ncol(pre_dumbv)-2)]))))
+														rv <- rv[-length(rv)]
+														c(rv,pre_dumbv[iii,ncol(pre_dumbv) + (-1:0)])
+							},simplify='matrix'))
+						expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+					}
 				}
 			}
 		}

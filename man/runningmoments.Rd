@@ -2,6 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{running_sd3}
 \alias{running_cent_moments}
+\alias{running_cumulants}
 \alias{running_kurt5}
 \alias{running_sd3}
 \alias{running_skew4}
@@ -18,6 +19,10 @@ running_kurt5(v, window = NULL, na_rm = FALSE, min_df = 0L,
   used_df = 1L, restart_period = 100L)
 
 running_cent_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
+  max_order_only = FALSE, min_df = 0L, used_df = 0L,
+  restart_period = 100L)
+
+running_cumulants(v, window = NULL, max_order = 5L, na_rm = FALSE,
   min_df = 0L, used_df = 0L, restart_period = 100L)
 
 running_std_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
@@ -47,11 +52,22 @@ results. Note that the code checks for negative second and fourth moments and
 recomputes when needed.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
+
+\item{max_order_only}{for \code{running_cent_moments}, if this flag is set, only compute
+the maximum order centered moment, and return in a vector.}
 }
 \value{
-a matrix; the first columns are the kth, k-1th through 2nd standardized, centered moment,
-then a column of the mean, then a column of the number of (non-nan) elements in the input.
-When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+Typically a matrix, where the first columns are the kth, k-1th through 2nd standardized, 
+centered moments, then a column of the mean, then a column of the number of (non-nan) elements in the input,
+with the following exceptions:
+\describe{
+\item{running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
+only a column of the maximum order centered moment is returned.}
+\item{running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
+and the count. There is not yet an option for \code{max_order_only}, but probably should be.}
+\item{running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
+(which is the variance) cumulant, then the mean, and the count.}
+}
 }
 \description{
 Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
