@@ -78,6 +78,8 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	z <- as.logical(y)
 	q <- c('a','b','c')
 
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+
 	for (window in c(50,Inf)) {
 		for (na_rm in c(FALSE,TRUE)) {
 			running_sd3(x,window=window,restart_period=50L,na_rm=na_rm)
@@ -87,6 +89,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			running_cent_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE)
 			running_std_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 			running_cumulants(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+			running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
 			running_sd3(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(y,window=window,restart_period=50L,na_rm=na_rm)
@@ -95,6 +98,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			running_cent_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE)
 			running_std_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 			running_cumulants(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+			running_apx_quantiles(y,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
 			running_sd3(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(z,window=window,restart_period=50L,na_rm=na_rm)
@@ -103,6 +107,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			running_cent_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE)
 			running_std_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 			running_cumulants(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+			running_apx_quantiles(z,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 		}
 	}
 	for (min_df in c(2L,10L)) {
@@ -113,6 +118,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		running_cent_moments(x,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE)
 		running_std_moments(x,max_order=5L,window=window,min_df=min_df)
 		running_cumulants(x,max_order=5L,window=window,min_df=min_df)
+		running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,min_df=min_df)
 
 		running_sd3(y,window=window,min_df=min_df)
 		running_skew4(y,window=window,min_df=min_df)
@@ -121,6 +127,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		running_cent_moments(y,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE)
 		running_std_moments(y,max_order=5L,window=window,min_df=min_df)
 		running_cumulants(y,max_order=5L,window=window,min_df=min_df)
+		running_apx_quantiles(y,p=ptiles,max_order=5L,window=window,min_df=min_df)
 
 		running_sd3(z,window=window,min_df=min_df)
 		running_skew4(z,window=window,min_df=min_df)
@@ -129,6 +136,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		running_cent_moments(z,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE)
 		running_std_moments(z,max_order=5L,window=window,min_df=min_df)
 		running_cumulants(z,max_order=5L,window=window,min_df=min_df)
+		running_apx_quantiles(z,p=ptiles,max_order=5L,window=window,min_df=min_df)
 	}
 
 	expect_error(running_sd3(q))
@@ -137,6 +145,8 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(running_cent_moments(q,max_order=5L))
 	expect_error(running_std_moments(q,max_order=5L))
 	expect_error(running_cumulants(q,max_order=5L))
+	expect_error(running_apx_quantiles(q,p=ptiles,max_order=5L))
+	expect_error(running_apx_quantiles(x,p=q,max_order=5L))
 
 	# make sure the Heywood branch gets hit
 	x <- rnorm(1e5,mean=1e10)
@@ -149,6 +159,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,max_order_only=TRUE)
 	running_std_moments(x,max_order=5L,window=window,restart_period=restart_period)
 	running_cumulants(x,max_order=5L,window=window,restart_period=restart_period)
+	running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period)
 
 	# sentinel
 	expect_true(TRUE)

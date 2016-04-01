@@ -22,10 +22,10 @@ running_cent_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
   max_order_only = FALSE, min_df = 0L, used_df = 0L,
   restart_period = 100L)
 
-running_cumulants(v, window = NULL, max_order = 5L, na_rm = FALSE,
+running_std_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
   min_df = 0L, used_df = 0L, restart_period = 100L)
 
-running_std_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
+running_cumulants(v, window = NULL, max_order = 5L, na_rm = FALSE,
   min_df = 0L, used_df = 0L, restart_period = 100L)
 }
 \arguments{
@@ -75,7 +75,7 @@ an infinite or finite sliding window, returning a matrix.
 }
 \details{
 Computes the number of elements, the mean, and the 2nd through kth
-centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
+centered (and typically standardized) moments, for \eqn{k=2,3,4}{k=2,3,4}. These
 are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
 
 Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where

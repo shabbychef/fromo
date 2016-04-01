@@ -172,6 +172,23 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// running_std_moments
+NumericMatrix running_std_moments(SEXP v, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
+RcppExport SEXP fromo_running_std_moments(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    __result = Rcpp::wrap(running_std_moments(v, window, max_order, na_rm, min_df, used_df, restart_period));
+    return __result;
+END_RCPP
+}
 // running_cumulants
 NumericMatrix running_cumulants(SEXP v, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
 RcppExport SEXP fromo_running_cumulants(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
@@ -189,20 +206,21 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// running_std_moments
-NumericMatrix running_std_moments(SEXP v, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_std_moments(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+// running_apx_quantiles
+NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
+RcppExport SEXP fromo_running_apx_quantiles(SEXP vSEXP, SEXP pSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    __result = Rcpp::wrap(running_std_moments(v, window, max_order, na_rm, min_df, used_df, restart_period));
+    __result = Rcpp::wrap(running_apx_quantiles(v, p, window, max_order, na_rm, min_df, used_df, restart_period));
     return __result;
 END_RCPP
 }

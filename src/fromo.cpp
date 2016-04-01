@@ -896,7 +896,7 @@ int get_wins(SEXP window) {
 //' @details
 //'
 //' Computes the number of elements, the mean, and the 2nd through kth
-//' centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
+//' centered (and typically standardized) moments, for \eqn{k=2,3,4}{k=2,3,4}. These
 //' are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
 //'
 //' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
@@ -1032,30 +1032,6 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_ord
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
-    NumericMatrix cumulants = running_cent_moments(v, window, max_order, na_rm, false, min_df, used_df, restart_period);
-    NumericVector temp_moments(1+max_order);
-    int iii,jjj,mmm,ppp;
-    // moments to cumulants. it's a snap! (c.f. PDQutils)
-    for (iii=0;iii < cumulants.nrow();++iii) {
-        // copy the row to avoid writeover; bleah;
-        for (jjj=0;jjj <= max_order;++jjj) {
-            temp_moments(jjj) = cumulants(iii,jjj);
-        }
-        for (jjj=4;jjj <= max_order;++jjj) {
-            // compute the jth order cumulant.
-            for (mmm=2;mmm <= jjj-2;mmm++) {
-                cumulants(iii,max_order-jjj) -= bincoef[jjj-1][mmm-1] * cumulants(iii,max_order-mmm) * temp_moments(max_order-(jjj-mmm));
-            }
-        }
-    }
-    return cumulants;
-}
-
-// return the cumulants down to the 2nd, then the standard deviation, the mean, and the dof.
-//' @rdname runningmoments
-//' @export
-// [[Rcpp::export]]
 NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
     int wins=get_wins(window);
     double denom;
@@ -1075,6 +1051,172 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_orde
         }
     }
     return preval;
+}
+
+// return the cumulants down to the 2nd, then the standard deviation, the mean, and the dof.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+    NumericMatrix cumulants = running_cent_moments(v, window, max_order, na_rm, false, min_df, used_df, restart_period);
+    NumericVector temp_moments(1+max_order);
+    int iii,jjj,mmm,ppp;
+    // moments to cumulants. it's a snap! (c.f. PDQutils)
+    for (iii=0;iii < cumulants.nrow();++iii) {
+        // copy the row to avoid writeover; bleah;
+        for (jjj=0;jjj <= max_order;++jjj) {
+            temp_moments(jjj) = cumulants(iii,jjj);
+        }
+        for (jjj=4;jjj <= max_order;++jjj) {
+            // compute the jth order cumulant.
+            for (mmm=2;mmm <= jjj-2;mmm++) {
+                cumulants(iii,max_order-jjj) -= bincoef[jjj-1][mmm-1] * cumulants(iii,max_order-mmm) * temp_moments(max_order-(jjj-mmm));
+            }
+        }
+    }
+    return cumulants;
+}
+//' @title
+//' Compute approximate quantiles over a sliding window
+//' @description
+//' Computes cumulants up to some given order, then employs the Cornish-Fisher approximation
+//' to compute approximate quantiles using a Gaussian basis.
+//' 
+//' @param p the probability points at which to compute the quantiles. Should be in the range (0,1).
+//' @inheritParams running_cumulants
+//'
+//' @details
+//'
+//' Computes the cumulants, then approximates quantiles using AS269 of Lee & Lin.
+//'
+//' @references 
+//'
+//' Lee, Y-S., and Lin, T-K. "Algorithm AS269: High Order Cornish Fisher
+//' Expansion." Appl. Stat. 41, no. 1 (1992): 233-240. 
+//' \url{http://www.jstor.org/stable/2347649}
+//'
+//' Lee, Y-S., and Lin, T-K. "Correction to Algorithm AS269: High Order 
+//' Cornish Fisher Expansion." Appl. Stat. 42, no. 1 (1993): 268-269. 
+//' \url{http://www.jstor.org/stable/2347433}
+//'
+//' AS 269. \url{https://web.archive.org/web/20110103030111/http://lib.stat.cmu.edu/apstat/269}
+//'
+//' Jaschke, Stefan R. "The Cornish-Fisher-expansion in the context of 
+//' Delta-Gamma-normal approximations." No. 2001, 54. Discussion Papers, 
+//' Interdisciplinary Research Project 373: Quantification and Simulation of 
+//' Economic Processes, 2001. 
+//' \url{http://www.jaschke-net.de/papers/CoFi.pdf}
+//'
+//' @return A matrix, with one row for each element of \code{x}, and one column for each element of \code{q}.
+//'
+//' @examples
+//' x <- rnorm(1e5)
+//' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
+//'
+//' @seealso \code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
+//' @template etc
+//' @template ref-romo
+//' @rdname runningquantiles
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+    NumericMatrix cumulants = running_cumulants(v, window, max_order, na_rm, min_df, used_df, restart_period);
+    int iii,jjj,mmm,nnn,qqq,lll;
+    int ja,jb,jal,jbl;
+    double fac,aa,bc;
+
+    int nq=p.size();
+    int nord=max_order-2;
+    // prealloc
+    NumericMatrix retval(cumulants.nrow(),nq);
+    NumericMatrix P(nq,3*bincoef[nord+1][2]);
+    NumericMatrix D(nq,3*nord);
+    NumericVector DD(nq);
+    NumericVector DEL(nq);
+    // standardized cumulants go here:
+    NumericVector a(nord);
+    double mu,sigmasq;
+
+    // yay for sugar! yay!
+    NumericVector z = qnorm(p,0.0,1.0);
+
+    // precompute the Hermite polynomials
+    NumericMatrix H(nq,3*nord);
+    for (qqq=0;qqq<nq;qqq++) {
+        H(qqq,0) = -z(qqq);
+        H(qqq,1) = z(qqq) * z(qqq);
+        for (jjj=2;jjj < 3*nord;jjj++) {
+            H(qqq,jjj) = - (z(qqq) * H(qqq,jjj-1) + jjj * H(qqq,jjj-2));
+        }
+    }
+
+    // now begins the fun!
+    for (iii=0;iii < cumulants.nrow();iii++) {
+        // zero everything
+        for (mmm=0;mmm < nq;mmm++) {
+            DEL(mmm) = 0.0;
+            for (nnn=0;nnn<P.ncol();nnn++) { P(mmm,nnn) = 0.0; }
+            for (nnn=0;nnn<D.ncol();nnn++) { D(mmm,nnn) = 0.0; }
+        }
+        mu = cumulants(iii,max_order-1);
+        sigmasq = cumulants(iii,max_order-2);
+        // change raw cumulants to standardized...
+        for (jjj=0;jjj<nord;jjj++) {
+            a(jjj) = pow(-1.0,(jjj+1)) * cumulants(iii,max_order-3-jjj) / (pow(sigmasq,(jjj+3.0)/2.0) * (jjj+2) * (jjj+3));
+        }
+        for (qqq=0;qqq<nq;qqq++) {
+            D(qqq,0) = -a(0) * H(qqq,1);
+            DEL(qqq) = D(qqq,0);
+            P(qqq,0) = D(qqq,0);
+            P(qqq,2) = a(0);
+        }
+        ja = 0;
+        fac = 1.0;
+
+        for (jjj=2;jjj<=nord;++jjj) {//FOLDUP
+            fac = fac * jjj;
+            ja = ja + 3 * (jjj-1);
+            jb = ja;
+            bc = 1.0;
+            for (mmm=1;mmm<jjj;mmm++) {
+                for (qqq=0;qqq<nq;qqq++) {
+                    DD(qqq) = bc * D(qqq,mmm-1);
+                }
+                aa = bc * a(mmm-1);
+                jb = jb - 3 * (jjj - mmm);
+                for (lll=1;lll<=3*(jjj-mmm);lll++) {
+                    jbl = jb + lll;
+                    jal = ja + lll;
+                    for (qqq=0;qqq<nq;qqq++) {
+                        P(qqq,jal) += DD(qqq) * P(qqq,jbl-1);
+                        P(qqq,jal+mmm-1) += aa * P(qqq,jbl-1);
+                    }
+                }  // line 40
+                bc *= (jjj - mmm) / mmm;
+            } // line 50
+            for (qqq=0;qqq<nq;qqq++) {
+                P(qqq,ja + jjj + 1) += a(jjj-1);
+                // calculate the adjustments
+                D(qqq,jjj-1) = 0.0;
+            }
+            for (lll=2;lll <= 3*jjj;lll++) {
+                for (qqq=0;qqq<nq;qqq++) {
+                    D(qqq,jjj-1) -= P(qqq,ja+lll-1) * H(qqq,lll-2);
+                }
+            }
+            // line 60
+            for (qqq=0;qqq<nq;qqq++) {
+                P(qqq,ja) = D(qqq,jjj-1);
+                DEL(qqq) += (D(qqq,jjj-1) / fac);
+            }
+        } // line 70//UNFOLD
+
+        for (qqq=0;qqq<nq;qqq++) {
+            retval(iii,qqq) = mu + sqrt(sigmasq) * (DEL(qqq) + z(qqq));
+        }
+    }
+
+    return retval;
 }
 
 //' @title

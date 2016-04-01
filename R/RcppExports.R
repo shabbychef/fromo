@@ -180,7 +180,7 @@ unjoin_cent_sums <- function(ret3, ret2) {
 #' @details
 #'
 #' Computes the number of elements, the mean, and the 2nd through kth
-#' centered standardized moment, for \eqn{k=2,3,4}{k=2,3,4}. These
+#' centered (and typically standardized) moments, for \eqn{k=2,3,4}{k=2,3,4}. These
 #' are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
 #'
 #' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
@@ -256,14 +256,60 @@ running_cent_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE
 
 #' @rdname runningmoments
 #' @export
-running_cumulants <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_cumulants', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
+running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_std_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
 }
 
 #' @rdname runningmoments
 #' @export
-running_std_moments <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
-    .Call('fromo_running_std_moments', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
+running_cumulants <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_cumulants', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
+}
+
+#' @title
+#' Compute approximate quantiles over a sliding window
+#' @description
+#' Computes cumulants up to some given order, then employs the Cornish-Fisher approximation
+#' to compute approximate quantiles using a Gaussian basis.
+#' 
+#' @param p the probability points at which to compute the quantiles. Should be in the range (0,1).
+#' @inheritParams running_cumulants
+#'
+#' @details
+#'
+#' Computes the cumulants, then approximates quantiles using AS269 of Lee & Lin.
+#'
+#' @references 
+#'
+#' Lee, Y-S., and Lin, T-K. "Algorithm AS269: High Order Cornish Fisher
+#' Expansion." Appl. Stat. 41, no. 1 (1992): 233-240. 
+#' \url{http://www.jstor.org/stable/2347649}
+#'
+#' Lee, Y-S., and Lin, T-K. "Correction to Algorithm AS269: High Order 
+#' Cornish Fisher Expansion." Appl. Stat. 42, no. 1 (1993): 268-269. 
+#' \url{http://www.jstor.org/stable/2347433}
+#'
+#' AS 269. \url{https://web.archive.org/web/20110103030111/http://lib.stat.cmu.edu/apstat/269}
+#'
+#' Jaschke, Stefan R. "The Cornish-Fisher-expansion in the context of 
+#' Delta-Gamma-normal approximations." No. 2001, 54. Discussion Papers, 
+#' Interdisciplinary Research Project 373: Quantification and Simulation of 
+#' Economic Processes, 2001. 
+#' \url{http://www.jaschke-net.de/papers/CoFi.pdf}
+#'
+#' @return A matrix, with one row for each element of \code{x}, and one column for each element of \code{q}.
+#'
+#' @examples
+#' x <- rnorm(1e5)
+#' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
+#'
+#' @seealso \code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
+#' @template etc
+#' @template ref-romo
+#' @rdname runningquantiles
+#' @export
+running_apx_quantiles <- function(v, p, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, max_order, na_rm, min_df, used_df, restart_period)
 }
 
 #' @title
