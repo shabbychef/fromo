@@ -249,9 +249,11 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
 //' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
 //' \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
-//'  then standard devation, mean, and number of elements.}
+//'  then the \emph{variance}, the mean, and number of elements.}
 //' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
 //'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+//' \item{cent_cumulants}{A vector of the (sample) \eqn{k}th (centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
+//'  then the \emph{variance} (which is the second cumulant), the mean, and number of elements.}
 //' }
 //'
 //' @note
@@ -260,9 +262,17 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //' Similarly, the second standardized moments defined to be identically 1; \code{std_moments} instead returns the standard
 //' deviation. The reason is that a user can always decide to ignore the results and fill in a 0 or 1 as they need, but 
 //' could not efficiently compute the mean and standard deviation from scratch if we discard it.
+//' 
+//' @note
+//' The last minus two element of the output of \code{cent_moments} and \code{cent_cumulants} is the \emph{variance},
+//' not the standard deviation. All other code return the standard deviation in that place.
+//'
 //' @note
 //' The kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 //' for Gaussian input.
+//'
+//' @note
+//' 'centered cumulants' is redundant. The intent was to avoid collision with existing code named 'cumulants'.
 //'
 //' @examples
 //' x <- rnorm(1e5)
@@ -284,6 +294,7 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 //'   microbenchmark(dumbk(x),kurt5(x),times=10L)
 //' }
 //' y <- std_moments(x,6)
+//' cml <- cent_cumulants(x,6)
 //'
 //' @template etc
 //' @template ref-romo
@@ -383,6 +394,30 @@ NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fal
         }
     }
     return vret;
+}
+//' @rdname firstmoments
+//' @export
+// [[Rcpp::export]]
+NumericVector cent_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=false) {
+    NumericVector cmoms = cent_moments(v,max_order,used_df,na_rm);
+    NumericVector cumuls(cmoms.size());
+    int jjj,mmm;
+    // copy over
+    for (jjj=0;jjj < cumuls.size();++jjj) {
+        cumuls(jjj) = cmoms(jjj);
+    }
+    if (max_order > 0) {
+        // make it really centered? 
+        cmoms(max_order - 1) = 0;
+    }
+    // moments to cumuls. it's a snap! (c.f. PDQutils)
+    for (jjj=4;jjj <= max_order;++jjj) {
+        // compute the jth order cumulant.
+        for (mmm=2;mmm <= jjj-2;mmm++) {
+            cumuls(max_order-jjj) -= bincoef[jjj-1][mmm-1] * cumuls(max_order-mmm) * cmoms(max_order-(jjj-mmm));
+        }
+    }
+    return cumuls;
 }
 
 //' @title
@@ -1112,9 +1147,16 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=
 //'
 //' @return A matrix, with one row for each element of \code{x}, and one column for each element of \code{q}.
 //'
+//' @note
+//' The current implementation is not as space-efficient as it could be, as it first computes
+//' the cumulants for each row, then performs the Cornish-Fisher approximation on a row-by-row
+//' basis. In the future, this computation may be moved earlier into the pipeline to be more
+//' space efficient. File an issue if the memory footprint is an issue for you.
+//'
 //' @examples
 //' x <- rnorm(1e5)
 //' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
+//' xm <- running_apx_median(x)
 //'
 //' @seealso \code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
 //' @template etc

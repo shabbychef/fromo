@@ -31,9 +31,11 @@
 #' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
 #' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
 #' \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
-#'  then standard devation, mean, and number of elements.}
+#'  then the \emph{variance}, the mean, and number of elements.}
 #' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
 #'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+#' \item{cent_cumulants}{A vector of the (sample) \eqn{k}th (centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
+#'  then the \emph{variance} (which is the second cumulant), the mean, and number of elements.}
 #' }
 #'
 #' @note
@@ -42,9 +44,17 @@
 #' Similarly, the second standardized moments defined to be identically 1; \code{std_moments} instead returns the standard
 #' deviation. The reason is that a user can always decide to ignore the results and fill in a 0 or 1 as they need, but 
 #' could not efficiently compute the mean and standard deviation from scratch if we discard it.
+#' 
+#' @note
+#' The last minus two element of the output of \code{cent_moments} and \code{cent_cumulants} is the \emph{variance},
+#' not the standard deviation. All other code return the standard deviation in that place.
+#'
 #' @note
 #' The kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 #' for Gaussian input.
+#'
+#' @note
+#' 'centered cumulants' is redundant. The intent was to avoid collision with existing code named 'cumulants'.
 #'
 #' @examples
 #' x <- rnorm(1e5)
@@ -66,6 +76,7 @@
 #'   microbenchmark(dumbk(x),kurt5(x),times=10L)
 #' }
 #' y <- std_moments(x,6)
+#' cml <- cent_cumulants(x,6)
 #'
 #' @template etc
 #' @template ref-romo
@@ -97,6 +108,12 @@ cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #' @export
 std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
     .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+}
+
+#' @rdname firstmoments
+#' @export
+cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
+    .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
 }
 
 #' @title
@@ -299,9 +316,16 @@ running_cumulants <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, m
 #'
 #' @return A matrix, with one row for each element of \code{x}, and one column for each element of \code{q}.
 #'
+#' @note
+#' The current implementation is not as space-efficient as it could be, as it first computes
+#' the cumulants for each row, then performs the Cornish-Fisher approximation on a row-by-row
+#' basis. In the future, this computation may be moved earlier into the pipeline to be more
+#' space efficient. File an issue if the memory footprint is an issue for you.
+#'
 #' @examples
 #' x <- rnorm(1e5)
 #' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
+#' xm <- running_apx_median(x)
 #'
 #' @seealso \code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
 #' @template etc

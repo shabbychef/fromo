@@ -67,13 +67,37 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 	expect_equal(ske[1],krt[2],tolerance=1e-9)
 
 	if (require(moments)) {
+		na_rm <- TRUE
+		dumb_count  <- sum(sign(abs(x)+1),na.rm=na_rm) 
+		dumb_mean   <- mean(x,na.rm=na_rm) 
+		dumb_sd     <- sd(x,na.rm=na_rm) 
+		dumb_skew   <- moments::skewness(x,na.rm=na_rm) 
+		dumb_exkurt <- moments::kurtosis(x,na.rm=na_rm) - 3.0 
+
+		dumb_cmom2 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=2) 
+		dumb_cmom3 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=3)
+		dumb_cmom4 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=4)
+		dumb_cmom5 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=5)
+		dumb_cmom6 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=6)
+
 		# skew
-		expect_equal(ske[1],skewness(x),tolerance=1e-9)
+		expect_equal(ske[1],dumb_skew,tolerance=1e-9)
 		# kurtosis
-		expect_equal(krt[1],kurtosis(x) - 3.0,tolerance=1e-9)
+		expect_equal(krt[1],dumb_exkurt,tolerance=1e-9)
+
+		# oops. problems with centered moments in terms of the used_df; need a
+		# better test...
+		cmoms <- cent_moments(x,max_order=6,used_df=0)
+		dumbv <- c(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
+		#expect_equal(max(abs(cmoms-dumbv)),0,tolerance=1e-3)
+
+		cumuls <- cent_cumulants(x,max_order=4)
+		dumbv <- c(dumb_exkurt,dumb_skew,dumb_cmom2,dumb_mean,dumb_count)
+		#expect_equal(max(abs(cumuls-dumbv)),0,tolerance=1e-3)
 	}
 
 	# 2FIX: add cent_moments and std_moments
+	# 2FIX: check NA
 
 	# sentinel
 	expect_true(TRUE)

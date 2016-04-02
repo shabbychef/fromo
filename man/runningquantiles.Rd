@@ -49,6 +49,11 @@ to compute approximate quantiles using a Gaussian basis.
 Computes the cumulants, then approximates quantiles using AS269 of Lee & Lin.
 }
 \note{
+The current implementation is not as space-efficient as it could be, as it first computes
+the cumulants for each row, then performs the Cornish-Fisher approximation on a row-by-row
+basis. In the future, this computation may be moved earlier into the pipeline to be more
+space efficient. File an issue if the memory footprint is an issue for you.
+
 The moment computations provided by fromo are 
 numerically robust, but will often \emph{not} provide the
 same results as the 'standard' implementations,
@@ -59,6 +64,7 @@ the fromo package.
 \examples{
 x <- rnorm(1e5)
 xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
+xm <- running_apx_median(x)
 
 }
 \author{

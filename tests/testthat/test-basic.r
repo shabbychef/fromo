@@ -48,18 +48,21 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 		kurt5(x,na_rm=na_rm)
 		cent_moments(x,max_order=5L,used_df=1L,na_rm=na_rm)
 		std_moments(x,max_order=5L,used_df=1L,na_rm=na_rm)
+		cent_cumulants(x,max_order=5L,used_df=1L,na_rm=na_rm)
 
 		sd3(y,na_rm=na_rm)
 		skew4(y,na_rm=na_rm)
 		kurt5(y,na_rm=na_rm)
 		cent_moments(y,max_order=5L,used_df=1L,na_rm=na_rm)
 		std_moments(y,max_order=5L,used_df=1L,na_rm=na_rm)
+		cent_cumulants(y,max_order=5L,used_df=1L,na_rm=na_rm)
 
 		sd3(z,na_rm=na_rm)
 		skew4(z,na_rm=na_rm)
 		kurt5(z,na_rm=na_rm)
 		cent_moments(z,max_order=5L,used_df=1L,na_rm=na_rm)
 		std_moments(z,max_order=5L,used_df=1L,na_rm=na_rm)
+		cent_cumulants(z,max_order=5L,used_df=1L,na_rm=na_rm)
 	}
 
 	expect_error(sd3(q))
@@ -67,6 +70,7 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 	expect_error(kurt5(q))
 	expect_error(cent_moments(q))
 	expect_error(std_moments(q))
+	expect_error(cent_cumulants(q))
 
 	# sentinel
 	expect_true(TRUE)
