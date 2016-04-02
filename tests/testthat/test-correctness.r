@@ -140,6 +140,37 @@ test_that("running ops are correct",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("running quantile",{#FOLDUP
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+	set.char.seed("1f8e2e7a-e6c1-4f3b-bc0f-a754e8147ee4")
+	for (xlen in c(20,100)) {
+		x <- rnorm(xlen)
+		for (window in c(15,50,Inf)) {
+			for (restart_period in c(20,1000)) {
+				for (na_rm in c(FALSE,TRUE)) {
+					dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
+					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_skew <- sapply(seq_along(x),function(iii) { moments::skewness(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					dumb_exkurt <- sapply(seq_along(x),function(iii) { moments::kurtosis(x[max(1,iii-window+1):iii],na.rm=na_rm) - 3.0 },simplify=TRUE)
+
+					fastv <- running_apx_quantiles(x,ptiles,max_order=4L,window=window,restart_period=restart_period,na_rm=na_rm)
+					dumb_cmoments <-  cbind(0,dumb_sd,dumb_skew,dumb_exkurt)
+					if (require(PDQutils)) {
+						dumbv <- t(sapply(seq_along(x),function(iii) { 
+							PDQutils::qapx_cf(ptiles,raw.cumulants=dumb_cmoments[iii,])
+						}, simplify=TRUE))
+						# NYI: crap.
+						# expect_equal(max(abs(dumbv[8:xlen,] - fastv[8:xlen,])),0,tolerance=1e-12)
+					}
+				}
+			}
+		}
+	}
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
 test_that("running adjustments are correct",{#FOLDUP
 	set.char.seed("967d2149-fbff-4d82-b227-ca3e1034bddb")
 	for (xlen in c(20,100)) {
