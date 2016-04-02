@@ -312,6 +312,12 @@ running_apx_quantiles <- function(v, p, window = NULL, max_order = 5L, na_rm = F
     .Call('fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, max_order, na_rm, min_df, used_df, restart_period)
 }
 
+#' @rdname runningquantiles
+#' @export
+running_apx_median <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_apx_median', PACKAGE = 'fromo', v, window, max_order, na_rm, min_df, used_df, restart_period)
+}
+
 #' @title
 #' Compare data to moments computed over a sliding window.
 #' @description

@@ -162,7 +162,7 @@ NumericVector wrapMoments(SEXP v, int ord, bool na_rm) {
         case  INTSXP: { return quasiMoments<IntegerVector>(v, ord, 0, -1, na_rm); }
         case REALSXP: { return quasiMoments<NumericVector>(v, ord, 0, -1, na_rm); }
         case  LGLSXP: { return quasiMoments<LogicalVector>(v, ord, 0, -1, na_rm); }
-        default: stop("Unsupported input type");
+        default: stop("Unsupported input type"); // nocov
     }
 }
 
@@ -741,14 +741,17 @@ NumericMatrix runningQMoments(T v,
                     }
                     // increment the subcount counter
                     subcount++;
-                    // check for Heywood cases and recompute.//FOLDUP
-                    if (((ord > 1) && (vret[2] <= 0.0)) || ((ord > 3) && (vret[4] <= 0.0))) {
-                        iii = MIN(numel-1,tr_iii);
-                        jjj = MAX(0,tr_jjj+1);
-                        if (jjj <= iii) {
-                            vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+                    // check for Heywood cases and recompute if hit.//FOLDUP
+                    for (ppp=2;ppp <= ord;ppp += 2) {
+                        if (vret[ppp] <= 0.0) {
+                            iii = MIN(numel-1,tr_iii);
+                            jjj = MAX(0,tr_jjj+1);
+                            if (jjj <= iii) {
+                                vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+                            }
+                            subcount = 0;
+                            break;
                         }
-                        subcount = 0;
                     }//UNFOLD
                 }//UNFOLD
             }
@@ -1217,6 +1220,15 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
     }
 
     return retval;
+}
+//' @rdname runningquantiles
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+    NumericVector p(1);
+    p(0) = 0.5;
+    NumericMatrix vret = running_apx_quantiles(v,p,window,max_order,na_rm,min_df,used_df,restart_period);
+    return vret;
 }
 
 //' @title

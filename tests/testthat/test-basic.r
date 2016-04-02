@@ -143,24 +143,43 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(running_skew4(q))
 	expect_error(running_kurt5(q))
 	expect_error(running_cent_moments(q,max_order=5L))
+	expect_error(running_cent_moments(q,max_order=5L,max_order_only=TRUE))
 	expect_error(running_std_moments(q,max_order=5L))
 	expect_error(running_cumulants(q,max_order=5L))
 	expect_error(running_apx_quantiles(q,p=ptiles,max_order=5L))
 	expect_error(running_apx_quantiles(x,p=q,max_order=5L))
+	expect_error(running_apx_median(q,p=ptiles,max_order=5L))
 
-	# make sure the Heywood branch gets hit
-	x <- rnorm(1e5,mean=1e10)
-	window <- 500L
-	restart_period <- 100000L
-	running_sd3(x,window=window,restart_period=restart_period)
-	running_skew4(x,window=window,restart_period=restart_period)
-	running_kurt5(x,window=window,restart_period=restart_period)
-	running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period)
-	running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,max_order_only=TRUE)
-	running_std_moments(x,max_order=5L,window=window,restart_period=restart_period)
-	running_cumulants(x,max_order=5L,window=window,restart_period=restart_period)
-	running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period)
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("hit heywood branch",{#FOLDUP
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
+	set.char.seed("3d318f1d-9921-4a20-84fc-c5ffc722d52c")
+	xvals <- list(rnorm(1e5,mean=1e10))
+	x <- rnorm(1e4)
+	x[x < 1.0] <- NA
+	xvals[[length(xvals)+1]] <- x
+	x <- rnorm(1e4)
+	x[x < 1.5] <- NA
+	xvals[[length(xvals)+1]] <- x
+
+	for (x in xvals) {
+		window <- 500L
+		restart_period <- 100000L
+		na_rm <- TRUE
+		running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,max_order_only=TRUE,na_rm=na_rm)
+		running_std_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_cumulants(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm)
+		running_apx_median(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm)
+
+	}
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
