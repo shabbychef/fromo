@@ -1192,7 +1192,7 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
                     jal = ja + lll;
                     for (qqq=0;qqq<nq;qqq++) {
                         P(qqq,jal) += DD(qqq) * P(qqq,jbl-1);
-                        P(qqq,jal+mmm-1) += aa * P(qqq,jbl-1);
+                        P(qqq,jal+mmm+1) += aa * P(qqq,jbl-1);
                     }
                 }  // line 40
                 bc *= (jjj - mmm) / mmm;
