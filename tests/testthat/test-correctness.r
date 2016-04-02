@@ -89,10 +89,11 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 		# better test...
 		cmoms <- cent_moments(x,max_order=6,used_df=0)
 		dumbv <- c(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
-		#expect_equal(max(abs(cmoms-dumbv)),0,tolerance=1e-3)
+		expect_equal(max(abs(cmoms-dumbv)),0,tolerance=1e-9)
 
 		cumuls <- cent_cumulants(x,max_order=4)
 		dumbv <- c(dumb_exkurt,dumb_skew,dumb_cmom2,dumb_mean,dumb_count)
+		# still borken.
 		#expect_equal(max(abs(cumuls-dumbv)),0,tolerance=1e-3)
 	}
 
