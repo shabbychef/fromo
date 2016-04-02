@@ -2,15 +2,16 @@
 
 # fromo
 
-  _Fast Robust Moments -- Pick Three!_
-
-
 [![Build Status](https://travis-ci.org/shabbychef/fromo.png)](https://travis-ci.org/shabbychef/fromo)
 [![codecov.io](http://codecov.io/github/shabbychef/fromo/coverage.svg?branch=master)](http://codecov.io/github/shabbychef/fromo?branch=master)
 [![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
+
+
+  _Fast Robust Moments -- Pick Three!_
+
 
 Fast, numerically robust, higher order moments in R, computed via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
@@ -306,37 +307,15 @@ df <- data.frame(timestamp = seq_along(x), raw = x,
     lookahead = xz_look, lookback = xz_safe)
 
 library(tidyr)
-```
-
-```
-## Error in library(tidyr): there is no package called 'tidyr'
-```
-
-```r
 gdf <- gather(df, key = "smoothing", value = "x", -timestamp)
-```
 
-```
-## Error in eval(expr, envir, enclos): could not find function "gather"
-```
-
-```r
 library(ggplot2)
 ph <- ggplot(gdf, aes(x = timestamp, y = x, group = smoothing, 
     colour = smoothing)) + geom_line()
-```
-
-```
-## Error in ggplot(gdf, aes(x = timestamp, y = x, group = smoothing, colour = smoothing)): object 'gdf' not found
-```
-
-```r
 print(ph)
 ```
 
-```
-## Error in print(ph): object 'ph' not found
-```
+<img src="github_extra/figure/toy_zscore-1.png" title="plot of chunk toy_zscore" alt="plot of chunk toy_zscore" width="600px" height="500px" />
 
 ## Efficiency
 
