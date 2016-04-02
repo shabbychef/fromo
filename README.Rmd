@@ -43,7 +43,9 @@ library(microbenchmark)
 ![wat](https://img.shields.io/badge/the%20dog-ate%20my%20homework-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
-Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
+### Fast Robust Moments -- Pick Three!
+
+Fast, numerically robust, higher order moments in R, computed via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
 Computations are via the Welford-Terriberry algorithm, as described by
 [Bennett _et al._](https://www.semanticscholar.org/paper/Numerically-stable-single-pass-parallel-statistics-Bennett-Grout/a83ed72a5ba86622d5eb6395299b46d51c901265)

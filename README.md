@@ -9,7 +9,9 @@
 ![wat](https://img.shields.io/badge/the%20dog-ate%20my%20homework-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
-Fast robust moments via Rcpp, mostly as an exercise to learn Rcpp. 
+### Fast Robust Moments -- Pick Three!
+
+Fast, numerically robust, higher order moments in R, computed via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
 Computations are via the Welford-Terriberry algorithm, as described by
 [Bennett _et al._](https://www.semanticscholar.org/paper/Numerically-stable-single-pass-parallel-statistics-Bennett-Grout/a83ed72a5ba86622d5eb6395299b46d51c901265)
@@ -50,15 +52,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval    cld
-##     kurt5(x) 137.6 139.7 142.8  140.5 141.3 205   100     e 
-##     skew4(x)  79.4  80.9  84.4   81.8  83.2 142   100    d  
-##       sd3(x)  10.0  10.7  11.7   11.3  11.8  21   100  b    
-##     dumbk(x) 188.5 196.8 206.1  199.7 205.7 481   200      f
-##  kurtosis(x)  83.7  86.9  89.2   87.5  89.1 133   100    d  
-##  skewness(x)  83.5  87.1  89.6   88.1  89.5 126   100    d  
-##        sd(x)  13.8  16.5  18.1   17.3  18.2  34   100   c   
-##      mean(x)   3.6   4.1   4.7    4.3   4.8  14   100 a
+##         expr   min    lq  mean median    uq     max neval cld
+##     kurt5(x) 184.1 187.4 192.2  189.5 192.0   259.1   100  ab
+##     skew4(x) 109.4 112.0 114.6  113.6 115.7   136.7   100  a 
+##       sd3(x)  14.0  15.3  17.5   16.3  17.8    62.5   100  a 
+##     dumbk(x) 268.1 280.2 382.4  284.1 293.3 18929.3   200   b
+##  kurtosis(x) 118.9 121.6 127.0  123.7 127.3   173.8   100  a 
+##  skewness(x) 119.7 122.5 126.7  124.4 127.8   168.2   100  a 
+##        sd(x)  22.4  24.2  28.4   26.8  27.9    96.0   100  a 
+##      mean(x)   5.1   5.8   6.7    6.5   7.5     8.5   100  a
 ```
 
 ```r
@@ -71,14 +73,14 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 ```
 ## Unit: milliseconds
 ##         expr  min   lq mean median   uq  max neval     cld
-##     kurt5(x) 1385 1387 1408   1410 1425 1430    10      f 
-##     skew4(x)  787  792  798    796  802  816    10    d   
-##       sd3(x)   81   81   82     82   82   84    10   c    
-##     dumbk(x) 1638 1656 1679   1683 1695 1721    10       g
-##  kurtosis(x)  807  813  822    819  826  841    10     e  
-##  skewness(x)  771  775  786    785  790  827    10    d   
-##        sd(x)   47   48   48     48   48   50    10  b     
-##      mean(x)   16   16   16     16   16   17    10 a
+##     kurt5(x) 1815 1825 1856   1853 1878 1925    10      f 
+##     skew4(x) 1049 1050 1071   1074 1087 1099    10    d   
+##       sd3(x)  101  101  103    102  106  108    10   c    
+##     dumbk(x) 2196 2214 2241   2236 2266 2316    10       g
+##  kurtosis(x) 1084 1089 1114   1116 1136 1138    10     e  
+##  skewness(x) 1036 1038 1060   1052 1081 1099    10    d   
+##        sd(x)   58   58   59     58   60   63    10  b     
+##      mean(x)   19   20   20     20   20   21    10 a
 ```
 
 ## Monoid mumbo-jumbo
@@ -303,15 +305,37 @@ df <- data.frame(timestamp = seq_along(x), raw = x,
     lookahead = xz_look, lookback = xz_safe)
 
 library(tidyr)
-gdf <- gather(df, key = "smoothing", value = "x", -timestamp)
+```
 
+```
+## Error in library(tidyr): there is no package called 'tidyr'
+```
+
+```r
+gdf <- gather(df, key = "smoothing", value = "x", -timestamp)
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "gather"
+```
+
+```r
 library(ggplot2)
 ph <- ggplot(gdf, aes(x = timestamp, y = x, group = smoothing, 
     colour = smoothing)) + geom_line()
+```
+
+```
+## Error in ggplot(gdf, aes(x = timestamp, y = x, group = smoothing, colour = smoothing)): object 'gdf' not found
+```
+
+```r
 print(ph)
 ```
 
-<img src="github_extra/figure/toy_zscore-1.png" title="plot of chunk toy_zscore" alt="plot of chunk toy_zscore" width="600px" height="500px" />
+```
+## Error in print(ph): object 'ph' not found
+```
 
 ## Efficiency
 
@@ -344,8 +368,8 @@ microbenchmark(running_zscored(x, 250), dumb_zscore(x,
 ```
 
 ```
-## Unit: microseconds
-##                     expr    min     lq   mean median     uq    max neval cld
-##  running_zscored(x, 250)    767    773    840    794    837   1354   100  a 
-##      dumb_zscore(x, 250) 212418 221888 233803 230396 240998 286202   100   b
+## Unit: milliseconds
+##                     expr   min    lq  mean median    uq   max neval cld
+##  running_zscored(x, 250)   1.1   1.1   1.2    1.2   1.2   1.7   100  a 
+##      dumb_zscore(x, 250) 329.8 347.4 357.2  353.8 362.0 428.6   100   b
 ```
