@@ -91,10 +91,14 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 		dumbv <- c(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
 		expect_equal(max(abs(cmoms-dumbv)),0,tolerance=1e-9)
 
-		cumuls <- cent_cumulants(x,max_order=4)
-		dumbv <- c(dumb_exkurt,dumb_skew,dumb_cmom2,dumb_mean,dumb_count)
-		# still borken.
-		#expect_equal(max(abs(cumuls-dumbv)),0,tolerance=1e-3)
+		if (require(PDQutils)) {
+			cumuls <- cent_cumulants(x,max_order=length(cmoms)-1)
+			dumbv0 <- c(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
+			dumbv1 <- PDQutils::moment2cumulant(c(0,rev(dumbv0)[3:length(dumbv0)]))
+			dumbv <- c(rev(dumbv1[2:length(dumbv1)]),dumb_mean,dumb_count)
+			
+			expect_equal(max(abs(cumuls-dumbv)),0,tolerance=1e-12)
+		}
 	}
 
 	# 2FIX: add cent_moments and std_moments
