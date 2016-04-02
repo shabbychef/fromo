@@ -266,6 +266,7 @@ test_that("running adjustments",{#FOLDUP
 	expect_error(running_scaled(q))
 	expect_error(running_zscored(q))
 	expect_error(running_sharpe(q))
+	expect_error(running_sharpe(q,compute_se=TRUE))
 	expect_error(running_tstat(q))
 
 	expect_error(running_tstat(x,window='FOO'))
