@@ -161,7 +161,7 @@ test_that("running quantile",{#FOLDUP
 							PDQutils::qapx_cf(ptiles,raw.cumulants=dumb_cmoments[iii,])
 						}, simplify=TRUE))
 						# NYI: crap.
-						# expect_equal(max(abs(dumbv[8:xlen,] - fastv[8:xlen,])),0,tolerance=1e-12)
+						expect_equal(max(abs(dumbv[8:xlen,] - fastv[8:xlen,])),0,tolerance=1e-12)
 					}
 				}
 			}
