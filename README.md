@@ -148,6 +148,52 @@ stopifnot(max(abs(rs1 - rs1alt)) < 1e-07)
 stopifnot(max(abs(rs2 - rs2alt)) < 1e-07)
 ```
 
+### For multivariate input
+
+There is also code for computing co-sums and co-moments, though as of this writing only up to order 2.
+Some demo code for the monoidal stuff here::
+
+
+```r
+set.seed(54321)
+x1 <- matrix(rnorm(100 * 4), ncol = 4)
+x2 <- matrix(rnorm(100 * 4), ncol = 4)
+
+max_ord <- 2L
+obj1 <- as.centcosums(x1, max_ord, na.omit = TRUE)
+# display:
+show(obj1)
+```
+
+```
+## An object of class "centcosums"
+## Slot "cosums":
+##          [,1]    [,2]   [,3]     [,4]    [,5]
+## [1,] 100.0000  -0.093  0.045  -0.0046   0.046
+## [2,]  -0.0934 111.012  4.941 -16.4822   6.660
+## [3,]   0.0450   4.941 71.230   0.8505   5.501
+## [4,]  -0.0046 -16.482  0.850 117.3456  13.738
+## [5,]   0.0463   6.660  5.501  13.7379 100.781
+## 
+## Slot "order":
+## [1] 2
+```
+
+```r
+# join them together
+obj1 <- as.centcosums(x1, max_ord)
+obj2 <- as.centcosums(x2, max_ord)
+obj3 <- as.centcosums(rbind(x1, x2), max_ord)
+alt3 <- c(obj1, obj2)
+# it commutes!
+stopifnot(max(abs(cosums(obj3) - cosums(alt3))) < 1e-07)
+# unjoin them, with this one weird operator:
+alt2 <- obj3 %-% obj1
+alt1 <- obj3 %-% obj2
+stopifnot(max(abs(cosums(obj2) - cosums(alt2))) < 1e-07)
+stopifnot(max(abs(cosums(obj1) - cosums(alt1))) < 1e-07)
+```
+
 ## Running moments
 
 Since an online algorithm is used, we can compute cumulative running moments. Moreover, we can 

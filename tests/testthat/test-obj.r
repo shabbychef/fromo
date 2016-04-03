@@ -53,6 +53,24 @@ test_that("constructor and such",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("cosum constructor and such",{#FOLDUP
+	set.char.seed("817d965f-c3fb-439b-92ef-8c42452688ea")
+
+	x <- matrix(rnorm(30*3),ncol=3)
+	csums <- cent_cosums(x, max_order=2L, na_omit=TRUE)
+	xobj <- centcosums(csums)
+
+	foo <- cosums(xobj)
+	for (type in c('central','raw')) {
+		moms <- comoments(xobj,type=type)
+	}
+	show(xobj)
+
+	xobj <- as.centcosums(x,order=2L, na.omit=TRUE)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
 # 2FIX: check the effects of NA
 #UNFOLD
 context("correctness")#FOLDUP
@@ -73,6 +91,27 @@ test_that("monoidal homomorphism",{#FOLDUP
 	yalt <- zobj %-% xobj
 	expect_equal(sums(xalt),sums(xobj),tolerance=1e-9)
 	expect_equal(sums(yalt),sums(yobj),tolerance=1e-9)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("cosums monoidal homomorphism",{#FOLDUP
+	set.char.seed("68d7b935-7d0d-42a5-91e0-2ae711d92b35")
+
+	x <- matrix(rnorm(100*4),ncol=4)
+	y <- matrix(rnorm(100*4),ncol=4)
+	order <- 2L
+	xobj <- as.centcosums(x,order=order, na.omit=TRUE)
+	yobj <- as.centcosums(y,order=order, na.omit=TRUE)
+	zobj <- as.centcosums(rbind(x,y),order=order, na.omit=TRUE)
+
+	zalt <- c(xobj,yobj)
+	expect_equal(cosums(zalt),cosums(zobj),tolerance=1e-9)
+
+	xalt <- zobj %-% yobj
+	yalt <- zobj %-% xobj
+	expect_equal(cosums(xalt),cosums(xobj),tolerance=1e-9)
+	expect_equal(cosums(yalt),cosums(yobj),tolerance=1e-9)
 
 	# sentinel
 	expect_true(TRUE)

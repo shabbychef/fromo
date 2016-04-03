@@ -150,6 +150,35 @@ stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
 stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 ```
 
+### For multivariate input
+
+There is also code for computing co-sums and co-moments, though as of this writing only up to order 2.
+Some demo code for the monoidal stuff here::
+
+```{r multi_monoid1,eval=TRUE,echo=TRUE}
+set.seed(54321)
+x1 <- matrix(rnorm(100*4),ncol=4)
+x2 <- matrix(rnorm(100*4),ncol=4)
+
+max_ord <- 2L
+obj1 <- as.centcosums(x1,max_ord,na.omit=TRUE)
+# display:
+show(obj1)
+
+# join them together
+obj1 <- as.centcosums(x1,max_ord)
+obj2 <- as.centcosums(x2,max_ord)
+obj3 <- as.centcosums(rbind(x1,x2),max_ord)
+alt3 <- c(obj1,obj2)
+# it commutes!
+stopifnot(max(abs(cosums(obj3) - cosums(alt3))) < 1e-7)
+# unjoin them, with this one weird operator:
+alt2 <- obj3 %-% obj1
+alt1 <- obj3 %-% obj2
+stopifnot(max(abs(cosums(obj2) - cosums(alt2))) < 1e-7)
+stopifnot(max(abs(cosums(obj1) - cosums(alt1))) < 1e-7)
+```
+
 ## Running moments
 
 Since an online algorithm is used, we can compute cumulative running moments. Moreover, we can 
