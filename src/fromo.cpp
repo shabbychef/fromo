@@ -1465,6 +1465,75 @@ NumericVector cent2raw(NumericVector input) {
     return output;
 }
 
+// this function takes a n x p matrix of observations, and returns a (p+1) x (p+1) matrix;
+// the 1,1 element is the count.
+// the 1,2:(p+1) subcolumn is the mean
+// the 2:(p+1),2:(p+1) submatrix is the squared sum (the covariance up to scaling by the inverse count)
+// if na_complete is true, ignore rows of the input with any NA/NAN element.
+template <typename T>
+NumericMatrix quasiTheta(T v,bool na_complete = false) {
+    const int n=v.nrow();
+    const int p=v.ncol();
+
+    double  nelm, nel;
+    int iii,jjj,nnn;
+    NumericVector mu(p);
+    NumericVector della(p);
+    NumericVector delnel(p);
+    bool isok;
+
+    // preallocated with zeros:
+    NumericMatrix xret(1+p,1+p);
+
+    for (nnn=0;nnn<n;nnn++) {
+        isok = true;
+        for (iii=0;iii<p;iii++) {
+            della(iii) = v(nnn,iii) - xret(iii+1,0);
+            if (na_complete && ISNAN(v(nnn,iii))) {
+                isok = false;
+                break;
+            }
+        }
+        if (isok) {
+            for (iii=0;iii<p;iii++) {
+                nelm = xret(0,0);
+                nel = ++xret(0,0);
+                delnel(iii) = della(iii) * (nelm/nel);
+                xret(iii+1,0) += delnel(iii) / nel;
+            }
+            for (iii=0;iii<p;iii++) {
+                for (jjj=iii;jjj<p;jjj++) {
+                    xret(1+iii,1+jjj) += della(iii) * delnel(jjj);
+                }
+            }
+        }
+    }
+    // fill out the upper triangle
+    for (iii=0;iii<p;iii++) {
+        xret(0,1+iii) = xret(1+iii,0);
+        for (jjj=iii+1;jjj<p;jjj++) {
+            xret(1+jjj,1+iii) = xret(1+iii,1+jjj);
+        }
+    }
+
+    return xret;
+}
+
+// wrap the call:
+NumericMatrix wrapQuasiTheta(SEXP v, bool na_complete) {
+    switch (TYPEOF(v)) {
+        case  INTSXP: { return quasiTheta<IntegerMatrix>(v, na_complete); }
+        case REALSXP: { return quasiTheta<NumericMatrix>(v, na_complete); }
+        case  LGLSXP: { return quasiTheta<LogicalMatrix>(v, na_complete); }
+        default: stop("Unsupported input type");
+    }
+}
+
+
+// junkyard: code that *would* have been used in RcppModules,
+// but the latter cannot deal properly with generics.
+
+
 //typedef std::vector<double> dubvec;  // convenience typedef
 
 //class Moments {
