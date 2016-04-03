@@ -167,13 +167,15 @@ NumericVector quasiMoments(T v,
 
 // wrap the call:
 NumericVector wrapMoments(SEXP v, int ord, bool na_rm) {
+    NumericVector retv;
     // FML, I cannot figure out how to get v.length()
     switch (TYPEOF(v)) {
-        case  INTSXP: { return quasiMoments<IntegerVector>(v, ord, 0, -1, na_rm); }
-        case REALSXP: { return quasiMoments<NumericVector>(v, ord, 0, -1, na_rm); }
-        case  LGLSXP: { return quasiMoments<LogicalVector>(v, ord, 0, -1, na_rm); }
+        case  INTSXP: { retv = quasiMoments<IntegerVector>(v, ord, 0, -1, na_rm); break; }
+        case REALSXP: { retv = quasiMoments<NumericVector>(v, ord, 0, -1, na_rm); break; }
+        case  LGLSXP: { retv = quasiMoments<LogicalVector>(v, ord, 0, -1, na_rm); break; }
         default: stop("Unsupported input type"); // nocov
     }
+    return retv;
 }
 
 // specialization of the above for the case of ord=2
@@ -209,12 +211,14 @@ NumericVector quasiWelford(T v,
 
 // wrap the call:
 NumericVector wrapWelford(SEXP v, bool na_rm) {
+    NumericVector retv;
     switch (TYPEOF(v)) {
-        case  INTSXP: { return quasiWelford<IntegerVector,IntegerVector::iterator>(v, na_rm); }
-        case REALSXP: { return quasiWelford<NumericVector,NumericVector::iterator>(v, na_rm); }
-        case  LGLSXP: { return quasiWelford<LogicalVector,LogicalVector::iterator>(v, na_rm); }
+        case  INTSXP: { retv = quasiWelford<IntegerVector,IntegerVector::iterator>(v, na_rm); break; }
+        case REALSXP: { retv = quasiWelford<NumericVector,NumericVector::iterator>(v, na_rm); break; }
+        case  LGLSXP: { retv = quasiWelford<LogicalVector,LogicalVector::iterator>(v, na_rm); break; }
         default: stop("Unsupported input type");
     }
+    return retv;
 }
 
 // for help on dispatch, see:
@@ -705,12 +709,14 @@ NumericMatrix quasiTheta(T v,bool na_omit = false) {
 // [[Rcpp::export]]
 NumericMatrix cent_cosums(SEXP v, int max_order=2, bool na_omit=false) {
     if (max_order != 2) { stop("only support order 2 for now"); }
+    NumericMatrix retv;
     switch (TYPEOF(v)) {
-        case  INTSXP: { return quasiTheta<IntegerMatrix>(v, na_omit); }
-        case REALSXP: { return quasiTheta<NumericMatrix>(v, na_omit); }
-        case  LGLSXP: { return quasiTheta<LogicalMatrix>(v, na_omit); }
+        case  INTSXP: { retv = quasiTheta<IntegerMatrix>(v, na_omit); break; }
+        case REALSXP: { retv = quasiTheta<NumericMatrix>(v, na_omit); break; }
+        case  LGLSXP: { retv = quasiTheta<LogicalMatrix>(v, na_omit); break; }
         default: stop("Unsupported input type");
     }
+    return retv;
 }
 //' @rdname centcosums 
 //' @export
@@ -1127,6 +1133,9 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period,
             default: stop("Unsupported input type");
         }
     }
+    // CRAN checks are broken: 'warning: control reaches end of non-void function'
+    // ... only for a crappy automated warning.
+    return NumericMatrix(1,1);
 }
 
 // helper function; takes a double or integer windowsize and interprets w/out warning or vomit.
@@ -1150,6 +1159,9 @@ int get_wins(SEXP window) {
                       }
         default: stop("Unsupported input type");
     }
+    // CRAN checks are broken: 'warning: control reaches end of non-void function'
+    // ... only for a crappy automated warning.
+    return -1;
 }
 
 //' @title
@@ -1397,6 +1409,9 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=
 //' the cumulants for each row, then performs the Cornish-Fisher approximation on a row-by-row
 //' basis. In the future, this computation may be moved earlier into the pipeline to be more
 //' space efficient. File an issue if the memory footprint is an issue for you.
+//'
+//' @note
+//' This function is not yet rigorously tested. Use at your own risk until v0.2.0. (And thereafter as well.)
 //'
 //' @examples
 //' x <- rnorm(1e5)

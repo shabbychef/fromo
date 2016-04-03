@@ -393,6 +393,9 @@ running_cumulants <- function(v, window = NULL, max_order = 5L, na_rm = FALSE, m
 #' basis. In the future, this computation may be moved earlier into the pipeline to be more
 #' space efficient. File an issue if the memory footprint is an issue for you.
 #'
+#' @note
+#' This function is not yet rigorously tested. Use at your own risk until v0.2.0. (And thereafter as well.)
+#'
 #' @examples
 #' x <- rnorm(1e5)
 #' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))

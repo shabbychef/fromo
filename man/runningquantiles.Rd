@@ -54,6 +54,8 @@ the cumulants for each row, then performs the Cornish-Fisher approximation on a 
 basis. In the future, this computation may be moved earlier into the pipeline to be more
 space efficient. File an issue if the memory footprint is an issue for you.
 
+This function is not yet rigorously tested. Use at your own risk until v0.2.0. (And thereafter as well.)
+
 The moment computations provided by fromo are 
 numerically robust, but will often \emph{not} provide the
 same results as the 'standard' implementations,
