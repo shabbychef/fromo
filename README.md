@@ -333,6 +333,9 @@ A list of the available functions:
 also compute and return the Mertens' form of the standard error of the Sharpe ratio over the trailing window in the second
 column.
 * `running_tstat`: compute the t-stat over the trailing window.
+* `running_cumulants`: computes cumulants over the trailing window.
+* `running_apx_quantiles`: computes approximate quantiles over the trailing window based on the cumulants and the Cornish-Fisher approximation.
+* `running_apx_median`: uses `running_apx_quantiles` to give the approximate median over the trailing window.
 
 The functions `running_centered`, `running_scaled` and `running_zscored` take an optional `lookahead` parameter that
 allows you to peek ahead (or behind if negative) to the computed moments for comparing against the current value. These
