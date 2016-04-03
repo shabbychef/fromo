@@ -23,7 +23,7 @@ RUN (apt-get dist-upgrade -y ; \
 	qpdf pandoc ghostscript texlive-latex-base texlive-fonts-recommended texlive-fonts-extra)
 
 # rinstall somethings...
-RUN /usr/local/bin/install2.r Rcpp testthat moments microbenchmark roxygen2 devtools knitr
+RUN /usr/local/bin/install2.r Rcpp testthat moments microbenchmark roxygen2 devtools knitr PDQutils
 
 #####################################################
 # entry and cmd# FOLDUP

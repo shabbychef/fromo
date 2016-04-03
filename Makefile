@@ -125,5 +125,9 @@ NAMESPACE : DESCRIPTION $(ALL_R) ## build the NAMESPACE file
 coverage : installed ## compute package coverage
 	R --vanilla -q --no-save -e 'if (require(covr)) { print(covr::package_coverage(".")) }'
 
+tag : ## advice on github tagging
+	@-echo "git tag -a r$(VERSION) -m 'release $(VERSION)'"
+	@-echo "git push --tags"
+
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:tags=.tags;:syn=make:ft=make:ai:si:cin:nu:fo=croqt:cino=p0t0c5(0:

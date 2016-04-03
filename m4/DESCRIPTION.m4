@@ -22,6 +22,7 @@ LinkingTo: Rcpp
 Suggests:
     testthat,
     moments,
+    PDQutils,
     microbenchmark
 RoxygenNote: 5.0.1
 URL: https://github.com/shabbychef/PKG_NAME()
