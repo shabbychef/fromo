@@ -275,6 +275,40 @@ test_that("join/unjoin",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("cosums are sane",{#FOLDUP
+	set.char.seed("0020a8c0-ff6a-447c-a9bf-c6cc7160195f")
+
+	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+	max_ord <- 2L
+	rs1 <- cent_comoments(x1,max_ord,used_df=1L)
+	expect_equal(rs1[1,1],nrow(x1))
+	expect_equal(rs1[1,1 + (1:ncol(x1))],colMeans(x1),tolerance=1e-7)
+	expect_equal(rs1[1 + (1:ncol(x1)),1],colMeans(x1),tolerance=1e-7)
+	expect_equal(rs1[1 + (1:ncol(x1)),1 + (1:ncol(x1))],cov(x1),tolerance=1e-7)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("join/unjoin cosums",{#FOLDUP
+	set.char.seed("9ecdda29-aaae-4f88-9fe7-4418846ca54c")
+
+	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+	x2 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+	max_ord <- 2L
+	rs1 <- cent_cosums(x1,max_ord)
+	rs2 <- cent_cosums(x2,max_ord)
+	rs3 <- cent_cosums(rbind(x1,x2),max_ord)
+	rs3alt <- join_cent_cosums(rs1,rs2)
+	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
+
+	rs1alt <- unjoin_cent_cosums(rs3,rs2)
+	rs2alt <- unjoin_cent_cosums(rs3,rs1)
+	expect_lt(max(abs(rs1 - rs1alt)),1e-7)
+	expect_lt(max(abs(rs2 - rs2alt)),1e-7)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
 # 2FIX: check the effects of NA
 #UNFOLD
 

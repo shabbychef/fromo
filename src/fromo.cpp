@@ -95,6 +95,16 @@ const int bincoef[30][30] = {
 #include <Rcpp.h>
 using namespace Rcpp;
 
+#define COMP_SD_TWO(preval,used_df) (sqrt(preval[2]/(preval[0]-used_df)))
+#define COMP_SD(preval) COMP_SD_TWO(preval,1.0)
+#define COMP_SKEW(preval) (sqrt(preval[0]) * preval[3] / pow(preval[2],1.5))
+#define COMP_EXKURT(preval) ((preval[0] * preval[4] / (pow(preval[2],2.0))) - 3.0)
+#define COMP_SHARPE(preval) ((preval[1]) / (sqrt(preval[2] / (preval[0]-1.0))))
+
+#define COMP_CENTERED(x,preval) (x - preval[1])
+
+// univariate sums, moments, cumulants//FOLDUP
+
 // this function returns a NumericVector of:
 //   the number of elements, 
 //   the mean, and 
@@ -206,14 +216,6 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
         default: stop("Unsupported input type");
     }
 }
-
-#define COMP_SD_TWO(preval,used_df) (sqrt(preval[2]/(preval[0]-used_df)))
-#define COMP_SD(preval) COMP_SD_TWO(preval,1.0)
-#define COMP_SKEW(preval) (sqrt(preval[0]) * preval[3] / pow(preval[2],1.5))
-#define COMP_EXKURT(preval) ((preval[0] * preval[4] / (pow(preval[2],2.0))) - 3.0)
-#define COMP_SHARPE(preval) ((preval[1]) / (sqrt(preval[2] / (preval[0]-1.0))))
-
-#define COMP_CENTERED(x,preval) (x - preval[1])
 
 // for help on dispatch, see:
 // http://stackoverflow.com/a/25254680/164611
@@ -419,6 +421,9 @@ NumericVector cent_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=
     }
     return cumuls;
 }
+//UNFOLD
+
+// monoid mumbo jumbo: add and subtract centered sums//FOLDUP
 
 //' @title
 //' Centered sums; join and unjoined.
@@ -587,6 +592,246 @@ NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
     }
     return ret1;
 }
+//UNFOLD
+
+// 2FIX: add multivariate *marginal* operations ignoring comovement
+
+// multivariate operations taking comovement into account//FOLDUP
+
+// this function takes a n x p matrix of observations, and returns a (p+1) x (p+1) matrix;
+// the 1,1 element is the count.
+// the 1,2:(p+1) subcolumn is the mean
+// the 2:(p+1),2:(p+1) submatrix is the squared sum (the covariance up to scaling by the inverse count)
+// if na_omit is true, ignore rows of the input with any NA/NAN element.
+template <typename T>
+NumericMatrix quasiTheta(T v,bool na_omit = false) {
+    const int n=v.nrow();
+    const int p=v.ncol();
+
+    double  nelm, nel;
+    int iii,jjj,nnn;
+    NumericVector mu(p);
+    NumericVector della(p);
+    NumericVector delnel(p);
+    bool isok;
+
+    // preallocated with zeros:
+    NumericMatrix xret(1+p,1+p);
+
+    for (nnn=0;nnn<n;nnn++) {
+        isok = true;
+        for (iii=0;iii<p;iii++) {
+            della(iii) = v(nnn,iii) - xret(iii+1,0);
+            if (na_omit && ISNAN(v(nnn,iii))) {
+                isok = false;
+                break;
+            }
+        }
+        if (isok) {
+            nelm = xret(0,0);
+            nel = ++xret(0,0);
+            for (iii=0;iii<p;iii++) {
+                xret(iii+1,0) += della(iii) / nel;
+                delnel(iii) = della(iii) * (nelm/nel);
+            }
+            for (iii=0;iii<p;iii++) {
+                for (jjj=iii;jjj<p;jjj++) {
+                    xret(1+iii,1+jjj) += della(iii) * delnel(jjj);
+                }
+            }
+        }
+    }
+    // fill out the upper triangle
+    for (iii=0;iii<p;iii++) {
+        xret(0,1+iii) = xret(1+iii,0);
+        for (jjj=iii+1;jjj<p;jjj++) {
+            xret(1+jjj,1+iii) = xret(1+iii,1+jjj);
+        }
+    }
+
+    return xret;
+}
+
+
+//' @title
+//' Multivariate centered sums; join and unjoined.
+//'
+//' @description
+//'
+//' Compute, join, or unjoin multivariate centered (co-) sums.
+//'
+//' @param v an \eqn{m} by \eqn{n} matrix, each row an independent observation of some
+//' \eqn{n} variate variable.
+//' @param max_order the maximum order of cosum to compute. For now this can only be
+//' 2; in the future higher order cosums should be possible.
+//' @param na_omit a boolean; if \code{TRUE}, then only rows of \code{v} with complete
+//' observations will be used.
+//' @param ret1 a multdimensional array as output by \code{\link{cent_cosums}}.
+//' @param ret2 a multdimensional array as output by \code{\link{cent_cosums}}.
+//' @param ret3 a multdimensional array as output by \code{\link{cent_cosums}}.
+//' @param used_df the number of degrees of freedom consumed, used in the denominator
+//' of the centered moments computation. These are subtracted from the number of
+//' observations.
+//'
+//' @return a multidimensional arry of dimension \code{max_order}, each side of length
+//' \eqn{1+n}. For the case currently implemented where \code{max_order} must be 2, the
+//' output is a symmetric matrix, where the element in the \code{1,1} position is the count of 
+//' complete) rows of \code{v}, the \code{2:(n+1),1} column is the mean, and the
+//' \code{2:(n+1),2:(n+1)} is the co \emph{sums} matrix, which is the covariance up to scaling
+//' by the count. \code{cent_comoments} performs this normalization for you.
+//'
+//' @seealso cent_sums
+//'
+//' @examples
+//'
+//'  set.seed(1234)
+//'  x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+//'  x2 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+//'  max_ord <- 2L
+//'  rs1 <- cent_cosums(x1,max_ord)
+//'  rs2 <- cent_cosums(x2,max_ord)
+//'  rs3 <- cent_cosums(rbind(x1,x2),max_ord)
+//'  rs3alt <- join_cent_cosums(rs1,rs2)
+//'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
+//'  rs1alt <- unjoin_cent_cosums(rs3,rs2)
+//'  rs2alt <- unjoin_cent_cosums(rs3,rs1)
+//'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
+//'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
+//'
+//' @template etc
+//' @template ref-romo
+//' @rdname centcosums 
+//' @export
+// [[Rcpp::export]]
+NumericMatrix cent_cosums(SEXP v, int max_order=2, bool na_omit=false) {
+    if (max_order != 2) { stop("only support order 2 for now"); }
+    switch (TYPEOF(v)) {
+        case  INTSXP: { return quasiTheta<IntegerMatrix>(v, na_omit); }
+        case REALSXP: { return quasiTheta<NumericMatrix>(v, na_omit); }
+        case  LGLSXP: { return quasiTheta<LogicalMatrix>(v, na_omit); }
+        default: stop("Unsupported input type");
+    }
+}
+//' @rdname centcosums 
+//' @export
+// [[Rcpp::export]]
+NumericMatrix cent_comoments(SEXP v, int max_order=2, int used_df=0, bool na_omit=false) {
+    NumericMatrix retv = cent_cosums(v,max_order,na_omit);
+    double denom = retv(0,0) - used_df;
+    int osize = retv.ncol();
+    int iii,jjj;
+    for (iii=1;iii<osize;++iii) {
+        for (jjj=1;jjj<osize;++jjj) {
+            retv(iii,jjj) /= denom;
+        }
+    }
+    return retv;
+}
+//' @rdname centcosums 
+//' @export
+// [[Rcpp::export]]
+NumericMatrix join_cent_cosums(NumericMatrix ret1,NumericMatrix ret2) {
+    if ((ret1.ncol() != ret1.nrow()) ||
+        (ret2.ncol() != ret2.nrow())) {
+        stop("malformed input");
+    }
+
+    const int p=ret1.ncol() - 1;
+    double n1,n2,ntot,n2rat,muv;
+    int iii,jjj;
+    
+    NumericVector della(p);
+    NumericVector delnel(p);
+    NumericMatrix ret3(p+1,p+1);
+    
+    n1 = ret1(0,0);
+    if (n1 <= 0) {
+        return ret2;
+    }
+    n2 = ret2(0,0);
+    if (n2 <= 0) {
+        return ret1;
+    }
+    ntot = n1 + n2;
+    ret3(0,0) = ntot;
+    n2rat = n2 / ntot;
+
+    for (iii=0;iii<p;iii++) {
+        muv = ret1(iii+1,0);
+        della(iii) = ret2(iii+1,0) - muv;
+        delnel(iii) = della(iii) * n2rat;
+        ret3(iii+1,0) = muv + delnel(iii);
+    }
+    for (iii=0;iii<p;iii++) {
+        for (jjj=iii;jjj<p;jjj++) {
+            ret3(iii+1,jjj+1) = ret1(iii+1,jjj+1) + ret2(iii+1,jjj+1) + n1 * delnel(iii) * della(jjj);
+        }
+    }
+    // fill out the upper triangle
+    for (iii=0;iii<p;iii++) {
+        ret3(0,1+iii) = ret3(1+iii,0);
+        for (jjj=iii+1;jjj<p;jjj++) {
+            ret3(1+jjj,1+iii) = ret3(1+iii,1+jjj);
+        }
+    }
+    return ret3;
+}
+//' @rdname centcosums 
+//' @export
+// [[Rcpp::export]]
+NumericMatrix unjoin_cent_cosums(NumericMatrix ret3,NumericMatrix ret2) {
+    // subtract ret2 from ret3
+    if ((ret3.ncol() != ret3.nrow()) ||
+        (ret2.ncol() != ret2.nrow())) {
+        stop("malformed input");
+    }
+
+    const int p=ret3.ncol() - 1;
+
+    double n1,n2,ntot,n1rat,n2rat,muv;
+    int iii,jjj;
+
+    NumericVector della(p);
+    NumericVector delnel(p);
+    NumericMatrix ret1(p+1,p+1);
+    
+    ntot = ret3(0,0);
+    n2 = ret2(0,0);
+    n1 = ntot - n2;
+    if (0 > n1) { stop("cannot subtract more observations than we have. Do you have the order of arguments right?"); }
+    if (n1 == 0) { 
+        // would be better to check they are all equal and throw if not...
+        return ret1;
+    }
+    ret1(0,0) = n1;
+    n1rat = n1 / ntot;
+    n2rat = n2 / ntot;
+
+    // start HERE
+
+    for (iii=0;iii<p;iii++) {
+        muv = ret3(iii+1,0);
+        della(iii) = (ret2(iii+1,0) - muv) / n1rat;
+        delnel(iii) = della(iii) * n2rat;
+        ret1(iii+1,0) = muv - delnel(iii);
+    }
+    for (iii=0;iii<p;iii++) {
+        for (jjj=iii;jjj<p;jjj++) {
+            ret1(iii+1,jjj+1) = ret3(iii+1,jjj+1) - ret2(iii+1,jjj+1) - n1 * delnel(iii) * della(jjj);
+        }
+    }
+    // fill out the upper triangle
+    for (iii=0;iii<p;iii++) {
+        ret1(0,1+iii) = ret1(1+iii,0);
+        for (jjj=iii+1;jjj<p;jjj++) {
+            ret1(1+jjj,1+iii) = ret1(1+iii,1+jjj);
+        }
+    }
+    return ret1;
+}
+//UNFOLD
+
+// running sums, moments, cumulants, approximate quantiles//FOLDUP
 
 /*******************************************************************************
  * running moments
@@ -1464,73 +1709,11 @@ NumericVector cent2raw(NumericVector input) {
     }
     return output;
 }
+//UNFOLD
 
-// this function takes a n x p matrix of observations, and returns a (p+1) x (p+1) matrix;
-// the 1,1 element is the count.
-// the 1,2:(p+1) subcolumn is the mean
-// the 2:(p+1),2:(p+1) submatrix is the squared sum (the covariance up to scaling by the inverse count)
-// if na_complete is true, ignore rows of the input with any NA/NAN element.
-template <typename T>
-NumericMatrix quasiTheta(T v,bool na_complete = false) {
-    const int n=v.nrow();
-    const int p=v.ncol();
+// junkyard//FOLDUP
 
-    double  nelm, nel;
-    int iii,jjj,nnn;
-    NumericVector mu(p);
-    NumericVector della(p);
-    NumericVector delnel(p);
-    bool isok;
-
-    // preallocated with zeros:
-    NumericMatrix xret(1+p,1+p);
-
-    for (nnn=0;nnn<n;nnn++) {
-        isok = true;
-        for (iii=0;iii<p;iii++) {
-            della(iii) = v(nnn,iii) - xret(iii+1,0);
-            if (na_complete && ISNAN(v(nnn,iii))) {
-                isok = false;
-                break;
-            }
-        }
-        if (isok) {
-            for (iii=0;iii<p;iii++) {
-                nelm = xret(0,0);
-                nel = ++xret(0,0);
-                delnel(iii) = della(iii) * (nelm/nel);
-                xret(iii+1,0) += delnel(iii) / nel;
-            }
-            for (iii=0;iii<p;iii++) {
-                for (jjj=iii;jjj<p;jjj++) {
-                    xret(1+iii,1+jjj) += della(iii) * delnel(jjj);
-                }
-            }
-        }
-    }
-    // fill out the upper triangle
-    for (iii=0;iii<p;iii++) {
-        xret(0,1+iii) = xret(1+iii,0);
-        for (jjj=iii+1;jjj<p;jjj++) {
-            xret(1+jjj,1+iii) = xret(1+iii,1+jjj);
-        }
-    }
-
-    return xret;
-}
-
-// wrap the call:
-NumericMatrix wrapQuasiTheta(SEXP v, bool na_complete) {
-    switch (TYPEOF(v)) {
-        case  INTSXP: { return quasiTheta<IntegerMatrix>(v, na_complete); }
-        case REALSXP: { return quasiTheta<NumericMatrix>(v, na_complete); }
-        case  LGLSXP: { return quasiTheta<LogicalMatrix>(v, na_complete); }
-        default: stop("Unsupported input type");
-    }
-}
-
-
-// junkyard: code that *would* have been used in RcppModules,
+// code that *would* have been used in RcppModules,
 // but the latter cannot deal properly with generics.
 
 
@@ -1590,7 +1773,7 @@ NumericMatrix wrapQuasiTheta(SEXP v, bool na_complete) {
     //.method("%:%", &Moments::join)
     //;
 //}
-
+//UNFOLD
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

@@ -120,6 +120,57 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// cent_cosums
+NumericMatrix cent_cosums(SEXP v, int max_order, bool na_omit);
+RcppExport SEXP fromo_cent_cosums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_omitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_omit(na_omitSEXP);
+    __result = Rcpp::wrap(cent_cosums(v, max_order, na_omit));
+    return __result;
+END_RCPP
+}
+// cent_comoments
+NumericMatrix cent_comoments(SEXP v, int max_order, int used_df, bool na_omit);
+RcppExport SEXP fromo_cent_comoments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_omitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_omit(na_omitSEXP);
+    __result = Rcpp::wrap(cent_comoments(v, max_order, used_df, na_omit));
+    return __result;
+END_RCPP
+}
+// join_cent_cosums
+NumericMatrix join_cent_cosums(NumericMatrix ret1, NumericMatrix ret2);
+RcppExport SEXP fromo_join_cent_cosums(SEXP ret1SEXP, SEXP ret2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type ret1(ret1SEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type ret2(ret2SEXP);
+    __result = Rcpp::wrap(join_cent_cosums(ret1, ret2));
+    return __result;
+END_RCPP
+}
+// unjoin_cent_cosums
+NumericMatrix unjoin_cent_cosums(NumericMatrix ret3, NumericMatrix ret2);
+RcppExport SEXP fromo_unjoin_cent_cosums(SEXP ret3SEXP, SEXP ret2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type ret3(ret3SEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type ret2(ret2SEXP);
+    __result = Rcpp::wrap(unjoin_cent_cosums(ret3, ret2));
+    return __result;
+END_RCPP
+}
 // running_sd3
 NumericMatrix running_sd3(SEXP v, SEXP window, bool na_rm, int min_df, int used_df, int restart_period);
 RcppExport SEXP fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {

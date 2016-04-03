@@ -171,6 +171,77 @@ unjoin_cent_sums <- function(ret3, ret2) {
 }
 
 #' @title
+#' Multivariate centered sums; join and unjoined.
+#'
+#' @description
+#'
+#' Compute, join, or unjoin multivariate centered (co-) sums.
+#'
+#' @param v an \eqn{m} by \eqn{n} matrix, each row an independent observation of some
+#' \eqn{n} variate variable.
+#' @param max_order the maximum order of cosum to compute. For now this can only be
+#' 2; in the future higher order cosums should be possible.
+#' @param na_omit a boolean; if \code{TRUE}, then only rows of \code{v} with complete
+#' observations will be used.
+#' @param ret1 a multdimensional array as output by \code{\link{cent_cosums}}.
+#' @param ret2 a multdimensional array as output by \code{\link{cent_cosums}}.
+#' @param ret3 a multdimensional array as output by \code{\link{cent_cosums}}.
+#' @param used_df the number of degrees of freedom consumed, used in the denominator
+#' of the centered moments computation. These are subtracted from the number of
+#' observations.
+#'
+#' @return a multidimensional arry of dimension \code{max_order}, each side of length
+#' \eqn{1+n}. For the case currently implemented where \code{max_order} must be 2, the
+#' output is a symmetric matrix, where the element in the \code{1,1} position is the count of 
+#' complete) rows of \code{v}, the \code{2:(n+1),1} column is the mean, and the
+#' \code{2:(n+1),2:(n+1)} is the co \emph{sums} matrix, which is the covariance up to scaling
+#' by the count. \code{cent_comoments} performs this normalization for you.
+#'
+#' @seealso cent_sums
+#'
+#' @examples
+#'
+#'  set.seed(1234)
+#'  x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+#'  x2 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+#'  max_ord <- 2L
+#'  rs1 <- cent_cosums(x1,max_ord)
+#'  rs2 <- cent_cosums(x2,max_ord)
+#'  rs3 <- cent_cosums(rbind(x1,x2),max_ord)
+#'  rs3alt <- join_cent_cosums(rs1,rs2)
+#'  stopifnot(max(abs(rs3 - rs3alt)) < 1e-7)
+#'  rs1alt <- unjoin_cent_cosums(rs3,rs2)
+#'  rs2alt <- unjoin_cent_cosums(rs3,rs1)
+#'  stopifnot(max(abs(rs1 - rs1alt)) < 1e-7)
+#'  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
+#'
+#' @template etc
+#' @template ref-romo
+#' @rdname centcosums 
+#' @export
+cent_cosums <- function(v, max_order = 2L, na_omit = FALSE) {
+    .Call('fromo_cent_cosums', PACKAGE = 'fromo', v, max_order, na_omit)
+}
+
+#' @rdname centcosums 
+#' @export
+cent_comoments <- function(v, max_order = 2L, used_df = 0L, na_omit = FALSE) {
+    .Call('fromo_cent_comoments', PACKAGE = 'fromo', v, max_order, used_df, na_omit)
+}
+
+#' @rdname centcosums 
+#' @export
+join_cent_cosums <- function(ret1, ret2) {
+    .Call('fromo_join_cent_cosums', PACKAGE = 'fromo', ret1, ret2)
+}
+
+#' @rdname centcosums 
+#' @export
+unjoin_cent_cosums <- function(ret3, ret2) {
+    .Call('fromo_unjoin_cent_cosums', PACKAGE = 'fromo', ret3, ret2)
+}
+
+#' @title
 #' Compute first K moments over a sliding window
 #' @description
 #' Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over

@@ -75,6 +75,31 @@ test_that("sd, skew, kurt run without error",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("cosum and comoment run without error",{#FOLDUP
+	set.char.seed("ff34b509-a113-41c9-8517-aa72792c42f7")
+	x <- matrix(rnorm(30*4),ncol=4)
+	y <- matrix(as.integer(x),ncol=ncol(x))
+	z <- matrix(as.logical(y),ncol=ncol(x))
+	q <- matrix(letters[1:24],ncol=4)
+
+	for (na_omit in c(FALSE,TRUE)) {
+		cent_cosums(x,max_order=2L,na_omit=na_omit)
+		cent_comoments(x,max_order=2L,used_df=1L,na_omit=na_omit)
+
+		cent_cosums(y,max_order=2L,na_omit=na_omit)
+		cent_comoments(y,max_order=2L,used_df=1L,na_omit=na_omit)
+
+		cent_cosums(z,max_order=2L,na_omit=na_omit)
+		cent_comoments(z,max_order=2L,used_df=1L,na_omit=na_omit)
+	}
+
+	expect_error(cent_cosums(x,max_order=4L))
+	expect_error(cent_cosums(q,max_order=2L))
+	expect_error(cent_comoments(q,max_order=2L))
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
 test_that("running sd, skew, kurt run without error",{#FOLDUP
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
 	x <- rnorm(100)
