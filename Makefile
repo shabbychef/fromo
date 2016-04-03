@@ -9,7 +9,7 @@
 
 VMAJOR 						 = 0
 VMINOR 						 = 1
-VPATCH  					 = 0
+VPATCH  					 = 1
 VDEV 							 = 
 VERSION 					 = $(VMAJOR).$(VMINOR).$(VPATCH)$(VDEV)
 TODAY 						:= $(shell date +%Y-%m-%d)
