@@ -22,11 +22,14 @@ Computations are via the Welford-Terriberry algorithm, as described by
 ## Installation
 
 This package can be installed 
+from CRAN, 
 via [drat](https://github.com/eddelbuettel/drat "drat"), or
 from github:
 
 
 ```r
+# via CRAN:
+install.packages("fromo")
 # via drat:
 if (require(drat)) {
     drat:::add("shabbychef")
