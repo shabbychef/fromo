@@ -1410,9 +1410,6 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=
 //' basis. In the future, this computation may be moved earlier into the pipeline to be more
 //' space efficient. File an issue if the memory footprint is an issue for you.
 //'
-//' @note
-//' This function is not yet rigorously tested. Use at your own risk until v0.2.0. (And thereafter as well.)
-//'
 //' @examples
 //' x <- rnorm(1e5)
 //' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
@@ -1429,27 +1426,32 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
     int iii,jjj,mmm,nnn,qqq,lll;
     int ja,jb,jal,jbl;
     double fac,aa,bc;
+    double mu,sigmasq;
 
     int nq=p.size();
     int nord=max_order-2;
-    // prealloc
-    NumericMatrix retval(cumulants.nrow(),nq);
-    NumericMatrix P(nq,3*bincoef[nord+1][2]);
-    NumericMatrix D(nq,3*nord);
-    NumericVector DD(nq);
-    NumericVector DEL(nq);
-    // standardized cumulants go here:
-    NumericVector a(nord);
-    double mu,sigmasq;
 
     // yay for sugar! yay!
     NumericVector z = qnorm(p,0.0,1.0);
 
+    // prealloc
+    NumericMatrix retval(cumulants.nrow(),nq);
+	// line 20
+    NumericMatrix P(nq,3*bincoef[nord+1][2]);
+	// line 30
+    NumericMatrix D(nq,3*nord);
+    NumericVector DEL(nq);
+
+    NumericVector DD(nq);
+    // standardized cumulants go here:
+    NumericVector a(nord);
+
+    // line 10
     // precompute the Hermite polynomials
     NumericMatrix H(nq,3*nord);
     for (qqq=0;qqq<nq;qqq++) {
         H(qqq,0) = -z(qqq);
-        H(qqq,1) = z(qqq) * z(qqq);
+        H(qqq,1) = z(qqq) * z(qqq) - 1.0;
         for (jjj=2;jjj < 3*nord;jjj++) {
             H(qqq,jjj) = - (z(qqq) * H(qqq,jjj-1) + jjj * H(qqq,jjj-2));
         }
@@ -1462,12 +1464,15 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
             DEL(mmm) = 0.0;
             for (nnn=0;nnn<P.ncol();nnn++) { P(mmm,nnn) = 0.0; }
             for (nnn=0;nnn<D.ncol();nnn++) { D(mmm,nnn) = 0.0; }
+            // probably unecessary:
+            DD(mmm) = 0.0;
         }
         mu = cumulants(iii,max_order-1);
         sigmasq = cumulants(iii,max_order-2);
         // change raw cumulants to standardized...
         for (jjj=0;jjj<nord;jjj++) {
-            a(jjj) = pow(-1.0,(jjj+1)) * cumulants(iii,max_order-3-jjj) / (pow(sigmasq,(jjj+3.0)/2.0) * (jjj+2) * (jjj+3));
+            a(jjj) = pow(-1.0,(jjj+1)) * cumulants(iii,max_order-3-jjj) / 
+                (pow(sigmasq,(jjj+3.0)/2.0) * (double)((jjj+2) * (jjj+3)));
         }
         for (qqq=0;qqq<nq;qqq++) {
             D(qqq,0) = -a(0) * H(qqq,1);
@@ -1488,7 +1493,7 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
                     DD(qqq) = bc * D(qqq,mmm-1);
                 }
                 aa = bc * a(mmm-1);
-                jb = jb - 3 * (jjj - mmm);
+                jb -= 3 * (jjj - mmm);
                 for (lll=1;lll<=3*(jjj-mmm);lll++) {
                     jbl = jb + lll;
                     jal = ja + lll;
@@ -1516,9 +1521,10 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
             }
         } // line 70//UNFOLD
 
+        // interpret as mean plus some sdevs://FOLDUP
         for (qqq=0;qqq<nq;qqq++) {
             retval(iii,qqq) = mu + sqrt(sigmasq) * (DEL(qqq) + z(qqq));
-        }
+        }//UNFOLD
     }
 
     return retval;

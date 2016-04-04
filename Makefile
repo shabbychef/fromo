@@ -10,7 +10,7 @@
 VMAJOR 						 = 0
 VMINOR 						 = 1
 VPATCH  					 = 2
-VDEV 							 = 
+VDEV 							 = .5000
 VERSION 					 = $(VMAJOR).$(VMINOR).$(VPATCH)$(VDEV)
 TODAY 						:= $(shell date +%Y-%m-%d)
 
@@ -24,6 +24,7 @@ PKG_SRC 					:= $(shell basename $(PWD))
 PKG_TGZ 					 = $(PKG_NAME)_$(PKG_VERSION).tar.gz
 PKG_INSTALLED 		 = .$(basename $(basename $(PKG_TGZ))).installed
 PKG_CRANCHECK 		 = $(basename $(basename $(PKG_TGZ))).crancheck
+DRAT_SENTINEL   	 = .drat_$(PKG_TGZ)
 
 ALL_CPP 					 = $(wildcard src/*.cpp)
 SRC_CPP 					 = $(filter-out src/RcppExports%,$(ALL_CPP))
@@ -79,10 +80,6 @@ attributes : $(EXPORTS_CPP) ## build the file src/RcppExports.cpp
 $(EXPORTS_CPP) $(EXPORTS_R) : $(SRC_CPP)
 	r -l Rcpp -e 'compileAttributes(".")'
 
-# how to build with devtools. chumps.
-#$(PKG_TGZ) : $(PKG_DEPS)
-	#r -l devtools -e 'build(".",path=".");'
-
 $(PKG_TGZ) : $(PKG_DEPS) .docker_img  
 	$(call WARN_DEPS)
 	# check values
@@ -91,6 +88,8 @@ $(PKG_TGZ) : $(PKG_DEPS) .docker_img
 	# build it!
 	$(DOCKER) run -it --rm --volume $(PWD):/srv:rw --entrypoint="R" $(USER)/$(PKG_LCNAME)-crancheck \
 		"CMD" "build" '$(BUILD_FLAGS)' "/srv"
+	@echo "if that don't work, then try:"
+	@echo "r -l devtools -e 'build(".",path=".");'"
 
 $(ONE_RD) : $(EXPORTS_CPP)
 	r -l devtools -e 'document(".");'
@@ -128,6 +127,11 @@ coverage : installed ## compute package coverage
 tag : ## advice on github tagging
 	@-echo "git tag -a r$(VERSION) -m 'release $(VERSION)'"
 	@-echo "git push --tags"
+
+$(DRAT_SENTINEL) : $(PKG_TGZ)
+	R --slave -e "drat:::insertPackage('$<',repodir='~/github/drat',commit=TRUE)"
+
+dratit : $(DRAT_SENTINEL) ## insert into my drat store
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:tags=.tags;:syn=make:ft=make:ai:si:cin:nu:fo=croqt:cino=p0t0c5(0:
