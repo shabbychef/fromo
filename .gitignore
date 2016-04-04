@@ -15,3 +15,5 @@ fromo*crancheck
 .docker_img
 cache
 .drat_*
+
+.check_tmp

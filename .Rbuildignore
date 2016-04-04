@@ -24,3 +24,4 @@ LICENSE
 \.so$
 \.crancheck$
 ^.drat_*
+^.check_tmp

@@ -34,6 +34,7 @@ ALL_R   					 = $(wildcard R/*.[rR])
 EXPORTS_R					 = $(filter R/RcppExports%,$(ALL_R))
 SRC_R   					 = $(filter-out R/RcppExports%,$(ALL_R))
 TEST_R  					 = $(wildcard tests/testthat/*.[rR])
+CHECK_TMP 				 = .check_tmp
 
 ALL_RD  					 = $(wildcard man/*.Rd)
 ONE_RD  					 = $(word 1,$(ALL_RD))
@@ -111,7 +112,11 @@ README.md : README.Rmd $(PKG_INSTALLED)
 	touch $@
 
 %.crancheck : %.tar.gz .docker_img
-	$(DOCKER) run -it --rm --volume $(PWD):/srv:ro $(USER)/$(PKG_LCNAME)-crancheck $< > $@
+	@-rm -rf $(CHECK_TMP)
+	@mkdir -p $(CHECK_TMP)
+	$(DOCKER) run -it --rm --volume $(PWD):/srv:ro --volume $$(pwd $(CHECK_TMP))/$(CHECK_TMP):/tmp:rw $(USER)/$(PKG_LCNAME)-crancheck $< > $@
+	@-cat $(CHECK_TMP)/$(PKG_NAME).Rcheck/00check.log >> $@
+	@-cat $(CHECK_TMP)/$(PKG_NAME).Rcheck/$(PKG_NAME)-Ex.timings >> $@
 
 check: $(PKG_CRANCHECK) ## check the package as CRAN.
 
