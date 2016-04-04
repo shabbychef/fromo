@@ -4,6 +4,8 @@
 
 [![Build Status](https://travis-ci.org/shabbychef/fromo.png)](https://travis-ci.org/shabbychef/fromo)
 [![codecov.io](http://codecov.io/github/shabbychef/fromo/coverage.svg?branch=master)](http://codecov.io/github/shabbychef/fromo?branch=master)
+[![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
+[![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
@@ -60,15 +62,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval
-##     kurt5(x) 144.9 146.7 150.9  148.2 150.2 183   100
-##     skew4(x)  83.9  85.7  88.7   86.9  88.0 158   100
-##       sd3(x)  10.6  11.6  12.7   12.1  12.9  28   100
-##     dumbk(x) 201.6 211.2 222.4  214.1 222.6 954   200
-##  kurtosis(x)  87.0  91.6  94.1   93.0  94.7 129   100
-##  skewness(x)  89.5  92.2  94.5   93.6  94.9 115   100
-##        sd(x)  15.4  18.6  20.9   19.7  20.7  39   100
-##      mean(x)   3.7   4.6   5.2    4.9   5.3  13   100
+##         expr   min    lq  mean median    uq max neval    cld
+##     kurt5(x) 137.6 139.7 142.8  140.5 141.3 205   100     e 
+##     skew4(x)  79.4  80.9  84.4   81.8  83.2 142   100    d  
+##       sd3(x)  10.0  10.7  11.7   11.3  11.8  21   100  b    
+##     dumbk(x) 188.5 196.8 206.1  199.7 205.7 481   200      f
+##  kurtosis(x)  83.7  86.9  89.2   87.5  89.1 133   100    d  
+##  skewness(x)  83.5  87.1  89.6   88.1  89.5 126   100    d  
+##        sd(x)  13.8  16.5  18.1   17.3  18.2  34   100   c   
+##      mean(x)   3.6   4.1   4.7    4.3   4.8  14   100 a
 ```
 
 ```r
@@ -80,15 +82,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval
-##     kurt5(x) 1460 1474 1491   1487 1504 1540    10
-##     skew4(x)  832  839  851    850  867  874    10
-##       sd3(x)   86   86   88     87   91   93    10
-##     dumbk(x) 1736 1745 1777   1764 1815 1839    10
-##  kurtosis(x)  852  857  896    899  921  979    10
-##  skewness(x)  818  837  858    860  874  901    10
-##        sd(x)   51   51   52     51   54   56    10
-##      mean(x)   17   17   18     18   18   18    10
+##         expr  min   lq mean median   uq  max neval     cld
+##     kurt5(x) 1385 1387 1408   1410 1425 1430    10      f 
+##     skew4(x)  787  792  798    796  802  816    10    d   
+##       sd3(x)   81   81   82     82   82   84    10   c    
+##     dumbk(x) 1638 1656 1679   1683 1695 1721    10       g
+##  kurtosis(x)  807  813  822    819  826  841    10     e  
+##  skewness(x)  771  775  786    785  790  827    10    d   
+##        sd(x)   47   48   48     48   48   50    10  b     
+##      mean(x)   16   16   16     16   16   17    10 a
 ```
 
 ## Monoid mumbo-jumbo
@@ -404,7 +406,7 @@ microbenchmark(running_zscored(x, 250), dumb_zscore(x,
 
 ```
 ## Unit: microseconds
-##                     expr    min     lq   mean median     uq    max neval
-##  running_zscored(x, 250)    807    818    861    839    861   1297   100
-##      dumb_zscore(x, 250) 228331 243028 257125 253182 257454 371401   100
+##                     expr    min     lq   mean median     uq    max neval cld
+##  running_zscored(x, 250)    767    773    840    794    837   1354   100  a 
+##      dumb_zscore(x, 250) 212418 221888 233803 230396 240998 286202   100   b
 ```
