@@ -128,6 +128,10 @@ tag : ## advice on github tagging
 	@-echo "git tag -a r$(VERSION) -m 'release $(VERSION)'"
 	@-echo "git push --tags"
 
+really_tag : ## actually github tag 
+	git tag -a r$(VERSION) -m 'release $(VERSION)'
+	git push --tags
+
 $(DRAT_SENTINEL) : $(PKG_TGZ)
 	R --slave -e "drat:::insertPackage('$<',repodir='~/github/drat',commit=TRUE)"
 
