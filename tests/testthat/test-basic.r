@@ -101,6 +101,9 @@ test_that("cosum and comoment run without error",{#FOLDUP
 	expect_true(TRUE)
 })#UNFOLD
 test_that("running sd, skew, kurt run without error",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
 	x <- rnorm(100)
 	y <- as.integer(x)
@@ -183,6 +186,9 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	expect_true(TRUE)
 })#UNFOLD
 test_that("hit heywood branch",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
 	set.char.seed("3d318f1d-9921-4a20-84fc-c5ffc722d52c")
@@ -213,6 +219,9 @@ test_that("hit heywood branch",{#FOLDUP
 	expect_true(TRUE)
 })#UNFOLD
 test_that("running adjustments",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
 	set.char.seed("e36291f6-70e0-4412-9c50-bc46b6ab8639")
 	x <- rnorm(100)
 	y <- as.integer(x)

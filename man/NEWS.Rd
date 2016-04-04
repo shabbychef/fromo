@@ -10,7 +10,7 @@ News for package 'fromo'
 \newcommand{\cranfromo}{\CRANpkg{fromo}}
 \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 }
-\section{\fromo{} Version 0.1.2 (2016-04-03) }{
+\section{\fromo{} Version 0.1.3 (2016-04-04) }{
 
 \itemize{
 \item submit to CRAN

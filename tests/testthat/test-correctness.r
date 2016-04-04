@@ -108,6 +108,9 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 	expect_true(TRUE)
 })#UNFOLD
 test_that("running ops are correct",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 	set.char.seed("7ffe0035-2d0c-4586-a1a5-6321c7cf8694")
 	for (xlen in c(20,100)) {
@@ -178,6 +181,9 @@ test_that("running ops are correct",{#FOLDUP
 	expect_true(TRUE)
 })#UNFOLD
 test_that("running adjustments are correct",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
 	set.char.seed("967d2149-fbff-4d82-b227-ca3e1034bddb")
 	for (xlen in c(20,100)) {
 		x <- rnorm(xlen)
