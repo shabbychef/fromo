@@ -34,6 +34,7 @@ library(microbenchmark)
 # chicken and egg dept:
 # [![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
 # [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
+# [![Total](http://cranlogs.r-pkg.org/badges/grand-total/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
 ```
 
 # fromo
