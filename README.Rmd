@@ -42,7 +42,8 @@ library(microbenchmark)
 [![Build Status](https://travis-ci.org/shabbychef/fromo.png)](https://travis-ci.org/shabbychef/fromo)
 [![codecov.io](http://codecov.io/github/shabbychef/fromo/coverage.svg?branch=master)](http://codecov.io/github/shabbychef/fromo?branch=master)
 [![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
-[![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=brightgreen)](http://www.r-pkg.org/pkg/fromo)
+[![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=green)](http://www.r-pkg.org/pkg/fromo)
+[![Total](http://cranlogs.r-pkg.org/badges/grand-total/fromo?color=green)](http://www.r-pkg.org/pkg/fromo)
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
@@ -117,8 +118,8 @@ microbenchmark(kurt5(x),
 Store your moments in an object, and you can cat them together. (Eventually there will be
 an `unjoin` method.) These should satisfy 'monoidal homomorphism', meaning that concatenation
 and taking moments commute with each other. This is a small step of the way towards fast
-machine learning methods 
-(along the lines of Mike Izbicki's [Hlearn library](https://github.com/mikeizbicki/HLearn).)
+machine learning 
+methods (along the lines of Mike Izbicki's [Hlearn library](https://github.com/mikeizbicki/HLearn)).
 
 Some demo code:
 
@@ -223,6 +224,14 @@ cbind(alt5,k5[,1])
 
 ```
 
+### See also
+
+If you like rolling computations, do also check out the following packages (I believe they
+are all on CRAN):
+
+  * [RcppRoll](https://github.com/kevinushey/RcppRoll).
+  * [roll](https://cran.r-project.org/web/packages/roll/index.html).
+
 ## Running 'scale' operations
 
 Through template magic, the same code was modified to perform running centering, scaling, z-scoring and so on:
@@ -246,7 +255,7 @@ altz <- sapply(seq_along(x),function(iii) {
 cbind(xz,altz)
 ```
 
-A list of the available functions:
+A list of the available running functions:
 
 * `running_centered` : from the current value, subtract the mean over the trailing window.
 * `running_scaled`: divide the current value by the standard deviation over the trailing window.
