@@ -44,9 +44,29 @@ if (require(devtools)) {
 
 # Basic Usage
 
+Currently the package functionality can be divided into the following:
+* Functions which reduce a vector to an array of moments.
+* Functions which take a vector to a matrix of the running moments.
+* Functions which transform a vector to some normalized form, like a centered, rescaled, z-scored sample,
+or a summarized form, like the running Sharpe or t-stat.
+* Functions for computing the covariance of a vector robustly.
+* Object representations of moments with join and unjoin methods.
+
 ## Summary moments
 
-Here is a speed comparison of the basic moment computation:
+A function which computes, say, the kurtosis, typically also computes the mean and standard deviation, and has
+performed enough computation to easily return the skew. However, the default functions in R for higher order moments
+discard these lower order moments. So, for example, if you wish to compute Merten's form for the standard error
+of the Sharpe ratio, you have to call separate functions to compute the kurtosis, skew, standard deviation, and mean.
+
+The functions in `fromo` return _all_ the moments up to some order. These are the functions `sd3`, `skew4`, and `kurt5`. 
+The latter of these, `kurt5` returns an array of the _excess_ kurtosis, the skewness, the standard deviation, the mean,
+and the observation count. (The number in the function name denotes the length of the output.) 
+
+
+In theory these operations should be just as fast as the default functions, but faster than calling multiple
+default functions.  Here is a speed comparison of the basic moment computations:
+
 
 ```r
 require(fromo)
@@ -66,15 +86,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval
-##     kurt5(x) 144.9 146.7 150.9  148.2 150.2 183   100
-##     skew4(x)  83.9  85.7  88.7   86.9  88.0 158   100
-##       sd3(x)  10.6  11.6  12.7   12.1  12.9  28   100
-##     dumbk(x) 201.6 211.2 222.4  214.1 222.6 954   200
-##  kurtosis(x)  87.0  91.6  94.1   93.0  94.7 129   100
-##  skewness(x)  89.5  92.2  94.5   93.6  94.9 115   100
-##        sd(x)  15.4  18.6  20.9   19.7  20.7  39   100
-##      mean(x)   3.7   4.6   5.2    4.9   5.3  13   100
+##         expr   min    lq  mean median    uq     max neval cld
+##     kurt5(x) 184.1 187.4 192.2  189.5 192.0   259.1   100  ab
+##     skew4(x) 109.4 112.0 114.6  113.6 115.7   136.7   100  a 
+##       sd3(x)  14.0  15.3  17.5   16.3  17.8    62.5   100  a 
+##     dumbk(x) 268.1 280.2 382.4  284.1 293.3 18929.3   200   b
+##  kurtosis(x) 118.9 121.6 127.0  123.7 127.3   173.8   100  a 
+##  skewness(x) 119.7 122.5 126.7  124.4 127.8   168.2   100  a 
+##        sd(x)  22.4  24.2  28.4   26.8  27.9    96.0   100  a 
+##      mean(x)   5.1   5.8   6.7    6.5   7.5     8.5   100  a
 ```
 
 ```r
@@ -86,23 +106,31 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval
-##     kurt5(x) 1460 1474 1491   1487 1504 1540    10
-##     skew4(x)  832  839  851    850  867  874    10
-##       sd3(x)   86   86   88     87   91   93    10
-##     dumbk(x) 1736 1745 1777   1764 1815 1839    10
-##  kurtosis(x)  852  857  896    899  921  979    10
-##  skewness(x)  818  837  858    860  874  901    10
-##        sd(x)   51   51   52     51   54   56    10
-##      mean(x)   17   17   18     18   18   18    10
+##         expr  min   lq mean median   uq  max neval     cld
+##     kurt5(x) 1815 1825 1856   1853 1878 1925    10      f 
+##     skew4(x) 1049 1050 1071   1074 1087 1099    10    d   
+##       sd3(x)  101  101  103    102  106  108    10   c    
+##     dumbk(x) 2196 2214 2241   2236 2266 2316    10       g
+##  kurtosis(x) 1084 1089 1114   1116 1136 1138    10     e  
+##  skewness(x) 1036 1038 1060   1052 1081 1099    10    d   
+##        sd(x)   58   58   59     58   60   63    10  b     
+##      mean(x)   19   20   20     20   20   21    10 a
 ```
 
 ## Monoid mumbo-jumbo
 
-Store your moments in an object, and you can cat them together. (Eventually there will be
-an `unjoin` method.) These should satisfy 'monoidal homomorphism', meaning that concatenation
-and taking moments commute with each other. This is a small step of the way towards fast
-machine learning 
+The `as.centsums` object
+performs the summary (centralized) moment computation, and stores the centralized sums.
+There is a print method that shows raw, centralized, and standardized moments of the ingested
+data.
+This object supports concatenation and unconcatenation. 
+These should satisfy 'monoidal homomorphism', meaning that concatenation
+and taking moments commute with each other. 
+So if you have two vectors, `x1` and `x2`, the following should be equal:
+`c(as.centsums(x1,4),as.centsums(x2,4))` and `as.centsums(c(x1,x2),4)`. 
+Moreover, the following should also be equal:
+`as.centsums(c(x1,x2),4) %-% as.centsums(x2,4))` and `as.centsums(x1,4)`. 
+This is a small step of the way towards fast machine learning 
 methods (along the lines of Mike Izbicki's [Hlearn library](https://github.com/mikeizbicki/HLearn)).
 
 Some demo code:
@@ -163,7 +191,7 @@ stopifnot(max(abs(rs2 - rs2alt)) < 1e-07)
 ### For multivariate input
 
 There is also code for computing co-sums and co-moments, though as of this writing only up to order 2.
-Some demo code for the monoidal stuff here::
+Some demo code for the monoidal stuff here:
 
 
 ```r
@@ -417,8 +445,8 @@ microbenchmark(running_zscored(x, 250), dumb_zscore(x,
 ```
 
 ```
-## Unit: microseconds
-##                     expr    min     lq   mean median     uq    max neval
-##  running_zscored(x, 250)    807    818    861    839    861   1297   100
-##      dumb_zscore(x, 250) 228331 243028 257125 253182 257454 371401   100
+## Unit: milliseconds
+##                     expr   min    lq  mean median    uq   max neval cld
+##  running_zscored(x, 250)   1.1   1.1   1.2    1.2   1.2   1.7   100  a 
+##      dumb_zscore(x, 250) 329.8 347.4 357.2  353.8 362.0 428.6   100   b
 ```

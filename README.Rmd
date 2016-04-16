@@ -80,9 +80,29 @@ if (require(devtools)) {
 
 # Basic Usage
 
+Currently the package functionality can be divided into the following:
+* Functions which reduce a vector to an array of moments.
+* Functions which take a vector to a matrix of the running moments.
+* Functions which transform a vector to some normalized form, like a centered, rescaled, z-scored sample,
+or a summarized form, like the running Sharpe or t-stat.
+* Functions for computing the covariance of a vector robustly.
+* Object representations of moments with join and unjoin methods.
+
 ## Summary moments
 
-Here is a speed comparison of the basic moment computation:
+A function which computes, say, the kurtosis, typically also computes the mean and standard deviation, and has
+performed enough computation to easily return the skew. However, the default functions in R for higher order moments
+discard these lower order moments. So, for example, if you wish to compute Merten's form for the standard error
+of the Sharpe ratio, you have to call separate functions to compute the kurtosis, skew, standard deviation, and mean.
+
+The functions in `fromo` return _all_ the moments up to some order. These are the functions `sd3`, `skew4`, and `kurt5`. 
+The latter of these, `kurt5` returns an array of the _excess_ kurtosis, the skewness, the standard deviation, the mean,
+and the observation count. (The number in the function name denotes the length of the output.) 
+
+
+In theory these operations should be just as fast as the default functions, but faster than calling multiple
+default functions.  Here is a speed comparison of the basic moment computations:
+
 ```{r babysteps,eval=TRUE,echo=TRUE}
 require(fromo)
 require(moments)
@@ -115,10 +135,18 @@ microbenchmark(kurt5(x),
 
 ## Monoid mumbo-jumbo
 
-Store your moments in an object, and you can cat them together. (Eventually there will be
-an `unjoin` method.) These should satisfy 'monoidal homomorphism', meaning that concatenation
-and taking moments commute with each other. This is a small step of the way towards fast
-machine learning 
+The `as.centsums` object
+performs the summary (centralized) moment computation, and stores the centralized sums.
+There is a print method that shows raw, centralized, and standardized moments of the ingested
+data.
+This object supports concatenation and unconcatenation. 
+These should satisfy 'monoidal homomorphism', meaning that concatenation
+and taking moments commute with each other. 
+So if you have two vectors, `x1` and `x2`, the following should be equal:
+`c(as.centsums(x1,4),as.centsums(x2,4))` and `as.centsums(c(x1,x2),4)`. 
+Moreover, the following should also be equal:
+`as.centsums(c(x1,x2),4) %-% as.centsums(x2,4))` and `as.centsums(x1,4)`. 
+This is a small step of the way towards fast machine learning 
 methods (along the lines of Mike Izbicki's [Hlearn library](https://github.com/mikeizbicki/HLearn)).
 
 Some demo code:
@@ -168,7 +196,7 @@ stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 ### For multivariate input
 
 There is also code for computing co-sums and co-moments, though as of this writing only up to order 2.
-Some demo code for the monoidal stuff here::
+Some demo code for the monoidal stuff here:
 
 ```{r multi_monoid1,eval=TRUE,echo=TRUE}
 set.seed(54321)
