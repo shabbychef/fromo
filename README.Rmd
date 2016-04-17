@@ -134,6 +134,7 @@ require(fromo)
 require(moments)
 require(microbenchmark)
 
+set.seed(123)
 x <- rnorm(1e3)
 
 dumbk <- function(x) { c(kurtosis(x) - 3.0,skewness(x),sd(x),mean(x),length(x)) }

@@ -391,20 +391,19 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fa
 // [[Rcpp::export]]
 NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false) {
     if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector preval = wrapMoments(v, max_order, na_rm);
-    double sigma = COMP_SD_TWO(preval,(double)used_df);
+    NumericVector cmoms = cent_moments(v, max_order, used_df, na_rm);
+    double sigma, adj;
     int mmm;
-    NumericVector vret(max_order+1);
-    for (mmm=0;mmm <= MIN(1,max_order);++mmm) {
-        vret[max_order-mmm] = preval[mmm];
-    }
     if (max_order > 1) {
-        vret[max_order-2] = sigma;
+        adj = cmoms(max_order - 2);
+        sigma = sqrt(adj);
+        cmoms(max_order-2) = sigma;  // put the stdev in
         for (mmm=3;mmm <= max_order;++mmm) {
-            vret[max_order-mmm] = preval[mmm] / pow(sigma,((double)mmm)/2.0);
+            adj *= sigma;
+            cmoms(max_order-mmm) /= adj;
         }
     }
-    return vret;
+    return cmoms;
 }
 //' @rdname firstmoments
 //' @export
