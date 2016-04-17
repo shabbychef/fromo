@@ -95,10 +95,32 @@ performed enough computation to easily return the skew. However, the default fun
 discard these lower order moments. So, for example, if you wish to compute Merten's form for the standard error
 of the Sharpe ratio, you have to call separate functions to compute the kurtosis, skew, standard deviation, and mean.
 
-The functions in `fromo` return _all_ the moments up to some order. These are the functions `sd3`, `skew4`, and `kurt5`. 
-The latter of these, `kurt5` returns an array of the _excess_ kurtosis, the skewness, the standard deviation, the mean,
+The summary functions in *fromo* return _all_ the moments up to some order, namely the 
+functions `sd3`, `skew4`, and `kurt5`. 
+The latter of these, `kurt5` returns an array of length 5 containing 
+the _excess_ kurtosis, the skewness, the standard deviation, the mean,
 and the observation count. (The number in the function name denotes the length of the output.) 
+Along the same lines, there are summarizing functions that compute centered moments, standardized moments, 
+and 'raw' cumulants:
 
+* `cent_moments`: return a `k+1`-vector of the `k`th centered moment, the `k-1`th, all the way down to the 2nd (the variance),
+then _the mean_ and the observation count.
+* `std_moments`: return a `k+1`-vector of the `k`th standardized moment, the `k-1`th, all the way down to the 3rd, then the
+_standard deviation_, the mean, and the observation count.
+* `cent_cumulants`: computes the centered cumulants (yes, this is redundant, but they are _not_ standardized). 
+return a `k+1`-vector of the `k`th raw cumulant, the `k-1`th, all the way down to the 1st (the centered first cumulant is zero,
+oddly), then the observation count.
+
+```{r basic_usage,eval=TRUE,echo=TRUE}
+require(fromo)
+set.seed(12345)
+x <- rnorm(1e3)
+show(cent_moments(x,max_order=4,na_rm=TRUE))
+show(std_moments(x,max_order=4,na_rm=TRUE))
+show(cent_cumulants(x,max_order=4,na_rm=TRUE))
+```
+
+### Speed
 
 In theory these operations should be just as fast as the default functions, but faster than calling multiple
 default functions.  Here is a speed comparison of the basic moment computations:
@@ -295,6 +317,8 @@ column.
 * `running_cumulants`: computes cumulants over the trailing window.
 * `running_apx_quantiles`: computes approximate quantiles over the trailing window based on the cumulants and the Cornish-Fisher approximation.
 * `running_apx_median`: uses `running_apx_quantiles` to give the approximate median over the trailing window.
+
+### Lookahead
 
 The functions `running_centered`, `running_scaled` and `running_zscored` take an optional `lookahead` parameter that
 allows you to peek ahead (or behind if negative) to the computed moments for comparing against the current value. These
