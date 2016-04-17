@@ -83,6 +83,20 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// std_cumulants
+NumericVector std_cumulants(SEXP v, int max_order, int used_df, bool na_rm);
+RcppExport SEXP fromo_std_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    __result = Rcpp::wrap(std_cumulants(v, max_order, used_df, na_rm));
+    return __result;
+END_RCPP
+}
 // cent_sums
 NumericVector cent_sums(SEXP v, int max_order, bool na_rm);
 RcppExport SEXP fromo_cent_sums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP) {

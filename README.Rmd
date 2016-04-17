@@ -108,16 +108,20 @@ then _the mean_ and the observation count.
 * `std_moments`: return a `k+1`-vector of the `k`th standardized moment, the `k-1`th, all the way down to the 3rd, then the
 _standard deviation_, the mean, and the observation count.
 * `cent_cumulants`: computes the centered cumulants (yes, this is redundant, but they are _not_ standardized). 
-return a `k+1`-vector of the `k`th raw cumulant, the `k-1`th, all the way down to the 1st (the centered first cumulant is zero,
-oddly), then the observation count.
+return a `k+1`-vector of the `k`th raw cumulant, the `k-1`th, all the way down to the second, then the mean, 
+and the observation count.
+* `std_cumulants`: computes the standardized (and, of course, centered) cumulants. 
+return a `k+1`-vector of the `k`th standardized cumulant, all the way down to the third, then the variance, the mean,
+and the observation count.
 
 ```{r basic_usage,eval=TRUE,echo=TRUE}
 require(fromo)
 set.seed(12345)
-x <- rnorm(1e3)
+x <- rnorm(1e3,mean=10.0,sd=2.0)
 show(cent_moments(x,max_order=4,na_rm=TRUE))
 show(std_moments(x,max_order=4,na_rm=TRUE))
 show(cent_cumulants(x,max_order=4,na_rm=TRUE))
+show(std_cumulants(x,max_order=4,na_rm=TRUE))
 ```
 
 ### Speed

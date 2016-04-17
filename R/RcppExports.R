@@ -35,7 +35,9 @@
 #' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
 #'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
 #' \item{cent_cumulants}{A vector of the (sample) \eqn{k}th (centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
-#'  then the \emph{variance} (which is the second cumulant), the mean, and number of elements.}
+#'  then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements.}
+#' \item{std_cumulants}{A vector of the (sample) \eqn{k}th standardized (and centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
+#'  down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements.}
 #' }
 #'
 #' @note
@@ -44,9 +46,11 @@
 #' Similarly, the second standardized moments defined to be identically 1; \code{std_moments} instead returns the standard
 #' deviation. The reason is that a user can always decide to ignore the results and fill in a 0 or 1 as they need, but 
 #' could not efficiently compute the mean and standard deviation from scratch if we discard it.
+#' The antepenultimate element of the output of \code{std_cumulants} is not a one, even though that \sQuote{should} be
+#' the standardized second cumulant.
 #' 
 #' @note
-#' The last minus two element of the output of \code{cent_moments} and \code{cent_cumulants} is the \emph{variance},
+#' The antepenultimate element of the output of \code{cent_moments}, \code{cent_cumulants} and \code{std_cumulants} is the \emph{variance},
 #' not the standard deviation. All other code return the standard deviation in that place.
 #'
 #' @note
@@ -54,7 +58,7 @@
 #' for Gaussian input.
 #'
 #' @note
-#' 'centered cumulants' is redundant. The intent was to avoid collision with existing code named 'cumulants'.
+#' 'centered cumulants' is redundant. The intent was to avoid possible collision with existing code named 'cumulants'.
 #'
 #' @examples
 #' x <- rnorm(1e5)
@@ -77,6 +81,7 @@
 #' }
 #' y <- std_moments(x,6)
 #' cml <- cent_cumulants(x,6)
+#' std <- std_cumulants(x,6)
 #'
 #' @template etc
 #' @template ref-romo
@@ -114,6 +119,12 @@ std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #' @export
 cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
     .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+}
+
+#' @rdname firstmoments
+#' @export
+std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
+    .Call('fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
 }
 
 #' @title
