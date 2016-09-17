@@ -6,7 +6,7 @@
 \description{
 News for package 'fromo'
 
-\newcommand{\CRANpkg}{\href{http://cran.r-project.org/package=#1}{\pkg{#1}}}
+\newcommand{\CRANpkg}{\href{https://cran.r-project.org/package=#1}{\pkg{#1}}}
 \newcommand{\cranfromo}{\CRANpkg{fromo}}
 \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 }
