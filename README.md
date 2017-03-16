@@ -139,15 +139,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval
-##     kurt5(x) 145.1 147.6 161.5  148.9 164.0 280   100
-##     skew4(x)  84.2  86.2  97.1   87.5  98.8 177   100
-##       sd3(x)  10.7  11.9  13.6   12.5  13.5  40   100
-##     dumbk(x) 202.1 211.1 234.5  216.2 228.8 546   200
-##  kurtosis(x)  89.6  92.6 101.6   94.7 102.0 166   100
-##  skewness(x)  89.4  92.7 105.5   95.0 105.5 252   100
-##        sd(x)  16.7  18.4  24.7   20.1  25.0 124   100
-##      mean(x)   3.8   4.6   6.2    4.9   5.4 103   100
+##         expr   min    lq  mean median    uq max neval     cld
+##     kurt5(x) 140.5 142.7 145.8  144.4 146.7 168   100      f 
+##     skew4(x)  80.2  82.6  84.5   83.6  85.1 113   100    d   
+##       sd3(x)  10.6  11.5  12.6   12.0  12.7  38   100  b     
+##     dumbk(x) 198.0 203.0 210.3  206.9 211.6 589   200       g
+##  kurtosis(x)  86.4  88.4  90.6   89.3  90.8 130   100    de  
+##  skewness(x)  86.2  89.2  92.5   90.4  91.9 132   100     e  
+##        sd(x)  14.1  17.0  18.8   18.3  19.2  38   100   c    
+##      mean(x)   3.9   4.4   5.8    4.7   5.1 103   100 a
 ```
 
 ```r
@@ -159,15 +159,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval
-##     kurt5(x) 1445 1446 1547   1456 1665 1794    10
-##     skew4(x)  819  831  885    846  968 1040    10
-##       sd3(x)   85   86   91     90   96  100    10
-##     dumbk(x) 1723 1782 1820   1790 1861 1969    10
-##  kurtosis(x)  842  848  892    875  910 1034    10
-##  skewness(x)  810  819  843    823  865  926    10
-##        sd(x)   50   51   55     54   60   63    10
-##      mean(x)   16   17   18     18   19   21    10
+##         expr  min   lq mean median   uq  max neval    cld
+##     kurt5(x) 1410 1413 1429   1422 1445 1468    10     e 
+##     skew4(x)  793  795  805    803  813  822    10   c   
+##       sd3(x)   85   85   87     86   88   91    10  b    
+##     dumbk(x) 2493 2619 2649   2657 2703 2728    10      f
+##  kurtosis(x) 1286 1291 1338   1308 1355 1506    10    d  
+##  skewness(x) 1241 1275 1298   1285 1338 1374    10    d  
+##        sd(x)   47   47   48     48   49   51    10 ab    
+##      mean(x)   17   17   18     17   18   18    10 a
 ```
 
 ## Monoid mumbo-jumbo
@@ -467,7 +467,7 @@ ph <- ggplot(gdf, aes(x = timestamp, y = x, group = smoothing,
 print(ph)
 ```
 
-<img src="github_extra/figure/toy_zscore-1.png" title="plot of chunk toy_zscore" alt="plot of chunk toy_zscore" width="600px" height="500px" />
+<img src="tools/figure/toy_zscore-1.png" title="plot of chunk toy_zscore" alt="plot of chunk toy_zscore" width="600px" height="500px" />
 
 ## Efficiency
 
@@ -501,7 +501,7 @@ microbenchmark(running_zscored(x, 250), dumb_zscore(x,
 
 ```
 ## Unit: microseconds
-##                     expr    min     lq   mean median     uq    max neval
-##  running_zscored(x, 250)    807    818    861    839    861   1297   100
-##      dumb_zscore(x, 250) 228331 243028 257125 253182 257454 371401   100
+##                     expr    min     lq   mean median     uq    max neval cld
+##  running_zscored(x, 250)    755    780    834    828    878   1007   100  a 
+##      dumb_zscore(x, 250) 221912 242549 248308 248240 254661 322962   100   b
 ```

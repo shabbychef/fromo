@@ -103,8 +103,10 @@ $(PKG_INSTALLED) : .%.installed : %.tar.gz
 
 installed : $(PKG_INSTALLED) ## install the package
 
-README.md : README.Rmd $(PKG_INSTALLED)
-	@mkdir -p github_extra/figure
+tools/figure : 
+	@mkdir -p $@
+
+README.md : README.Rmd $(PKG_INSTALLED) | tools/figure
 	r -l Rcpp -l knitr -l devtools -e 'setwd("$(<D)");if (require(knitr)) { knit("$(<F)") }'
 
 .docker_img : docker/Dockerfile  ## build the docker image
