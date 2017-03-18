@@ -13,6 +13,7 @@ News for package 'fromo'
 \section{\fromo{} Version 0.2.0 (2016-) }{
 
 \itemize{
+\item move github figures to location CRAN understands.
 \item add \sQuote{std_cumulants}
 }
 }
