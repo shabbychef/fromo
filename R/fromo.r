@@ -17,8 +17,13 @@
 # along with fromo.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#' Fast Robust Moments.
+#' @title Fast Robust Moments.
 #' 
+#' @description
+#'
+#' Fast, numerically robust moments computations, along with computation of
+#' cumulants, running means, etc.
+#'
 #' @section Robust Moments:
 #'
 #' Welford described a method for 'robust' one-pass computation of the

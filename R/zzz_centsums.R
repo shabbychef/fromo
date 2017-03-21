@@ -22,7 +22,6 @@
 
 # univariate input#FOLDUP
 
-
 #' @title centsums Class.
 #'
 #' @description 
@@ -141,11 +140,11 @@ as.centsums.default <- function(x, order=3, na.rm=TRUE) {
 #' @param type the type of moment to compute.
 #' @template etc
 #' @name accessor
-#' @rdname accessor-methods
+#' @rdname centsums-accessor-methods
 #' @aliases sums
 #' @exportMethod sums
 setGeneric('sums', signature="x", function(x) standardGeneric('sums'))
-#' @rdname accessor-methods
+#' @rdname centsums-accessor-methods
 #' @aliases sums,centsums-method
 setMethod('sums', 'centsums', function(x) x@sums )
 
@@ -177,11 +176,11 @@ setMethod('sums', 'centsums', function(x) x@sums )
 			retv
 }
 
-#' @rdname accessor-methods
+#' @rdname centsums-accessor-methods
 #' @aliases moments
 #' @exportMethod moments
 setGeneric('moments', function(x,type=c('central','raw','standardized')) standardGeneric('moments'))
-#' @rdname accessor-methods
+#' @rdname centsums-accessor-methods
 #' @aliases moments,centsums-method
 setMethod('moments', signature(x='centsums'),
 	function(x,type=c('central','raw','standardized')) {

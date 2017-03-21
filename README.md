@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/shabbychef/fromo.png)](https://travis-ci.org/shabbychef/fromo)
 [![codecov.io](http://codecov.io/github/shabbychef/fromo/coverage.svg?branch=master)](http://codecov.io/github/shabbychef/fromo?branch=master)
-[![CRAN](http://www.r-pkg.org/badges/version/fromo)](http://cran.rstudio.com/package=fromo) 
+[![CRAN](http://www.r-pkg.org/badges/version/fromo)](https://cran.r-project.org/package=fromo)
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=green)](http://www.r-pkg.org/pkg/fromo)
 [![Total](http://cranlogs.r-pkg.org/badges/grand-total/fromo?color=green)](http://www.r-pkg.org/pkg/fromo)
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
@@ -375,7 +375,7 @@ If you like rolling computations, do also check out the following packages (I be
 are all on CRAN):
 
   * [RcppRoll](https://github.com/kevinushey/RcppRoll).
-  * [roll](https://cran.r-project.org/web/packages/roll/index.html).
+  * [roll](https://cran.r-project.org/package=roll).
 
 ## Running 'scale' operations
 

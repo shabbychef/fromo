@@ -3,9 +3,10 @@
 \docType{package}
 \name{fromo-package}
 \alias{fromo-package}
-\title{fast robust moments}
+\title{Fast Robust Moments.}
 \description{
-Fast Robust Moments.
+Fast, numerically robust moments computations, along with computation of
+cumulants, running means, etc.
 }
 \note{
 The moment computations provided by fromo are 
