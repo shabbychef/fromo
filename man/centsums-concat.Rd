@@ -15,4 +15,3 @@ Concatenate centsums objects.
 \seealso{
 join_cent_sums
 }
-

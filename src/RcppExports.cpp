@@ -6,44 +6,50 @@
 using namespace Rcpp;
 
 // sd3
-NumericVector sd3(SEXP v, bool na_rm);
-RcppExport SEXP fromo_sd3(SEXP vSEXP, SEXP na_rmSEXP) {
+NumericVector sd3(SEXP v, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_sd3(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(sd3(v, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(sd3(v, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // skew4
-NumericVector skew4(SEXP v, bool na_rm);
-RcppExport SEXP fromo_skew4(SEXP vSEXP, SEXP na_rmSEXP) {
+NumericVector skew4(SEXP v, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_skew4(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(skew4(v, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(skew4(v, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // kurt5
-NumericVector kurt5(SEXP v, bool na_rm);
-RcppExport SEXP fromo_kurt5(SEXP vSEXP, SEXP na_rmSEXP) {
+NumericVector kurt5(SEXP v, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_kurt5(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(kurt5(v, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(kurt5(v, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // cent_moments
-NumericVector cent_moments(SEXP v, int max_order, int used_df, bool na_rm);
-RcppExport SEXP fromo_cent_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
+NumericVector cent_moments(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_cent_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,13 +57,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(cent_moments(v, max_order, used_df, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cent_moments(v, max_order, used_df, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // std_moments
-NumericVector std_moments(SEXP v, int max_order, int used_df, bool na_rm);
-RcppExport SEXP fromo_std_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
+NumericVector std_moments(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_std_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -65,13 +73,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(std_moments(v, max_order, used_df, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(std_moments(v, max_order, used_df, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // cent_cumulants
-NumericVector cent_cumulants(SEXP v, int max_order, int used_df, bool na_rm);
-RcppExport SEXP fromo_cent_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
+NumericVector cent_cumulants(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_cent_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -79,13 +89,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(cent_cumulants(v, max_order, used_df, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cent_cumulants(v, max_order, used_df, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // std_cumulants
-NumericVector std_cumulants(SEXP v, int max_order, int used_df, bool na_rm);
-RcppExport SEXP fromo_std_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP) {
+NumericVector std_cumulants(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_std_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -93,20 +105,24 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(std_cumulants(v, max_order, used_df, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(std_cumulants(v, max_order, used_df, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // cent_sums
-NumericVector cent_sums(SEXP v, int max_order, bool na_rm);
-RcppExport SEXP fromo_cent_sums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP) {
+NumericVector cent_sums(SEXP v, int max_order, bool na_rm, SEXP wts, bool check_wts);
+RcppExport SEXP fromo_cent_sums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(cent_sums(v, max_order, na_rm));
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cent_sums(v, max_order, na_rm, wts, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }

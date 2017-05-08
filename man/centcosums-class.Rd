@@ -2,10 +2,10 @@
 % Please edit documentation in R/zzz_centsums.R
 \docType{class}
 \name{centcosums-class}
-\alias{centcosums}
 \alias{centcosums-class}
-\alias{initialize,centcosums-class}
 \alias{initialize,centcosums-method}
+\alias{initialize,centcosums-class}
+\alias{centcosums}
 \title{centcosums Class.}
 \usage{
 \S4method{initialize}{centcosums}(.Object, cosums, order = NA_real_)
@@ -37,6 +37,7 @@ A \code{centcosums} object contains a multidimensional array (now only
 
 \item{\code{order}}{the maximum order. ignored for now.}
 }}
+
 \note{
 The moment computations provided by fromo are 
 numerically robust, but will often \emph{not} provide the
@@ -48,9 +49,6 @@ the fromo package.
 \examples{
 obj <- new("centcosums",cosums=cent_cosums(matrix(rnorm(100*3),ncol=3),max_order=2),order=2)
 
-}
-\author{
-Steven E. Pav \email{shabbychef@gmail.com}
 }
 \references{
 Terriberry, T. "Computing Higher-Order Moments Online."
@@ -71,5 +69,7 @@ standard deviation."
 \seealso{
 cent_cosums
 }
+\author{
+Steven E. Pav \email{shabbychef@gmail.com}
+}
 \keyword{moments}
-

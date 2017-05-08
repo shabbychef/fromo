@@ -3,6 +3,7 @@
 \name{as.centsums}
 \alias{as.centsums}
 \alias{as.centsums.default}
+\alias{as.centsums}
 \title{Coerce to a centsums object.}
 \usage{
 as.centsums(x, order=3, na.rm=TRUE)
@@ -42,4 +43,3 @@ cs <- as.centsums(x, order=5)
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}
 }
-

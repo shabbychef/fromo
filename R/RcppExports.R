@@ -85,46 +85,47 @@
 #'
 #' @template etc
 #' @template ref-romo
+#' @template param-wts
 #' @rdname firstmoments
 #' @export
-sd3 <- function(v, na_rm = FALSE) {
-    .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm)
+sd3 <- function(v, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm, wts, check_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-skew4 <- function(v, na_rm = FALSE) {
-    .Call('fromo_skew4', PACKAGE = 'fromo', v, na_rm)
+skew4 <- function(v, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_skew4', PACKAGE = 'fromo', v, na_rm, wts, check_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-kurt5 <- function(v, na_rm = FALSE) {
-    .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm)
+kurt5 <- function(v, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm, wts, check_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
-    .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
-    .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
-    .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
-    .Call('fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm)
+std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
 }
 
 #' @title
@@ -163,10 +164,11 @@ std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE) {
 #'
 #' @template etc
 #' @template ref-romo
+#' @template param-wts
 #' @rdname centsums 
 #' @export
-cent_sums <- function(v, max_order = 5L, na_rm = FALSE) {
-    .Call('fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm)
+cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
+    .Call('fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts)
 }
 
 #' @rdname centsums 

@@ -14,7 +14,6 @@ Title: Fast Robust Moments
 BugReports: https://github.com/shabbychef/PKG_NAME()/issues
 Description: Fast computation of moments via 'Rcpp'. Supports computation on
    vectors and matrices, and Monoidal append of moments.
-License: LGPL-3
 Imports:
     Rcpp (>= 0.12.3),
     methods

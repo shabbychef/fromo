@@ -18,4 +18,3 @@ Unconcatenate centcosums objects.
 \seealso{
 unjoin_cent_cosums
 }
-

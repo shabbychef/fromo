@@ -21,4 +21,3 @@ Unconcatenate centsums objects.
 \seealso{
 unjoin_cent_sums
 }
-

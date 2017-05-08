@@ -34,7 +34,7 @@ set.char.seed <- function(str) {
 THOROUGHNESS <- getOption('test.thoroughness',1.0)
 #UNFOLD
 
-context("basic correctness")#FOLDUP
+context("first moments")#FOLDUP
 test_that("sd, skew, kurt are correct",{#FOLDUP
 	set.char.seed("c4007dba-2010-481e-abe5-f07d3ce94eb4")
 	x <- rnorm(1000)
@@ -100,6 +100,11 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 			expect_equal(max(abs(cumuls-dumbv)),0,tolerance=1e-12)
 		}
 	}
+	if (require(e1071)) {
+		dumb_skew   <- e1071::skewness(x,type=3)
+		equiv_skew  <- ske[1] * ((ske[4]-1)/(ske[4]))^(3/2)
+		expect_equal(dumb_skew,equiv_skew,tolerance=1e-12)
+	}
 
 	# 2FIX: add cent_moments and std_moments
 	# 2FIX: check NA
@@ -107,6 +112,40 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("unit weighted sd, skew, kurt are correct",{#FOLDUP
+	set.char.seed("b652ccd2-478b-44d4-90e2-2ca2bad99d25")
+	x <- rnorm(1000)
+	ones <- rep(1,length(x))
+
+	sid0 <- sd3(x)
+	ske0 <- skew4(x)
+	krt0 <- kurt5(x)
+
+	sid <- sd3(x,wts=ones)
+	ske <- skew4(x,wts=ones)
+	krt <- kurt5(x,wts=ones)
+
+	expect_equal(sid0,sid,tolerance=1e-9)
+	expect_equal(ske0,ske,tolerance=1e-9)
+	expect_equal(krt0,krt,tolerance=1e-9)
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("weighted sd, skew, kurt are correct",{#FOLDUP
+	set.char.seed("4e17d837-69c1-41d1-906f-c82224d7ce41")
+	x <- rnorm(1000)
+	wts <- runif(length(x))
+
+	sid <- sd3(x,wts=wts)
+	ske <- skew4(x,wts=wts)
+	krt <- kurt5(x,wts=wts)
+	# 2FIX: add more here to check correctness ... 
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+#UNFOLD
+context("running ops")# FOLDUP
 test_that("running ops are correct",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
@@ -238,6 +277,8 @@ test_that("running adjustments are correct",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+# UNFOLD
+context("monoid nonsense")# FOLDUP
 test_that("join/unjoin",{#FOLDUP
 	set.char.seed("1325a51e-1584-4f89-9ea3-f15223a223d9")
 
@@ -292,8 +333,8 @@ test_that("join/unjoin cosums",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+# UNFOLD
 # 2FIX: check the effects of NA
-#UNFOLD
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=r:ft=r:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
