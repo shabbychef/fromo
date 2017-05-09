@@ -148,8 +148,8 @@ test_that("weight scaling what you expect",{#FOLDUP
 	#expect_equal(ske_1 * c(1,1,1,2),ske_2,tolerance=1e-9)
 	#expect_equal(krt_1 * c(1,1,1,1,2),krt_2,tolerance=1e-9)
 	expect_equal(sid_1[c(2,3)] * c(1,2),sid_2[c(2,3)],tolerance=1e-9)
-	expect_equal(ske_1[c(3,4)] * c(1,2),ske_2[c(3,4)],tolerance=1e-9)
-	expect_equal(krt_1[c(4,5)] * c(1,2),krt_2[c(4,5)],tolerance=1e-9)
+	expect_equal(ske_1[c(1,3,4)] * c(1,1,2),ske_2[c(1,3,4)],tolerance=1e-9)
+	expect_equal(krt_1[c(1,2,4,5)] * c(1,1,1,2),krt_2[c(1,2,4,5)],tolerance=1e-9)
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
