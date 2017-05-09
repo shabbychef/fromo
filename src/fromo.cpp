@@ -105,28 +105,18 @@ using namespace Rcpp;
 
 // univariate sums, moments, cumulants//FOLDUP
 
-// this function returns a NumericVector of:
-//   the number of elements, 
-//   the mean, and 
-//   an (ord - 1)-vector consisting of the
-//   2nd through ord'th centered sum, defined
-//   as sum_j (v[j] - mean)^i
-// if top < 0, take the length of v.
+// the specialization of quasiMoments to ord=2
 template <typename T, typename W, bool has_wts>
-NumericVector quasiWeightedMoments(T v,
+NumericVector quasiWeightedWelford(T v,
                                    W wts,
-                                   int ord = 3,
                                    int bottom = 0,
                                    int top = -1,
                                    bool na_rm = false,
                                    bool check_wts = false) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
 
-    if (ord < 1) { stop("require positive order"); }
-    if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
-
     // preallocated with zeros:
-    NumericVector xret(1+ord);
+    NumericVector xret(3);
     if (! has_wts) { nextw = 1.0; }
     
     if ((top < 0) || (top > v.size())) {
@@ -143,30 +133,108 @@ NumericVector quasiWeightedMoments(T v,
             if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
         } 
 
-        if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
+        if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
             della = nextv - xret[1];
             nelm = xret[0];
-            xret[0] += nextw;
-            nel = xret[0];
+            if (has_wts) {
+                xret[0] += nextw;
+                nel = xret[0];
+            } else {
+                nel = ++xret[0];
+            }
             delnel = della / nel;
-            xret[1] += delnel;
+            if (has_wts) {
+                xret[1] += nextw * delnel;
+            } else {
+                xret[1] += delnel;
+            }
 
-            if (nelm > 0) {
-                drat = delnel * nelm;
-                ac_dn = pow(drat,ord);
-                ac_on = pow(-1.0 / nelm,ord-1);
+            if (nelm > 0) { 
+                if (has_wts) {
+                    xret[2] += delnel * delnel * nelm * nextw * nel;
+                } else {
+                    xret[2] += delnel * delnel * nelm * nel;
+                }
+            }
+        }
+    }
+    return xret;
+}
 
-                for (int ppp=ord;ppp >= 2;ppp--) {
-                    xret[ppp] += ac_dn * (1.0 - ac_on);
-                    if (ppp > 2) {
-                        if (drat != 0) { ac_dn /= drat; }
-                        ac_on *= -nelm;
+// this function returns a NumericVector of:
+//   the number of elements or the sum of wts, 
+//   the mean, and 
+//   an (ord - 1)-vector consisting of the
+//   2nd through ord'th centered sum, defined
+//   as sum_j wts[j] * (v[j] - mean)^i
+// if top < 0, take the length of v.
+template <typename T, typename W, bool has_wts>
+NumericVector quasiWeightedMoments(T v,
+                                   W wts,
+                                   int ord = 3,
+                                   int bottom = 0,
+                                   int top = -1,
+                                   bool na_rm = false,
+                                   bool check_wts = false) {
+    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
+    if (ord < 1) { stop("require positive order"); }
+    if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
+    // preallocated with zeros:
+    NumericVector xret(1+ord);
+
+    if (ord==2) {
+        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,bottom,top,na_rm,check_wts);
+    } else {
+        if (! has_wts) { nextw = 1.0; }
+        
+        if ((top < 0) || (top > v.size())) {
+            top = v.size(); 
+        }
+        if (has_wts) {
+            if (wts.size() < top) { stop("size of wts does not match v"); }
+        }
+
+        for (int iii=bottom;iii < top;++iii) {
+            nextv = v[iii];
+            if (has_wts) { 
+                nextw = double(wts[iii]); 
+                if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
+            } 
+
+            if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
+                della = nextv - xret[1];
+                nelm = xret[0];
+                if (has_wts) {
+                    xret[0] += nextw;
+                    nel = xret[0];
+                    delnel = della * nextw / nel;
+                } else {
+                    nel = ++xret[0];
+                    delnel = della / nel;
+                }
+                xret[1] += delnel;
+
+                if (nelm > 0) {
+                    if (has_wts) {
+                        drat = della * nelm / nel;
+                    } else {
+                        drat = delnel * nelm;
                     }
-                    ac_de = -delnel;
-                    for (int qqq=1;qqq <= ppp-2;qqq++) {
-                        xret[ppp] += bincoef[ppp][qqq] * ac_de * xret[ppp-qqq];
-                        if (qqq < ppp - 2) {
-                            ac_de *= -delnel;
+                    ac_dn = pow(drat,ord);
+                    ac_on = pow(-nextw / nelm,ord-1);
+
+                    for (int ppp=ord;ppp >= 2;ppp--) {
+                        xret[ppp] += ac_dn * nextw * (1.0 - ac_on);
+                        if (ppp > 2) {
+                            if (drat != 0) { ac_dn /= drat; }
+                            ac_on *= -nelm / nextw;
+                        }
+                        ac_de = -delnel;
+                        for (int qqq=1;qqq <= ppp-2;qqq++) {
+                            xret[ppp] += bincoef[ppp][qqq] * ac_de * xret[ppp-qqq];
+                            if (qqq < ppp - 2) {
+                                ac_de *= -delnel;
+                            }
                         }
                     }
                 }
@@ -244,41 +312,41 @@ NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool ch
 //   an (ord - 1)-vector consisting of the
 //   2nd through ord'th centered sum, defined
 //   as sum_j (v[j] - mean)^i
-template <typename T,typename iterT>
-NumericVector quasiWelford(T v,
-                           bool na_rm = false) {
-    double nextv, nel, nelm, della, delnel;
-    const int ord=2;
+//template <typename T,typename iterT>
+//NumericVector quasiWelford(T v,
+                           //bool na_rm = fals) {
+    //double nextv, nel, nelm, della, delnel;
+    //const int ord=2;
 
-    // preallocated with zeros:
-    NumericVector xret(1+ord);
+    //// preallocated with zeros:
+    //NumericVector xret(1+ord);
 
-    for (iterT it = v.begin(); it != v.end(); ++it) {
-        nextv = double(*it);
-        if (! (na_rm && ISNAN(nextv))) {
-            della = nextv - xret[1];
-            nelm = xret[0];
-            nel = ++xret[0];
-            delnel = della / nel;
-            xret[1] += delnel;
-            xret[2] += delnel * delnel * nelm * (nelm + 1.0);
-        }
-    }
+    //for (iterT it = v.begin(); it != v.end(); ++it) {
+        //nextv = double(*it);
+        //if (! (na_rm && ISNAN(nextv))) {
+            //della = nextv - xret[1];
+            //nelm = xret[0];
+            //nel = ++xret[0];
+            //delnel = della / nel;
+            //xret[1] += delnel;
+            //xret[2] += delnel * delnel * nelm * (nelm + 1.0);
+        //}
+    //}
 
-    return xret;
-}
+    //return xret;
+//}
 
-// wrap the call:
-NumericVector wrapWelford(SEXP v, bool na_rm) {
-    NumericVector retv;
-    switch (TYPEOF(v)) {
-        case  INTSXP: { retv = quasiWelford<IntegerVector,IntegerVector::iterator>(v, na_rm); break; }
-        case REALSXP: { retv = quasiWelford<NumericVector,NumericVector::iterator>(v, na_rm); break; }
-        case  LGLSXP: { retv = quasiWelford<LogicalVector,LogicalVector::iterator>(v, na_rm); break; }
-        default: stop("Unsupported input type");
-    }
-    return retv;
-}
+//// wrap the call:
+//NumericVector wrapWelford(SEXP v, bool na_rm) {
+    //NumericVector retv;
+    //switch (TYPEOF(v)) {
+        //case  INTSXP: { retv = quasiWelford<IntegerVector,IntegerVector::iterator>(v, na_rm); break; }
+        //case REALSXP: { retv = quasiWelford<NumericVector,NumericVector::iterator>(v, na_rm); break; }
+        //case  LGLSXP: { retv = quasiWelford<LogicalVector,LogicalVector::iterator>(v, na_rm); break; }
+        //default: stop("Unsupported input type");
+    //}
+    //return retv;
+//}
 
 // for help on dispatch, see:
 // http://stackoverflow.com/a/25254680/164611
@@ -374,9 +442,7 @@ NumericVector wrapWelford(SEXP v, bool na_rm) {
 // [[Rcpp::export]]
 NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, bool check_wts=false) {
 
-    // 2FIX: make wrapWeightedWelford
     NumericVector preval = wrapWeightedMoments(v, wts, 2, na_rm, check_wts);
-    //NumericVector preval = wrapWelford(v, na_rm);
     NumericVector vret = NumericVector::create(COMP_SD(preval),
                                                preval[1],
                                                preval[0]);
