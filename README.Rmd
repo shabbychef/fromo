@@ -416,3 +416,30 @@ stopifnot(max(abs(val1-val2),na.rm=TRUE) <= 1e-14)
 microbenchmark(running_zscored(x,250),
 							 dumb_zscore(x,250))
 ```
+
+More seriously, here we compare the `running_sd3` function, which computes
+the standard deviation, mean and number of elements with the 
+`roll_sd` and `roll_mean` functions from the 
+[roll](https://cran.r-project.org/package=roll) package.
+
+```{r some_more_timing,eval=TRUE,echo=TRUE}
+# dare I?
+require(fromo)
+require(microbenchmark)
+require(roll)
+
+set.seed(4422)
+x <- rnorm(1e5)
+xm <- matrix(x)
+
+v1 <- running_sd3(xm,250)
+rsd <- roll::roll_sd(xm,250)
+rmu <- roll::roll_mean(xm,250)
+# compute error on the 1000th row:
+stopifnot(max(abs(v1[1000,] - c(rsd[1000],rmu[1000],250))) < 1e-14)
+# now timings:
+microbenchmark(running_sd3(xm,250),
+							 roll::roll_mean(xm,250),
+							 roll::roll_sd(xm,250))
+```
+

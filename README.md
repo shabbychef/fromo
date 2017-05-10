@@ -570,3 +570,39 @@ microbenchmark(running_zscored(x, 250), dumb_zscore(x,
 ##  running_zscored(x, 250)    755    780    834    828    878   1007   100  a 
 ##      dumb_zscore(x, 250) 221912 242549 248308 248240 254661 322962   100   b
 ```
+
+More seriously, here we compare the `running_sd3` function, which computes
+the standard deviation, mean and number of elements with the 
+`roll_sd` and `roll_mean` functions from the 
+[roll](https://cran.r-project.org/package=roll) package.
+
+
+```r
+# dare I?
+require(fromo)
+require(microbenchmark)
+require(roll)
+
+set.seed(4422)
+x <- rnorm(1e+05)
+xm <- matrix(x)
+
+v1 <- running_sd3(xm, 250)
+rsd <- roll::roll_sd(xm, 250)
+rmu <- roll::roll_mean(xm, 250)
+# compute error on the 1000th row:
+stopifnot(max(abs(v1[1000, ] - c(rsd[1000], rmu[1000], 
+    250))) < 1e-14)
+# now timings:
+microbenchmark(running_sd3(xm, 250), roll::roll_mean(xm, 
+    250), roll::roll_sd(xm, 250))
+```
+
+```
+## Unit: milliseconds
+##                      expr  min   lq mean median   uq max neval cld
+##      running_sd3(xm, 250)  7.4  7.6  8.6    7.9  8.6  51   100 a  
+##  roll::roll_mean(xm, 250) 12.9 13.3 14.0   13.5 14.2  20   100  b 
+##    roll::roll_sd(xm, 250) 35.1 35.6 37.2   36.5 37.7  51   100   c
+```
+
