@@ -173,7 +173,7 @@ require(moments)
 require(microbenchmark)
 
 set.seed(987)
-x <- rnorm(1e7)
+x <- rnorm(1e3)
 w <- runif(length(x))
 
 # no weights:
@@ -183,8 +183,18 @@ show(cent_moments(x,max_order=4,wts=w,na_rm=TRUE))
 # if you turn off weight normalization, the last element is sum(wts):
 show(cent_moments(x,max_order=4,wts=w,na_rm=TRUE,normalize_wts=FALSE))
 
+# let's compare for speed! 
+x <- rnorm(1e7)
+w <- runif(length(x))
+
+slow_sd <- function(x,w) {
+	n0 <- length(x)
+	mu <- weighted.mean(x,w=w)
+	sg <- sqrt(sum(w * (x-mu)^2)/(n0 - 1))
+	c(sg,mu,n0)
+}
 microbenchmark(sd3(x,wts=w), 
-							 weighted.mean(x,w=w))
+							 slow_sd(x,w))
 
 ```
 

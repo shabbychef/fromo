@@ -183,7 +183,7 @@ require(moments)
 require(microbenchmark)
 
 set.seed(987)
-x <- rnorm(1e+07)
+x <- rnorm(1000)
 w <- runif(length(x))
 
 # no weights:
@@ -191,7 +191,7 @@ show(cent_moments(x, max_order = 4, na_rm = TRUE))
 ```
 
 ```
-## [1]  3.0e+00  1.7e-03  1.0e+00 -2.7e-04  1.0e+07
+## [1] 2.9e+00 1.2e-02 1.0e+00 1.0e-02 1.0e+03
 ```
 
 ```r
@@ -200,7 +200,7 @@ show(cent_moments(x, max_order = 4, wts = w, na_rm = TRUE))
 ```
 
 ```
-## [1]  3.0e+00  1.8e-03  1.0e+00 -2.3e-04  1.0e+07
+## [1] 3.1e+00 4.1e-02 1.0e+00 1.3e-02 1.0e+03
 ```
 
 ```r
@@ -211,18 +211,28 @@ show(cent_moments(x, max_order = 4, wts = w, na_rm = TRUE,
 ```
 
 ```
-## [1]  3.0e+00  1.8e-03  1.0e+00 -2.3e-04  5.0e+06
+## [1]   3.072   0.041   1.001   0.013 493.941
 ```
 
 ```r
-microbenchmark(sd3(x, wts = w), weighted.mean(x, w = w))
+# let's compare for speed!
+x <- rnorm(1e+07)
+w <- runif(length(x))
+
+slow_sd <- function(x, w) {
+    n0 <- length(x)
+    mu <- weighted.mean(x, w = w)
+    sg <- sqrt(sum(w * (x - mu)^2)/(n0 - 1))
+    c(sg, mu, n0)
+}
+microbenchmark(sd3(x, wts = w), slow_sd(x, w))
 ```
 
 ```
 ## Unit: milliseconds
-##                     expr min  lq mean median  uq max neval cld
-##          sd3(x, wts = w)  99 100  107    104 112 135   100  a 
-##  weighted.mean(x, w = w) 133 137  161    149 175 298   100   b
+##             expr min  lq mean median  uq max neval cld
+##  sd3(x, wts = w) 100 104  112    112 119 129   100  a 
+##    slow_sd(x, w) 176 186  216    210 236 305   100   b
 ```
 
 ## Monoid mumbo-jumbo
