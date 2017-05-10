@@ -10,23 +10,26 @@
 \alias{std_cumulants}
 \title{Compute first K moments}
 \usage{
-sd3(v, na_rm = FALSE, wts = NULL, check_wts = FALSE)
+sd3(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
+  normalize_wts = TRUE)
 
-skew4(v, na_rm = FALSE, wts = NULL, check_wts = FALSE)
+skew4(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
+  normalize_wts = TRUE)
 
-kurt5(v, na_rm = FALSE, wts = NULL, check_wts = FALSE)
+kurt5(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
+  normalize_wts = TRUE)
 
 cent_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL,
-  check_wts = FALSE)
+  check_wts = FALSE, normalize_wts = TRUE)
 
 std_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL,
-  check_wts = FALSE)
+  check_wts = FALSE, normalize_wts = TRUE)
 
 cent_cumulants(v, max_order = 5L, used_df = 0L, na_rm = FALSE,
-  wts = NULL, check_wts = FALSE)
+  wts = NULL, check_wts = FALSE, normalize_wts = TRUE)
 
 std_cumulants(v, max_order = 5L, used_df = 0L, na_rm = FALSE,
-  wts = NULL, check_wts = FALSE)
+  wts = NULL, check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{
 \item{v}{a vector}
@@ -41,8 +44,18 @@ up to a multiplicative constant, meaning the units of weights are
 immaterial. When weights are \code{NA}, the same rules for checking \code{v}
 are applied.}
 
+\item{sg_df}{the number of degrees of freedom consumed in the computation of
+the variance or standard deviation. This defaults to 1 to match the 
+\sQuote{Bessel correction}.}
+
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}
+
+\item{normalize_wts}{a boolean for whether the weights should be
+renormalized to have a mean value of 1. This mean is computed over elements
+which contribute to the moments, so if \code{na_rm} is set, that means non-NA
+elements of \code{wts} that correspond to non-NA elements of the data
+vector.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
 
@@ -53,17 +66,20 @@ observations.}
 \value{
 a vector, filled out as follows:
 \describe{
-\item{sd3}{A vector of the (sample) standard devation, mean, and number of elements.}
-\item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
-\item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
+\item{sd3}{A vector of the (sample) standard devation, mean, and number of elements (or the total weight when \code{wts}
+are given).}
+\item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements (or the total weight when 
+\code{wts} are given).}
+\item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements (or the
+total weight when \code{wts} are given).}
 \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
- then the \emph{variance}, the mean, and number of elements.}
+ then the \emph{variance}, the mean, and number of elements (total weight when \code{wts} are given).}
 \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
- \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+ \eqn{k-1}th, ..., then standard devation, mean, and number of elements (total weight).}
 \item{cent_cumulants}{A vector of the (sample) \eqn{k}th (centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
- then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements.}
+ then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements (total weight).}
 \item{std_cumulants}{A vector of the (sample) \eqn{k}th standardized (and centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
- down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements.}
+ down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements (total weight).}
 }
 }
 \description{

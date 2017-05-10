@@ -112,8 +112,11 @@ NumericVector quasiWeightedWelford(T v,
                                    int bottom = 0,
                                    int top = -1,
                                    bool na_rm = false,
-                                   bool check_wts = false) {
-    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
+                                   bool check_wts = false,
+                                   bool normalize_wts = true) {
+    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
+    int nok;
+    const bool renormalize = has_wts && normalize_wts;
 
     // preallocated with zeros:
     NumericVector xret(3);
@@ -123,6 +126,7 @@ NumericVector quasiWeightedWelford(T v,
         top = v.size(); 
     }
     if (has_wts) {
+        if (renormalize) { nok = 0; }
         if (wts.size() < top) { stop("size of wts does not match v"); }
     }
 
@@ -134,6 +138,7 @@ NumericVector quasiWeightedWelford(T v,
         } 
 
         if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
+            if (renormalize) { ++nok; }
             della = nextv - xret[1];
             nelm = xret[0];
             if (has_wts) {
@@ -158,6 +163,11 @@ NumericVector quasiWeightedWelford(T v,
             }
         }
     }
+    if (renormalize) {
+        renorm = double(nok) / xret[0];
+        xret[0] = double(nok);
+        xret[2] *= renorm;
+    }
     return xret;
 }
 
@@ -168,6 +178,10 @@ NumericVector quasiWeightedWelford(T v,
 //   2nd through ord'th centered sum, defined
 //   as sum_j wts[j] * (v[j] - mean)^i
 // if top < 0, take the length of v.
+//
+// if normalize_wts and wts are non-null, then
+// we essentially renormalize the weights to
+// have mean 1.
 template <typename T, typename W, bool has_wts>
 NumericVector quasiWeightedMoments(T v,
                                    W wts,
@@ -175,15 +189,19 @@ NumericVector quasiWeightedMoments(T v,
                                    int bottom = 0,
                                    int top = -1,
                                    bool na_rm = false,
-                                   bool check_wts = false) {
-    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
+                                   bool check_wts = false,
+                                   bool normalize_wts = true) {
+    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
+    int nok;
+    const bool renormalize = has_wts && normalize_wts;
+
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
     // preallocated with zeros:
     NumericVector xret(1+ord);
 
     if (ord==2) {
-        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,bottom,top,na_rm,check_wts);
+        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,bottom,top,na_rm,check_wts,normalize_wts);
     } else {
         if (! has_wts) { nextw = 1.0; }
         
@@ -192,6 +210,7 @@ NumericVector quasiWeightedMoments(T v,
         }
         if (has_wts) {
             if (wts.size() < top) { stop("size of wts does not match v"); }
+            if (renormalize) { nok = 0; }
         }
 
         for (int iii=bottom;iii < top;++iii) {
@@ -202,6 +221,7 @@ NumericVector quasiWeightedMoments(T v,
             } 
 
             if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
+                if (renormalize) { ++nok; }
                 della = nextv - xret[1];
                 nelm = xret[0];
                 if (has_wts) {
@@ -240,6 +260,13 @@ NumericVector quasiWeightedMoments(T v,
                 }
             }
         }
+        if (renormalize) {
+            renorm = double(nok) / xret[0];
+            xret[0] = double(nok);
+            for (int ppp=2;ppp <= ord;ppp++) {
+                xret[ppp] *= renorm;
+            }
+        }
     }
     return xret;
 }
@@ -249,52 +276,53 @@ NumericVector quasiMoments(T v,
                            int ord = 3,
                            int bottom = 0,
                            int top = -1,
-                           bool na_rm = false) {
+                           bool na_rm = false,
+                           bool normalize_wts = true) {
 
     NumericVector retv;
     NumericVector dummy_wts;
-    retv = quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, ord, bottom, top, na_rm, false);
+    retv = quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, ord, bottom, top, na_rm, false, normalize_wts);
     return retv;
 }
 
 // wrap the call:
-NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool check_wts) {
+NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool check_wts, bool normalize_wts) {
     NumericVector retv;
     NumericVector dummy_wts;
     // FML, I cannot figure out how to get v.length()
     switch (TYPEOF(v)) {
         case  INTSXP: { 
             if (Rf_isNull(wts)) {  
-                retv = quasiWeightedMoments<IntegerVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts); 
+                retv = quasiWeightedMoments<IntegerVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
             } else {
                 switch (TYPEOF(wts)) {
-                    case  INTSXP: { retv = quasiWeightedMoments<IntegerVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
-                    case REALSXP: { retv = quasiWeightedMoments<IntegerVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
-                    case  LGLSXP: { retv = quasiWeightedMoments<IntegerVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
+                    case  INTSXP: { retv = quasiWeightedMoments<IntegerVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
+                    case REALSXP: { retv = quasiWeightedMoments<IntegerVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
+                    case  LGLSXP: { retv = quasiWeightedMoments<IntegerVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
                     default: stop("Unsupported weight type"); // nocov
                 }
             }
             break; }
         case REALSXP: { 
             if (Rf_isNull(wts)) { 
-                retv = quasiWeightedMoments<NumericVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts); 
+                retv = quasiWeightedMoments<NumericVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
             } else {
                 switch (TYPEOF(wts)) {
-                    case  INTSXP: { retv = quasiWeightedMoments<NumericVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
-                    case REALSXP: { retv = quasiWeightedMoments<NumericVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
-                    case  LGLSXP: { retv = quasiWeightedMoments<NumericVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
+                    case  INTSXP: { retv = quasiWeightedMoments<NumericVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
+                    case REALSXP: { retv = quasiWeightedMoments<NumericVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
+                    case  LGLSXP: { retv = quasiWeightedMoments<NumericVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
                     default: stop("Unsupported weight type"); // nocov
                 }
             }
             break; }
         case  LGLSXP: { 
             if (Rf_isNull(wts)) { 
-                retv = quasiWeightedMoments<LogicalVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts); 
+                retv = quasiWeightedMoments<LogicalVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
             } else {
                 switch (TYPEOF(wts)) {
-                    case  INTSXP: { retv = quasiWeightedMoments<LogicalVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
-                    case REALSXP: { retv = quasiWeightedMoments<LogicalVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
-                    case  LGLSXP: { retv = quasiWeightedMoments<LogicalVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts); break; }
+                    case  INTSXP: { retv = quasiWeightedMoments<LogicalVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
+                    case REALSXP: { retv = quasiWeightedMoments<LogicalVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
+                    case  LGLSXP: { retv = quasiWeightedMoments<LogicalVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
                     default: stop("Unsupported weight type"); // nocov
                 }
             }
@@ -359,10 +387,13 @@ NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool ch
 //' 
 //' @param v a vector
 //' @param na_rm whether to remove NA, false by default.
+//' @param max_order the maximum order of the centered moment to be computed.
 //' @param used_df the number of degrees of freedom consumed, used in the denominator
 //' of the centered moments computation. These are subtracted from the number of
-//' observations.
-//' @param max_order the maximum order of the centered moment to be computed.
+//' observations. 
+//' @param sg_df the number of degrees of freedom consumed in the computation of
+//' the variance or standard deviation. This defaults to 1 to match the 
+//' \sQuote{Bessel correction}.
 //'
 //' @details
 //'
@@ -378,17 +409,20 @@ NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool ch
 //'
 //' @return a vector, filled out as follows:
 //' \describe{
-//' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements.}
-//' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
-//' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
+//' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements (or the total weight when \code{wts}
+//' are given).}
+//' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements (or the total weight when 
+//' \code{wts} are given).}
+//' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements (or the
+//' total weight when \code{wts} are given).}
 //' \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
-//'  then the \emph{variance}, the mean, and number of elements.}
+//'  then the \emph{variance}, the mean, and number of elements (total weight when \code{wts} are given).}
 //' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
-//'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+//'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements (total weight).}
 //' \item{cent_cumulants}{A vector of the (sample) \eqn{k}th (centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
-//'  then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements.}
+//'  then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements (total weight).}
 //' \item{std_cumulants}{A vector of the (sample) \eqn{k}th standardized (and centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
-//'  down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements.}
+//'  down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements (total weight).}
 //' }
 //'
 //' @note
@@ -440,10 +474,10 @@ NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool ch
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, bool check_wts=false) {
+NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
 
-    NumericVector preval = wrapWeightedMoments(v, wts, 2, na_rm, check_wts);
-    NumericVector vret = NumericVector::create(COMP_SD(preval),
+    NumericVector preval = wrapWeightedMoments(v, wts, 2, na_rm, check_wts, normalize_wts);
+    NumericVector vret = NumericVector::create(COMP_SD_TWO(preval,sg_df),
                                                preval[1],
                                                preval[0]);
 
@@ -454,10 +488,10 @@ NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, bool check_wt
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector skew4(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, bool check_wts=false) {
-    NumericVector preval = wrapWeightedMoments(v, wts, 3, na_rm, check_wts);
+NumericVector skew4(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
+    NumericVector preval = wrapWeightedMoments(v, wts, 3, na_rm, check_wts, normalize_wts);
     NumericVector vret = NumericVector::create(COMP_SKEW(preval),
-                                               COMP_SD(preval),
+                                               COMP_SD_TWO(preval,sg_df),
                                                preval[1],
                                                preval[0]);
     return vret;
@@ -467,11 +501,11 @@ NumericVector skew4(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, bool check_
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector kurt5(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, bool check_wts=false) {
-    NumericVector preval = wrapWeightedMoments(v, wts, 4, na_rm, check_wts);
+NumericVector kurt5(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
+    NumericVector preval = wrapWeightedMoments(v, wts, 4, na_rm, check_wts, normalize_wts);
     NumericVector vret = NumericVector::create(COMP_EXKURT(preval),
                                                COMP_SKEW(preval),
-                                               COMP_SD(preval),
+                                               COMP_SD_TWO(preval,sg_df),
                                                preval[1],
                                                preval[0]);
     return vret;
@@ -507,9 +541,11 @@ NumericVector sums2revm(NumericVector input,double used_df=0.0) {
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false) {
+NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, 
+                           bool check_wts=false, bool normalize_wts=true) {
+    // 2FIX: add sg_df here?
     if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector preval = wrapWeightedMoments(v, wts, max_order, na_rm, check_wts);
+    NumericVector preval = wrapWeightedMoments(v, wts, max_order, na_rm, check_wts, normalize_wts);
     NumericVector vret = sums2revm(preval,(double)used_df);
     return vret;
 }
@@ -517,9 +553,10 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fa
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false) {
+NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, 
+                          bool check_wts=false, bool normalize_wts=true) {
     if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector cmoms = cent_moments(v, max_order, used_df, na_rm, wts, check_wts);
+    NumericVector cmoms = cent_moments(v, max_order, used_df, na_rm, wts, check_wts, normalize_wts);
     double sigma, adj;
     int mmm;
     if (max_order > 1) {
@@ -536,8 +573,9 @@ NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fal
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector cent_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false) {
-    NumericVector cmoms = cent_moments(v,max_order,used_df,na_rm, wts, check_wts);
+NumericVector cent_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, 
+                             bool check_wts=false, bool normalize_wts=true) {
+    NumericVector cmoms = cent_moments(v,max_order,used_df,na_rm, wts, check_wts, normalize_wts);
     NumericVector cumuls(cmoms.size());
     int jjj,mmm;
     // copy over
@@ -560,8 +598,9 @@ NumericVector cent_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false) {
-    NumericVector cumuls = cent_cumulants(v,max_order,used_df,na_rm,wts,check_wts);
+NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=false, SEXP wts=R_NilValue, 
+                            bool check_wts=false, bool normalize_wts=true) {
+    NumericVector cumuls = cent_cumulants(v,max_order,used_df,na_rm,wts,check_wts,normalize_wts);
     double sigma,adj;
     int jjj;
     if (max_order > 1) {
@@ -618,9 +657,9 @@ NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=f
 //' @rdname centsums 
 //' @export
 // [[Rcpp::export]]
-NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false) {
+NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false, bool normalize_wts=true) {
     if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector preval = wrapWeightedMoments(v, wts, max_order, na_rm, check_wts);
+    NumericVector preval = wrapWeightedMoments(v, wts, max_order, na_rm, check_wts, normalize_wts);
     return preval;
 }
 //' @rdname centsums 

@@ -131,25 +131,41 @@ test_that("unit weighted sd, skew, kurt are correct",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
-test_that("weight scaling what you expect",{#FOLDUP
-	set.char.seed("efaa75ac-bb9e-4e4a-a375-7028f099366e")
+test_that("normalize weights works",{#FOLDUP
+	set.char.seed("2694ae87-62d4-4154-9c32-864f9a6e648d")
 	x <- rnorm(25)
 	wts <- runif(length(x))
 
-	sid_1 <- sd3(x,wts=wts)
-	ske_1 <- skew4(x,wts=wts)
-	krt_1 <- kurt5(x,wts=wts)
+	sid_1 <- sd3(x,wts=wts,normalize_wts=TRUE)
+	ske_1 <- skew4(x,wts=wts,normalize_wts=TRUE)
+	krt_1 <- kurt5(x,wts=wts,normalize_wts=TRUE)
+	sid_2 <- sd3(x,wts=2*wts,normalize_wts=TRUE)
+	ske_2 <- skew4(x,wts=2*wts,normalize_wts=TRUE)
+	krt_2 <- kurt5(x,wts=2*wts,normalize_wts=TRUE)
 
-	sid_2 <- sd3(x,wts=2*wts)
-	ske_2 <- skew4(x,wts=2*wts)
-	krt_2 <- kurt5(x,wts=2*wts)
+	expect_equal(sid_1,sid_2,tolerance=1e-9)
+	expect_equal(ske_1,ske_2,tolerance=1e-9)
+	expect_equal(krt_1,krt_2,tolerance=1e-9)
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("weight scaling what you expect",{#FOLDUP
+	set.char.seed("efaa75ac-bb9e-4e4a-a375-7028f099366e")
+	x <- rnorm(50)
+	wts <- runif(length(x))
 
-	#expect_equal(sid_1 * c(1,1,2),sid_2,tolerance=1e-9)
-	#expect_equal(ske_1 * c(1,1,1,2),ske_2,tolerance=1e-9)
-	#expect_equal(krt_1 * c(1,1,1,1,2),krt_2,tolerance=1e-9)
-	expect_equal(sid_1[c(2,3)] * c(1,2),sid_2[c(2,3)],tolerance=1e-9)
-	expect_equal(ske_1[c(1,3,4)] * c(1,1,2),ske_2[c(1,3,4)],tolerance=1e-9)
-	expect_equal(krt_1[c(1,2,4,5)] * c(1,1,1,2),krt_2[c(1,2,4,5)],tolerance=1e-9)
+	sid_1 <- sd3(x,wts=wts,normalize_wts=FALSE,sg_df=0)
+	ske_1 <- skew4(x,wts=wts,normalize_wts=FALSE,sg_df=0)
+	krt_1 <- kurt5(x,wts=wts,normalize_wts=FALSE,sg_df=0)
+
+	sid_2 <- sd3(x,wts=2*wts,normalize_wts=FALSE,sg_df=0)
+	ske_2 <- skew4(x,wts=2*wts,normalize_wts=FALSE,sg_df=0)
+	krt_2 <- kurt5(x,wts=2*wts,normalize_wts=FALSE,sg_df=0)
+
+	expect_equal(sid_1 * c(1,1,2),sid_2,tolerance=1e-9)
+	expect_equal(ske_1 * c(1,1,1,2),ske_2,tolerance=1e-9)
+	expect_equal(krt_1 * c(1,1,1,1,2),krt_2,tolerance=1e-9)
+
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
@@ -158,9 +174,9 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	x <- rnorm(1000)
 	wts <- runif(length(x))
 
-	sid <- sd3(x,wts=wts)
-	ske <- skew4(x,wts=wts)
-	krt <- kurt5(x,wts=wts)
+	sid <- sd3(x,wts=wts,normalize_wts=TRUE)
+	ske <- skew4(x,wts=wts,normalize_wts=TRUE)
+	krt <- kurt5(x,wts=wts,normalize_wts=TRUE)
 	# 2FIX: add more here to check correctness ... 
 
 	expect_equal(length(sid),3)
@@ -169,7 +185,7 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 
 	# compare computations to gold standard
 	# length
-	expect_equal(sid[3],sum(wts))
+	expect_equal(sid[3],length(x))
 	expect_equal(sid[3],ske[4])
 	expect_equal(sid[3],krt[5])
 
@@ -181,39 +197,39 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	# standard dev
 	expect_equal(sid[1],ske[2],tolerance=1e-9)
 	expect_equal(sid[1],krt[3],tolerance=1e-9)
+	wsd <- sqrt(sum(((x - weighted.mean(x,w=wts))^2) * (wts / mean(wts))) / (length(x) - 1))
 	# 2FIX!!!
-	#expect_equal(sid[1],sd(x),tolerance=1e-9)
+	expect_equal(sid[1],wsd,tolerance=1e-9)
 
 	# skew
 	expect_equal(ske[1],krt[2],tolerance=1e-9)
+ 
+	na_rm <- TRUE
+	dumb_count  <- length(x)
+	dumb_mean   <- weighted.mean(x,w=wts)
+	dumb_sd     <- sqrt(sum(((x - weighted.mean(x,w=wts))^2) * (wts / mean(wts))) / (length(x) - 1))
 
-	if (require(moments)) {
-		na_rm <- TRUE
-		dumb_count  <- sum(wts,na.rm=na_rm) 
-		dumb_mean   <- weighted.mean(x,w=wts)
-
-		#dumb_sd     <- sd(x,na.rm=na_rm) 
-		#dumb_skew   <- moments::skewness(x,na.rm=na_rm) 
-		#dumb_exkurt <- moments::kurtosis(x,na.rm=na_rm) - 3.0 
-
-		## ack! fix!!
-		#dumb_cmom2 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=2) 
-		#dumb_cmom3 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=3)
-		#dumb_cmom4 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=4)
-		#dumb_cmom5 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=5)
-		#dumb_cmom6 <- moments::moment(x,central=TRUE,na.rm=na_rm,order=6)
-
-		## skew
-		#expect_equal(ske[1],dumb_skew,tolerance=1e-9)
-		## kurtosis
-		#expect_equal(krt[1],dumb_exkurt,tolerance=1e-9)
-
-		## oops. problems with centered moments in terms of the used_df; need a
-		## better test...
-		#cmoms <- cent_moments(x,max_order=6,used_df=0)
-		#dumbv <- c(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
-		#expect_equal(max(abs(cmoms-dumbv)),0,tolerance=1e-9)
+	wcmom <- function(vec,wts,ord) {
+		wz <- wts / mean(wts)
+		mean(wz * ((x - weighted.mean(x,w=wz))^ord))
 	}
+	dumb_wcmom2  <- wcmom(x,wts,2)
+	dumb_wcmom3  <- wcmom(x,wts,3)
+	dumb_wcmom4  <- wcmom(x,wts,4)
+	dumb_wcmom5  <- wcmom(x,wts,5)
+	dumb_wcmom6  <- wcmom(x,wts,6)
+
+	cmoms <- cent_moments(x,wts=wts,max_order=6,used_df=0,normalize_wts=TRUE)
+	dumbv <- c(dumb_wcmom6,dumb_wcmom5,dumb_wcmom4,dumb_wcmom3,dumb_wcmom2,dumb_mean,dumb_count)
+	expect_equal(cmoms,dumbv,tolerance=1e-9)
+
+	dumb_skew <- dumb_wcmom3 / (dumb_wcmom2^(3/2))
+	dumb_exkurt <- (dumb_wcmom4 / (dumb_wcmom2^(2))) - 3
+
+	# skew
+	expect_equal(ske[1],dumb_skew,tolerance=1e-9)
+	# kurtosis
+	expect_equal(krt[1],dumb_exkurt,tolerance=1e-9)
 
 	# sentinel
 	expect_true(TRUE)

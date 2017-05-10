@@ -7,3 +7,8 @@
 #' are applied.
 #' @param check_wts a boolean for whether the code shall check for negative
 #' weights, and throw an error when they are found. Default false for speed.
+#' @param normalize_wts a boolean for whether the weights should be
+#' renormalized to have a mean value of 1. This mean is computed over elements
+#' which contribute to the moments, so if \code{na_rm} is set, that means non-NA
+#' elements of \code{wts} that correspond to non-NA elements of the data
+#' vector.

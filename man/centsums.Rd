@@ -7,7 +7,7 @@
 \title{Centered sums; join and unjoined.}
 \usage{
 cent_sums(v, max_order = 5L, na_rm = FALSE, wts = NULL,
-  check_wts = FALSE)
+  check_wts = FALSE, normalize_wts = TRUE)
 
 join_cent_sums(ret1, ret2)
 
@@ -30,6 +30,12 @@ are applied.}
 
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}
+
+\item{normalize_wts}{a boolean for whether the weights should be
+renormalized to have a mean value of 1. This mean is computed over elements
+which contribute to the moments, so if \code{na_rm} is set, that means non-NA
+elements of \code{wts} that correspond to non-NA elements of the data
+vector.}
 
 \item{ret1}{an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 the count, the mean, then the k through ordth centered sum of some observations.}

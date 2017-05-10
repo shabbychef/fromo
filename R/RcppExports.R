@@ -8,10 +8,13 @@
 #' 
 #' @param v a vector
 #' @param na_rm whether to remove NA, false by default.
+#' @param max_order the maximum order of the centered moment to be computed.
 #' @param used_df the number of degrees of freedom consumed, used in the denominator
 #' of the centered moments computation. These are subtracted from the number of
-#' observations.
-#' @param max_order the maximum order of the centered moment to be computed.
+#' observations. 
+#' @param sg_df the number of degrees of freedom consumed in the computation of
+#' the variance or standard deviation. This defaults to 1 to match the 
+#' \sQuote{Bessel correction}.
 #'
 #' @details
 #'
@@ -27,17 +30,20 @@
 #'
 #' @return a vector, filled out as follows:
 #' \describe{
-#' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements.}
-#' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements.}
-#' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements.}
+#' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements (or the total weight when \code{wts}
+#' are given).}
+#' \item{skew4}{A vector of the (sample) skewness, standard devation, mean, and number of elements (or the total weight when 
+#' \code{wts} are given).}
+#' \item{kurt5}{A vector of the (sample) excess kurtosis, skewness, standard devation, mean, and number of elements (or the
+#' total weight when \code{wts} are given).}
 #' \item{cent_moments}{A vector of the (sample) \eqn{k}th centered moment, then \eqn{k-1}th centered moment, ..., 
-#'  then the \emph{variance}, the mean, and number of elements.}
+#'  then the \emph{variance}, the mean, and number of elements (total weight when \code{wts} are given).}
 #' \item{std_moments}{A vector of the (sample) \eqn{k}th standardized (and centered) moment, then 
-#'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements.}
+#'  \eqn{k-1}th, ..., then standard devation, mean, and number of elements (total weight).}
 #' \item{cent_cumulants}{A vector of the (sample) \eqn{k}th (centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
-#'  then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements.}
+#'  then the \emph{variance} (which is the second cumulant), then \emph{the mean}, then the number of elements (total weight).}
 #' \item{std_cumulants}{A vector of the (sample) \eqn{k}th standardized (and centered, but this is redundant) cumulant, then the \eqn{k-1}th, ...,
-#'  down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements.}
+#'  down to the third, then \emph{the variance}, \emph{the mean}, then the number of elements (total weight).}
 #' }
 #'
 #' @note
@@ -88,44 +94,44 @@
 #' @template param-wts
 #' @rdname firstmoments
 #' @export
-sd3 <- function(v, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm, wts, check_wts)
+sd3 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-skew4 <- function(v, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_skew4', PACKAGE = 'fromo', v, na_rm, wts, check_wts)
+skew4 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_skew4', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-kurt5 <- function(v, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm, wts, check_wts)
+kurt5 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
+cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
+std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
+cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
-std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts)
+std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @title
@@ -167,8 +173,8 @@ std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = 
 #' @template param-wts
 #' @rdname centsums 
 #' @export
-cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = FALSE) {
-    .Call('fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts)
+cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname centsums 
