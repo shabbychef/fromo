@@ -161,6 +161,33 @@ microbenchmark(kurt5(x),
                mean(x),times=10L)
 ```
 
+## Weight! Weight!
+
+Many of the methods now support the computation of _weighted_ moments. There
+are a few options around weights: whether to check them for negative values,
+whether to normalize them to unit mean. 
+
+```{r maybesteps,eval=TRUE,echo=TRUE}
+require(fromo)
+require(moments)
+require(microbenchmark)
+
+set.seed(987)
+x <- rnorm(1e7)
+w <- runif(length(x))
+
+# no weights:
+show(cent_moments(x,max_order=4,na_rm=TRUE))
+# with weights:
+show(cent_moments(x,max_order=4,wts=w,na_rm=TRUE))
+# if you turn off weight normalization, the last element is sum(wts):
+show(cent_moments(x,max_order=4,wts=w,na_rm=TRUE,normalize_wts=FALSE))
+
+microbenchmark(sd3(x,wts=w), 
+							 weighted.mean(x,w=w))
+
+```
+
 ## Monoid mumbo-jumbo
 
 The `as.centsums` object

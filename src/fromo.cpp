@@ -928,7 +928,7 @@ NumericMatrix cent_comoments(SEXP v, int max_order=2, int used_df=0, bool na_omi
 NumericMatrix join_cent_cosums(NumericMatrix ret1,NumericMatrix ret2) {
     if ((ret1.ncol() != ret1.nrow()) ||
         (ret2.ncol() != ret2.nrow())) {
-        stop("malformed input");
+        stop("malformed input"); // nocov
     }
 
     const int p=ret1.ncol() - 1;
@@ -978,7 +978,7 @@ NumericMatrix unjoin_cent_cosums(NumericMatrix ret3,NumericMatrix ret2) {
     // subtract ret2 from ret3
     if ((ret3.ncol() != ret3.nrow()) ||
         (ret2.ncol() != ret2.nrow())) {
-        stop("malformed input");
+        stop("malformed input"); // nocov
     }
 
     const int p=ret3.ncol() - 1;

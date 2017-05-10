@@ -170,6 +170,61 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 ##      mean(x)   17   17   18     17   18   18    10 a
 ```
 
+## Weight! Weight!
+
+Many of the methods now support the computation of _weighted_ moments. There
+are a few options around weights: whether to check them for negative values,
+whether to normalize them to unit mean. 
+
+
+```r
+require(fromo)
+require(moments)
+require(microbenchmark)
+
+set.seed(987)
+x <- rnorm(1e+07)
+w <- runif(length(x))
+
+# no weights:
+show(cent_moments(x, max_order = 4, na_rm = TRUE))
+```
+
+```
+## [1]  3.0e+00  1.7e-03  1.0e+00 -2.7e-04  1.0e+07
+```
+
+```r
+# with weights:
+show(cent_moments(x, max_order = 4, wts = w, na_rm = TRUE))
+```
+
+```
+## [1]  3.0e+00  1.8e-03  1.0e+00 -2.3e-04  1.0e+07
+```
+
+```r
+# if you turn off weight normalization, the last
+# element is sum(wts):
+show(cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, 
+    normalize_wts = FALSE))
+```
+
+```
+## [1]  3.0e+00  1.8e-03  1.0e+00 -2.3e-04  5.0e+06
+```
+
+```r
+microbenchmark(sd3(x, wts = w), weighted.mean(x, w = w))
+```
+
+```
+## Unit: milliseconds
+##                     expr min  lq mean median  uq max neval cld
+##          sd3(x, wts = w)  99 100  107    104 112 135   100  a 
+##  weighted.mean(x, w = w) 133 137  161    149 175 298   100   b
+```
+
 ## Monoid mumbo-jumbo
 
 The `as.centsums` object
