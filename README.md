@@ -80,7 +80,7 @@ and the observation count.
 
 
 ```r
-require(fromo)
+library(fromo)
 set.seed(12345)
 x <- rnorm(1000, mean = 10, sd = 2)
 show(cent_moments(x, max_order = 4, na_rm = TRUE))
@@ -121,9 +121,9 @@ default functions.  Here is a speed comparison of the basic moment computations:
 
 
 ```r
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(123)
 x <- rnorm(1000)
@@ -139,15 +139,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq max neval     cld
-##     kurt5(x) 140.5 142.7 145.8  144.4 146.7 168   100      f 
-##     skew4(x)  80.2  82.6  84.5   83.6  85.1 113   100    d   
-##       sd3(x)  10.6  11.5  12.6   12.0  12.7  38   100  b     
-##     dumbk(x) 198.0 203.0 210.3  206.9 211.6 589   200       g
-##  kurtosis(x)  86.4  88.4  90.6   89.3  90.8 130   100    de  
-##  skewness(x)  86.2  89.2  92.5   90.4  91.9 132   100     e  
-##        sd(x)  14.1  17.0  18.8   18.3  19.2  38   100   c    
-##      mean(x)   3.9   4.4   5.8    4.7   5.1 103   100 a
+##         expr   min    lq mean median    uq   max neval cld
+##     kurt5(x) 141.3 144.8  148  145.9 148.9   213   100  ab
+##     skew4(x)  81.3  84.4   87   85.5  86.7   121   100  ab
+##       sd3(x)  11.3  12.2   14   12.9  13.6    57   100  ab
+##     dumbk(x) 194.8 205.5  351  209.8 217.3 27586   200   b
+##  kurtosis(x)  86.2  89.9   93   91.2  93.3   125   100  ab
+##  skewness(x)  86.5  90.4   93   91.7  93.9   111   100  ab
+##        sd(x)  14.8  17.1   19   18.7  19.9    28   100  ab
+##      mean(x)   3.8   4.5    6    4.8   5.2   106   100  a
 ```
 
 ```r
@@ -159,15 +159,15 @@ microbenchmark(kurt5(x), skew4(x), sd3(x), dumbk(x),
 
 ```
 ## Unit: milliseconds
-##         expr  min   lq mean median   uq  max neval    cld
-##     kurt5(x) 1410 1413 1429   1422 1445 1468    10     e 
-##     skew4(x)  793  795  805    803  813  822    10   c   
-##       sd3(x)   85   85   87     86   88   91    10  b    
-##     dumbk(x) 2493 2619 2649   2657 2703 2728    10      f
-##  kurtosis(x) 1286 1291 1338   1308 1355 1506    10    d  
-##  skewness(x) 1241 1275 1298   1285 1338 1374    10    d  
-##        sd(x)   47   47   48     48   49   51    10 ab    
-##      mean(x)   17   17   18     17   18   18    10 a
+##         expr  min   lq mean median   uq  max neval   cld
+##     kurt5(x) 1418 1434 1489   1470 1533 1646    10    d 
+##     skew4(x)  805  808  849    838  848  984    10   c  
+##       sd3(x)   86   86   88     88   90   92    10  b   
+##     dumbk(x) 1675 1693 1735   1716 1774 1834    10     e
+##  kurtosis(x)  826  854  905    884  979 1015    10   c  
+##  skewness(x)  784  787  844    850  878  924    10   c  
+##        sd(x)   47   49   50     50   52   57    10 ab   
+##      mean(x)   17   18   19     18   19   22    10 a
 ```
 
 ## Weight! Weight!
@@ -178,9 +178,9 @@ whether to normalize them to unit mean.
 
 
 ```r
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(987)
 x <- rnorm(1000)
@@ -231,8 +231,8 @@ microbenchmark(sd3(x, wts = w), slow_sd(x, w))
 ```
 ## Unit: milliseconds
 ##             expr min  lq mean median  uq max neval cld
-##  sd3(x, wts = w) 100 104  112    112 119 129   100  a 
-##    slow_sd(x, w) 176 186  216    210 236 305   100   b
+##  sd3(x, wts = w)  99  99  103    100 105 119   100  a 
+##    slow_sd(x, w) 258 273  319    318 346 436   100   b
 ```
 
 ## Monoid mumbo-jumbo
@@ -363,9 +363,9 @@ A demonstration:
 
 
 ```r
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(1234)
 x <- rnorm(20)
@@ -448,9 +448,9 @@ Through template magic, the same code was modified to perform running centering,
 
 
 ```r
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(1234)
 x <- rnorm(20)
@@ -541,9 +541,9 @@ strawman-bashing, here we microbenchmark the running Z-score computation against
 
 
 ```r
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(4422)
 x <- rnorm(10000)
@@ -567,9 +567,12 @@ microbenchmark(running_zscored(x, 250), dumb_zscore(x,
 ```
 ## Unit: microseconds
 ##                     expr    min     lq   mean median     uq    max neval cld
-##  running_zscored(x, 250)    755    780    834    828    878   1007   100  a 
-##      dumb_zscore(x, 250) 221912 242549 248308 248240 254661 322962   100   b
+##  running_zscored(x, 250)    659    707    760    739    781   1130   100  a 
+##      dumb_zscore(x, 250) 228784 253919 270997 263295 283715 356340   100   b
 ```
+
+
+### Timing against the roll package
 
 More seriously, here we compare the `running_sd3` function, which computes
 the standard deviation, mean and number of elements with the 
@@ -579,9 +582,9 @@ the standard deviation, mean and number of elements with the
 
 ```r
 # dare I?
-require(fromo)
-require(microbenchmark)
-require(roll)
+library(fromo)
+library(microbenchmark)
+library(roll)
 
 set.seed(4422)
 x <- rnorm(1e+05)
@@ -600,9 +603,141 @@ microbenchmark(running_sd3(xm, 250), roll::roll_mean(xm,
 
 ```
 ## Unit: milliseconds
-##                      expr  min   lq mean median   uq max neval cld
-##      running_sd3(xm, 250)  7.4  7.6  8.6    7.9  8.6  51   100 a  
-##  roll::roll_mean(xm, 250) 12.9 13.3 14.0   13.5 14.2  20   100  b 
-##    roll::roll_sd(xm, 250) 35.1 35.6 37.2   36.5 37.7  51   100   c
+##                      expr  min lq mean median   uq  max neval cld
+##      running_sd3(xm, 250)  6.9  7  7.2    7.1  7.2  8.6   100 a  
+##  roll::roll_mean(xm, 250) 12.0 12 12.3   12.2 12.4 15.0   100  b 
+##    roll::roll_sd(xm, 250) 32.2 32 33.3   32.8 33.5 37.7   100   c
+```
+
+
+OK, that's not a fair comparison: `roll_mean` is optimized to work columwise on
+a matrix. Let's unbash this strawman. I create a function using
+`fromo::running_sd3` to compute a running mean or running standard deviation
+columnwise on a matrix, then compare _that_ to `roll_mean` and `roll_sd`:
+
+
+```r
+library(fromo)
+library(microbenchmark)
+library(roll)
+
+set.seed(4422)
+xm <- matrix(rnorm(2e+05), ncol = 100)
+fromo_sd <- function(x, wins) {
+    apply(x, 2, function(xc) {
+        running_sd3(xc, wins)[, 1]
+    })
+}
+fromo_mu <- function(x, wins) {
+    apply(x, 2, function(xc) {
+        running_sd3(xc, wins)[, 2]
+    })
+}
+wins <- 500
+v1 <- fromo_sd(xm, wins)
+rsd <- roll::roll_sd(xm, wins, min_obs = 3)
+
+v2 <- fromo_mu(xm, wins)
+rmu <- roll::roll_mean(xm, wins)
+# compute error on the 1000th row:
+stopifnot(max(abs(v1[1000, ] - rsd[1000, ])) < 1e-14)
+stopifnot(max(abs(v2[1000, ] - rmu[1000, ])) < 1e-14)
+
+# now timings: note fromo_mu and fromo_sd do
+# exactly the same work, so only time one of them
+microbenchmark(fromo_sd(xm, wins), roll::roll_mean(xm, 
+    wins), roll::roll_mean(xm, wins, parallel_for = "cols"), 
+    roll::roll_mean(xm, wins, parallel_for = "rows"), 
+    roll::roll_sd(xm, wins), times = 50L)
+```
+
+```
+## Unit: milliseconds
+##                                              expr min  lq mean median  uq max neval cld
+##                                fromo_sd(xm, wins)  21  22   29     23  25  74    50 a  
+##                         roll::roll_mean(xm, wins)  42  43   46     46  47  54    50  b 
+##  roll::roll_mean(xm, wins, parallel_for = "cols")  43  44   45     45  46  55    50  b 
+##  roll::roll_mean(xm, wins, parallel_for = "rows")  42  43   46     44  47  58    50  b 
+##                           roll::roll_sd(xm, wins) 112 115  122    118 126 175    50   c
+```
+
+This was somewhat unexpected. I did not think the `fromo` functions
+would be faster than `roll_sd`, much less `roll_mean`. From these benchmarks, I suspected that
+my computer was not taking advantage of parallelization, since the different
+calls to `roll_mean` had the same timings.  To check, I timed `roll_mean`
+for the same data size, but for larger rolling windows. During the following
+timing, I confirmed that all eight cores on my laptop were at 100% utilization.
+I believe the problem is that `roll_mean` is literally recomputing the moments over the 
+entire window for every cell of the output, instead of reusing computations,
+which `fromo` mostly does:
+
+
+```r
+library(roll)
+library(microbenchmark)
+set.seed(91823)
+xm <- matrix(rnorm(2e+05), ncol = 10)
+fromo_mu <- function(x, wins, ...) {
+    apply(x, 2, function(xc) {
+        running_sd3(xc, wins, ...)[, 2]
+    })
+}
+
+microbenchmark(roll::roll_mean(xm, 10, min_obs = 3), 
+    roll::roll_mean(xm, 100, min_obs = 3), roll::roll_mean(xm, 
+        1000, min_obs = 3), roll::roll_mean(xm, 10000, 
+        min_obs = 3), fromo_mu(xm, 10, min_df = 3), 
+    fromo_mu(xm, 100, min_df = 3), fromo_mu(xm, 1000, 
+        min_df = 3), fromo_mu(xm, 10000, min_df = 3), 
+    times = 100L)
+```
+
+```
+## Unit: milliseconds
+##                                     expr   min    lq mean median    uq  max neval   cld
+##     roll::roll_mean(xm, 10, min_obs = 3)   1.5   1.7    3      2   2.8   42   100 a    
+##    roll::roll_mean(xm, 100, min_obs = 3)   9.9  10.3   12     11  11.9   59   100 a    
+##   roll::roll_mean(xm, 1000, min_obs = 3)  92.5  93.9  107     96 103.9  182   100   c  
+##  roll::roll_mean(xm, 10000, min_obs = 3) 708.1 718.8  772    734 764.5 1430   100     e
+##             fromo_mu(xm, 10, min_df = 3)  13.3  15.7   34     24  55.5   78   100  b   
+##            fromo_mu(xm, 100, min_df = 3)  15.0  17.4   35     19  57.7   81   100  b   
+##           fromo_mu(xm, 1000, min_df = 3)  28.6  33.6   53     38  74.7  113   100  b   
+##          fromo_mu(xm, 10000, min_df = 3)  97.8 106.2  128    110 148.9  245   100    d
+```
+
+The runtime for operations from `roll` grow with the window
+size. The equivalent operations from `fromo` appear to also consume more time.
+In theory they would be invariant with respect to window size, but I coded them
+to 'restart' the computation periodically for improved accuracy. The user has control
+over how often this happens, in order to balance speed and accuracy. Here I set
+that parameter very large to show that runtimes need not grow with window size:
+
+
+```r
+library(fromo)
+library(microbenchmark)
+set.seed(91823)
+xm <- matrix(rnorm(2e+05), ncol = 10)
+fromo_mu <- function(x, wins, ...) {
+    apply(x, 2, function(xc) {
+        running_sd3(xc, wins, ...)[, 2]
+    })
+}
+rp <- 1L + nrow(xm)
+
+microbenchmark(fromo_mu(xm, 10, min_df = 3, restart_period = rp), 
+    fromo_mu(xm, 100, min_df = 3, restart_period = rp), 
+    fromo_mu(xm, 1000, min_df = 3, restart_period = rp), 
+    fromo_mu(xm, 10000, min_df = 3, restart_period = rp), 
+    times = 100L)
+```
+
+```
+## Unit: milliseconds
+##                                                  expr min lq mean median uq max neval cld
+##     fromo_mu(xm, 10, min_df = 3, restart_period = rp)  13 13   35     14 87 101   100   a
+##    fromo_mu(xm, 100, min_df = 3, restart_period = rp)  12 14   34     14 85  95   100   a
+##   fromo_mu(xm, 1000, min_df = 3, restart_period = rp)  12 13   33     14 51 109   100   a
+##  fromo_mu(xm, 10000, min_df = 3, restart_period = rp)  12 13   30     13 14  94   100   a
 ```
 

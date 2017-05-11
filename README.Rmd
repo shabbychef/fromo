@@ -115,8 +115,7 @@ return a `k+1`-vector of the `k`th standardized cumulant, all the way down to th
 and the observation count.
 
 ```{r basic_usage,eval=TRUE,echo=TRUE}
-
-require(fromo)
+library(fromo)
 set.seed(12345)
 x <- rnorm(1e3,mean=10.0,sd=2.0)
 show(cent_moments(x,max_order=4,na_rm=TRUE))
@@ -131,9 +130,9 @@ In theory these operations should be just as fast as the default functions, but 
 default functions.  Here is a speed comparison of the basic moment computations:
 
 ```{r babysteps,eval=TRUE,echo=TRUE}
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(123)
 x <- rnorm(1e3)
@@ -168,9 +167,9 @@ are a few options around weights: whether to check them for negative values,
 whether to normalize them to unit mean. 
 
 ```{r maybesteps,eval=TRUE,echo=TRUE}
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(987)
 x <- rnorm(1e3)
@@ -297,9 +296,9 @@ periodic recomputation can be forced by an input parameter.
 A demonstration:
 
 ```{r run1,eval=TRUE,echo=TRUE}
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(1234)
 x <- rnorm(20)
@@ -330,9 +329,9 @@ are all on CRAN):
 Through template magic, the same code was modified to perform running centering, scaling, z-scoring and so on:
 
 ```{r run2,eval=TRUE,echo=TRUE}
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(1234)
 x <- rnorm(20)
@@ -394,9 +393,9 @@ We make every attempt to balance numerical robustness, computational efficiency 
 strawman-bashing, here we microbenchmark the running Z-score computation against the naive algorithm:
 
 ```{r strawman_timing,eval=TRUE,echo=TRUE}
-require(fromo)
-require(moments)
-require(microbenchmark)
+library(fromo)
+library(moments)
+library(microbenchmark)
 
 set.seed(4422)
 x <- rnorm(1e4)
@@ -417,6 +416,9 @@ microbenchmark(running_zscored(x,250),
 							 dumb_zscore(x,250))
 ```
 
+
+### Timing against the roll package
+
 More seriously, here we compare the `running_sd3` function, which computes
 the standard deviation, mean and number of elements with the 
 `roll_sd` and `roll_mean` functions from the 
@@ -424,9 +426,9 @@ the standard deviation, mean and number of elements with the
 
 ```{r some_more_timing,eval=TRUE,echo=TRUE}
 # dare I?
-require(fromo)
-require(microbenchmark)
-require(roll)
+library(fromo)
+library(microbenchmark)
+library(roll)
 
 set.seed(4422)
 x <- rnorm(1e5)
@@ -441,5 +443,101 @@ stopifnot(max(abs(v1[1000,] - c(rsd[1000],rmu[1000],250))) < 1e-14)
 microbenchmark(running_sd3(xm,250),
 							 roll::roll_mean(xm,250),
 							 roll::roll_sd(xm,250))
+```
+
+
+OK, that's not a fair comparison: `roll_mean` is optimized to work columwise on
+a matrix. Let's unbash this strawman. I create a function using
+`fromo::running_sd3` to compute a running mean or running standard deviation
+columnwise on a matrix, then compare _that_ to `roll_mean` and `roll_sd`:
+
+```{r some_more_timing_again,eval=TRUE,echo=TRUE}
+library(fromo)
+library(microbenchmark)
+library(roll)
+
+set.seed(4422)
+xm <- matrix(rnorm(2e5),ncol=100)
+fromo_sd <- function(x,wins) {
+	apply(x,2,function(xc) { running_sd3(xc,wins)[,1] })
+}
+fromo_mu <- function(x,wins) {
+	apply(x,2,function(xc) { running_sd3(xc,wins)[,2] })
+}
+wins <- 500
+v1 <- fromo_sd(xm,wins)
+rsd <- roll::roll_sd(xm,wins,min_obs=3)
+
+v2 <- fromo_mu(xm,wins)
+rmu <- roll::roll_mean(xm,wins)
+# compute error on the 1000th row:
+stopifnot(max(abs(v1[1000,] - rsd[1000,])) < 1e-14)
+stopifnot(max(abs(v2[1000,] - rmu[1000,])) < 1e-14)
+
+# now timings:
+# note fromo_mu and fromo_sd do exactly the same work, so only time one of them
+microbenchmark(fromo_sd(xm,wins),
+							 roll::roll_mean(xm,wins),
+							 roll::roll_mean(xm,wins,parallel_for='cols'),
+							 roll::roll_mean(xm,wins,parallel_for='rows'),
+							 roll::roll_sd(xm,wins),
+							 times=50L)
+```
+
+This was somewhat unexpected. I did not think the `fromo` functions
+would be faster than `roll_sd`, much less `roll_mean`. From these benchmarks, I suspected that
+my computer was not taking advantage of parallelization, since the different
+calls to `roll_mean` had the same timings.  To check, I timed `roll_mean`
+for the same data size, but for larger rolling windows. During the following
+timing, I confirmed that all eight cores on my laptop were at 100% utilization.
+I believe the problem is that `roll_mean` is literally recomputing the moments over the 
+entire window for every cell of the output, instead of reusing computations,
+which `fromo` mostly does:
+
+```{r catch_roll_at_four,eval=TRUE,echo=TRUE}
+library(roll)
+library(microbenchmark)
+set.seed(91823)
+xm <- matrix(rnorm(2e5),ncol=10)
+fromo_mu <- function(x,wins,...) {
+	apply(x,2,function(xc) { running_sd3(xc,wins,...)[,2] })
+}
+
+microbenchmark(roll::roll_mean(xm,10,min_obs=3),
+	roll::roll_mean(xm,100,min_obs=3),
+	roll::roll_mean(xm,1000,min_obs=3),
+	roll::roll_mean(xm,10000,min_obs=3),
+	fromo_mu(xm,10,min_df=3),
+	fromo_mu(xm,100,min_df=3),
+	fromo_mu(xm,1000,min_df=3),
+	fromo_mu(xm,10000,min_df=3),
+	times=100L)
+
+```
+
+The runtime for operations from `roll` grow with the window
+size. The equivalent operations from `fromo` appear to also consume more time.
+In theory they would be invariant with respect to window size, but I coded them
+to 'restart' the computation periodically for improved accuracy. The user has control
+over how often this happens, in order to balance speed and accuracy. Here I set
+that parameter very large to show that runtimes need not grow with window size:
+
+```{r catch_fromo_at_five,eval=TRUE,echo=TRUE}
+library(fromo)
+library(microbenchmark)
+set.seed(91823)
+xm <- matrix(rnorm(2e5),ncol=10)
+fromo_mu <- function(x,wins,...) {
+	apply(x,2,function(xc) { running_sd3(xc,wins,...)[,2] })
+}
+rp <- 1L + nrow(xm)
+
+microbenchmark(
+	fromo_mu(xm,10,min_df=3,restart_period=rp),
+	fromo_mu(xm,100,min_df=3,restart_period=rp),
+	fromo_mu(xm,1000,min_df=3,restart_period=rp),
+	fromo_mu(xm,10000,min_df=3,restart_period=rp),
+	times=100L)
+
 ```
 
