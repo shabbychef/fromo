@@ -212,6 +212,35 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// running_sum
+NumericMatrix running_sum(SEXP v, SEXP window, bool na_rm, int restart_period);
+RcppExport SEXP fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, na_rm, restart_period));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_mean
+NumericMatrix running_mean(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
+RcppExport SEXP fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_mean(v, window, na_rm, min_df, restart_period));
+    return rcpp_result_gen;
+END_RCPP
+}
 // running_sd3
 NumericMatrix running_sd3(SEXP v, SEXP window, bool na_rm, int min_df, int used_df, int restart_period);
 RcppExport SEXP fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {

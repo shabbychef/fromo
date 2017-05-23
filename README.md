@@ -741,3 +741,157 @@ microbenchmark(fromo_mu(xm, 10, min_df = 3, restart_period = rp),
 ##  fromo_mu(xm, 10000, min_df = 3, restart_period = rp)  12 13   30     13 14  94   100   a
 ```
 
+Here are some more benchmarks, also against the `rollingWindow` package, for
+running sums:
+
+
+```r
+library(microbenchmark)
+library(fromo)
+library(RollingWindow)
+library(roll)
+
+set.seed(1234)
+x <- rnorm(1e+05)
+xm <- matrix(x)
+wins <- 1000
+
+vals <- list(running_sum(x, wins, na_rm = FALSE), RollingWindow::RollingSum(x, 
+    wins, na_method = "ignore"), roll::roll_sum(xm, 
+    wins))
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[wins + 1]
+}))
+```
+
+```
+## [1] "Mean relative difference: 1.5e-15"
+```
+
+```r
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[length(x)]
+}))
+```
+
+```
+## [1] TRUE
+```
+
+```r
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[length(x) - 1]
+}))
+```
+
+```
+## [1] TRUE
+```
+
+```r
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[length(x) - 100]
+}))
+```
+
+```
+## [1] TRUE
+```
+
+```r
+microbenchmark(running_sum(x, wins, na_rm = FALSE), 
+    RollingWindow::RollingSum(x, wins, na_method = "ignore"), 
+    roll::roll_sum(xm, wins))
+```
+
+```
+## Unit: microseconds
+##                                                      expr   min    lq  mean median    uq   max
+##                       running_sum(x, wins, na_rm = FALSE)   250   280   360    291   305  1911
+##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  3796  4905  6221   5064  5351 46585
+##                                  roll::roll_sum(xm, wins) 42969 43322 44526  43479 43842 85352
+##  neval cld
+##    100 a  
+##    100  b 
+##    100   c
+```
+
+And running means:
+
+
+```r
+library(microbenchmark)
+library(fromo)
+library(RollingWindow)
+library(roll)
+
+set.seed(1234)
+x <- rnorm(1e+05)
+xm <- matrix(x)
+wins <- 1000
+
+vals <- list(running_mean(x, wins, na_rm = FALSE), 
+    RollingWindow::RollingMean(x, wins, na_method = "ignore"), 
+    roll::roll_mean(xm, wins))
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[wins + 1]
+}))
+```
+
+```
+## [1] "Mean relative difference: 1.7e-15"
+```
+
+```r
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[length(x)]
+}))
+```
+
+```
+## [1] TRUE
+```
+
+```r
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[length(x) - 1]
+}))
+```
+
+```
+## [1] TRUE
+```
+
+```r
+do.call("all.equal", args = lapply(vals, function(x) {
+    x[length(x) - 100]
+}))
+```
+
+```
+## [1] TRUE
+```
+
+```r
+microbenchmark(running_mean(x, wins, na_rm = FALSE, 
+    restart_period = 1e+05), RollingWindow::RollingMean(x, 
+    wins, na_method = "ignore"), roll::roll_mean(xm, 
+    wins))
+```
+
+```
+## Unit: milliseconds
+##                                                          expr  min   lq mean median   uq max
+##  running_mean(x, wins, na_rm = FALSE, restart_period = 1e+05)  1.7  1.8  2.6    1.8  1.8  79
+##     RollingWindow::RollingMean(x, wins, na_method = "ignore")  3.9  5.6  7.8    5.6  5.7  82
+##                                     roll::roll_mean(xm, wins) 50.9 51.5 52.6   51.7 52.1 130
+##  neval cld
+##    100 a  
+##    100  b 
+##    100   c
+```
+
+
+
+
+

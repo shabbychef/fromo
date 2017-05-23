@@ -261,6 +261,58 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 }
 
 #' @title
+#' Compute sums or means over a sliding window
+#' @description
+#' Compute the mean or sum over 
+#' an infinite or finite sliding window, returning a matrix.
+#' 
+#' @param v a vector
+#' @param window the window size. if given as finite integer or double, passed through.
+#' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
+#' to an infinite window size. If negative, an error will be thrown.
+#' @param restart_period the recompute period. because subtraction of elements can cause
+#' loss of precision, the computation of moments is restarted periodically based on 
+#' this parameter. Larger values mean fewer restarts and faster, though potentially less 
+#' accurate results. Unlike in the computation of even order moments, loss of precision
+#' is unlikely to be disastrous, so the default value is rather large.
+#' @param na_rm whether to remove NA, false by default.
+#' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned,
+#' only for the means computation.
+#' This can be used to prevent moments from being computed on too few observations.
+#' Defaults to zero, meaning no restriction.
+#'
+#' @details
+#'
+#' Computes the mean or sum of the elements, using a numerically robust one-pass method.
+#'
+#' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
+#' \eqn{M_{i,1}}{M_i,1} is the sum or mean 
+#' of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
+#' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
+#' During the 'burn-in' phase, we take fewer elements. If fewer than \code{min_df} for
+#' \code{running_mean}, returns \code{NA}.
+#'
+#' @return A column matrix.
+#' @examples
+#' x <- rnorm(1e5)
+#' xs <- running_sum(x,10)
+#' xm <- running_mean(x,100)
+#'
+#' @template etc
+#' @template ref-romo
+#' @rdname runningmean 
+#' @export
+running_sum <- function(v, window = NULL, na_rm = FALSE, restart_period = 10000L) {
+    .Call('fromo_running_sum', PACKAGE = 'fromo', v, window, na_rm, restart_period)
+}
+
+#' @rdname runningmean
+#' @export
+running_mean <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L) {
+    .Call('fromo_running_mean', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+}
+
+#' @title
 #' Compute first K moments over a sliding window
 #' @description
 #' Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over

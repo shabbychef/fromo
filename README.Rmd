@@ -541,3 +541,61 @@ microbenchmark(
 
 ```
 
+Here are some more benchmarks, also against the `rollingWindow` package, for
+running sums:
+
+```{r time_running_sums,eval=TRUE,echo=TRUE}
+library(microbenchmark)
+library(fromo)
+library(RollingWindow)
+library(roll)
+
+set.seed(1234)
+x <- rnorm(100000)
+xm <- matrix(x)
+wins <- 1000
+
+vals <- list(running_sum(x,wins,na_rm=FALSE),
+						 RollingWindow::RollingSum(x,wins,na_method='ignore'),
+						 roll::roll_sum(xm,wins))
+do.call("all.equal",args=lapply(vals,function(x) { x[wins+1] }))
+do.call("all.equal",args=lapply(vals,function(x) { x[length(x)] }))
+do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-1] }))
+do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-100] }))
+
+microbenchmark(running_sum(x,wins,na_rm=FALSE),
+							 RollingWindow::RollingSum(x,wins,na_method='ignore'),
+							 roll::roll_sum(xm,wins))
+```
+
+And running means:
+
+```{r time_running_means,eval=TRUE,echo=TRUE}
+library(microbenchmark)
+library(fromo)
+library(RollingWindow)
+library(roll)
+
+set.seed(1234)
+x <- rnorm(100000)
+xm <- matrix(x)
+wins <- 1000
+
+vals <- list(running_mean(x,wins,na_rm=FALSE),
+						 RollingWindow::RollingMean(x,wins,na_method='ignore'),
+						 roll::roll_mean(xm,wins))
+do.call("all.equal",args=lapply(vals,function(x) { x[wins+1] }))
+do.call("all.equal",args=lapply(vals,function(x) { x[length(x)] }))
+do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-1] }))
+do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-100] }))
+
+microbenchmark(running_mean(x,wins,na_rm=FALSE,restart_period=100000),
+							 RollingWindow::RollingMean(x,wins,na_method='ignore'),
+							 roll::roll_mean(xm,wins))
+
+```
+
+
+
+
+
