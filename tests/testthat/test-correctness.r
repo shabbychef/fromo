@@ -286,7 +286,7 @@ test_that("running ops are correct",{#FOLDUP
 
 					# running sum and mean
 					fastv <- running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm)
-					dumbv <- cbind(dum_sum)
+					dumbv <- cbind(dumb_sum)
 					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
 
 					fastv <- running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm)
