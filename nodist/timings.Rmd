@@ -1,0 +1,210 @@
+```{r setup,include=FALSE}
+# set the knitr options ... for everyone!
+# if you unset this, then vignette build bonks. oh, joy.
+#opts_knit$set(progress=TRUE)
+opts_knit$set(eval.after='fig.cap')
+# for a package vignette, you do want to echo.
+# opts_chunk$set(echo=FALSE,warning=FALSE,message=FALSE)
+opts_chunk$set(warning=FALSE,message=FALSE)
+#opts_chunk$set(results="asis")
+opts_chunk$set(cache=TRUE,cache.path="cache/")
+
+#opts_chunk$set(fig.path="figure/",dev=c("pdf","cairo_ps"))
+opts_chunk$set(fig.path="tools/figure/",dev=c("png"))
+opts_chunk$set(fig.width=7,fig.height=6,dpi=100,out.width='700px',out.height='600px')
+
+# doing this means that png files are made of figures;
+# the savings is small, and it looks like shit:
+#opts_chunk$set(fig.path="figure/",dev=c("png","pdf","cairo_ps"))
+#opts_chunk$set(fig.width=4,fig.height=4)
+# for figures? this is sweave-specific?
+#opts_knit$set(eps=TRUE)
+
+# this would be for figures:
+#opts_chunk$set(out.width='.8\\textwidth')
+# for text wrapping:
+options(width=124,digits=2)
+opts_chunk$set(size="small")
+opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
+library(ggplot2)
+library(fromo)
+library(dplyr)
+library(moments)
+library(microbenchmark)
+```
+
+# fromo timings
+
+To prevent performance regressions, compare them here, including benchmarks
+against other packages:
+
+
+```{r timing_I,eval=TRUE,echo=TRUE,cache=FALSE}
+library(fromo)
+library(RollingWindow)
+library(roll)
+library(RcppRoll)
+library(microbenchmark)
+library(moments)
+library(RcppParallel)
+# keep this constant for comparison
+setThreadOptions(numThreads = 2)
+
+print(sessionInfo())
+
+set.seed(12345)
+x    <- rnorm(1e5)
+xpos <- runif(length(x)) +1
+xm   <- matrix(x,ncol=1)
+xmps <- matrix(xpos,ncol=1)
+w    <- runif(length(x))
+
+dumbk <- function(x) { c(kurtosis(x) - 3.0,skewness(x),sd(x),mean(x),length(x)) }
+
+checkit <- microbenchmark(sum(x),
+							 mean(x),
+							 sd(x),
+               skewness(x),
+               kurtosis(x),
+               sd3(x), 
+               skew4(x),
+							 kurt5(x),
+               dumbk(x))
+print(checkit)
+resdf <- checkit
+
+```
+
+```{r timing_II,eval=TRUE,echo=TRUE,cache=FALSE}
+# weights
+slow_sd <- function(x,w) {
+	n0 <- length(x)
+	mu <- weighted.mean(x,w=w)
+	sg <- sqrt(sum(w * (x-mu)^2)/(n0 - 1))
+	c(sg,mu,n0)
+}
+checkit <- microbenchmark(cent_moments(x,max_order=4,wts=w,na_rm=TRUE,normalize_wts=FALSE),
+							 sd3(x,wts=w), 
+							 slow_sd(x,w))
+print(checkit)
+resdf <- rbind(resdf,checkit)
+```
+
+```{r timing_III,eval=TRUE,echo=TRUE,cache=FALSE}
+set.seed(12345)
+x1 <- runif(1e4)
+x2 <- runif(length(x1))
+
+checkit <- microbenchmark(as.centsums(x1,1),
+							 as.centsums(x1,2),
+							 as.centsums(x1,3),
+							 as.centsums(x1,4))
+print(checkit)
+resdf <- rbind(resdf,checkit)
+
+# join them together
+max_ord <- 6L
+obj1 <- as.centsums(x1,max_ord)
+obj2 <- as.centsums(x2,max_ord)
+obj3 <- as.centsums(c(x1,x2),max_ord)
+
+checkit <- microbenchmark(c(obj1,obj2),
+							 obj3 %-% obj1)
+print(checkit)
+resdf <- rbind(resdf,checkit)
+
+max_ord <- 6L
+rs1 <- cent_sums(x1,max_ord)
+rs2 <- cent_sums(x2,max_ord)
+rs3 <- cent_sums(c(x1,x2),max_ord)
+
+checkit <- microbenchmark(join_cent_sums(rs1,rs2),
+							 unjoin_cent_sums(rs3,rs2),
+							 unjoin_cent_sums(rs3,rs1))
+print(checkit)
+resdf <- rbind(resdf,checkit)
+
+```
+
+```{r timing_IV,eval=TRUE,echo=TRUE,cache=FALSE}
+set.seed(54321)
+x1 <- matrix(rnorm(100*4),ncol=4)
+x2 <- matrix(rnorm(100*4),ncol=4)
+
+max_ord <- 2L
+
+# join them together
+mobj1 <- as.centcosums(x1,max_ord)
+mobj2 <- as.centcosums(x2,max_ord)
+mobj3 <- as.centcosums(rbind(x1,x2),max_ord)
+alt3 <- c(mobj1,mobj2)
+# unjoin them, with this one weird operator:
+alt2 <- mobj3 %-% mobj1
+alt1 <- mobj3 %-% mobj2
+
+checkit <- microbenchmark(as.centcosums(x1,max_ord),
+							 mobj3 %-% mobj1)
+print(checkit)
+resdf <- rbind(resdf,checkit)
+
+```
+
+```{r timing_V,eval=TRUE,echo=TRUE,cache=FALSE}
+set.seed(4422)
+x    <- rnorm(1e4)
+xpos <- runif(length(x)) +1
+xm   <- matrix(x,ncol=1)
+xmps <- matrix(xpos,ncol=1)
+w    <- runif(length(x))
+
+dumb_zscore <- function(x,window) {
+	altz <- sapply(seq_along(x),function(iii) { 
+		rowi <- max(1,iii - window + 1)
+		xrang <- x[rowi:iii]
+		(x[iii] - mean(xrang)) / sd(xrang)
+  },simplify=TRUE)
+}
+
+# run fun on each wins sized window...
+silly_fun <- function(x,wins,fun,...) {
+	xout <- rep(NA,length(x))
+	for (iii in seq_along(x)) {
+		xout[iii] <- fun(x[max(1,iii-wins+1):iii],...)
+	}
+	xout
+}
+
+wins <- 250
+
+checkit <- microbenchmark(sum(x),
+							 silly_fun(x,wins,sum,na.rm=FALSE),
+							 silly_fun(x,wins,mean,na.rm=FALSE),
+							 running_sum(x,wins),
+							 running_mean(x,wins),
+							 roll::roll_sum(xm,wins),
+							 roll::roll_mean(xm,wins),
+							 roll::roll_sd(xm,wins),
+							 RollingWindow::RollingSum(x,wins,na_method='ignore'),
+							 RollingWindow::RollingSum(x,wins),
+							 RollingWindow::RollingMean(x,wins),
+							 RcppRoll::roll_sum(xm,n=wins,align='right',fill=NA),
+							 RcppRoll::roll_mean(xm,n=wins,align='right',fill=NA),
+							 running_skew4(x,wins),
+							 running_kurt5(x,wins),
+							 running_tstat(x,wins),
+							 running_zscored(x,wins),
+							 running_sharpe(x,wins),
+							 running_apx_median(x,wins),
+							 running_centered(x,wins),
+							 running_scaled(x,wins)
+							 )
+print(checkit)
+resdf <- rbind(resdf,checkit)
+```
+
+```{r timing_fin,eval=TRUE,echo=TRUE,cache=FALSE}
+#print(resdf)
+library(readr)
+readr::write_csv(resdf,'timings.csv')
+```
+
