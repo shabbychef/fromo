@@ -23,7 +23,7 @@ opts_chunk$set(fig.width=7,fig.height=6,dpi=100,out.width='700px',out.height='60
 # this would be for figures:
 #opts_chunk$set(out.width='.8\\textwidth')
 # for text wrapping:
-options(width=96,digits=2)
+options(width=124,digits=2)
 opts_chunk$set(size="small")
 opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
 library(ggplot2)
@@ -551,18 +551,29 @@ library(RollingWindow)
 library(roll)
 
 set.seed(1234)
-x <- rnorm(100000)
+x <- rnorm(10000)
 xm <- matrix(x)
 wins <- 1000
 
+# run fun on each wins sized window...
+silly_fun <- function(x,wins,fun,...) {
+	xout <- rep(NA,length(x))
+	for (iii in seq_along(x)) {
+		xout[iii] <- fun(x[max(1,iii-wins+1):iii],...)
+	}
+	xout
+}
 vals <- list(running_sum(x,wins,na_rm=FALSE),
 						 RollingWindow::RollingSum(x,wins,na_method='ignore'),
-						 roll::roll_sum(xm,wins))
-do.call("all.equal",args=lapply(vals,function(x) { x[wins+1] }))
-do.call("all.equal",args=lapply(vals,function(x) { x[length(x)] }))
-do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-1] }))
-do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-100] }))
+						 roll::roll_sum(xm,wins),
+						 silly_fun(x,wins,sum,na.rm=FALSE))
 
+# check all equal
+stopifnot(max(unlist(lapply(vals[2:length(vals)],function(av) {
+															err <- vals[[1]] - av
+															max(abs(err[wins:length(err)]),na.rm=TRUE) }))) < 1e-12)
+
+# benchmark
 microbenchmark(running_sum(x,wins,na_rm=FALSE),
 							 RollingWindow::RollingSum(x,wins,na_method='ignore'),
 							 roll::roll_sum(xm,wins))
@@ -577,17 +588,19 @@ library(RollingWindow)
 library(roll)
 
 set.seed(1234)
-x <- rnorm(100000)
+x <- rnorm(10000)
 xm <- matrix(x)
 wins <- 1000
 
 vals <- list(running_mean(x,wins,na_rm=FALSE),
 						 RollingWindow::RollingMean(x,wins,na_method='ignore'),
-						 roll::roll_mean(xm,wins))
-do.call("all.equal",args=lapply(vals,function(x) { x[wins+1] }))
-do.call("all.equal",args=lapply(vals,function(x) { x[length(x)] }))
-do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-1] }))
-do.call("all.equal",args=lapply(vals,function(x) { x[length(x)-100] }))
+						 roll::roll_mean(xm,wins),
+						 silly_fun(x,wins,mean,na.rm=FALSE))
+
+# check all equal
+stopifnot(max(unlist(lapply(vals[2:length(vals)],function(av) {
+															err <- vals[[1]] - av
+															max(abs(err[wins:length(err)]),na.rm=TRUE) }))) < 1e-12)
 
 microbenchmark(running_mean(x,wins,na_rm=FALSE,restart_period=100000),
 							 RollingWindow::RollingMean(x,wins,na_method='ignore'),

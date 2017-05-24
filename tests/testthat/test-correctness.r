@@ -248,6 +248,7 @@ test_that("running ops are correct",{#FOLDUP
 			for (restart_period in c(20,1000)) {
 				for (na_rm in c(FALSE,TRUE)) {
 					dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
+					dumb_sum <- sapply(seq_along(x),function(iii) { sum(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 					dumb_skew <- sapply(seq_along(x),function(iii) { moments::skewness(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
@@ -282,6 +283,15 @@ test_that("running ops are correct",{#FOLDUP
 					fastv <- running_std_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
 					dumbv <- cbind(dumb_cmom6 / (dumb_cmom2^3),dumb_cmom5 / (dumb_cmom2^2.5),dumb_cmom4 / (dumb_cmom2^2.0),dumb_cmom3 / (dumb_cmom2^1.5),sqrt(dumb_cmom2),dumb_mean,dumb_count)
 					expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+
+					# running sum and mean
+					fastv <- running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dum_sum)
+					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
+
+					fastv <- running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					dumbv <- cbind(dum_mean)
+					expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
 
 					if (require(PDQutils)) {
 						# cumulants
