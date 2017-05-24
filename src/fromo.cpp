@@ -1208,6 +1208,7 @@ NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 0,in
             // recompute;
             ++jjj;
             muv = 0.0;
+            nel = 0;
             for (lll=jjj;lll <= iii;++lll) {
                 if (na_rm) {
                     nextv = v[lll];
