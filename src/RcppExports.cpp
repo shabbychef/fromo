@@ -213,8 +213,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // running_sum
-NumericMatrix running_sum(SEXP v, SEXP window, bool na_rm, int restart_period);
-RcppExport SEXP fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_sum(SEXP v, SEXP window, bool na_rm, int restart_period, bool robust);
+RcppExport SEXP fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP robustSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -222,7 +222,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, na_rm, restart_period));
+    Rcpp::traits::input_parameter< bool >::type robust(robustSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, na_rm, restart_period, robust));
     return rcpp_result_gen;
 END_RCPP
 }

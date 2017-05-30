@@ -280,6 +280,8 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 #' only for the means computation.
 #' This can be used to prevent moments from being computed on too few observations.
 #' Defaults to zero, meaning no restriction.
+#' @param robust Whether to compute a numerically robust sum. If \code{FALSE}, then a
+#' faster sum is performed, though it is more susceptible to roundoff errors.
 #'
 #' @details
 #'
@@ -302,8 +304,8 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 #' @template ref-romo
 #' @rdname runningmean 
 #' @export
-running_sum <- function(v, window = NULL, na_rm = FALSE, restart_period = 10000L) {
-    .Call('fromo_running_sum', PACKAGE = 'fromo', v, window, na_rm, restart_period)
+running_sum <- function(v, window = NULL, na_rm = FALSE, restart_period = 10000L, robust = TRUE) {
+    .Call('fromo_running_sum', PACKAGE = 'fromo', v, window, na_rm, restart_period, robust)
 }
 
 #' @rdname runningmean

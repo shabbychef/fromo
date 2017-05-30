@@ -574,7 +574,10 @@ stopifnot(max(unlist(lapply(vals[2:length(vals)],function(av) {
 															max(abs(err[wins:length(err)]),na.rm=TRUE) }))) < 1e-12)
 
 # benchmark
-microbenchmark(running_sum(x,wins,na_rm=FALSE),
+microbenchmark(running_sum(x,wins,na_rm=FALSE,robust=FALSE),
+							 running_sum(x,wins,na_rm=FALSE,robust=TRUE),
+							 RollingWindow::RollingSum(x,wins),
+							 running_sum(x,wins,na_rm=TRUE,robust=TRUE),
 							 RollingWindow::RollingSum(x,wins,na_method='ignore'),
 							 roll::roll_sum(xm,wins))
 ```

@@ -776,17 +776,23 @@ stopifnot(max(unlist(lapply(vals[2:length(vals)], function(av) {
 }))) < 1e-12)
 
 # benchmark
-microbenchmark(running_sum(x, wins, na_rm = FALSE), 
+microbenchmark(running_sum(x, wins, na_rm = FALSE, 
+    robust = FALSE), running_sum(x, wins, na_rm = FALSE, 
+    robust = TRUE), RollingWindow::RollingSum(x, wins), 
+    running_sum(x, wins, na_rm = TRUE, robust = TRUE), 
     RollingWindow::RollingSum(x, wins, na_method = "ignore"), 
     roll::roll_sum(xm, wins))
 ```
 
 ```
 ## Unit: microseconds
-##                                                      expr  min   lq mean median   uq  max neval cld
-##                       running_sum(x, wins, na_rm = FALSE)   29   32   40     36   44   81   100 a  
-##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  362  430  459    449  481  664   100  b 
-##                                  roll::roll_sum(xm, wins) 4208 4324 4408   4391 4459 4949   100   c
+##                                                      expr  min   lq mean median   uq  max neval  cld
+##       running_sum(x, wins, na_rm = FALSE, robust = FALSE)   28   31   47     32   39 1169   100 a   
+##        running_sum(x, wins, na_rm = FALSE, robust = TRUE)  143  173  177    177  180  221   100  b  
+##                        RollingWindow::RollingSum(x, wins)  118  122  183    125  147 1277   100  b  
+##         running_sum(x, wins, na_rm = TRUE, robust = TRUE)  182  210  215    216  220  297   100  b  
+##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  410  417  494    427  446 1598   100   c 
+##                                  roll::roll_sum(xm, wins) 4146 4290 4362   4329 4396 5407   100    d
 ```
 
 And running means:

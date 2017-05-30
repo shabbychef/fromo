@@ -176,10 +176,10 @@ silly_fun <- function(x,wins,fun,...) {
 
 wins <- 250
 
-checkit <- microbenchmark(sum(x),
-							 silly_fun(x,wins,sum,na.rm=FALSE),
+checkit <- microbenchmark(silly_fun(x,wins,sum,na.rm=FALSE),
 							 silly_fun(x,wins,mean,na.rm=FALSE),
-							 running_sum(x,wins),
+							 running_sum(x,wins,robust=TRUE),
+							 running_sum(x,wins,robust=FALSE),
 							 running_mean(x,wins),
 							 roll::roll_sum(xm,wins),
 							 roll::roll_mean(xm,wins),

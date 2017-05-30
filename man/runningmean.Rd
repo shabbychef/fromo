@@ -5,7 +5,8 @@
 \alias{running_mean}
 \title{Compute sums or means over a sliding window}
 \usage{
-running_sum(v, window = NULL, na_rm = FALSE, restart_period = 10000L)
+running_sum(v, window = NULL, na_rm = FALSE, restart_period = 10000L,
+  robust = TRUE)
 
 running_mean(v, window = NULL, na_rm = FALSE, min_df = 0L,
   restart_period = 10000L)
@@ -24,6 +25,9 @@ loss of precision, the computation of moments is restarted periodically based on
 this parameter. Larger values mean fewer restarts and faster, though potentially less 
 accurate results. Unlike in the computation of even order moments, loss of precision
 is unlikely to be disastrous, so the default value is rather large.}
+
+\item{robust}{Whether to compute a numerically robust sum. If \code{FALSE}, then a
+faster sum is performed, though it is more susceptible to roundoff errors.}
 
 \item{min_df}{the minimum df to return a value, otherwise \code{NaN} is returned,
 only for the means computation.

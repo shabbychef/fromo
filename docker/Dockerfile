@@ -40,6 +40,9 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
 # rinstall somethings...
 RUN /usr/local/bin/install2.r moments microbenchmark PDQutils;
 
+RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
+USER spav
+
 #####################################################
 # entry and cmd# FOLDUP
 # these are the default, but remind you that you might want to use /usr/bin/R instead?

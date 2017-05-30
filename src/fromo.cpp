@@ -1033,6 +1033,32 @@ NumericMatrix unjoin_cent_cosums(NumericMatrix ret3,NumericMatrix ret2) {
  */
 
 
+// helper function; takes a double or integer windowsize and interprets w/out warning or vomit.
+// if NULL, return NA_INTEGER;
+// if integer, pass through as i ;
+// if double, then 
+//   if Inf or NA, return NA_INTEGER;
+//   else convert to integer via as<int>( )
+int get_wins(SEXP window) {
+    if (Rf_isNull(window)) { return NA_INTEGER; }
+    switch (TYPEOF(window)) {
+        case  INTSXP: { return as<int>(window); break; }
+        case REALSXP: { 
+                          double wins = as<double>(window);
+                          if ((NumericVector::is_na(wins)) || 
+                              (traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
+                              return NA_INTEGER;
+                          }
+                          return (int)wins;
+                          break;
+                      }
+        default: stop("Unsupported input type");
+    }
+    // CRAN checks are broken: 'warning: control reaches end of non-void function'
+    // ... only for a crappy automated warning.
+    return -1;
+}
+
 // running sums//FOLDUP
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
 NumericMatrix runningSums(VEC v,DAT const dat_na,int window = NA_INTEGER,int recom_period = NA_INTEGER) {
@@ -1149,8 +1175,8 @@ NumericMatrix wrapRunningSums(SEXP v, int window, int recom_period, bool na_rm) 
 //UNFOLD
 
 // running means//FOLDUP
-template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
-NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 0,int recom_period = NA_INTEGER) {
+template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
+NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 1,int recom_period = NA_INTEGER) {
     DAT nextv, prevv;
     double muv, della;
     muv = 0.0;
@@ -1225,48 +1251,219 @@ NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 0,in
             }
             sub_count = 0;
         }
-        if (nel < min_df) { xret[iii] = NA_REAL; } else { xret[iii] = muv; }
+        if (nel < min_df) { xret[iii] = NA_REAL; } else { 
+            if (compute_sum) {
+                xret[iii] = nel * muv; 
+            } else {
+                xret[iii] = muv; 
+            }
+        }
     }
     return xret;
 }
 
-// wrap the call:
-NumericMatrix wrapRunningMeans(SEXP v, int window, const int min_df, int recom_period, bool na_rm) {
-    const bool no_recom = IntegerVector::is_na(recom_period);
-    if (na_rm) {
-        if (no_recom) {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningMeans<IntegerVector, int, true, false>(v, window, min_df, recom_period); }
-                case REALSXP: { return runningMeans<NumericVector, double, true, false>(v, window, min_df, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        } else {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningMeans<IntegerVector, int, true, true>(v, window, min_df, recom_period); }
-                case REALSXP: { return runningMeans<NumericVector, double, true, true>(v, window, min_df, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        }
+// c.f. the 'curious pattern' where arguments get turned
+// into template arguments.
+template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
+NumericMatrix runningMeansCurryOne(VEC v,int window = NA_INTEGER,
+                                   const int min_df = 1,
+                                   int recom_period = NA_INTEGER,
+                                   bool compute_sum=false) {
+    if (compute_sum) {
+        return runningMeans<VEC,DAT,na_rm,do_recompute,true>(v, window, min_df, recom_period);
     } else {
-        if (no_recom) {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningMeans<IntegerVector, int, false, false>(v, window, min_df, recom_period); }
-                case REALSXP: { return runningMeans<NumericVector, double, false, false>(v, window, min_df, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        } else {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningMeans<IntegerVector, int, false, true>(v, window, min_df, recom_period); }
-                case REALSXP: { return runningMeans<NumericVector, double, false, true>(v, window, min_df, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        }
+        return runningMeans<VEC,DAT,na_rm,do_recompute,false>(v, window, min_df, recom_period);
+    }
+    // CRAN checks are broken: 'warning: control reaches end of non-void function'
+    // ... only for a crappy automated warning.
+    return NumericMatrix(1,1);
+}
+template <typename VEC,typename DAT,bool na_rm>
+NumericMatrix runningMeansCurryTwo(VEC v,int window = NA_INTEGER,
+                                   const int min_df = 1,
+                                   int recom_period = NA_INTEGER,
+                                   bool compute_sum=false) {
+    const bool do_recompute = !IntegerVector::is_na(recom_period);
+    if (do_recompute) {
+        return runningMeansCurryOne<VEC,DAT,na_rm,true>(v, window, min_df, recom_period, compute_sum);
+    } 
+    return runningMeansCurryOne<VEC,DAT,na_rm,false>(v, window, min_df, recom_period, compute_sum);
+}
+template <typename VEC,typename DAT>
+NumericMatrix runningMeansCurryThree(VEC v,int window = NA_INTEGER,
+                                     const int min_df = 1,
+                                     int recom_period = NA_INTEGER,
+                                     bool compute_sum=false,
+                                     bool na_rm=false) {
+    if (na_rm) {
+        return runningMeansCurryTwo<VEC,DAT,true>(v, window, min_df, recom_period, compute_sum);
+    } 
+    return runningMeansCurryTwo<VEC,DAT,false>(v, window, min_df, recom_period, compute_sum);
+}
+
+// wrap the call:
+NumericMatrix wrapRunningMeans(SEXP v, int window, const int min_df, int recom_period, bool na_rm, bool compute_sum=false) {
+    switch (TYPEOF(v)) {
+        case  INTSXP: { return runningMeansCurryThree<IntegerVector, int>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        case REALSXP: { return runningMeansCurryThree<NumericVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        default: stop("Unsupported input type");
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
     // ... only for a crappy automated warning.
     return NumericMatrix(1,1);
 }
 //UNFOLD
+
+// running geometric means//FOLDUP
+// what to do about zeros or negatives?
+// have to think about that. zeros should be ok by the definition of 
+// geometric mean, right?
+// negative values can be problematic...
+//template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
+//NumericMatrix runningGeometricMeans(VEC v,int window = NA_INTEGER,const int min_df = 0,int recom_period = NA_INTEGER) {
+    //DAT nextv, prevv;
+    //double muv, della;
+    //muv = 0.0;
+    //if (min_df < 1) { stop("BAD CODE: must give positive min_df"); }
+
+    ////2FIX: use recom_period and do_recompute ... 
+    //// 2FIX: later you should use the infwin to prevent some computations
+    //// from happening. like subtracting old observations, say.
+    //const bool infwin = IntegerVector::is_na(window);
+    //if ((window < 1) && (!infwin)) { stop("must give positive window"); }
+
+    //int iii,jjj,lll;
+    //int numel = v.size();
+    //int nel;
+    //NumericMatrix xret(numel,1);
+    //int sub_count;
+
+    //sub_count = 0;
+
+    //nel = 0;
+    //jjj = 0;
+    //// now run through iii
+    //for (iii=0;iii < numel;++iii) {
+        //if (!do_recompute || (sub_count < recom_period)) {
+            //if (na_rm) {
+                //nextv = v[iii];
+                //if (!ISNAN(nextv)) {
+                    //della = double(nextv) - muv;
+                    //++nel;
+                    //muv += (della / nel);
+                //}
+            //} else {
+                //della = double(v[iii]) - muv;
+                //++nel;
+                //muv += (della / nel);
+            //}
+            //if (!infwin && (iii >= window)) {
+                //if (na_rm) {
+                    //prevv = v[jjj];
+                    //if (!ISNAN(prevv)) {
+                        //della = double(prevv) - muv;
+                        //--nel;
+                        //muv -= (della / nel);
+                        //if (do_recompute) { ++sub_count; }
+                    //}
+                //} else {
+                    //della = double(v[jjj]) - muv;
+                    //--nel;
+                    //muv -= (della / nel);
+                    //if (do_recompute) { ++sub_count; }
+                //}
+                //++jjj;
+            //}
+        //} else {
+            //// recompute;
+            //++jjj;
+            //muv = 0.0;
+            //nel = 0;
+            //for (lll=jjj;lll <= iii;++lll) {
+                //if (na_rm) {
+                    //nextv = v[lll];
+                    //if (!ISNAN(nextv)) {
+                        //della = double(nextv) - muv;
+                        //++nel;
+                        //muv += (della / nel);
+                    //}
+                //} else {
+                    //della = double(v[lll]) - muv;
+                    //++nel;
+                    //muv += (della / nel);
+                //}
+            //}
+            //sub_count = 0;
+        //}
+        //if (nel < min_df) { xret[iii] = NA_REAL; } else { xret[iii] = muv; }
+    //}
+    //return xret;
+//}
+
+//UNFOLD
+
+//' @title
+//' Compute sums or means over a sliding window
+//' @description
+//' Compute the mean or sum over 
+//' an infinite or finite sliding window, returning a matrix.
+//' 
+//' @param v a vector
+//' @param window the window size. if given as finite integer or double, passed through.
+//' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
+//' to an infinite window size. If negative, an error will be thrown.
+//' @param restart_period the recompute period. because subtraction of elements can cause
+//' loss of precision, the computation of moments is restarted periodically based on 
+//' this parameter. Larger values mean fewer restarts and faster, though potentially less 
+//' accurate results. Unlike in the computation of even order moments, loss of precision
+//' is unlikely to be disastrous, so the default value is rather large.
+//' @param na_rm whether to remove NA, false by default.
+//' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned,
+//' only for the means computation.
+//' This can be used to prevent moments from being computed on too few observations.
+//' Defaults to zero, meaning no restriction.
+//' @param robust Whether to compute a numerically robust sum. If \code{FALSE}, then a
+//' faster sum is performed, though it is more susceptible to roundoff errors.
+//'
+//' @details
+//'
+//' Computes the mean or sum of the elements, using a numerically robust one-pass method.
+//'
+//' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
+//' \eqn{M_{i,1}}{M_i,1} is the sum or mean 
+//' of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
+//' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
+//' During the 'burn-in' phase, we take fewer elements. If fewer than \code{min_df} for
+//' \code{running_mean}, returns \code{NA}.
+//'
+//' @return A column matrix.
+//' @examples
+//' x <- rnorm(1e5)
+//' xs <- running_sum(x,10)
+//' xm <- running_mean(x,100)
+//'
+//' @template etc
+//' @template ref-romo
+//' @rdname runningmean 
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_sum(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int restart_period=10000, bool robust=true) {
+    int wins=get_wins(window);
+    if (robust) { return wrapRunningMeans(v, wins, 1, restart_period, na_rm, true); } 
+    return wrapRunningSums(v, wins, restart_period, na_rm);
+}
+
+//' @rdname runningmean
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=10000) {
+    // 2FIX: accept NULL restart period and propagate that forward:
+    int wins=get_wins(window);
+    // turn min_df = 0 into min_df = 1 for later?
+    if (min_df < 1) { min_df = 1; }
+    NumericMatrix preval = wrapRunningMeans(v, wins, min_df, restart_period, na_rm, false);
+    return preval;
+}
 
 // to keep it DRY, this function has a bunch of variants,
 // depending on the templated bools in the vanilla form,
@@ -1563,92 +1760,6 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period,
     return NumericMatrix(1,1);
 }
 
-// helper function; takes a double or integer windowsize and interprets w/out warning or vomit.
-// if NULL, return NA_INTEGER;
-// if integer, pass through as i ;
-// if double, then 
-//   if Inf or NA, return NA_INTEGER;
-//   else convert to integer via as<int>( )
-int get_wins(SEXP window) {
-    if (Rf_isNull(window)) { return NA_INTEGER; }
-    switch (TYPEOF(window)) {
-        case  INTSXP: { return as<int>(window); break; }
-        case REALSXP: { 
-                          double wins = as<double>(window);
-                          if ((NumericVector::is_na(wins)) || 
-                              (traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
-                              return NA_INTEGER;
-                          }
-                          return (int)wins;
-                          break;
-                      }
-        default: stop("Unsupported input type");
-    }
-    // CRAN checks are broken: 'warning: control reaches end of non-void function'
-    // ... only for a crappy automated warning.
-    return -1;
-}
-
-//' @title
-//' Compute sums or means over a sliding window
-//' @description
-//' Compute the mean or sum over 
-//' an infinite or finite sliding window, returning a matrix.
-//' 
-//' @param v a vector
-//' @param window the window size. if given as finite integer or double, passed through.
-//' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
-//' to an infinite window size. If negative, an error will be thrown.
-//' @param restart_period the recompute period. because subtraction of elements can cause
-//' loss of precision, the computation of moments is restarted periodically based on 
-//' this parameter. Larger values mean fewer restarts and faster, though potentially less 
-//' accurate results. Unlike in the computation of even order moments, loss of precision
-//' is unlikely to be disastrous, so the default value is rather large.
-//' @param na_rm whether to remove NA, false by default.
-//' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned,
-//' only for the means computation.
-//' This can be used to prevent moments from being computed on too few observations.
-//' Defaults to zero, meaning no restriction.
-//'
-//' @details
-//'
-//' Computes the mean or sum of the elements, using a numerically robust one-pass method.
-//'
-//' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
-//' \eqn{M_{i,1}}{M_i,1} is the sum or mean 
-//' of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
-//' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
-//' During the 'burn-in' phase, we take fewer elements. If fewer than \code{min_df} for
-//' \code{running_mean}, returns \code{NA}.
-//'
-//' @return A column matrix.
-//' @examples
-//' x <- rnorm(1e5)
-//' xs <- running_sum(x,10)
-//' xm <- running_mean(x,100)
-//'
-//' @template etc
-//' @template ref-romo
-//' @rdname runningmean 
-//' @export
-// [[Rcpp::export]]
-NumericMatrix running_sum(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int restart_period=10000) {
-    int wins=get_wins(window);
-    NumericMatrix preval = wrapRunningSums(v, wins, restart_period, na_rm);
-    return preval;
-}
-
-//' @rdname runningmean
-//' @export
-// [[Rcpp::export]]
-NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=10000) {
-    // 2FIX: accept NULL restart period and propagate that forward:
-    int wins=get_wins(window);
-    // turn min_df = 0 into min_df = 1 for later?
-    if (min_df < 1) { min_df = 1; }
-    NumericMatrix preval = wrapRunningMeans(v, wins, min_df, restart_period, na_rm);
-    return preval;
-}
 
 //' @title
 //' Compute first K moments over a sliding window
