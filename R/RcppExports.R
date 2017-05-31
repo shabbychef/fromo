@@ -302,6 +302,7 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 #'
 #' @template etc
 #' @template ref-romo
+#' @template ref-kahan
 #' @rdname runningmean 
 #' @export
 running_sum <- function(v, window = NULL, na_rm = FALSE, restart_period = 10000L, robust = TRUE) {

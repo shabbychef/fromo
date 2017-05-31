@@ -769,13 +769,13 @@ vals <- list(running_sum(x, wins, na_rm = FALSE), RollingWindow::RollingSum(x,
     wins, na_method = "ignore"), roll::roll_sum(xm, 
     wins), silly_fun(x, wins, sum, na.rm = FALSE))
 
-# check all equal
+# check all equal?
 stopifnot(max(unlist(lapply(vals[2:length(vals)], function(av) {
     err <- vals[[1]] - av
     max(abs(err[wins:length(err)]), na.rm = TRUE)
 }))) < 1e-12)
 
-# benchmark
+# benchmark it
 microbenchmark(running_sum(x, wins, na_rm = FALSE, 
     robust = FALSE), running_sum(x, wins, na_rm = FALSE, 
     robust = TRUE), RollingWindow::RollingSum(x, wins), 
@@ -787,12 +787,12 @@ microbenchmark(running_sum(x, wins, na_rm = FALSE,
 ```
 ## Unit: microseconds
 ##                                                      expr  min   lq mean median   uq  max neval  cld
-##       running_sum(x, wins, na_rm = FALSE, robust = FALSE)   28   31   47     32   39 1169   100 a   
-##        running_sum(x, wins, na_rm = FALSE, robust = TRUE)  143  173  177    177  180  221   100  b  
-##                        RollingWindow::RollingSum(x, wins)  118  122  183    125  147 1277   100  b  
-##         running_sum(x, wins, na_rm = TRUE, robust = TRUE)  182  210  215    216  220  297   100  b  
-##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  410  417  494    427  446 1598   100   c 
-##                                  roll::roll_sum(xm, wins) 4146 4290 4362   4329 4396 5407   100    d
+##       running_sum(x, wins, na_rm = FALSE, robust = FALSE)   30   33   60     38   53 1652   100 a   
+##        running_sum(x, wins, na_rm = FALSE, robust = TRUE)   43   52   62     57   69  117   100 a   
+##                        RollingWindow::RollingSum(x, wins)  118  136  231    159  195 1938   100  b  
+##         running_sum(x, wins, na_rm = TRUE, robust = TRUE)  111  126  145    133  147  280   100 ab  
+##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  415  434  577    459  536 2107   100   c 
+##                                  roll::roll_sum(xm, wins) 4233 4849 5312   5008 5633 7911   100    d
 ```
 
 And running means:
@@ -814,12 +814,13 @@ vals <- list(running_mean(x, wins, na_rm = FALSE),
     roll::roll_mean(xm, wins), silly_fun(x, wins, mean, 
         na.rm = FALSE))
 
-# check all equal
+# check all equal?
 stopifnot(max(unlist(lapply(vals[2:length(vals)], function(av) {
     err <- vals[[1]] - av
     max(abs(err[wins:length(err)]), na.rm = TRUE)
 }))) < 1e-12)
 
+# benchmark it
 microbenchmark(running_mean(x, wins, na_rm = FALSE, 
     restart_period = 1e+05), RollingWindow::RollingMean(x, 
     wins, na_method = "ignore"), roll::roll_mean(xm, 
@@ -829,9 +830,9 @@ microbenchmark(running_mean(x, wins, na_rm = FALSE,
 ```
 ## Unit: microseconds
 ##                                                          expr  min   lq mean median   uq  max neval cld
-##  running_mean(x, wins, na_rm = FALSE, restart_period = 1e+05)  142  176  186    186  193  271   100 a  
-##     RollingWindow::RollingMean(x, wins, na_method = "ignore")  386  470  579    491  531 1935   100  b 
-##                                     roll::roll_mean(xm, wins) 4912 5031 5119   5090 5139 6103   100   c
+##  running_mean(x, wins, na_rm = FALSE, restart_period = 1e+05)   54   63  122     72   82 1642   100 a  
+##     RollingWindow::RollingMean(x, wins, na_method = "ignore")  430  486  639    519  618 2642   100  b 
+##                                     roll::roll_mean(xm, wins) 4817 5079 5309   5252 5480 6633   100   c
 ```
 
 

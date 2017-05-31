@@ -17,3 +17,5 @@ cache
 .drat_*
 
 .check_tmp
+
+.fromo_*.installed

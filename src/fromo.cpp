@@ -1174,12 +1174,13 @@ NumericMatrix wrapRunningSums(SEXP v, int window, int recom_period, bool na_rm) 
 }
 //UNFOLD
 
-// running means//FOLDUP
+// running sums, via Kahans algo//FOLDUP
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
-NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 1,int recom_period = NA_INTEGER) {
-    DAT nextv, prevv;
-    double muv, della;
+NumericMatrix runningKahans(VEC v,int window = NA_INTEGER,const int min_df = 1,int recom_period = NA_INTEGER) {
+    DAT nextv, prevv, diffv;
+    double muv, tmpv, nxtv, errsum;
     muv = 0.0;
+    errsum = 0.0;
     if (min_df < 1) { stop("BAD CODE: must give positive min_df"); }
 
     //2FIX: use recom_period and do_recompute ... 
@@ -1203,59 +1204,68 @@ NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 1,in
         if (!do_recompute || (sub_count < recom_period)) {
             if (na_rm) {
                 nextv = v[iii];
-                if (!ISNAN(nextv)) {
-                    della = double(nextv) - muv;
+                if (!ISNAN(nextv)) { 
+                    diffv = nextv; 
                     ++nel;
-                    muv += (della / nel);
+                } else { 
+                    diffv = DAT(0); 
                 }
             } else {
-                della = double(v[iii]) - muv;
+                diffv = v[iii];
                 ++nel;
-                muv += (della / nel);
             }
             if (!infwin && (iii >= window)) {
                 if (na_rm) {
                     prevv = v[jjj];
                     if (!ISNAN(prevv)) {
-                        della = double(prevv) - muv;
+                        diffv -= prevv;
                         --nel;
-                        muv -= (della / nel);
                         if (do_recompute) { ++sub_count; }
                     }
                 } else {
-                    della = double(v[jjj]) - muv;
+                    diffv -= v[jjj];
                     --nel;
-                    muv -= (della / nel);
                     if (do_recompute) { ++sub_count; }
                 }
                 ++jjj;
             }
+            // now add diffv on to the running sum.
+            // ignore the na_rm case of no add, no subtract.
+            tmpv = double(diffv) - errsum;
+            nxtv = muv + tmpv;
+            errsum = (nxtv - muv) - tmpv;
+            muv = nxtv;
         } else {
             // recompute;
             ++jjj;
             muv = 0.0;
             nel = 0;
+            errsum = 0.0;
             for (lll=jjj;lll <= iii;++lll) {
                 if (na_rm) {
                     nextv = v[lll];
                     if (!ISNAN(nextv)) {
-                        della = double(nextv) - muv;
+                        tmpv = double(nextv) - errsum;
+                        nxtv = muv + tmpv;
+                        errsum = (nxtv - muv) - tmpv;
+                        muv = nxtv;
                         ++nel;
-                        muv += (della / nel);
                     }
                 } else {
-                    della = double(v[lll]) - muv;
+                    tmpv = double(v[lll]) - errsum;
+                    nxtv = muv + tmpv;
+                    errsum = (nxtv - muv) - tmpv;
+                    muv = nxtv;
                     ++nel;
-                    muv += (della / nel);
                 }
             }
             sub_count = 0;
         }
         if (nel < min_df) { xret[iii] = NA_REAL; } else { 
             if (compute_sum) {
-                xret[iii] = nel * muv; 
-            } else {
                 xret[iii] = muv; 
+            } else {
+                xret[iii] = muv / nel; 
             }
         }
     }
@@ -1265,47 +1275,43 @@ NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 1,in
 // c.f. the 'curious pattern' where arguments get turned
 // into template arguments.
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
-NumericMatrix runningMeansCurryOne(VEC v,int window = NA_INTEGER,
+NumericMatrix runningKahansCurryOne(VEC v,int window = NA_INTEGER,
                                    const int min_df = 1,
                                    int recom_period = NA_INTEGER,
                                    bool compute_sum=false) {
     if (compute_sum) {
-        return runningMeans<VEC,DAT,na_rm,do_recompute,true>(v, window, min_df, recom_period);
-    } else {
-        return runningMeans<VEC,DAT,na_rm,do_recompute,false>(v, window, min_df, recom_period);
-    }
-    // CRAN checks are broken: 'warning: control reaches end of non-void function'
-    // ... only for a crappy automated warning.
-    return NumericMatrix(1,1);
+        return runningKahans<VEC,DAT,na_rm,do_recompute,true>(v, window, min_df, recom_period);
+    } 
+    return runningKahans<VEC,DAT,na_rm,do_recompute,false>(v, window, min_df, recom_period);
 }
 template <typename VEC,typename DAT,bool na_rm>
-NumericMatrix runningMeansCurryTwo(VEC v,int window = NA_INTEGER,
+NumericMatrix runningKahansCurryTwo(VEC v,int window = NA_INTEGER,
                                    const int min_df = 1,
                                    int recom_period = NA_INTEGER,
                                    bool compute_sum=false) {
     const bool do_recompute = !IntegerVector::is_na(recom_period);
     if (do_recompute) {
-        return runningMeansCurryOne<VEC,DAT,na_rm,true>(v, window, min_df, recom_period, compute_sum);
+        return runningKahansCurryOne<VEC,DAT,na_rm,true>(v, window, min_df, recom_period, compute_sum);
     } 
-    return runningMeansCurryOne<VEC,DAT,na_rm,false>(v, window, min_df, recom_period, compute_sum);
+    return runningKahansCurryOne<VEC,DAT,na_rm,false>(v, window, min_df, recom_period, compute_sum);
 }
 template <typename VEC,typename DAT>
-NumericMatrix runningMeansCurryThree(VEC v,int window = NA_INTEGER,
+NumericMatrix runningKahansCurryThree(VEC v,int window = NA_INTEGER,
                                      const int min_df = 1,
                                      int recom_period = NA_INTEGER,
                                      bool compute_sum=false,
                                      bool na_rm=false) {
     if (na_rm) {
-        return runningMeansCurryTwo<VEC,DAT,true>(v, window, min_df, recom_period, compute_sum);
+        return runningKahansCurryTwo<VEC,DAT,true>(v, window, min_df, recom_period, compute_sum);
     } 
-    return runningMeansCurryTwo<VEC,DAT,false>(v, window, min_df, recom_period, compute_sum);
+    return runningKahansCurryTwo<VEC,DAT,false>(v, window, min_df, recom_period, compute_sum);
 }
 
 // wrap the call:
-NumericMatrix wrapRunningMeans(SEXP v, int window, const int min_df, int recom_period, bool na_rm, bool compute_sum=false) {
+NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_period, bool na_rm, bool compute_sum=false) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningMeansCurryThree<IntegerVector, int>(v, window, min_df, recom_period, compute_sum, na_rm); }
-        case REALSXP: { return runningMeansCurryThree<NumericVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        case  INTSXP: { return runningKahansCurryThree<IntegerVector, int>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        case REALSXP: { return runningKahansCurryThree<NumericVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
         default: stop("Unsupported input type");
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
@@ -1444,12 +1450,13 @@ NumericMatrix wrapRunningMeans(SEXP v, int window, const int min_df, int recom_p
 //'
 //' @template etc
 //' @template ref-romo
+//' @template ref-kahan
 //' @rdname runningmean 
 //' @export
 // [[Rcpp::export]]
 NumericMatrix running_sum(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int restart_period=10000, bool robust=true) {
     int wins=get_wins(window);
-    if (robust) { return wrapRunningMeans(v, wins, 1, restart_period, na_rm, true); } 
+    if (robust) { return wrapRunningKahans(v, wins, 1, restart_period, na_rm, true); } 
     return wrapRunningSums(v, wins, restart_period, na_rm);
 }
 
@@ -1461,8 +1468,7 @@ NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
     int wins=get_wins(window);
     // turn min_df = 0 into min_df = 1 for later?
     if (min_df < 1) { min_df = 1; }
-    NumericMatrix preval = wrapRunningMeans(v, wins, min_df, restart_period, na_rm, false);
-    return preval;
+    return wrapRunningKahans(v, wins, min_df, restart_period, na_rm, false);
 }
 
 // to keep it DRY, this function has a bunch of variants,
@@ -2392,6 +2398,143 @@ NumericVector cent2raw(NumericVector input) {
     //;
 //}
 //UNFOLD
+//
+//// running means//FOLDUP
+//2FIX: cut this out
+//template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
+//NumericMatrix runningMeans(VEC v,int window = NA_INTEGER,const int min_df = 1,int recom_period = NA_INTEGER) {
+    //DAT nextv, prevv;
+    //double muv, della;
+    //muv = 0.0;
+    //if (min_df < 1) { stop("BAD CODE: must give positive min_df"); }
+
+    ////2FIX: use recom_period and do_recompute ... 
+    //// 2FIX: later you should use the infwin to prevent some computations
+    //// from happening. like subtracting old observations, say.
+    //const bool infwin = IntegerVector::is_na(window);
+    //if ((window < 1) && (!infwin)) { stop("must give positive window"); }
+
+    //int iii,jjj,lll;
+    //int numel = v.size();
+    //int nel;
+    //NumericMatrix xret(numel,1);
+    //int sub_count;
+
+    //sub_count = 0;
+
+    //nel = 0;
+    //jjj = 0;
+    //// now run through iii
+    //for (iii=0;iii < numel;++iii) {
+        //if (!do_recompute || (sub_count < recom_period)) {
+            //if (na_rm) {
+                //nextv = v[iii];
+                //if (!ISNAN(nextv)) {
+                    //della = double(nextv) - muv;
+                    //++nel;
+                    //muv += (della / nel);
+                //}
+            //} else {
+                //della = double(v[iii]) - muv;
+                //++nel;
+                //muv += (della / nel);
+            //}
+            //if (!infwin && (iii >= window)) {
+                //if (na_rm) {
+                    //prevv = v[jjj];
+                    //if (!ISNAN(prevv)) {
+                        //della = double(prevv) - muv;
+                        //--nel;
+                        //muv -= (della / nel);
+                        //if (do_recompute) { ++sub_count; }
+                    //}
+                //} else {
+                    //della = double(v[jjj]) - muv;
+                    //--nel;
+                    //muv -= (della / nel);
+                    //if (do_recompute) { ++sub_count; }
+                //}
+                //++jjj;
+            //}
+        //} else {
+            //// recompute;
+            //++jjj;
+            //muv = 0.0;
+            //nel = 0;
+            //for (lll=jjj;lll <= iii;++lll) {
+                //if (na_rm) {
+                    //nextv = v[lll];
+                    //if (!ISNAN(nextv)) {
+                        //della = double(nextv) - muv;
+                        //++nel;
+                        //muv += (della / nel);
+                    //}
+                //} else {
+                    //della = double(v[lll]) - muv;
+                    //++nel;
+                    //muv += (della / nel);
+                //}
+            //}
+            //sub_count = 0;
+        //}
+        //if (nel < min_df) { xret[iii] = NA_REAL; } else { 
+            //if (compute_sum) {
+                //xret[iii] = nel * muv; 
+            //} else {
+                //xret[iii] = muv; 
+            //}
+        //}
+    //}
+    //return xret;
+//}
+
+//// c.f. the 'curious pattern' where arguments get turned
+//// into template arguments.
+//template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
+//NumericMatrix runningMeansCurryOne(VEC v,int window = NA_INTEGER,
+                                   //const int min_df = 1,
+                                   //int recom_period = NA_INTEGER,
+                                   //bool compute_sum=false) {
+    //if (compute_sum) {
+        //return runningMeans<VEC,DAT,na_rm,do_recompute,true>(v, window, min_df, recom_period);
+    //} 
+    //return runningMeans<VEC,DAT,na_rm,do_recompute,false>(v, window, min_df, recom_period);
+//}
+//template <typename VEC,typename DAT,bool na_rm>
+//NumericMatrix runningMeansCurryTwo(VEC v,int window = NA_INTEGER,
+                                   //const int min_df = 1,
+                                   //int recom_period = NA_INTEGER,
+                                   //bool compute_sum=false) {
+    //const bool do_recompute = !IntegerVector::is_na(recom_period);
+    //if (do_recompute) {
+        //return runningMeansCurryOne<VEC,DAT,na_rm,true>(v, window, min_df, recom_period, compute_sum);
+    //} 
+    //return runningMeansCurryOne<VEC,DAT,na_rm,false>(v, window, min_df, recom_period, compute_sum);
+//}
+//template <typename VEC,typename DAT>
+//NumericMatrix runningMeansCurryThree(VEC v,int window = NA_INTEGER,
+                                     //const int min_df = 1,
+                                     //int recom_period = NA_INTEGER,
+                                     //bool compute_sum=false,
+                                     //bool na_rm=false) {
+    //if (na_rm) {
+        //return runningMeansCurryTwo<VEC,DAT,true>(v, window, min_df, recom_period, compute_sum);
+    //} 
+    //return runningMeansCurryTwo<VEC,DAT,false>(v, window, min_df, recom_period, compute_sum);
+//}
+
+//// wrap the call:
+//NumericMatrix wrapRunningMeans(SEXP v, int window, const int min_df, int recom_period, bool na_rm, bool compute_sum=false) {
+    //switch (TYPEOF(v)) {
+        //case  INTSXP: { return runningMeansCurryThree<IntegerVector, int>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        //case REALSXP: { return runningMeansCurryThree<NumericVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        //default: stop("Unsupported input type");
+    //}
+    //// CRAN checks are broken: 'warning: control reaches end of non-void function'
+    //// ... only for a crappy automated warning.
+    //return NumericMatrix(1,1);
+//}
+////UNFOLD
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
