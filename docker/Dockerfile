@@ -41,7 +41,7 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
 RUN /usr/local/bin/install2.r moments microbenchmark PDQutils;
 
 # needed for readme
-run (/usr/local/bin/install2.r dplyr ggplot2 roll rcpproll multcomp readr; \
+RUN (/usr/local/bin/install2.r dplyr ggplot2 roll RcppRoll multcomp readr; \
 	/usr/local/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
 
 RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;

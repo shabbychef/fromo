@@ -50,6 +50,7 @@ library(RcppParallel)
 # keep this constant for comparison
 setThreadOptions(numThreads = 2)
 
+print(Sys.info())
 print(sessionInfo())
 
 set.seed(12345)
