@@ -12,6 +12,7 @@
 fromo.Rcheck
 fromo*tar.gz
 fromo*crancheck
+fromo
 .docker_img
 cache
 .drat_*

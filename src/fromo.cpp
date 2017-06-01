@@ -1107,7 +1107,7 @@ NumericMatrix runningKahans(VEC v,int window = NA_INTEGER,const int min_df = 1,i
                 if (na_rm) {
                     prevv = v[jjj];
                     if (!ISNAN(prevv)) {
-                        tmpv = double(-nextv) - errsum;
+                        tmpv = double(-prevv) - errsum;
                         nxtv = muv + tmpv;
                         errsum = (nxtv - muv) - tmpv;
                         muv = nxtv;

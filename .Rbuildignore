@@ -16,6 +16,7 @@ man-roxygen
 ^rebuildTags.sh
 ^fromo.*.tar.gz$
 ^fromo.Rcheck$
+^fromo$
 ^github_extra
 unit_test.log
 LICENSE

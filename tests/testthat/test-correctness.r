@@ -239,11 +239,11 @@ context("running ops")# FOLDUP
 test_that("running ops are correct",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
-
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 	set.char.seed("7ffe0035-2d0c-4586-a1a5-6321c7cf8694")
 	for (xlen in c(20,100)) {
-		for (xmu in c(1e3,1e8)) {
+		for (xmu in c(1e3,1e6)) {
+			toler <- xmu ^ (1/3)
 			x <- rnorm(xlen,mean=xmu)
 			for (window in c(15,50,Inf)) {
 				for (restart_period in c(20,1000)) {
@@ -263,37 +263,37 @@ test_that("running ops are correct",{#FOLDUP
 
 						fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-12)
+						expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-7 * toler)
 
 						fastv <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_skew,dumb_sd,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[3:xlen,] - fastv[3:xlen,])),0,tolerance=1e-11)
+						expect_equal(max(abs(dumbv[3:xlen,] - fastv[3:xlen,])),0,tolerance=1e-7 * toler)
 
 						fastv <- running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_exkurt,dumb_skew,dumb_sd,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[4:xlen,] - fastv[4:xlen,])),0,tolerance=1e-8)
+						expect_equal(max(abs(dumbv[4:xlen,] - fastv[4:xlen,])),0,tolerance=1e-6 * toler)
 
 						fastv <- running_cent_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+						expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-6 * toler)
 
 						fastv <- running_cent_moments(x,window=window,max_order=6L,max_order_only=TRUE,used_df=0L,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- dumb_cmom6
-						expect_equal(max(abs(dumbv - fastv)[-(1:6)]),0,tolerance=1e-8)
+						expect_equal(max(abs(dumbv - fastv)[-(1:6)]),0,tolerance=1e-7 * toler)
 
 						fastv <- running_std_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_cmom6 / (dumb_cmom2^3),dumb_cmom5 / (dumb_cmom2^2.5),dumb_cmom4 / (dumb_cmom2^2.0),dumb_cmom3 / (dumb_cmom2^1.5),sqrt(dumb_cmom2),dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+						expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-7 * toler)
 
 						# running sum and mean
 						# do sums twice
 						fastv <- running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- dumb_sum
-						expect_equal(max(abs(dumbv[2:xlen] - fastv[2:xlen,])),0,tolerance=1e-12)
+						expect_equal(dumbv[2:xlen],fastv[2:xlen,],tolerance=1e-8 * toler)
 
 						fastv <- running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- dumb_mean
-						expect_equal(max(abs(dumbv[2:xlen] - fastv[2:xlen,])),0,tolerance=1e-12)
+						expect_equal(dumbv[2:xlen],fastv[2:xlen,],tolerance=1e-8 * toler)
 
 						if (require(PDQutils)) {
 							# cumulants
@@ -304,14 +304,14 @@ test_that("running ops are correct",{#FOLDUP
 															rv <- rv[-length(rv)]
 															c(rv,pre_dumbv[iii,ncol(pre_dumbv) + (-1:0)])
 								},simplify='matrix'))
-							expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8)
+							expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8 * toler)
 
 							# quantiles
 							fastv <- running_apx_quantiles(x,ptiles,max_order=ncol(dumbv)-1,used_df=0L,window=window,restart_period=restart_period,na_rm=na_rm)
 							dumbq <- t(sapply(seq_along(x),function(iii) { 
 								PDQutils::qapx_cf(ptiles,raw.cumulants=rev(dumbv[iii,1:(ncol(dumbv)-1)]))
 							}, simplify=TRUE))
-							expect_equal(max(abs(dumbq[8:xlen,] - fastv[8:xlen,])),0,tolerance=1e-12)
+							expect_equal(max(abs(dumbq[8:xlen,] - fastv[8:xlen,])),0,tolerance=1e-8 * toler)
 						}
 					}
 				}
