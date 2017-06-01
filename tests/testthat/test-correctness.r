@@ -243,7 +243,7 @@ test_that("running ops are correct",{#FOLDUP
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 	set.char.seed("7ffe0035-2d0c-4586-a1a5-6321c7cf8694")
 	for (xlen in c(20,100)) {
-		for (xmu in c(1e3,1e8) {
+		for (xmu in c(1e3,1e8)) {
 			x <- rnorm(xlen,mean=xmu)
 			for (window in c(15,50,Inf)) {
 				for (restart_period in c(20,1000)) {
