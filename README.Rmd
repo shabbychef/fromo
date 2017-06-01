@@ -550,7 +550,7 @@ library(fromo)
 library(RollingWindow)
 library(roll)
 
-set.seed(1234)
+set.seed(12345)
 x <- rnorm(10000)
 xm <- matrix(x)
 wins <- 1000
@@ -574,10 +574,9 @@ stopifnot(max(unlist(lapply(vals[2:length(vals)],function(av) {
 															max(abs(err[wins:length(err)]),na.rm=TRUE) }))) < 1e-12)
 
 # benchmark it
-microbenchmark(running_sum(x,wins,na_rm=FALSE,robust=FALSE),
-							 running_sum(x,wins,na_rm=FALSE,robust=TRUE),
+microbenchmark(running_sum(x,wins,na_rm=FALSE),
 							 RollingWindow::RollingSum(x,wins),
-							 running_sum(x,wins,na_rm=TRUE,robust=TRUE),
+							 running_sum(x,wins,na_rm=TRUE),
 							 RollingWindow::RollingSum(x,wins,na_method='ignore'),
 							 roll::roll_sum(xm,wins))
 ```
@@ -590,7 +589,7 @@ library(fromo)
 library(RollingWindow)
 library(roll)
 
-set.seed(1234)
+set.seed(12345)
 x <- rnorm(10000)
 xm <- matrix(x)
 wins <- 1000
@@ -605,14 +604,12 @@ stopifnot(max(unlist(lapply(vals[2:length(vals)],function(av) {
 															err <- vals[[1]] - av
 															max(abs(err[wins:length(err)]),na.rm=TRUE) }))) < 1e-12)
 
-# benchmark it
+# benchmark it:
 microbenchmark(running_mean(x,wins,na_rm=FALSE,restart_period=100000),
+							 RollingWindow::RollingMean(x,wins),
+							 running_mean(x,wins,na_rm=TRUE,restart_period=100000),
 							 RollingWindow::RollingMean(x,wins,na_method='ignore'),
 							 roll::roll_mean(xm,wins))
 
 ```
-
-
-
-
 

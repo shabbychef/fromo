@@ -1059,125 +1059,10 @@ int get_wins(SEXP window) {
     return -1;
 }
 
-// running sums//FOLDUP
-template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
-NumericMatrix runningSums(VEC v,DAT const dat_na,int window = NA_INTEGER,int recom_period = NA_INTEGER) {
-    DAT nextv, prevv, sumv;
-    sumv = DAT(0);
-
-    //2FIX: use recom_period and do_recompute ... 
-    // 2FIX: later you should use the infwin to prevent some computations
-    // from happening. like subtracting old observations, say.
-    const bool infwin = IntegerVector::is_na(window);
-    if ((window < 1) && (!infwin)) { stop("must give positive window"); }
-
-    int iii,jjj,lll;
-    int numel = v.size();
-    int nel;
-    NumericMatrix xret(numel,1);
-    int sub_count;
-
-    sub_count = 0;
-
-    nel = 0;
-    jjj = 0;
-    // now run through iii
-    for (iii=0;iii < numel;++iii) {
-        if (!do_recompute || (sub_count < recom_period)) {
-            if (na_rm) {
-                nextv = v[iii];
-                if (!ISNAN(nextv)) {
-                    sumv += nextv;
-                    ++nel;
-                }
-            } else {
-                sumv += v[iii];
-            }
-            if (!infwin && (iii >= window)) {
-                if (na_rm) {
-                    prevv = v[jjj];
-                    if (!ISNAN(prevv)) {
-                        sumv -= prevv;
-                        --nel;
-                        if (do_recompute) { ++sub_count; }
-                    }
-                } else {
-                    sumv -= v[jjj];
-                    if (do_recompute) { ++sub_count; }
-                }
-                ++jjj;
-            }
-        } else {
-            // recompute;
-            ++jjj;
-            sumv = DAT(0);
-            for (lll=jjj;lll <= iii;++lll) {
-                if (na_rm) {
-                    nextv = v[lll];
-                    if (!ISNAN(nextv)) {
-                        sumv += nextv;
-                        ++nel;
-                    }
-                } else { sumv += v[lll]; }
-            }
-            sub_count = 0;
-        }
-        if (na_rm) {
-            if (nel == 0) {
-                xret[iii] = dat_na;
-            } else {
-                xret[iii] = sumv;
-
-            }
-        } else {
-            xret[iii] = sumv;
-        }
-    }
-    return xret;
-}
-
-// wrap the call:
-NumericMatrix wrapRunningSums(SEXP v, int window, int recom_period, bool na_rm) {
-    const bool no_recom = IntegerVector::is_na(recom_period);
-    if (na_rm) {
-        if (no_recom) {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningSums<IntegerVector, int, true, false>(v, NA_INTEGER, window, recom_period); }
-                case REALSXP: { return runningSums<NumericVector, double, true, false>(v, NA_REAL, window, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        } else {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningSums<IntegerVector, int, true, true>(v, NA_INTEGER, window, recom_period); }
-                case REALSXP: { return runningSums<NumericVector, double, true, true>(v, NA_REAL, window, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        }
-    } else {
-        if (no_recom) {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningSums<IntegerVector, int, false, false>(v, NA_INTEGER, window, recom_period); }
-                case REALSXP: { return runningSums<NumericVector, double, false, false>(v, NA_REAL, window, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        } else {
-            switch (TYPEOF(v)) {
-                case  INTSXP: { return runningSums<IntegerVector, int, false, true>(v, NA_INTEGER, window, recom_period); }
-                case REALSXP: { return runningSums<NumericVector, double, false, true>(v, NA_REAL, window, recom_period); }
-                default: stop("Unsupported input type");
-            }
-        }
-    }
-    // CRAN checks are broken: 'warning: control reaches end of non-void function'
-    // ... only for a crappy automated warning.
-    return NumericMatrix(1,1);
-}
-//UNFOLD
-
 // running sums, via Kahans algo//FOLDUP
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
 NumericMatrix runningKahans(VEC v,int window = NA_INTEGER,const int min_df = 1,int recom_period = NA_INTEGER) {
-    DAT nextv, prevv, diffv;
+    DAT nextv, prevv;
     double muv, tmpv, nxtv, errsum;
     muv = 0.0;
     errsum = 0.0;
@@ -1205,36 +1090,40 @@ NumericMatrix runningKahans(VEC v,int window = NA_INTEGER,const int min_df = 1,i
             if (na_rm) {
                 nextv = v[iii];
                 if (!ISNAN(nextv)) { 
-                    diffv = nextv; 
+                    tmpv = double(nextv) - errsum;
+                    nxtv = muv + tmpv;
+                    errsum = (nxtv - muv) - tmpv;
+                    muv = nxtv;
                     ++nel;
-                } else { 
-                    diffv = DAT(0); 
-                }
+                } 
             } else {
-                diffv = v[iii];
+                tmpv = double(v[iii]) - errsum;
+                nxtv = muv + tmpv;
+                errsum = (nxtv - muv) - tmpv;
+                muv = nxtv;
                 ++nel;
             }
             if (!infwin && (iii >= window)) {
                 if (na_rm) {
                     prevv = v[jjj];
                     if (!ISNAN(prevv)) {
-                        diffv -= prevv;
+                        tmpv = double(-nextv) - errsum;
+                        nxtv = muv + tmpv;
+                        errsum = (nxtv - muv) - tmpv;
+                        muv = nxtv;
                         --nel;
                         if (do_recompute) { ++sub_count; }
                     }
                 } else {
-                    diffv -= v[jjj];
+                    tmpv = double(-v[jjj]) - errsum;
+                    nxtv = muv + tmpv;
+                    errsum = (nxtv - muv) - tmpv;
+                    muv = nxtv;
                     --nel;
                     if (do_recompute) { ++sub_count; }
                 }
                 ++jjj;
             }
-            // now add diffv on to the running sum.
-            // ignore the na_rm case of no add, no subtract.
-            tmpv = double(diffv) - errsum;
-            nxtv = muv + tmpv;
-            errsum = (nxtv - muv) - tmpv;
-            muv = nxtv;
         } else {
             // recompute;
             ++jjj;
@@ -1428,8 +1317,6 @@ NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_
 //' only for the means computation.
 //' This can be used to prevent moments from being computed on too few observations.
 //' Defaults to zero, meaning no restriction.
-//' @param robust Whether to compute a numerically robust sum. If \code{FALSE}, then a
-//' faster sum is performed, though it is more susceptible to roundoff errors.
 //'
 //' @details
 //'
@@ -1454,10 +1341,9 @@ NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_
 //' @rdname runningmean 
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sum(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int restart_period=10000, bool robust=true) {
+NumericMatrix running_sum(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int restart_period=10000) {
     int wins=get_wins(window);
-    if (robust) { return wrapRunningKahans(v, wins, 1, restart_period, na_rm, true); } 
-    return wrapRunningSums(v, wins, restart_period, na_rm);
+    return wrapRunningKahans(v, wins, 1, restart_period, na_rm, true); 
 }
 
 //' @rdname runningmean
@@ -2399,6 +2285,120 @@ NumericVector cent2raw(NumericVector input) {
 //}
 //UNFOLD
 //
+//// running sums//FOLDUP
+//template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
+//NumericMatrix runningSums(VEC v,DAT const dat_na,int window = NA_INTEGER,int recom_period = NA_INTEGER) {
+    //DAT nextv, prevv, sumv;
+    //sumv = DAT(0);
+
+    ////2FIX: use recom_period and do_recompute ... 
+    //// 2FIX: later you should use the infwin to prevent some computations
+    //// from happening. like subtracting old observations, say.
+    //const bool infwin = IntegerVector::is_na(window);
+    //if ((window < 1) && (!infwin)) { stop("must give positive window"); }
+
+    //int iii,jjj,lll;
+    //int numel = v.size();
+    //int nel;
+    //NumericMatrix xret(numel,1);
+    //int sub_count;
+
+    //sub_count = 0;
+
+    //nel = 0;
+    //jjj = 0;
+    //// now run through iii
+    //for (iii=0;iii < numel;++iii) {
+        //if (!do_recompute || (sub_count < recom_period)) {
+            //if (na_rm) {
+                //nextv = v[iii];
+                //if (!ISNAN(nextv)) {
+                    //sumv += nextv;
+                    //++nel;
+                //}
+            //} else {
+                //sumv += v[iii];
+            //}
+            //if (!infwin && (iii >= window)) {
+                //if (na_rm) {
+                    //prevv = v[jjj];
+                    //if (!ISNAN(prevv)) {
+                        //sumv -= prevv;
+                        //--nel;
+                        //if (do_recompute) { ++sub_count; }
+                    //}
+                //} else {
+                    //sumv -= v[jjj];
+                    //if (do_recompute) { ++sub_count; }
+                //}
+                //++jjj;
+            //}
+        //} else {
+            //// recompute;
+            //++jjj;
+            //sumv = DAT(0);
+            //for (lll=jjj;lll <= iii;++lll) {
+                //if (na_rm) {
+                    //nextv = v[lll];
+                    //if (!ISNAN(nextv)) {
+                        //sumv += nextv;
+                        //++nel;
+                    //}
+                //} else { sumv += v[lll]; }
+            //}
+            //sub_count = 0;
+        //}
+        //if (na_rm) {
+            //if (nel == 0) {
+                //xret[iii] = dat_na;
+            //} else {
+                //xret[iii] = sumv;
+
+            //}
+        //} else {
+            //xret[iii] = sumv;
+        //}
+    //}
+    //return xret;
+//}
+
+//// wrap the call:
+//NumericMatrix wrapRunningSums(SEXP v, int window, int recom_period, bool na_rm) {
+    //const bool no_recom = IntegerVector::is_na(recom_period);
+    //if (na_rm) {
+        //if (no_recom) {
+            //switch (TYPEOF(v)) {
+                //case  INTSXP: { return runningSums<IntegerVector, int, true, false>(v, NA_INTEGER, window, recom_period); }
+                //case REALSXP: { return runningSums<NumericVector, double, true, false>(v, NA_REAL, window, recom_period); }
+                //default: stop("Unsupported input type");
+            //}
+        //} else {
+            //switch (TYPEOF(v)) {
+                //case  INTSXP: { return runningSums<IntegerVector, int, true, true>(v, NA_INTEGER, window, recom_period); }
+                //case REALSXP: { return runningSums<NumericVector, double, true, true>(v, NA_REAL, window, recom_period); }
+                //default: stop("Unsupported input type");
+            //}
+        //}
+    //} else {
+        //if (no_recom) {
+            //switch (TYPEOF(v)) {
+                //case  INTSXP: { return runningSums<IntegerVector, int, false, false>(v, NA_INTEGER, window, recom_period); }
+                //case REALSXP: { return runningSums<NumericVector, double, false, false>(v, NA_REAL, window, recom_period); }
+                //default: stop("Unsupported input type");
+            //}
+        //} else {
+            //switch (TYPEOF(v)) {
+                //case  INTSXP: { return runningSums<IntegerVector, int, false, true>(v, NA_INTEGER, window, recom_period); }
+                //case REALSXP: { return runningSums<NumericVector, double, false, true>(v, NA_REAL, window, recom_period); }
+                //default: stop("Unsupported input type");
+            //}
+        //}
+    //}
+    //// CRAN checks are broken: 'warning: control reaches end of non-void function'
+    //// ... only for a crappy automated warning.
+    //return NumericMatrix(1,1);
+//}
+////UNFOLD
 //// running means//FOLDUP
 //2FIX: cut this out
 //template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
@@ -2535,6 +2535,7 @@ NumericVector cent2raw(NumericVector input) {
     //return NumericMatrix(1,1);
 //}
 ////UNFOLD
+
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

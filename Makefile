@@ -10,15 +10,22 @@
 VMAJOR 						 = 0
 VMINOR 						 = 1
 VPATCH  					 = 3
-VDEV 							 = .3330
+VDEV 							 = .3400
 PKG_NAME 					:= fromo
 
 RPKG_USES_RCPP 		:= 1
 
 include ./rpkg_make/Makefile
 
-nodist/%.csv nodist/%.md : nodist/%.Rmd $(PKG_INSTALLED) | tools/figure
-	r -l Rcpp -l knitr -l devtools -e 'setwd("$(<D)");if (require(knitr)) { knit("$(<F)") }'
+	# r -l Rcpp -l knitr -l devtools -e 'setwd("$(<D)");if (require(knitr)) { knit("$(<F)") }'
+nodist/%.csv nodist/%.md : nodist/%.Rmd $(PKG_INSTALLED) 
+	$(DOCKER) run -it --rm \
+		--volume $(PWD)/nodist:/srv:rw \
+		--volume $$(pwd $(RLIB_D)):/opt/R/lib:rw \
+		$(DOCKER_ENV) \
+		--entrypoint="r" $(USER)/$(PKG_LCNAME)-crancheck \
+		"-l" "knitr" "-l" "$(PKG_NAME)" \
+		"-e" 'setwd(".");if (require(knitr)) { knit("$(<F)") }'
 
 nodist/timings_$(PKG_VERSION).csv : nodist/timings.csv
 	cp $< $@
@@ -35,7 +42,7 @@ reame : $(PKG_INSTALLED) $(DOCKER_IMG)
 		--volume $$(pwd $(RLIB_D)):/opt/R/lib:rw \
 		$(DOCKER_ENV) \
 		--entrypoint="r" $(USER)/$(PKG_LCNAME)-crancheck \
-		"-l" "Rcpp" "-l" "knitr" "-l" "devtools" "-l" "$(PKG_NAME)" \
+		"-l" "knitr" "-l" "$(PKG_NAME)" \
 		"-e" 'setwd(".");if (require(knitr)) { knit("README.Rmd") }'
 
 #for vim modeline: (do not edit)

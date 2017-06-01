@@ -751,7 +751,7 @@ library(fromo)
 library(RollingWindow)
 library(roll)
 
-set.seed(1234)
+set.seed(12345)
 x <- rnorm(10000)
 xm <- matrix(x)
 wins <- 1000
@@ -776,23 +776,21 @@ stopifnot(max(unlist(lapply(vals[2:length(vals)], function(av) {
 }))) < 1e-12)
 
 # benchmark it
-microbenchmark(running_sum(x, wins, na_rm = FALSE, 
-    robust = FALSE), running_sum(x, wins, na_rm = FALSE, 
-    robust = TRUE), RollingWindow::RollingSum(x, wins), 
-    running_sum(x, wins, na_rm = TRUE, robust = TRUE), 
-    RollingWindow::RollingSum(x, wins, na_method = "ignore"), 
-    roll::roll_sum(xm, wins))
+microbenchmark(running_sum(x, wins, na_rm = FALSE), 
+    RollingWindow::RollingSum(x, wins), running_sum(x, 
+        wins, na_rm = TRUE), RollingWindow::RollingSum(x, 
+        wins, na_method = "ignore"), roll::roll_sum(xm, 
+        wins))
 ```
 
 ```
 ## Unit: microseconds
 ##                                                      expr  min   lq mean median   uq  max neval  cld
-##       running_sum(x, wins, na_rm = FALSE, robust = FALSE)   30   33   60     38   53 1652   100 a   
-##        running_sum(x, wins, na_rm = FALSE, robust = TRUE)   43   52   62     57   69  117   100 a   
-##                        RollingWindow::RollingSum(x, wins)  118  136  231    159  195 1938   100  b  
-##         running_sum(x, wins, na_rm = TRUE, robust = TRUE)  111  126  145    133  147  280   100 ab  
-##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  415  434  577    459  536 2107   100   c 
-##                                  roll::roll_sum(xm, wins) 4233 4849 5312   5008 5633 7911   100    d
+##                       running_sum(x, wins, na_rm = FALSE)   44   48   56     51   60  125   100 a   
+##                        RollingWindow::RollingSum(x, wins)  111  117  203    126  146 1391   100  b  
+##                        running_sum(x, wins, na_rm = TRUE)  107  118  129    120  137  202   100 ab  
+##  RollingWindow::RollingSum(x, wins, na_method = "ignore")  359  393  474    404  432 1536   100   c 
+##                                  roll::roll_sum(xm, wins) 3887 3907 4017   3941 4029 6515   100    d
 ```
 
 And running means:
@@ -804,7 +802,7 @@ library(fromo)
 library(RollingWindow)
 library(roll)
 
-set.seed(1234)
+set.seed(12345)
 x <- rnorm(10000)
 xm <- matrix(x)
 wins <- 1000
@@ -820,22 +818,21 @@ stopifnot(max(unlist(lapply(vals[2:length(vals)], function(av) {
     max(abs(err[wins:length(err)]), na.rm = TRUE)
 }))) < 1e-12)
 
-# benchmark it
+# benchmark it:
 microbenchmark(running_mean(x, wins, na_rm = FALSE, 
     restart_period = 1e+05), RollingWindow::RollingMean(x, 
-    wins, na_method = "ignore"), roll::roll_mean(xm, 
-    wins))
+    wins), running_mean(x, wins, na_rm = TRUE, restart_period = 1e+05), 
+    RollingWindow::RollingMean(x, wins, na_method = "ignore"), 
+    roll::roll_mean(xm, wins))
 ```
 
 ```
 ## Unit: microseconds
-##                                                          expr  min   lq mean median   uq  max neval cld
-##  running_mean(x, wins, na_rm = FALSE, restart_period = 1e+05)   54   63  122     72   82 1642   100 a  
-##     RollingWindow::RollingMean(x, wins, na_method = "ignore")  430  486  639    519  618 2642   100  b 
-##                                     roll::roll_mean(xm, wins) 4817 5079 5309   5252 5480 6633   100   c
+##                                                          expr  min   lq mean median   uq  max neval  cld
+##  running_mean(x, wins, na_rm = FALSE, restart_period = 1e+05)   53   57   95     61   73 1584   100 a   
+##                           RollingWindow::RollingMean(x, wins)  142  160  261    179  213 2202   100  b  
+##   running_mean(x, wins, na_rm = TRUE, restart_period = 1e+05)  103  121  170    128  139 2016   100 ab  
+##     RollingWindow::RollingMean(x, wins, na_method = "ignore")  375  443  571    463  536 2990   100   c 
+##                                     roll::roll_mean(xm, wins) 4621 4654 5044   4797 5156 7729   100    d
 ```
-
-
-
-
 
