@@ -1398,9 +1398,9 @@ NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
 // ret_mat return a rows x (1+ord) matrix of the running centered sums
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
-// enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, sd };
+enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev };
 
-template <typename T,bool ret_mat,bool ret_extreme,bool ret_cent,bool ret_scald,bool ret_z,bool ret_sr,bool ret_t,bool ret_srmer>
+template <typename T,ReturnWhat retwhat>
 NumericMatrix runningQMoments(T v,
                               int ord = 3,
                               int window = NA_INTEGER,
@@ -1413,6 +1413,8 @@ NumericMatrix runningQMoments(T v,
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
 
+    const bool ord_beyond = (ord > 2);
+
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
     const bool infwin = IntegerVector::is_na(window);
@@ -1421,11 +1423,11 @@ NumericMatrix runningQMoments(T v,
     if (min_df < 0) { stop("require positive min_df"); }
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
-    if (((ret_scald || ret_z || ret_sr || ret_t) && (ord < 2)) ||
-        ((ret_srmer) && (ord < 4))) { 
+    if ((((retwhat==scaled) || (retwhat==zscore) || (retwhat==sharpe) || (retwhat==tstat) || (retwhat==stdev)) && (ord < 2)) ||
+        (((retwhat==sharpese)) && (ord < 4))) { 
         stop("bad code: order too small to support this computation"); 
     }
-    // only for ret_srmer, but cannot define outside its scope.
+    // only for retwhat==sharpese, but cannot define outside its scope.
     // no bigs.
     double sigma,skew,exkurt,sr;
 
@@ -1439,9 +1441,9 @@ NumericMatrix runningQMoments(T v,
     // preallocated with zeros; should
     // probably be NA?
     int ncols;
-    if (ret_mat) { 
+    if (retwhat==matrix) {
         ncols = 1+ord; 
-    } else if (ret_extreme || ret_srmer) {
+    } else if ((retwhat==extreme) || (retwhat==sharpese)) {
         ncols = 2; 
     } else {
         ncols = 1; 
@@ -1494,11 +1496,13 @@ NumericMatrix runningQMoments(T v,
                                 if (drat != 0) { ac_dn /= drat; }
                                 ac_on *= -nelm;
                             }
-                            ac_de = -delnel;
-                            for (int qqq=1;qqq <= ppp-2;qqq++) {
-                                vret[ppp] += bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
-                                if (qqq < ppp - 2) {
-                                    ac_de *= -delnel;
+                            if (ord_beyond) { // premature optimization
+                                ac_de = -delnel;
+                                for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                    vret[ppp] += bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
+                                    if (qqq < ppp - 2) {
+                                        ac_de *= -delnel;
+                                    }
                                 }
                             }
                         }
@@ -1529,11 +1533,13 @@ NumericMatrix runningQMoments(T v,
                                 ac_dn *= drat;
                                 ac_on /= -nel;
                             }
-                            ac_de = -delnel;
-                            for (int qqq=1;qqq <= ppp-2;qqq++) {
-                                vret[ppp] -= bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
-                                if (qqq < ppp - 2) {
-                                    ac_de *= -delnel;
+                            if (ord_beyond) { // premature optimization
+                                ac_de = -delnel;
+                                for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                    vret[ppp] -= bincoef[ppp][qqq] * ac_de * vret[ppp-qqq];
+                                    if (qqq < ppp - 2) {
+                                        ac_de *= -delnel;
+                                    }
                                 }
                             }
                         }
@@ -1561,7 +1567,7 @@ NumericMatrix runningQMoments(T v,
         tr_jjj++;
 
         // fill in the value in the output.//FOLDUP
-        if (ret_mat) {
+        if (retwhat==matrix) {
             if (vret[0] >= min_df) {
                 // put them in backwards!
                 if (vret[0] >= ord) {
@@ -1581,7 +1587,7 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,mmm) = NAN;
                 }
             }
-        } else if (ret_extreme) {
+        } else if (retwhat==extreme) {
             if (vret[0] >= min_df) {
                 // put them in backwards!
                 if (vret[0] >= ord) {
@@ -1597,25 +1603,28 @@ NumericMatrix runningQMoments(T v,
             }
         } else {
             if (vret[0] >= min_df) {
-                if (ret_cent) {
+                if (retwhat==centered) {
                     compv = double(v[lll]);
                     xret(lll,0) = COMP_CENTERED(compv,vret);
                 }
-                if (ret_scald) {
+                if (retwhat==scaled) {
                     compv = double(v[lll]);
                     xret(lll,0) = (compv) / COMP_SD(vret);
                 }
-                if (ret_z) {
+                if (retwhat==zscore) {
                     compv = double(v[lll]);
                     xret(lll,0) = COMP_CENTERED(compv,vret) / COMP_SD(vret);
                 }
-                if (ret_sr) {
+                if (retwhat==sharpe) {
                     xret(lll,0) = COMP_SHARPE(vret);
                 }
-                if (ret_t) {
+                if (retwhat==tstat) {
                     xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
                 }
-                if (ret_srmer) {
+                if (retwhat==stdev) {
+                    xret(lll,0) = COMP_SD(vret);
+                }
+                if (retwhat==sharpese) {
                     skew = COMP_SKEW(vret);
                     exkurt = COMP_EXKURT(vret);
                     sr = COMP_SHARPE(vret);
@@ -1632,7 +1641,7 @@ NumericMatrix runningQMoments(T v,
     return xret;
 }
 
-template <bool ret_mat,bool ret_extreme,bool ret_cent,bool ret_scald,bool ret_z,bool ret_sr,bool ret_t,bool ret_srmer>
+template <ReturnWhat retwhat>
 NumericMatrix runningQMomentsCurryOne(SEXP v,
                                       int ord = 3,
                                       int window = NA_INTEGER,
@@ -1641,9 +1650,9 @@ NumericMatrix runningQMomentsCurryOne(SEXP v,
                                       const int min_df = 0,
                                       bool na_rm = false) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMoments<IntegerVector,ret_mat,ret_extreme,ret_cent,ret_scald,ret_z,ret_sr,ret_t,ret_srmer>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
-        case REALSXP: { return runningQMoments<NumericVector,ret_mat,ret_extreme,ret_cent,ret_scald,ret_z,ret_sr,ret_t,ret_srmer>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
-        case  LGLSXP: { return runningQMoments<LogicalVector,ret_mat,ret_extreme,ret_cent,ret_scald,ret_z,ret_sr,ret_t,ret_srmer>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
+        case  INTSXP: { return runningQMoments<IntegerVector,retwhat>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
+        case REALSXP: { return runningQMoments<NumericVector,retwhat>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
+        case  LGLSXP: { return runningQMoments<LogicalVector,retwhat>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
         default: stop("Unsupported input type");
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
@@ -1651,8 +1660,6 @@ NumericMatrix runningQMomentsCurryOne(SEXP v,
     return NumericMatrix(1,1); // nocov
 }
 
-
-template <bool ret_cent,bool ret_scald,bool ret_z,bool ret_sr,bool ret_t,bool ret_srmer>
 NumericMatrix runningQMomentsCurryTwo(SEXP v,
                                       int ord = 3,
                                       int window = NA_INTEGER,
@@ -1662,15 +1669,15 @@ NumericMatrix runningQMomentsCurryTwo(SEXP v,
                                       bool na_rm = false,
                                       bool max_order_only = false) {
     if (max_order_only) {
-        return runningQMomentsCurryOne<false, true, ret_cent, ret_scald, ret_z, ret_sr, ret_t, ret_srmer>(v, ord, window, recom_period, lookahead, min_df, na_rm);
+        return runningQMomentsCurryOne<extreme>(v, ord, window, recom_period, lookahead, min_df, na_rm);
     }
-    return runningQMomentsCurryOne<true, false, ret_cent, ret_scald, ret_z, ret_sr, ret_t, ret_srmer>(v, ord, window, recom_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryOne<matrix>(v, ord, window, recom_period, lookahead, min_df, na_rm);
 }
 
 
 // wrap the call:
 NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period, const int min_df, bool na_rm, bool max_order_only) {
-    return runningQMomentsCurryTwo<false, false, false, false, false, false>(v, ord, window, recom_period, min_df, na_rm, max_order_only);
+    return runningQMomentsCurryTwo(v, ord, window, recom_period, 0, min_df, na_rm, max_order_only);
 }
 
 
@@ -1761,6 +1768,15 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, in
         preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-udf));
     }
     return preval;
+}
+// just the sd nothing else.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+//2FIX: introduce used_df ... 
+    int wins=get_wins(window);
+    return runningQMomentsCurryOne<stdev>(v, 2, wins, restart_period, 0, min_df, na_rm);
 }
 
 // return the skew, the standard deviation, the mean, and the dof
@@ -2133,7 +2149,7 @@ NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, int max_order
 // [[Rcpp::export]]
 NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<false, false, true, false, false, false, false, false>(v, 1, wins, restart_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryOne<centered>(v, 1, wins, restart_period, lookahead, min_df, na_rm);
 }
 // scale the input
 //' @rdname runningadjustments
@@ -2141,7 +2157,7 @@ NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, bool na_rm=fals
 // [[Rcpp::export]]
 NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<false, false, false, true, false, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryOne<scaled>(v, 2, wins, restart_period, lookahead, min_df, na_rm);
 }
 // zscore the input
 //' @rdname runningadjustments
@@ -2149,7 +2165,7 @@ NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, bool na_rm=false,
 // [[Rcpp::export]]
 NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<false, false, false, false, true, false, false, false>(v, 2, wins, restart_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryOne<zscore>(v, 2, wins, restart_period, lookahead, min_df, na_rm);
 }
 // sharpe on the input
 //' @rdname runningadjustments
@@ -2158,9 +2174,9 @@ NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, bool na_rm=false
 NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, bool na_rm=false, bool compute_se=false, int min_df=0, int restart_period=100) {
     int wins=get_wins(window);
     if (compute_se) {
-        return runningQMomentsCurryOne<false, false, false, false, false, false, false, true>(v, 4, wins, restart_period, 0, min_df, na_rm);
+        return runningQMomentsCurryOne<sharpese>(v, 4, wins, restart_period, 0, min_df, na_rm);
     } 
-    return runningQMomentsCurryOne<false, false, false, false, false, true, false, false>(v, 2, wins, restart_period, 0, min_df, na_rm);
+    return runningQMomentsCurryOne<sharpe>(v, 2, wins, restart_period, 0, min_df, na_rm);
 }
 // t stat of the input
 //' @rdname runningadjustments
@@ -2168,8 +2184,9 @@ NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, bool na_rm=false,
 // [[Rcpp::export]]
 NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<false, false, false, false, false, false, true, false>(v, 2, wins, restart_period, 0, min_df, na_rm);
+    return runningQMomentsCurryOne<tstat>(v, 2, wins, restart_period, 0, min_df, na_rm);
 }
+
 
 //' @title
 //' Convert between different types of moments, raw, central, standardized.

@@ -2,6 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{running_sd3}
 \alias{running_sd3}
+\alias{running_sd}
 \alias{running_skew4}
 \alias{running_kurt5}
 \alias{running_cent_moments}
@@ -10,6 +11,9 @@
 \title{Compute first K moments over a sliding window}
 \usage{
 running_sd3(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L,
+  restart_period = 100L)
+
+running_sd(v, window = NULL, na_rm = FALSE, min_df = 0L,
   restart_period = 100L)
 
 running_skew4(v, window = NULL, na_rm = FALSE, min_df = 0L,

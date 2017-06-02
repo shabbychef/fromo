@@ -257,6 +257,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// running_sd
+NumericMatrix running_sd(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
+RcppExport SEXP fromo_running_sd(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sd(v, window, na_rm, min_df, restart_period));
+    return rcpp_result_gen;
+END_RCPP
+}
 // running_skew4
 NumericMatrix running_skew4(SEXP v, SEXP window, bool na_rm, int min_df, int used_df, int restart_period);
 RcppExport SEXP fromo_running_skew4(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {

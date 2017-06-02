@@ -396,6 +396,12 @@ running_sd3 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 
 
 #' @rdname runningmoments
 #' @export
+running_sd <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L) {
+    .Call('fromo_running_sd', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+}
+
+#' @rdname runningmoments
+#' @export
 running_skew4 <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L, restart_period = 100L) {
     .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, na_rm, min_df, used_df, restart_period)
 }
