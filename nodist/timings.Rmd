@@ -194,7 +194,9 @@ checkit <- microbenchmark(silly_fun(x,wins,sum,na.rm=FALSE),
 							 running_sd(x,wins,na_rm=FALSE,restart_period=50000L),
 							 running_sd(x,wins,na_rm=TRUE,restart_period=1000L),
 							 running_sd3(x,wins),
+							 running_skew(x,wins),
 							 running_skew4(x,wins),
+							 running_kurt(x,wins),
 							 running_kurt5(x,wins),
 							 running_tstat(x,wins),
 							 running_zscored(x,wins),
@@ -212,4 +214,74 @@ resdf <- rbind(resdf,checkit)
 library(readr)
 readr::write_csv(resdf,'timings.csv')
 ```
+
+## performance regressions?
+
+Can we see them here? load all the timing data to check.
+
+```{r all_timing_stats,eval=TRUE,echo=TRUE,cache=FALSE,dpi=200,out.width='600px',out.height='500px'}
+library(magrittr)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(knitr)
+
+allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
+		filter(grepl('^timings_\\d.+\\d+.csv$',fname)) %>%
+		group_by(fname) %>%
+			mutate(tims=list(readr::read_csv(fname))) %>%
+		ungroup() %>%
+		tidyr::unnest() %>%
+		mutate(sernum=gsub('^timings_(.+).csv$','\\1',fname)) %>%
+		select(-fname) %>%
+		group_by(sernum,expr) %>%
+			summarize(meantime=mean(time,na.rm=TRUE)) %>%
+		ungroup() %>%
+		mutate(is_numeraire=grepl('^sum\\(x\\)$',expr)) %>%
+		arrange(!is_numeraire) %>%
+		group_by(sernum) %>%
+			mutate(numv=first(meantime)) %>%
+		ungroup() %>%
+		mutate(normalized=meantime / numv) %>%
+		arrange(sernum) %>%
+		group_by(expr) %>%
+			mutate(first_norm=first(normalized)) %>%
+		ungroup() %>%
+		mutate(relchange=normalized / first_norm)
+	
+library(ggplot2)
+ph <- allt %>%
+		ggplot(aes(sernum,normalized,group=expr,color=expr)) +
+		geom_line() + geom_point() +
+		scale_y_log10() + 
+		labs(x='release',
+				 y='mean time taken, relative to sum(x)',
+				 title='fromo microbenchmark timings')
+print(ph)
+
+ph <- allt %>%
+		ggplot(aes(sernum,relchange,group=expr,color=expr)) +
+		geom_line() + geom_point() +
+		scale_y_log10() + 
+		labs(x='release',
+				 y='normalized time taken, relative to first iteration',
+				 title='fromo microbenchmark timings')
+print(ph)
+
+allt %>% 
+	arrange(sernum) %>%
+	group_by(expr) %>%
+		mutate(perfo=mean(relchange,na.rm=TRUE),
+					 first_mean=first(meantime),
+					 last_mean=last(meantime)) %>%
+	ungroup() %>%
+	distinct(expr,.keep_all=TRUE) %>%
+	select(expr,first_mean,last_mean,perfo) %>%
+	mutate(rel_mean=last_mean / first_mean) %>%
+	arrange(desc(perfo)) %>%
+	head(n=10) %>%
+	kable()
+	
+```
+
 
