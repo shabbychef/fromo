@@ -261,6 +261,10 @@ test_that("running ops are correct",{#FOLDUP
 						dumb_cmom5 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=5) },simplify=TRUE)
 						dumb_cmom6 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=6) },simplify=TRUE)
 
+						fastv <- running_sd(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						dumbv <- dumb_sd
+						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
+
 						fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
 						expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-7 * toler)
