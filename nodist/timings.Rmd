@@ -227,13 +227,13 @@ library(tidyr)
 library(knitr)
 
 allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
-		filter(grepl('^timings_\\d.+\\d+.csv$',fname)) %>%
+		dplyr::filter(grepl('^timings_\\d.+\\d+.csv$',fname)) %>%
 		group_by(fname) %>%
 			mutate(tims=list(readr::read_csv(fname))) %>%
 		ungroup() %>%
 		tidyr::unnest() %>%
 		mutate(sernum=gsub('^timings_(.+).csv$','\\1',fname)) %>%
-		select(-fname) %>%
+		dplyr::select(-fname) %>%
 		group_by(sernum,expr) %>%
 			summarize(meantime=mean(time,na.rm=TRUE)) %>%
 		ungroup() %>%
