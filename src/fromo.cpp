@@ -106,14 +106,15 @@ using namespace Rcpp;
 // univariate sums, moments, cumulants//FOLDUP
 
 // the specialization of quasiMoments to ord=2
+// only called by quasiWeightedMoments .
 template <typename T, typename W, bool has_wts>
 NumericVector quasiWeightedWelford(T v,
                                    W wts,
                                    int bottom = 0,
                                    int top = -1,
-                                   bool na_rm = false,
-                                   bool check_wts = false,
-                                   bool normalize_wts = true) {
+                                   const bool na_rm = false,
+                                   const bool check_wts = false,
+                                   const bool normalize_wts = true) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
     int nok;
     const bool renormalize = has_wts && normalize_wts;
@@ -188,9 +189,9 @@ NumericVector quasiWeightedMoments(T v,
                                    int ord = 3,
                                    int bottom = 0,
                                    int top = -1,
-                                   bool na_rm = false,
-                                   bool check_wts = false,
-                                   bool normalize_wts = true) {
+                                   const bool na_rm = false,
+                                   const bool check_wts = false,
+                                   const bool normalize_wts = true) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
     int nok;
     const bool renormalize = has_wts && normalize_wts;
@@ -278,60 +279,42 @@ NumericVector quasiMoments(T v,
                            int top = -1,
                            bool na_rm = false,
                            bool normalize_wts = true) {
-
     NumericVector retv;
     NumericVector dummy_wts;
     retv = quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, ord, bottom, top, na_rm, false, normalize_wts);
     return retv;
 }
 
-// wrap the call:
-NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool check_wts, bool normalize_wts) {
-    NumericVector retv;
+// wrap one level
+template <typename T>
+NumericVector quasiWeightedMomentsCurryOne(T v, SEXP wts, int ord, const bool na_rm, const bool check_wts, const bool normalize_wts) {
     NumericVector dummy_wts;
-    // FML, I cannot figure out how to get v.length()
-    switch (TYPEOF(v)) {
-        case  INTSXP: { 
-            if (Rf_isNull(wts)) {  
-                retv = quasiWeightedMoments<IntegerVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
-            } else {
-                switch (TYPEOF(wts)) {
-                    case  INTSXP: { retv = quasiWeightedMoments<IntegerVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    case REALSXP: { retv = quasiWeightedMoments<IntegerVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    case  LGLSXP: { retv = quasiWeightedMoments<IntegerVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    default: stop("Unsupported weight type"); // nocov
-                }
-            }
-            break; }
-        case REALSXP: { 
-            if (Rf_isNull(wts)) { 
-                retv = quasiWeightedMoments<NumericVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
-            } else {
-                switch (TYPEOF(wts)) {
-                    case  INTSXP: { retv = quasiWeightedMoments<NumericVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    case REALSXP: { retv = quasiWeightedMoments<NumericVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    case  LGLSXP: { retv = quasiWeightedMoments<NumericVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    default: stop("Unsupported weight type"); // nocov
-                }
-            }
-            break; }
-        case  LGLSXP: { 
-            if (Rf_isNull(wts)) { 
-                retv = quasiWeightedMoments<LogicalVector,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
-            } else {
-                switch (TYPEOF(wts)) {
-                    case  INTSXP: { retv = quasiWeightedMoments<LogicalVector,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    case REALSXP: { retv = quasiWeightedMoments<LogicalVector,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    case  LGLSXP: { retv = quasiWeightedMoments<LogicalVector,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); break; }
-                    default: stop("Unsupported weight type"); // nocov
-                }
-            }
-            break; }
-        default: stop("Unsupported input type"); // nocov
+    if (!Rf_isNull(wts)) {  
+        switch (TYPEOF(wts)) {
+            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case REALSXP: { return quasiWeightedMoments<T,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            default: stop("Unsupported weight type"); // nocov
+        }
     }
+    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
+}
+
+// wrap one level
+NumericVector quasiWeightedMomentsCurryTwo(SEXP v, SEXP wts, int ord, const bool na_rm, const bool check_wts, const bool normalize_wts) {
+    switch (TYPEOF(v)) {
+        case  INTSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
+        case REALSXP: { return quasiWeightedMomentsCurryOne<NumericVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
+        case  LGLSXP: { return quasiWeightedMomentsCurryOne<LogicalVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
+        default: stop("Unsupported weight type"); // nocov
+    }
+    // have to have fallthrough for CRAN check.
+    NumericVector retv;
     return retv;
 }
 
+
+// wrap the call:
 
 // specialization of the above for the case of ord=2
 // this function returns a NumericVector of:
@@ -476,7 +459,7 @@ NumericVector wrapWeightedMoments(SEXP v, SEXP wts, int ord, bool na_rm, bool ch
 // [[Rcpp::export]]
 NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
 
-    NumericVector preval = wrapWeightedMoments(v, wts, 2, na_rm, check_wts, normalize_wts);
+    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, 2, na_rm, check_wts, normalize_wts);
     NumericVector vret = NumericVector::create(COMP_SD_TWO(preval,sg_df),
                                                preval[1],
                                                preval[0]);
@@ -489,7 +472,7 @@ NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=
 //' @export
 // [[Rcpp::export]]
 NumericVector skew4(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
-    NumericVector preval = wrapWeightedMoments(v, wts, 3, na_rm, check_wts, normalize_wts);
+    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, 3, na_rm, check_wts, normalize_wts);
     NumericVector vret = NumericVector::create(COMP_SKEW(preval),
                                                COMP_SD_TWO(preval,sg_df),
                                                preval[1],
@@ -502,7 +485,7 @@ NumericVector skew4(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_d
 //' @export
 // [[Rcpp::export]]
 NumericVector kurt5(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
-    NumericVector preval = wrapWeightedMoments(v, wts, 4, na_rm, check_wts, normalize_wts);
+    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, 4, na_rm, check_wts, normalize_wts);
     NumericVector vret = NumericVector::create(COMP_EXKURT(preval),
                                                COMP_SKEW(preval),
                                                COMP_SD_TWO(preval,sg_df),
@@ -545,7 +528,7 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fa
                            bool check_wts=false, bool normalize_wts=true) {
     // 2FIX: add sg_df here?
     if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector preval = wrapWeightedMoments(v, wts, max_order, na_rm, check_wts, normalize_wts);
+    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, max_order, na_rm, check_wts, normalize_wts);
     NumericVector vret = sums2revm(preval,(double)used_df);
     return vret;
 }
@@ -659,7 +642,7 @@ NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=f
 // [[Rcpp::export]]
 NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false, bool normalize_wts=true) {
     if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector preval = wrapWeightedMoments(v, wts, max_order, na_rm, check_wts, normalize_wts);
+    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, max_order, na_rm, check_wts, normalize_wts);
     return preval;
 }
 //' @rdname centsums 
@@ -1298,12 +1281,13 @@ NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_
 //UNFOLD
 
 //' @title
-//' Compute sums or means over a sliding window
+//' Compute sums or means over a sliding window.
+//'
 //' @description
 //' Compute the mean or sum over 
-//' an infinite or finite sliding window, returning a matrix.
+//' an infinite or finite sliding window, returning a vector the same size as the input.
 //' 
-//' @param v a vector
+//' @param v a vector.
 //' @param window the window size. if given as finite integer or double, passed through.
 //' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 //' to an infinite window size. If negative, an error will be thrown.
@@ -1320,7 +1304,8 @@ NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_
 //'
 //' @details
 //'
-//' Computes the mean or sum of the elements, using a numerically robust one-pass method.
+//' Computes the mean or sum of the elements, using a Kahan's Compensated Summation Algorithm,
+//' a numerically robust one-pass method.
 //'
 //' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
 //' \eqn{M_{i,1}}{M_i,1} is the sum or mean 
@@ -1329,7 +1314,7 @@ NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_
 //' During the 'burn-in' phase, we take fewer elements. If fewer than \code{min_df} for
 //' \code{running_mean}, returns \code{NA}.
 //'
-//' @return A column matrix.
+//' @return A vector the same size as the input.
 //' @examples
 //' x <- rnorm(1e5)
 //' xs <- running_sum(x,10)
@@ -1398,7 +1383,7 @@ NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
 // ret_mat return a rows x (1+ord) matrix of the running centered sums
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
-enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev };
+enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev, skew, exkurt };
 
 template <typename T,ReturnWhat retwhat>
 NumericMatrix runningQMoments(T v,
@@ -1424,7 +1409,8 @@ NumericMatrix runningQMoments(T v,
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
     if ((((retwhat==scaled) || (retwhat==zscore) || (retwhat==sharpe) || (retwhat==tstat) || (retwhat==stdev)) && (ord < 2)) ||
-        (((retwhat==sharpese)) && (ord < 4))) { 
+        ((retwhat==skew) && (ord < 3)) ||
+        (((retwhat==sharpese) || (retwhat==exkurt)) && (ord < 4))) { 
         stop("bad code: order too small to support this computation"); 
     }
     // only for retwhat==sharpese, but cannot define outside its scope.
@@ -1631,6 +1617,12 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,0) = sr;
                     xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / vret[0]);
                 }
+                if (retwhat==skew) {
+                    xret(lll,0) = COMP_SKEW(vret);
+                }
+                if (retwhat==exkurt) {
+                    xret(lll,0) = COMP_EXKURT(vret);
+                }
             } else {
                 xret(lll,0) = NAN;
             }
@@ -1777,6 +1769,24 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
     return runningQMomentsCurryOne<stdev>(v, 2, wins, restart_period, 0, min_df, na_rm);
+}
+// just the sd nothing else.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+//2FIX: introduce used_df ... 
+    int wins=get_wins(window);
+    return runningQMomentsCurryOne<skew>(v, 3, wins, restart_period, 0, min_df, na_rm);
+}
+// just the sd nothing else.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+//2FIX: introduce used_df ... 
+    int wins=get_wins(window);
+    return runningQMomentsCurryOne<exkurt>(v, 4, wins, restart_period, 0, min_df, na_rm);
 }
 
 // return the skew, the standard deviation, the mean, and the dof

@@ -3,6 +3,8 @@
 \name{running_sd3}
 \alias{running_sd3}
 \alias{running_sd}
+\alias{running_skew}
+\alias{running_kurt}
 \alias{running_skew4}
 \alias{running_kurt5}
 \alias{running_cent_moments}
@@ -14,6 +16,12 @@ running_sd3(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L,
   restart_period = 100L)
 
 running_sd(v, window = NULL, na_rm = FALSE, min_df = 0L,
+  restart_period = 100L)
+
+running_skew(v, window = NULL, na_rm = FALSE, min_df = 0L,
+  restart_period = 100L)
+
+running_kurt(v, window = NULL, na_rm = FALSE, min_df = 0L,
   restart_period = 100L)
 
 running_skew4(v, window = NULL, na_rm = FALSE, min_df = 0L,

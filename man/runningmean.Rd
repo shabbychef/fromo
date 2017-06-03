@@ -3,7 +3,7 @@
 \name{running_sum}
 \alias{running_sum}
 \alias{running_mean}
-\title{Compute sums or means over a sliding window}
+\title{Compute sums or means over a sliding window.}
 \usage{
 running_sum(v, window = NULL, na_rm = FALSE, restart_period = 10000L)
 
@@ -11,7 +11,7 @@ running_mean(v, window = NULL, na_rm = FALSE, min_df = 0L,
   restart_period = 10000L)
 }
 \arguments{
-\item{v}{a vector}
+\item{v}{a vector.}
 
 \item{window}{the window size. if given as finite integer or double, passed through.
 If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
@@ -31,14 +31,15 @@ This can be used to prevent moments from being computed on too few observations.
 Defaults to zero, meaning no restriction.}
 }
 \value{
-A column matrix.
+A vector the same size as the input.
 }
 \description{
 Compute the mean or sum over 
-an infinite or finite sliding window, returning a matrix.
+an infinite or finite sliding window, returning a vector the same size as the input.
 }
 \details{
-Computes the mean or sum of the elements, using a numerically robust one-pass method.
+Computes the mean or sum of the elements, using a Kahan's Compensated Summation Algorithm,
+a numerically robust one-pass method.
 
 Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
 \eqn{M_{i,1}}{M_i,1} is the sum or mean 

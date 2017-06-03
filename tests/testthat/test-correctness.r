@@ -261,21 +261,34 @@ test_that("running ops are correct",{#FOLDUP
 						dumb_cmom5 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=5) },simplify=TRUE)
 						dumb_cmom6 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=6) },simplify=TRUE)
 
+						# SD
 						fastv <- running_sd(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- dumb_sd
 						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
 
 						fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_sd,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[2:xlen,] - fastv[2:xlen,])),0,tolerance=1e-7 * toler)
+						expect_equal(dumbv[2:xlen,],fastv[2:xlen,],tolerance=1e-7 * toler)
+
+						# skew
+						fastv <- running_skew(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						dumbv <- dumb_skew
+						expect_equal(dumbv[3:xlen],fastv[3:xlen],tolerance=1e-7 * toler)
 
 						fastv <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_skew,dumb_sd,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[3:xlen,] - fastv[3:xlen,])),0,tolerance=1e-7 * toler)
+						expect_equal(dumbv[3:xlen,],fastv[3:xlen,],tolerance=1e-7 * toler)
+
+						# excess kurtosis
+						fastv <- running_kurt(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						dumbv <- dumb_exkurt
+						expect_equal(dumbv[4:xlen],fastv[4:xlen],tolerance=1e-6 * toler)
 
 						fastv <- running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_exkurt,dumb_skew,dumb_sd,dumb_mean,dumb_count)
-						expect_equal(max(abs(dumbv[4:xlen,] - fastv[4:xlen,])),0,tolerance=1e-6 * toler)
+						expect_equal(dumbv[4:xlen,],fastv[4:xlen,],tolerance=1e-6 * toler)
+
+						# higher order moments
 
 						fastv <- running_cent_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
