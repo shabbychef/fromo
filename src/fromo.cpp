@@ -1383,7 +1383,7 @@ NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
 // ret_mat return a rows x (1+ord) matrix of the running centered sums
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
-enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev, skew, exkurt };
+enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev, ret_skew, ret_exkurt };
 
 template <typename T,ReturnWhat retwhat>
 NumericMatrix runningQMoments(T v,
@@ -1409,8 +1409,8 @@ NumericMatrix runningQMoments(T v,
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
     if ((((retwhat==scaled) || (retwhat==zscore) || (retwhat==sharpe) || (retwhat==tstat) || (retwhat==stdev)) && (ord < 2)) ||
-        ((retwhat==skew) && (ord < 3)) ||
-        (((retwhat==sharpese) || (retwhat==exkurt)) && (ord < 4))) { 
+        ((retwhat==ret_skew) && (ord < 3)) ||
+        (((retwhat==sharpese) || (retwhat==ret_exkurt)) && (ord < 4))) { 
         stop("bad code: order too small to support this computation"); 
     }
     // only for retwhat==sharpese, but cannot define outside its scope.
@@ -1617,10 +1617,10 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,0) = sr;
                     xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / vret[0]);
                 }
-                if (retwhat==skew) {
+                if (retwhat==ret_skew) {
                     xret(lll,0) = COMP_SKEW(vret);
                 }
-                if (retwhat==exkurt) {
+                if (retwhat==ret_exkurt) {
                     xret(lll,0) = COMP_EXKURT(vret);
                 }
             } else {
@@ -1777,7 +1777,7 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int
 NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<skew>(v, 3, wins, restart_period, 0, min_df, na_rm);
+    return runningQMomentsCurryOne<ret_skew>(v, 3, wins, restart_period, 0, min_df, na_rm);
 }
 // just the sd nothing else.
 //' @rdname runningmoments
@@ -1786,7 +1786,7 @@ NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
 NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<exkurt>(v, 4, wins, restart_period, 0, min_df, na_rm);
+    return runningQMomentsCurryOne<ret_exkurt>(v, 4, wins, restart_period, 0, min_df, na_rm);
 }
 
 // return the skew, the standard deviation, the mean, and the dof

@@ -10,7 +10,7 @@ opts_chunk$set(warning=FALSE,message=FALSE)
 opts_chunk$set(cache=TRUE,cache.path="cache/")
 
 #opts_chunk$set(fig.path="figure/",dev=c("pdf","cairo_ps"))
-opts_chunk$set(fig.path="tools/figure/",dev=c("png"))
+opts_chunk$set(fig.path="figure/",dev=c("png"))
 opts_chunk$set(fig.width=7,fig.height=6,dpi=100,out.width='700px',out.height='600px')
 
 # doing this means that png files are made of figures;
@@ -253,7 +253,7 @@ library(ggplot2)
 ph <- allt %>%
 		ggplot(aes(sernum,normalized,group=expr,color=expr)) +
 		geom_line() + geom_point() +
-		scale_y_log10() + 
+		scale_y_log10() + guides(colour=FALSE) + 
 		labs(x='release',
 				 y='mean time taken, relative to sum(x)',
 				 title='fromo microbenchmark timings')
@@ -262,7 +262,7 @@ print(ph)
 ph <- allt %>%
 		ggplot(aes(sernum,relchange,group=expr,color=expr)) +
 		geom_line() + geom_point() +
-		scale_y_log10() + 
+		scale_y_log10() + guides(colour=FALSE) + 
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
 				 title='fromo microbenchmark timings')

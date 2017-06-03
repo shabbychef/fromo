@@ -281,7 +281,7 @@ test_that("running ops are correct",{#FOLDUP
 						# skew
 						fastv <- running_skew(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- tomat(dumb_skew)
-						expect_equal(dumbv[3:xlen],fastv[3:xlen],tolerance=1e-7 * toler)
+						expect_equal(dumbv[3:xlen],fastv[3:xlen],tolerance=1e-6 * toler)
 
 						fastv <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- tomat(cbind(dumb_skew,dumb_sd,dumb_mean,dumb_count))
