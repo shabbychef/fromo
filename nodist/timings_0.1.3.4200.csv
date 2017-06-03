@@ -1,0 +1,5001 @@
+expr,time
+mean(x),626188
+skew4(x),9996958
+sd(x),655434
+sum(x),88314
+mean(x),183035
+sum(x),84221
+skew4(x),8944621
+mean(x),173001
+sum(x),84236
+skew4(x),10195045
+kurt5(x),17141328
+kurtosis(x),9313342
+sum(x),154117
+skew4(x),10792968
+dumbk(x),19330446
+sum(x),86974
+skew4(x),10545756
+skewness(x),10151907
+sd3(x),1382475
+kurtosis(x),9959348
+sd(x),527205
+mean(x),179109
+kurt5(x),16942121
+sum(x),90660
+skewness(x),10506242
+sd(x),527018
+mean(x),178840
+sd3(x),1337184
+skewness(x),10434974
+kurtosis(x),9985885
+mean(x),201200
+sum(x),97828
+kurtosis(x),10153649
+mean(x),179430
+sum(x),86675
+sd(x),528582
+kurt5(x),17577694
+skew4(x),9426189
+skew4(x),10257591
+skew4(x),9021450
+kurtosis(x),8722362
+sum(x),79961
+sd3(x),861524
+sd3(x),851255
+sum(x),79713
+skewness(x),12197025
+mean(x),223105
+sum(x),80886
+sd3(x),878978
+dumbk(x),20352213
+sum(x),80418
+sd(x),530834
+sd(x),666857
+kurtosis(x),8783489
+dumbk(x),20803771
+sum(x),87296
+sum(x),86566
+skewness(x),9251351
+sum(x),80208
+sd(x),482401
+sum(x),80028
+sd(x),459528
+sum(x),80006
+kurt5(x),17353779
+skew4(x),10479897
+skew4(x),9138008
+kurt5(x),17326477
+mean(x),265128
+sum(x),81251
+sd(x),500148
+sd(x),483260
+dumbk(x),18594948
+kurt5(x),18165236
+kurt5(x),18672040
+skew4(x),9146984
+sd(x),530063
+dumbk(x),22207655
+sum(x),98201
+sd(x),564488
+sum(x),126393
+dumbk(x),21889591
+kurtosis(x),9488861
+kurt5(x),16329359
+sd(x),508808
+sd3(x),961290
+mean(x),187955
+dumbk(x),20934456
+sd(x),499655
+skewness(x),9005074
+sum(x),79995
+sum(x),79748
+skew4(x),9978578
+kurtosis(x),10265403
+kurt5(x),18499891
+dumbk(x),19802199
+sum(x),98669
+dumbk(x),20924119
+dumbk(x),20574324
+kurt5(x),16254636
+sum(x),83845
+sd3(x),902491
+kurt5(x),18152237
+mean(x),198167
+skew4(x),8754286
+sd(x),490198
+sd3(x),891912
+kurt5(x),17269374
+sum(x),157830
+kurt5(x),18504860
+dumbk(x),18290256
+kurtosis(x),9580582
+skew4(x),9700815
+skewness(x),8765378
+skewness(x),9768577
+sd3(x),1246723
+skewness(x),11069531
+dumbk(x),21546439
+mean(x),186341
+skew4(x),10015814
+sd3(x),884612
+sd(x),497371
+sd3(x),998832
+sum(x),82857
+sd3(x),951035
+skew4(x),8859787
+skew4(x),9449286
+mean(x),228914
+sd3(x),1322679
+sd(x),646642
+dumbk(x),21467244
+skewness(x),9718154
+kurt5(x),15732551
+sd3(x),1227522
+dumbk(x),19965391
+sum(x),82459
+skewness(x),9681699
+kurt5(x),17402029
+dumbk(x),21531122
+sum(x),109452
+dumbk(x),21972601
+dumbk(x),21243193
+sd(x),500500
+mean(x),199795
+mean(x),175397
+sd3(x),1013368
+kurtosis(x),10896944
+kurt5(x),16951e3
+sd3(x),882973
+mean(x),175732
+dumbk(x),21102851
+sum(x),87296
+kurtosis(x),9100821
+skewness(x),8688937
+skewness(x),10252188
+skewness(x),11103752
+sd3(x),876297
+dumbk(x),19114008
+kurt5(x),16714742
+kurtosis(x),8646436
+sd(x),676630
+skewness(x),9988615
+skewness(x),10390865
+kurt5(x),17233945
+mean(x),186560
+sd(x),517259
+dumbk(x),19664472
+kurt5(x),17715571
+sum(x),122980
+mean(x),236210
+kurtosis(x),10252433
+dumbk(x),21256084
+kurtosis(x),9357468
+skewness(x),9312869
+skew4(x),8793429
+skewness(x),8537414
+skewness(x),9918794
+dumbk(x),20023846
+skew4(x),9682548
+skewness(x),8772397
+sd3(x),911464
+mean(x),175027
+sd(x),508220
+dumbk(x),19565427
+skew4(x),9395843
+kurt5(x),17191625
+sum(x),93090
+kurt5(x),16645095
+kurtosis(x),10882427
+dumbk(x),19873444
+mean(x),171955
+sd3(x),915408
+kurt5(x),17219584
+kurt5(x),17827951
+sd3(x),957045
+sd3(x),1230473
+skewness(x),9539606
+skewness(x),8437483
+mean(x),164386
+skew4(x),9888966
+sd3(x),917839
+sd3(x),896477
+skewness(x),9478432
+sum(x),80243
+kurtosis(x),8948277
+kurt5(x),16953626
+kurtosis(x),9134675
+sd3(x),891349
+dumbk(x),18933295
+sd(x),571108
+sd3(x),966777
+skewness(x),11566148
+mean(x),184092
+dumbk(x),19284710
+kurt5(x),18075912
+sd3(x),1013638
+dumbk(x),18993316
+sum(x),80752
+sd(x),483779
+sd3(x),867007
+sd3(x),852056
+sd3(x),873831
+sd3(x),855242
+kurtosis(x),9686279
+mean(x),203323
+sd3(x),1020355
+sd(x),527080
+sd(x),506775
+skewness(x),9837408
+dumbk(x),19999181
+sd3(x),1000487
+kurtosis(x),9475658
+sd3(x),1033973
+kurt5(x),15721948
+kurt5(x),18133032
+dumbk(x),19615153
+sum(x),94268
+skew4(x),9682562
+kurtosis(x),9593082
+sd(x),614942
+kurt5(x),18731260
+kurtosis(x),11157560
+kurt5(x),18716357
+sd(x),588753
+skewness(x),8881226
+skew4(x),10245779
+skew4(x),9746495
+skew4(x),8861322
+sum(x),88107
+sd(x),521884
+sd3(x),903831
+dumbk(x),20346939
+sum(x),130638
+kurt5(x),16620319
+dumbk(x),21407630
+kurtosis(x),9794428
+mean(x),229138
+sum(x),84403
+sum(x),84112
+skewness(x),10862819
+sum(x),84897
+dumbk(x),20607817
+sum(x),170969
+sum(x),130792
+kurtosis(x),11539916
+sd3(x),1133508
+sd3(x),1073136
+sum(x),90068
+mean(x),191655
+kurtosis(x),10505644
+sd(x),647350
+kurtosis(x),10059086
+sd(x),553652
+kurtosis(x),9577368
+sd3(x),993958
+kurt5(x),17828913
+sum(x),219277
+skew4(x),9889009
+mean(x),204945
+kurt5(x),17938969
+skew4(x),10187232
+kurt5(x),19455975
+skew4(x),9852702
+kurtosis(x),10266595
+mean(x),217123
+skew4(x),9789347
+sum(x),114331
+kurtosis(x),9219423
+mean(x),178953
+kurt5(x),18297479
+dumbk(x),20941265
+kurt5(x),18764079
+sd(x),668304
+skewness(x),9821025
+kurt5(x),19327898
+skew4(x),10515852
+sd(x),602939
+kurtosis(x),9564532
+kurtosis(x),9074010
+kurtosis(x),9386729
+sd(x),657053
+sd(x),503516
+sd3(x),1091685
+skewness(x),9741157
+dumbk(x),18875618
+sd3(x),953233
+kurtosis(x),9613613
+sd3(x),1209321
+sum(x),165280
+sd3(x),1010075
+skewness(x),9229574
+dumbk(x),21207080
+kurt5(x),17359473
+kurt5(x),18190353
+skewness(x),10561721
+skewness(x),9458631
+sd3(x),940507
+mean(x),180496
+dumbk(x),19366290
+sd(x),549455
+skewness(x),9722175
+mean(x),191179
+mean(x),176481
+sd(x),519735
+dumbk(x),18741690
+sum(x),80193
+skew4(x),10081804
+mean(x),193962
+skewness(x),9771314
+sum(x),87109
+skew4(x),8974424
+skew4(x),9407101
+kurtosis(x),11845899
+kurtosis(x),8980271
+dumbk(x),19756802
+sd3(x),995258
+kurt5(x),17931004
+sum(x),172811
+mean(x),196443
+sd3(x),975050
+kurt5(x),16394837
+kurt5(x),18091413
+kurtosis(x),9351355
+sd3(x),941129
+dumbk(x),19096633
+mean(x),183413
+sd3(x),1027813
+skewness(x),9244911
+dumbk(x),19856161
+kurtosis(x),10956987
+kurt5(x),15623476
+mean(x),210381
+skew4(x),9640745
+skewness(x),10672182
+kurtosis(x),9525716
+kurtosis(x),9221426
+skew4(x),9180471
+skewness(x),10150004
+skew4(x),10292536
+kurt5(x),18340781
+sum(x),117862
+skew4(x),10245973
+kurtosis(x),9385271
+dumbk(x),20088269
+kurt5(x),18304341
+sd(x),549805
+dumbk(x),20917327
+sd3(x),1112296
+kurtosis(x),11576255
+sum(x),87657
+kurt5(x),16732729
+kurt5(x),18080963
+kurtosis(x),9545735
+sum(x),87776
+sd(x),552833
+sd3(x),941495
+kurt5(x),17893471
+dumbk(x),18948858
+sum(x),87075
+sum(x),86499
+skew4(x),10155332
+mean(x),187795
+kurt5(x),17629587
+dumbk(x),20866168
+skew4(x),10551798
+kurtosis(x),9494143
+sd3(x),1130236
+sum(x),99492
+dumbk(x),18412161
+skew4(x),9875997
+sd(x),526045
+kurt5(x),16742916
+dumbk(x),22456100
+dumbk(x),19867258
+sum(x),101992
+mean(x),208071
+sd(x),637042
+skewness(x),10224717
+skew4(x),9212125
+mean(x),175251
+kurt5(x),18258981
+kurtosis(x),10026551
+mean(x),201570
+sd(x),572688
+kurtosis(x),9523469
+skewness(x),9401538
+skewness(x),8706843
+kurtosis(x),9767886
+kurt5(x),17446434
+skewness(x),9871596
+sd3(x),1015149
+kurt5(x),17937342
+kurtosis(x),12373757
+mean(x),212507
+sd(x),833098
+skew4(x),10204916
+sd(x),526821
+kurt5(x),16173654
+skewness(x),10060038
+sd3(x),982415
+skew4(x),10016799
+sd(x),694161
+kurt5(x),19170740
+sd3(x),859970
+kurtosis(x),8398371
+sum(x),80329
+skew4(x),10300696
+mean(x),233432
+dumbk(x),20755462
+dumbk(x),19216661
+skewness(x),9354312
+mean(x),178512
+kurtosis(x),8722030
+sd(x),480975
+sd3(x),892008
+sd3(x),1232402
+kurtosis(x),10754524
+skewness(x),11181206
+skew4(x),8710493
+kurtosis(x),10590758
+kurtosis(x),10192038
+skewness(x),10191948
+sd(x),625137
+sum(x),89435
+dumbk(x),18493605
+skewness(x),9673337
+mean(x),165068
+sd3(x),947033
+sum(x),113912
+dumbk(x),21101857
+skewness(x),10475672
+dumbk(x),20782059
+kurt5(x),17888216
+sd3(x),938708
+sd(x),487516
+skew4(x),9463033
+mean(x),189801
+kurtosis(x),8708011
+dumbk(x),20918921
+sd(x),538997
+sd(x),525304
+sd(x),523248
+dumbk(x),19946049
+kurtosis(x),8577239
+kurtosis(x),9739089
+skewness(x),9467796
+dumbk(x),20414925
+mean(x),192492
+sd3(x),944468
+skew4(x),9973382
+mean(x),191086
+mean(x),176125
+skew4(x),8633838
+sd3(x),853006
+mean(x),162788
+sum(x),80711
+kurtosis(x),9893700
+sum(x),123312
+skew4(x),9825888
+sd(x),552024
+kurt5(x),17234506
+skew4(x),11220258
+skewness(x),11602776
+kurtosis(x),10649482
+sd3(x),969840
+mean(x),219359
+kurtosis(x),9351747
+sum(x),87421
+kurtosis(x),9755768
+skew4(x),10196779
+skewness(x),10684803
+skew4(x),11150907
+sum(x),105770
+sd(x),596650
+sd3(x),1225489
+kurtosis(x),10676617
+skew4(x),9679576
+dumbk(x),22561533
+kurt5(x),16672462
+sum(x),86481
+sd(x),507607
+dumbk(x),20448964
+mean(x),288603
+sd(x),644421
+kurt5(x),17814966
+mean(x),196827
+dumbk(x),19266013
+skewness(x),9847361
+sd(x),609182
+dumbk(x),19245602
+sd(x),611513
+skewness(x),9618327
+kurt5(x),16296189
+sd3(x),908912
+skew4(x),9612202
+mean(x),191085
+mean(x),169067
+sd3(x),923258
+dumbk(x),20665144
+kurt5(x),17921162
+sd(x),588234
+kurt5(x),17601655
+skew4(x),9005449
+skewness(x),8617738
+mean(x),165348
+sum(x),79956
+mean(x),162133
+kurtosis(x),9331818
+mean(x),165358
+sd3(x),1036325
+skew4(x),9802274
+skew4(x),9641228
+mean(x),231127
+sd3(x),860235
+dumbk(x),20052284
+kurtosis(x),13305069
+skew4(x),11451472
+sd(x),580192
+sd3(x),1042177
+sum(x),99328
+sd(x),620370
+dumbk(x),21139867
+mean(x),177283
+sd3(x),1013980
+kurtosis(x),9884890
+sd3(x),993020
+dumbk(x),21910591
+sd(x),501946
+sum(x),86678
+dumbk(x),20136759
+sd3(x),945146
+skew4(x),9109665
+skewness(x),10016916
+skewness(x),9012200
+dumbk(x),17626968
+mean(x),185878
+kurt5(x),16730390
+skew4(x),9479852
+skew4(x),9421820
+skew4(x),8445888
+mean(x),184113
+skewness(x),9597374
+kurtosis(x),9625125
+sd(x),545155
+mean(x),184456
+dumbk(x),20780598
+sd(x),691665
+skewness(x),10536277
+kurtosis(x),9250499
+kurt5(x),16625775
+sd3(x),935894
+sum(x),101951
+dumbk(x),19582808
+kurt5(x),18990733
+mean(x),342855
+skewness(x),11086675
+sd3(x),1058548
+dumbk(x),20809416
+sum(x),92694
+kurt5(x),19575549
+sd3(x),997003
+mean(x),270423
+mean(x),194208
+skewness(x),9400038
+sum(x),86980
+dumbk(x),22079262
+sd3(x),943856
+mean(x),177648
+kurt5(x),16666261
+kurtosis(x),9604182
+kurt5(x),16427758
+skew4(x),8580434
+skew4(x),10581083
+kurt5(x),19722039
+sd(x),566157
+sd(x),515670
+dumbk(x),18736867
+mean(x),242974
+kurt5(x),18974209
+mean(x),356882
+sd(x),612763
+kurtosis(x),9716514
+kurt5(x),18837869
+dumbk(x),17699249
+dumbk(x),21925072
+sum(x),86931
+kurtosis(x),8888593
+skew4(x),10123582
+dumbk(x),22280499
+sum(x),89713
+skew4(x),9281823
+dumbk(x),19353895
+skewness(x),9786854
+mean(x),186573
+dumbk(x),18230434
+skew4(x),11553362
+kurtosis(x),9718069
+skewness(x),9087408
+kurtosis(x),11744837
+mean(x),186039
+sd3(x),981520
+skewness(x),11176373
+kurt5(x),17013925
+skewness(x),9638560
+sd3(x),1192535
+skew4(x),9931817
+skew4(x),9352430
+mean(x),196295
+kurt5(x),16509304
+sd3(x),929775
+skewness(x),9356546
+sd(x),593153
+sd(x),478452
+skewness(x),8839367
+kurtosis(x),8584992
+mean(x),201975
+sd(x),641975
+skew4(x),9505323
+skewness(x),8922296
+dumbk(x),18592957
+skew4(x),9296957
+kurtosis(x),8806590
+kurtosis(x),8277372
+skewness(x),11062839
+sd3(x),1041547
+sum(x),109514
+skew4(x),9949183
+skew4(x),9740485
+skew4(x),9337660
+sd3(x),857804
+sd3(x),889223
+skewness(x),8723813
+sd3(x),1065831
+dumbk(x),20599285
+sum(x),87350
+kurtosis(x),8999454
+sd(x),476180
+skewness(x),9731107
+sd(x),498337
+skew4(x),9527695
+dumbk(x),20456332
+sd(x),565451
+mean(x),221948
+sd(x),586417
+dumbk(x),20366495
+sd3(x),942705
+mean(x),177490
+dumbk(x),21249855
+skewness(x),10763196
+kurtosis(x),10401579
+sd3(x),954972
+sum(x),87319
+sd3(x),925141
+sd(x),531013
+kurt5(x),17191373
+skew4(x),9919661
+mean(x),199111
+sum(x),85985
+mean(x),216040
+mean(x),277238
+sum(x),152183
+skewness(x),8817556
+sd3(x),913682
+kurt5(x),19632680
+sd(x),618828
+sum(x),87793
+sd3(x),940958
+sd3(x),995565
+sd(x),504415
+sd(x),634636
+dumbk(x),19341819
+skewness(x),9870960
+skew4(x),9391326
+sd(x),520645
+kurtosis(x),8627717
+sum(x),82292
+sd(x),481544
+kurtosis(x),10059319
+sd3(x),982844
+kurt5(x),18870662
+skewness(x),11109091
+mean(x),180302
+sum(x),86842
+dumbk(x),19385825
+sd(x),669123
+dumbk(x),20843460
+skewness(x),10271470
+sd3(x),935062
+skewness(x),10253084
+kurtosis(x),8542207
+mean(x),219594
+sd3(x),944284
+sum(x),86908
+dumbk(x),20792240
+mean(x),222406
+sd(x),701681
+kurtosis(x),10079321
+kurt5(x),17519278
+skewness(x),10565072
+dumbk(x),20126700
+kurtosis(x),9108875
+kurtosis(x),10107424
+skewness(x),9323485
+kurtosis(x),8694146
+kurtosis(x),10400757
+sd(x),585171
+kurtosis(x),9671224
+kurt5(x),16255583
+mean(x),181857
+sum(x),81031
+skew4(x),12219613
+kurt5(x),16810001
+kurt5(x),17983012
+sd(x),563503
+kurt5(x),18224283
+sd3(x),1033343
+sd(x),624058
+kurtosis(x),9826309
+skew4(x),9416071
+sd(x),872838
+sd3(x),1062582
+sum(x),106772
+dumbk(x),19779856
+skew4(x),9545858
+dumbk(x),20173767
+kurtosis(x),8734174
+kurtosis(x),10403809
+sum(x),109903
+kurtosis(x),9791521
+dumbk(x),18565225
+sum(x),182626
+kurt5(x),18864640
+kurt5(x),18203688
+kurt5(x),19055634
+dumbk(x),26008217
+kurt5(x),18755138
+kurtosis(x),10264169
+kurtosis(x),10190016
+dumbk(x),19479206
+dumbk(x),20639073
+skew4(x),9947584
+sd(x),536589
+skew4(x),9968527
+sd(x),557820
+sd3(x),935075
+skewness(x),9100137
+mean(x),178542
+sd3(x),929262
+sum(x),86811
+sd(x),508075
+sum(x),86626
+skew4(x),10020834
+kurtosis(x),9434490
+skewness(x),10418465
+kurt5(x),17452460
+sd(x),584269
+mean(x),216680
+sd(x),532680
+sd3(x),938050
+mean(x),174679
+mean(x),171268
+skewness(x),9205331
+mean(x),174204
+kurt5(x),16821389
+dumbk(x),18763199
+mean(x),167171
+kurtosis(x),9006094
+skewness(x),10213317
+sum(x),107041
+dumbk(x),21462026
+skew4(x),8945708
+mean(x),167689
+skewness(x),9024209
+sum(x),106275
+kurt5(x),17785585
+sum(x),96032
+skewness(x),8662888
+sd3(x),908617
+mean(x),169668
+sd(x),501302
+skew4(x),9592853
+skewness(x),11651614
+kurt5(x),15620968
+sd3(x),1019571
+skew4(x),11090417
+skewness(x),9653954
+skewness(x),8633473
+skew4(x),9989714
+sd(x),543891
+skewness(x),9163138
+dumbk(x),20112721
+skew4(x),8734858
+skew4(x),9762265
+sum(x),100414
+kurtosis(x),9419197
+mean(x),179049
+skewness(x),9403001
+sum(x),86754
+skew4(x),8682064
+dumbk(x),19571700
+mean(x),177022
+kurtosis(x),10224174
+skew4(x),9492815
+kurtosis(x),9357414
+mean(x),167352
+kurt5(x),15694074
+sum(x),81551
+sd3(x),858762
+sum(x),80329
+sd3(x),875828
+dumbk(x),19890042
+dumbk(x),20225380
+skewness(x),8535943
+kurtosis(x),9770764
+mean(x),179391
+sd(x),527159
+sd(x),633698
+mean(x),246396
+skewness(x),9868627
+sum(x),87798
+kurt5(x),16212478
+kurt5(x),18348e3
+sd3(x),936178
+sd(x),535176
+skewness(x),8774857
+kurt5(x),16741224
+skew4(x),8965070
+sum(x),84272
+dumbk(x),21212303
+kurt5(x),17932491
+skew4(x),9605915
+sd(x),564970
+skew4(x),8718551
+sd(x),467284
+kurtosis(x),10084600
+mean(x),179206
+skewness(x),10111976
+dumbk(x),20281254
+skewness(x),9312221
+skew4(x),9437855
+kurtosis(x),10782177
+skewness(x),9949051
+skew4(x),9897195
+kurt5(x),16351245
+sum(x),98773
+sum(x),82425
+sd3(x),902778
+sd(x),518889
+kurtosis(x),9327119
+mean(x),180534
+dumbk(x),22127942
+sd3(x),893886
+sum(x),82244
+skewness(x),8694072
+skewness(x),10235445
+skew4(x),9801903
+skew4(x),8909533
+sum(x),84882
+kurtosis(x),9314548
+sum(x),161952
+mean(x),289677
+kurt5(x),16620840
+mean(x),191286
+kurt5(x),16785841
+mean(x),213576
+skew4(x),9641536
+skew4(x),9649537
+mean(x),238967
+sd(x),596299
+skewness(x),9866339
+sd(x),694980
+kurt5(x),18782328
+skewness(x),10899956
+kurt5(x),16648485
+mean(x),192538
+kurtosis(x),10561808
+kurt5(x),18910121
+kurt5(x),18980728
+sd(x),658572
+skewness(x),9563779
+skewness(x),8808009
+"slow_sd(x, w)",2063158
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20337016
+"sd3(x, wts = w)",1446322
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21262123
+"slow_sd(x, w)",2720438
+"sd3(x, wts = w)",1243494
+"slow_sd(x, w)",2311335
+"sd3(x, wts = w)",1141408
+"sd3(x, wts = w)",1147188
+"sd3(x, wts = w)",1382156
+"sd3(x, wts = w)",1203855
+"slow_sd(x, w)",4811454
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20284297
+"slow_sd(x, w)",1750064
+"sd3(x, wts = w)",1164274
+"sd3(x, wts = w)",1130717
+"slow_sd(x, w)",1601674
+"slow_sd(x, w)",4074553
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21140077
+"sd3(x, wts = w)",1267513
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20194307
+"slow_sd(x, w)",1716229
+"slow_sd(x, w)",1599613
+"sd3(x, wts = w)",1279802
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",23410729
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20047886
+"sd3(x, wts = w)",1152912
+"slow_sd(x, w)",1712722
+"sd3(x, wts = w)",1159818
+"sd3(x, wts = w)",1117616
+"sd3(x, wts = w)",1236222
+"sd3(x, wts = w)",1209368
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20838273
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20401552
+"slow_sd(x, w)",3521352
+"slow_sd(x, w)",1569070
+"slow_sd(x, w)",1620609
+"sd3(x, wts = w)",1336845
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20992056
+"slow_sd(x, w)",4247288
+"slow_sd(x, w)",1722629
+"slow_sd(x, w)",1532827
+"slow_sd(x, w)",2835416
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20038849
+"sd3(x, wts = w)",1436598
+"slow_sd(x, w)",3259299
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",19802799
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",19544524
+"sd3(x, wts = w)",1095901
+"sd3(x, wts = w)",1090331
+"slow_sd(x, w)",1736490
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20747587
+"slow_sd(x, w)",4084309
+"slow_sd(x, w)",2083788
+"slow_sd(x, w)",1606829
+"sd3(x, wts = w)",1123254
+"sd3(x, wts = w)",1037687
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",19944649
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21928433
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20405558
+"slow_sd(x, w)",3280094
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20949810
+"slow_sd(x, w)",2622359
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",25593022
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21065969
+"sd3(x, wts = w)",1152005
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21825303
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21170564
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21248761
+"slow_sd(x, w)",2079516
+"sd3(x, wts = w)",1469845
+"slow_sd(x, w)",4247121
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22163150
+"slow_sd(x, w)",1800917
+"slow_sd(x, w)",1944464
+"slow_sd(x, w)",4632605
+"sd3(x, wts = w)",1467760
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",23658186
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22591678
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22589666
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21233924
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21498094
+"sd3(x, wts = w)",1388943
+"sd3(x, wts = w)",1515871
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",26149552
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21598849
+"sd3(x, wts = w)",1486580
+"slow_sd(x, w)",2204419
+"slow_sd(x, w)",2388578
+"slow_sd(x, w)",4084e3
+"sd3(x, wts = w)",1271679
+"sd3(x, wts = w)",1160938
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20220807
+"sd3(x, wts = w)",1362722
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21101245
+"sd3(x, wts = w)",1148261
+"sd3(x, wts = w)",1394129
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21450622
+"slow_sd(x, w)",1751351
+"sd3(x, wts = w)",1333387
+"slow_sd(x, w)",1971295
+"sd3(x, wts = w)",1318159
+"sd3(x, wts = w)",1527412
+"sd3(x, wts = w)",1364097
+"slow_sd(x, w)",4281582
+"slow_sd(x, w)",1762435
+"slow_sd(x, w)",1612393
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21773241
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22185126
+"sd3(x, wts = w)",1358951
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20642855
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21304116
+"slow_sd(x, w)",4263942
+"slow_sd(x, w)",2432623
+"sd3(x, wts = w)",1331311
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20806970
+"slow_sd(x, w)",1614123
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20804348
+"slow_sd(x, w)",4072600
+"sd3(x, wts = w)",1166820
+"sd3(x, wts = w)",1106072
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20910574
+"sd3(x, wts = w)",1351034
+"slow_sd(x, w)",1721887
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21781295
+"slow_sd(x, w)",2624934
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21208307
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21388548
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21763759
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22350485
+"sd3(x, wts = w)",1269260
+"sd3(x, wts = w)",1243682
+"slow_sd(x, w)",3085212
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22193716
+"sd3(x, wts = w)",1538553
+"slow_sd(x, w)",2385136
+"slow_sd(x, w)",2155767
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20661601
+"slow_sd(x, w)",3430912
+"slow_sd(x, w)",2170186
+"slow_sd(x, w)",2294499
+"sd3(x, wts = w)",1312751
+"slow_sd(x, w)",3920822
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21286116
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20244126
+"slow_sd(x, w)",2308530
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20019686
+"slow_sd(x, w)",2363931
+"sd3(x, wts = w)",1298751
+"sd3(x, wts = w)",1201145
+"slow_sd(x, w)",3094782
+"slow_sd(x, w)",2026800
+"sd3(x, wts = w)",1580251
+"sd3(x, wts = w)",1318344
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21039787
+"sd3(x, wts = w)",1324538
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20284796
+"sd3(x, wts = w)",1110291
+"slow_sd(x, w)",1712265
+"sd3(x, wts = w)",1489627
+"sd3(x, wts = w)",1430591
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20859061
+"sd3(x, wts = w)",1260936
+"sd3(x, wts = w)",1242495
+"sd3(x, wts = w)",1222711
+"slow_sd(x, w)",2896834
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20339858
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22234419
+"sd3(x, wts = w)",1406886
+"sd3(x, wts = w)",1295348
+"slow_sd(x, w)",1996804
+"sd3(x, wts = w)",1261540
+"slow_sd(x, w)",1761375
+"sd3(x, wts = w)",1119151
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21405413
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20388179
+"sd3(x, wts = w)",1323610
+"slow_sd(x, w)",3944732
+"sd3(x, wts = w)",1220275
+"sd3(x, wts = w)",1209818
+"sd3(x, wts = w)",1212828
+"slow_sd(x, w)",1781061
+"slow_sd(x, w)",1693040
+"slow_sd(x, w)",4716081
+"slow_sd(x, w)",2179351
+"sd3(x, wts = w)",1277015
+"slow_sd(x, w)",1824098
+"slow_sd(x, w)",4093488
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20729457
+"sd3(x, wts = w)",1372860
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20651456
+"slow_sd(x, w)",2308648
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20716677
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20686175
+"slow_sd(x, w)",3842025
+"slow_sd(x, w)",4199941
+"sd3(x, wts = w)",1142173
+"sd3(x, wts = w)",1100967
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20530107
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22895469
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21745292
+"slow_sd(x, w)",1779053
+"slow_sd(x, w)",1785327
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21166841
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20980085
+"sd3(x, wts = w)",1317425
+"slow_sd(x, w)",3591078
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21104060
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20899849
+"sd3(x, wts = w)",1382736
+"sd3(x, wts = w)",1191792
+"sd3(x, wts = w)",1137776
+"sd3(x, wts = w)",1173421
+"sd3(x, wts = w)",1108378
+"slow_sd(x, w)",1556782
+"sd3(x, wts = w)",1119024
+"slow_sd(x, w)",1549518
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20988638
+"slow_sd(x, w)",2203640
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21127351
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20519198
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21727554
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21824536
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20642085
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21049267
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20565673
+"slow_sd(x, w)",4209646
+"slow_sd(x, w)",1944244
+"slow_sd(x, w)",2142739
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20517771
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20507702
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21354739
+"slow_sd(x, w)",4220171
+"sd3(x, wts = w)",1141173
+"slow_sd(x, w)",1569685
+"sd3(x, wts = w)",1111955
+"slow_sd(x, w)",1727157
+"sd3(x, wts = w)",1172463
+"slow_sd(x, w)",4385010
+"sd3(x, wts = w)",1432830
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21353520
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20810400
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",23159058
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",24509274
+"sd3(x, wts = w)",1238409
+"slow_sd(x, w)",1892380
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21432242
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21891269
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21612196
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21138372
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21468222
+"slow_sd(x, w)",2109223
+"slow_sd(x, w)",2971205
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20757699
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20279031
+"sd3(x, wts = w)",1278738
+"slow_sd(x, w)",2747964
+"sd3(x, wts = w)",1359509
+"slow_sd(x, w)",1975856
+"sd3(x, wts = w)",1318554
+"sd3(x, wts = w)",1270072
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",22746334
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",23053610
+"slow_sd(x, w)",6039105
+"sd3(x, wts = w)",1441296
+"sd3(x, wts = w)",1376387
+"sd3(x, wts = w)",1480774
+"sd3(x, wts = w)",1382865
+"sd3(x, wts = w)",1377731
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21969496
+"sd3(x, wts = w)",1328726
+"sd3(x, wts = w)",1316325
+"sd3(x, wts = w)",1387557
+"slow_sd(x, w)",2252035
+"slow_sd(x, w)",2085739
+"slow_sd(x, w)",3956047
+"slow_sd(x, w)",2650819
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21523882
+"slow_sd(x, w)",1854949
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",21403275
+"sd3(x, wts = w)",1380733
+"slow_sd(x, w)",4832026
+"slow_sd(x, w)",1622149
+"sd3(x, wts = w)",1085386
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",19078225
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20453610
+"sd3(x, wts = w)",1381063
+"slow_sd(x, w)",2169548
+"slow_sd(x, w)",4260382
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",23074361
+"slow_sd(x, w)",1942795
+"slow_sd(x, w)",1756160
+"sd3(x, wts = w)",1268610
+"slow_sd(x, w)",3250919
+"cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE)",20667784
+"sd3(x, wts = w)",1248436
+"sd3(x, wts = w)",1104529
+"sd3(x, wts = w)",1203599
+"slow_sd(x, w)",1563022
+"sd3(x, wts = w)",1116820
+"as.centsums(x1, 2)",311849
+"as.centsums(x1, 2)",147055
+"as.centsums(x1, 4)",1559897
+"as.centsums(x1, 3)",887333
+"as.centsums(x1, 3)",937028
+"as.centsums(x1, 2)",127275
+"as.centsums(x1, 1)",210767
+"as.centsums(x1, 4)",1702671
+"as.centsums(x1, 3)",854792
+"as.centsums(x1, 2)",115762
+"as.centsums(x1, 3)",1070112
+"as.centsums(x1, 1)",190030
+"as.centsums(x1, 2)",115067
+"as.centsums(x1, 4)",1552856
+"as.centsums(x1, 3)",855486
+"as.centsums(x1, 1)",201960
+"as.centsums(x1, 2)",115696
+"as.centsums(x1, 3)",887221
+"as.centsums(x1, 3)",854003
+"as.centsums(x1, 4)",1620538
+"as.centsums(x1, 4)",1511098
+"as.centsums(x1, 3)",1003896
+"as.centsums(x1, 1)",272085
+"as.centsums(x1, 1)",313079
+"as.centsums(x1, 2)",132788
+"as.centsums(x1, 4)",1516123
+"as.centsums(x1, 3)",852263
+"as.centsums(x1, 2)",114980
+"as.centsums(x1, 1)",188392
+"as.centsums(x1, 1)",201713
+"as.centsums(x1, 2)",133403
+"as.centsums(x1, 4)",1535188
+"as.centsums(x1, 3)",1095305
+"as.centsums(x1, 3)",884095
+"as.centsums(x1, 1)",194219
+"as.centsums(x1, 4)",1527168
+"as.centsums(x1, 1)",190387
+"as.centsums(x1, 3)",853133
+"as.centsums(x1, 3)",871466
+"as.centsums(x1, 1)",188567
+"as.centsums(x1, 4)",1552703
+"as.centsums(x1, 2)",116119
+"as.centsums(x1, 2)",114787
+"as.centsums(x1, 1)",189097
+"as.centsums(x1, 1)",214233
+"as.centsums(x1, 2)",116796
+"as.centsums(x1, 1)",201719
+"as.centsums(x1, 4)",1518090
+"as.centsums(x1, 1)",189015
+"as.centsums(x1, 1)",189424
+"as.centsums(x1, 1)",189831
+"as.centsums(x1, 3)",1015552
+"as.centsums(x1, 4)",1756119
+"as.centsums(x1, 4)",1503959
+"as.centsums(x1, 2)",115888
+"as.centsums(x1, 1)",188530
+"as.centsums(x1, 2)",121267
+"as.centsums(x1, 3)",866739
+"as.centsums(x1, 2)",180330
+"as.centsums(x1, 2)",128410
+"as.centsums(x1, 2)",153013
+"as.centsums(x1, 3)",951212
+"as.centsums(x1, 3)",854488
+"as.centsums(x1, 2)",115577
+"as.centsums(x1, 3)",858480
+"as.centsums(x1, 2)",116651
+"as.centsums(x1, 3)",881662
+"as.centsums(x1, 2)",115189
+"as.centsums(x1, 1)",201429
+"as.centsums(x1, 2)",143460
+"as.centsums(x1, 1)",189692
+"as.centsums(x1, 2)",115592
+"as.centsums(x1, 4)",1696215
+"as.centsums(x1, 4)",2578860
+"as.centsums(x1, 4)",2697283
+"as.centsums(x1, 3)",1511448
+"as.centsums(x1, 4)",2837433
+"as.centsums(x1, 2)",225403
+"as.centsums(x1, 3)",1157635
+"as.centsums(x1, 4)",1541325
+"as.centsums(x1, 2)",117698
+"as.centsums(x1, 3)",920349
+"as.centsums(x1, 1)",192640
+"as.centsums(x1, 4)",1489153
+"as.centsums(x1, 2)",143756
+"as.centsums(x1, 1)",190652
+"as.centsums(x1, 4)",1563523
+"as.centsums(x1, 3)",855670
+"as.centsums(x1, 3)",879399
+"as.centsums(x1, 2)",116833
+"as.centsums(x1, 3)",854624
+"as.centsums(x1, 4)",1577458
+"as.centsums(x1, 3)",960037
+"as.centsums(x1, 4)",1488263
+"as.centsums(x1, 3)",1040254
+"as.centsums(x1, 4)",1833742
+"as.centsums(x1, 1)",205726
+"as.centsums(x1, 4)",1691343
+"as.centsums(x1, 2)",116435
+"as.centsums(x1, 4)",1487899
+"as.centsums(x1, 3)",880569
+"as.centsums(x1, 4)",1491107
+"as.centsums(x1, 2)",115068
+"as.centsums(x1, 4)",1508384
+"as.centsums(x1, 3)",854142
+"as.centsums(x1, 4)",1557447
+"as.centsums(x1, 3)",854939
+"as.centsums(x1, 3)",955571
+"as.centsums(x1, 3)",866363
+"as.centsums(x1, 4)",1489412
+"as.centsums(x1, 2)",116710
+"as.centsums(x1, 3)",853795
+"as.centsums(x1, 4)",1928059
+"as.centsums(x1, 4)",1601769
+"as.centsums(x1, 1)",189616
+"as.centsums(x1, 4)",1506372
+"as.centsums(x1, 3)",939551
+"as.centsums(x1, 2)",127407
+"as.centsums(x1, 2)",115014
+"as.centsums(x1, 2)",146538
+"as.centsums(x1, 2)",137363
+"as.centsums(x1, 2)",126048
+"as.centsums(x1, 1)",213009
+"as.centsums(x1, 4)",1557151
+"as.centsums(x1, 1)",206976
+"as.centsums(x1, 1)",230742
+"as.centsums(x1, 1)",206173
+"as.centsums(x1, 1)",274229
+"as.centsums(x1, 2)",167315
+"as.centsums(x1, 4)",1940664
+"as.centsums(x1, 3)",1011203
+"as.centsums(x1, 2)",189335
+"as.centsums(x1, 2)",169749
+"as.centsums(x1, 1)",247924
+"as.centsums(x1, 4)",1667365
+"as.centsums(x1, 4)",1487986
+"as.centsums(x1, 3)",852945
+"as.centsums(x1, 2)",114527
+"as.centsums(x1, 2)",130050
+"as.centsums(x1, 1)",202554
+"as.centsums(x1, 3)",1098225
+"as.centsums(x1, 1)",270333
+"as.centsums(x1, 3)",1112225
+"as.centsums(x1, 4)",1542843
+"as.centsums(x1, 3)",908992
+"as.centsums(x1, 4)",1510034
+"as.centsums(x1, 3)",854424
+"as.centsums(x1, 2)",147956
+"as.centsums(x1, 2)",115054
+"as.centsums(x1, 3)",852860
+"as.centsums(x1, 1)",190663
+"as.centsums(x1, 4)",1523204
+"as.centsums(x1, 3)",853626
+"as.centsums(x1, 1)",188729
+"as.centsums(x1, 3)",983743
+"as.centsums(x1, 3)",905198
+"as.centsums(x1, 3)",909155
+"as.centsums(x1, 4)",1508131
+"as.centsums(x1, 1)",191047
+"as.centsums(x1, 1)",188326
+"as.centsums(x1, 2)",115038
+"as.centsums(x1, 2)",114459
+"as.centsums(x1, 1)",203082
+"as.centsums(x1, 3)",906872
+"as.centsums(x1, 4)",1483823
+"as.centsums(x1, 3)",859517
+"as.centsums(x1, 2)",115447
+"as.centsums(x1, 4)",1533818
+"as.centsums(x1, 1)",190229
+"as.centsums(x1, 2)",127492
+"as.centsums(x1, 2)",128518
+"as.centsums(x1, 4)",1485068
+"as.centsums(x1, 1)",188402
+"as.centsums(x1, 4)",1508114
+"as.centsums(x1, 4)",1509401
+"as.centsums(x1, 3)",855707
+"as.centsums(x1, 1)",187996
+"as.centsums(x1, 3)",890890
+"as.centsums(x1, 3)",903065
+"as.centsums(x1, 1)",188827
+"as.centsums(x1, 1)",189328
+"as.centsums(x1, 1)",189977
+"as.centsums(x1, 3)",927814
+"as.centsums(x1, 2)",125808
+"as.centsums(x1, 4)",1866645
+"as.centsums(x1, 2)",171620
+"as.centsums(x1, 1)",231013
+"as.centsums(x1, 1)",193923
+"as.centsums(x1, 1)",192139
+"as.centsums(x1, 1)",193319
+"as.centsums(x1, 2)",118923
+"as.centsums(x1, 4)",1527555
+"as.centsums(x1, 1)",191561
+"as.centsums(x1, 1)",217172
+"as.centsums(x1, 3)",856921
+"as.centsums(x1, 3)",884226
+"as.centsums(x1, 3)",853174
+"as.centsums(x1, 4)",2030244
+"as.centsums(x1, 1)",217097
+"as.centsums(x1, 4)",1643877
+"as.centsums(x1, 4)",1484556
+"as.centsums(x1, 4)",1650365
+"as.centsums(x1, 3)",909309
+"as.centsums(x1, 2)",116120
+"as.centsums(x1, 1)",215953
+"as.centsums(x1, 3)",853028
+"as.centsums(x1, 4)",1510788
+"as.centsums(x1, 3)",853249
+"as.centsums(x1, 3)",853767
+"as.centsums(x1, 3)",867834
+"as.centsums(x1, 3)",854362
+"as.centsums(x1, 1)",190596
+"as.centsums(x1, 4)",1510721
+"as.centsums(x1, 2)",114679
+"as.centsums(x1, 4)",1531174
+"as.centsums(x1, 2)",116276
+"as.centsums(x1, 3)",867680
+"as.centsums(x1, 4)",1497883
+"as.centsums(x1, 3)",854655
+"as.centsums(x1, 3)",853230
+"as.centsums(x1, 4)",1488152
+"as.centsums(x1, 3)",879031
+"as.centsums(x1, 2)",115928
+"as.centsums(x1, 2)",126409
+"as.centsums(x1, 1)",244018
+"as.centsums(x1, 1)",190751
+"as.centsums(x1, 1)",187928
+"as.centsums(x1, 2)",115226
+"as.centsums(x1, 4)",1507187
+"as.centsums(x1, 3)",879813
+"as.centsums(x1, 4)",1484104
+"as.centsums(x1, 2)",113903
+"as.centsums(x1, 2)",139313
+"as.centsums(x1, 1)",190052
+"as.centsums(x1, 4)",1508759
+"as.centsums(x1, 2)",115848
+"as.centsums(x1, 1)",187582
+"as.centsums(x1, 1)",189031
+"as.centsums(x1, 1)",188981
+"as.centsums(x1, 2)",116014
+"as.centsums(x1, 1)",201728
+"as.centsums(x1, 2)",115431
+"as.centsums(x1, 2)",115212
+"as.centsums(x1, 3)",955501
+"as.centsums(x1, 4)",1865192
+"as.centsums(x1, 2)",152731
+"as.centsums(x1, 1)",197540
+"as.centsums(x1, 4)",1565847
+"as.centsums(x1, 1)",219638
+"as.centsums(x1, 2)",140195
+"as.centsums(x1, 1)",190450
+"as.centsums(x1, 1)",209556
+"as.centsums(x1, 4)",1513754
+"as.centsums(x1, 3)",853245
+"as.centsums(x1, 1)",188940
+"as.centsums(x1, 4)",2037429
+"as.centsums(x1, 4)",1651099
+"as.centsums(x1, 2)",115853
+"as.centsums(x1, 2)",114566
+"as.centsums(x1, 4)",1512366
+"as.centsums(x1, 3)",883526
+"as.centsums(x1, 3)",892721
+"as.centsums(x1, 1)",188470
+"as.centsums(x1, 2)",147251
+"as.centsums(x1, 2)",115733
+"as.centsums(x1, 3)",875595
+"as.centsums(x1, 1)",189313
+"as.centsums(x1, 1)",188598
+"as.centsums(x1, 1)",188321
+"as.centsums(x1, 1)",189500
+"as.centsums(x1, 3)",853590
+"as.centsums(x1, 4)",1532894
+"as.centsums(x1, 1)",189793
+"as.centsums(x1, 3)",851582
+"as.centsums(x1, 2)",114802
+"as.centsums(x1, 2)",114629
+"as.centsums(x1, 4)",1517998
+"as.centsums(x1, 4)",1591071
+"as.centsums(x1, 2)",128095
+"as.centsums(x1, 2)",116594
+"as.centsums(x1, 1)",236243
+"as.centsums(x1, 3)",992240
+"as.centsums(x1, 2)",127223
+"as.centsums(x1, 3)",948586
+"as.centsums(x1, 1)",189641
+"as.centsums(x1, 1)",189936
+"as.centsums(x1, 1)",202095
+"as.centsums(x1, 3)",856165
+"as.centsums(x1, 2)",116275
+"as.centsums(x1, 4)",1483638
+"as.centsums(x1, 2)",116417
+"as.centsums(x1, 3)",879892
+"as.centsums(x1, 4)",1508001
+"as.centsums(x1, 2)",117411
+"as.centsums(x1, 2)",138286
+"as.centsums(x1, 3)",855296
+"as.centsums(x1, 4)",1509856
+"as.centsums(x1, 2)",117433
+"as.centsums(x1, 4)",1513977
+"as.centsums(x1, 4)",1483527
+"as.centsums(x1, 4)",1535763
+"as.centsums(x1, 3)",853769
+"as.centsums(x1, 1)",218386
+"as.centsums(x1, 3)",996190
+"as.centsums(x1, 1)",253959
+"as.centsums(x1, 1)",289124
+"as.centsums(x1, 4)",1905527
+"as.centsums(x1, 1)",218316
+"as.centsums(x1, 3)",874125
+"as.centsums(x1, 1)",217393
+"as.centsums(x1, 2)",120148
+"as.centsums(x1, 1)",190749
+"as.centsums(x1, 2)",115532
+"as.centsums(x1, 2)",115419
+"as.centsums(x1, 1)",190307
+"as.centsums(x1, 3)",905966
+"as.centsums(x1, 4)",1552017
+"as.centsums(x1, 1)",301379
+"as.centsums(x1, 2)",126042
+"as.centsums(x1, 4)",1876773
+"as.centsums(x1, 4)",1553880
+"as.centsums(x1, 4)",1486762
+"as.centsums(x1, 1)",188551
+"as.centsums(x1, 2)",114841
+"as.centsums(x1, 1)",215243
+"as.centsums(x1, 4)",1554844
+"as.centsums(x1, 3)",869253
+"as.centsums(x1, 2)",115675
+"as.centsums(x1, 4)",1620067
+"as.centsums(x1, 3)",909008
+"as.centsums(x1, 2)",131043
+"as.centsums(x1, 2)",152662
+"as.centsums(x1, 3)",1062180
+"as.centsums(x1, 1)",203963
+"as.centsums(x1, 1)",208623
+"as.centsums(x1, 1)",188605
+"as.centsums(x1, 4)",1540906
+"as.centsums(x1, 4)",1483365
+"as.centsums(x1, 4)",1505337
+"as.centsums(x1, 3)",876846
+"as.centsums(x1, 4)",1512122
+"as.centsums(x1, 4)",2118566
+"as.centsums(x1, 2)",223026
+"as.centsums(x1, 3)",1442549
+"as.centsums(x1, 4)",1760443
+"as.centsums(x1, 1)",196280
+"as.centsums(x1, 2)",118243
+"as.centsums(x1, 4)",1519667
+"as.centsums(x1, 4)",1505500
+"as.centsums(x1, 3)",855590
+"as.centsums(x1, 2)",114565
+"as.centsums(x1, 3)",885299
+"as.centsums(x1, 3)",879334
+"as.centsums(x1, 4)",1572754
+"as.centsums(x1, 1)",230162
+"as.centsums(x1, 3)",1091250
+"as.centsums(x1, 2)",253027
+"as.centsums(x1, 4)",1557206
+"as.centsums(x1, 1)",195218
+"as.centsums(x1, 1)",190829
+"as.centsums(x1, 1)",192760
+"as.centsums(x1, 1)",214891
+"as.centsums(x1, 1)",219367
+"as.centsums(x1, 3)",960108
+"as.centsums(x1, 1)",214867
+"as.centsums(x1, 2)",140394
+"as.centsums(x1, 1)",289350
+"as.centsums(x1, 3)",855891
+"as.centsums(x1, 2)",116117
+"as.centsums(x1, 3)",863031
+"as.centsums(x1, 4)",2111492
+"as.centsums(x1, 3)",971743
+"as.centsums(x1, 1)",280443
+"as.centsums(x1, 2)",132201
+"as.centsums(x1, 2)",114886
+"as.centsums(x1, 2)",116677
+"as.centsums(x1, 1)",189960
+"as.centsums(x1, 4)",1661923
+"as.centsums(x1, 3)",855357
+"as.centsums(x1, 3)",868803
+"as.centsums(x1, 4)",1509778
+"as.centsums(x1, 4)",1540072
+"as.centsums(x1, 2)",116035
+"as.centsums(x1, 2)",115426
+"as.centsums(x1, 4)",1486174
+"as.centsums(x1, 1)",199444
+"as.centsums(x1, 3)",881532
+"as.centsums(x1, 2)",128881
+"as.centsums(x1, 4)",1546395
+"as.centsums(x1, 4)",1487106
+"as.centsums(x1, 4)",1555010
+"as.centsums(x1, 2)",115478
+"as.centsums(x1, 2)",136768
+"as.centsums(x1, 3)",862148
+"as.centsums(x1, 4)",1621800
+"as.centsums(x1, 1)",204079
+"as.centsums(x1, 3)",884193
+"as.centsums(x1, 3)",883640
+"as.centsums(x1, 4)",1487136
+"as.centsums(x1, 2)",116158
+obj3 %-% obj1,111377
+obj3 %-% obj1,19781
+"c(obj1, obj2)",191093
+obj3 %-% obj1,17865
+obj3 %-% obj1,12696
+"c(obj1, obj2)",20172
+"c(obj1, obj2)",17123
+"c(obj1, obj2)",15923
+obj3 %-% obj1,13623
+"c(obj1, obj2)",17505
+"c(obj1, obj2)",30306
+"c(obj1, obj2)",17215
+obj3 %-% obj1,13663
+obj3 %-% obj1,12387
+obj3 %-% obj1,12495
+"c(obj1, obj2)",17822
+obj3 %-% obj1,13119
+"c(obj1, obj2)",31243
+obj3 %-% obj1,13717
+"c(obj1, obj2)",17319
+"c(obj1, obj2)",15962
+"c(obj1, obj2)",16423
+"c(obj1, obj2)",15851
+"c(obj1, obj2)",15447
+obj3 %-% obj1,12783
+"c(obj1, obj2)",16243
+obj3 %-% obj1,13614
+obj3 %-% obj1,13149
+obj3 %-% obj1,13133
+"c(obj1, obj2)",16806
+"c(obj1, obj2)",16777
+"c(obj1, obj2)",16794
+obj3 %-% obj1,13548
+"c(obj1, obj2)",16247
+"c(obj1, obj2)",30992
+"c(obj1, obj2)",16035
+"c(obj1, obj2)",16973
+obj3 %-% obj1,13419
+"c(obj1, obj2)",16876
+obj3 %-% obj1,13092
+"c(obj1, obj2)",16360
+"c(obj1, obj2)",16461
+"c(obj1, obj2)",16213
+"c(obj1, obj2)",15659
+obj3 %-% obj1,13389
+obj3 %-% obj1,12268
+obj3 %-% obj1,12184
+obj3 %-% obj1,12110
+obj3 %-% obj1,12054
+obj3 %-% obj1,12684
+"c(obj1, obj2)",29575
+obj3 %-% obj1,15190
+"c(obj1, obj2)",17556
+"c(obj1, obj2)",15846
+"c(obj1, obj2)",15728
+"c(obj1, obj2)",15629
+obj3 %-% obj1,14356
+"c(obj1, obj2)",17149
+obj3 %-% obj1,14155
+"c(obj1, obj2)",16762
+obj3 %-% obj1,12418
+obj3 %-% obj1,12818
+obj3 %-% obj1,12311
+"c(obj1, obj2)",16446
+obj3 %-% obj1,13008
+obj3 %-% obj1,12459
+obj3 %-% obj1,12035
+obj3 %-% obj1,12595
+obj3 %-% obj1,25756
+obj3 %-% obj1,14554
+obj3 %-% obj1,12297
+obj3 %-% obj1,12568
+"c(obj1, obj2)",18213
+"c(obj1, obj2)",29940
+obj3 %-% obj1,13623
+"c(obj1, obj2)",16478
+"c(obj1, obj2)",16579
+obj3 %-% obj1,12976
+"c(obj1, obj2)",16457
+"c(obj1, obj2)",16153
+"c(obj1, obj2)",15785
+"c(obj1, obj2)",15381
+"c(obj1, obj2)",15692
+obj3 %-% obj1,13355
+"c(obj1, obj2)",18094
+obj3 %-% obj1,28284
+obj3 %-% obj1,13344
+obj3 %-% obj1,11749
+"c(obj1, obj2)",16974
+"c(obj1, obj2)",15801
+"c(obj1, obj2)",17057
+"c(obj1, obj2)",16303
+"c(obj1, obj2)",15731
+obj3 %-% obj1,13267
+obj3 %-% obj1,12825
+obj3 %-% obj1,12703
+obj3 %-% obj1,12183
+obj3 %-% obj1,12629
+obj3 %-% obj1,12681
+obj3 %-% obj1,12528
+"c(obj1, obj2)",16069
+obj3 %-% obj1,13453
+"c(obj1, obj2)",29928
+"c(obj1, obj2)",17730
+obj3 %-% obj1,13572
+obj3 %-% obj1,12578
+"c(obj1, obj2)",15883
+"c(obj1, obj2)",15605
+"c(obj1, obj2)",15814
+obj3 %-% obj1,13396
+"c(obj1, obj2)",16180
+obj3 %-% obj1,12529
+obj3 %-% obj1,11990
+obj3 %-% obj1,11852
+obj3 %-% obj1,12469
+obj3 %-% obj1,12454
+obj3 %-% obj1,12977
+obj3 %-% obj1,12673
+"c(obj1, obj2)",16348
+"c(obj1, obj2)",16136
+"c(obj1, obj2)",30794
+"c(obj1, obj2)",16021
+obj3 %-% obj1,13768
+"c(obj1, obj2)",17122
+"c(obj1, obj2)",15437
+"c(obj1, obj2)",15605
+obj3 %-% obj1,12636
+obj3 %-% obj1,12804
+"c(obj1, obj2)",16588
+"c(obj1, obj2)",16018
+"c(obj1, obj2)",15400
+"c(obj1, obj2)",14518
+"c(obj1, obj2)",15880
+obj3 %-% obj1,13592
+"c(obj1, obj2)",31315
+"c(obj1, obj2)",33566
+"c(obj1, obj2)",49224
+"c(obj1, obj2)",25451
+obj3 %-% obj1,14059
+"c(obj1, obj2)",17015
+obj3 %-% obj1,13470
+"c(obj1, obj2)",16103
+obj3 %-% obj1,13195
+obj3 %-% obj1,11892
+"c(obj1, obj2)",30531
+"c(obj1, obj2)",27385
+"c(obj1, obj2)",16307
+"c(obj1, obj2)",15450
+obj3 %-% obj1,13774
+obj3 %-% obj1,12674
+obj3 %-% obj1,12512
+"c(obj1, obj2)",16646
+obj3 %-% obj1,13283
+obj3 %-% obj1,27323
+obj3 %-% obj1,13385
+obj3 %-% obj1,12456
+obj3 %-% obj1,12758
+"c(obj1, obj2)",17240
+obj3 %-% obj1,13714
+"c(obj1, obj2)",16375
+obj3 %-% obj1,13875
+obj3 %-% obj1,12442
+"c(obj1, obj2)",17047
+obj3 %-% obj1,12738
+"c(obj1, obj2)",16284
+"c(obj1, obj2)",15373
+obj3 %-% obj1,13358
+obj3 %-% obj1,12572
+obj3 %-% obj1,12006
+obj3 %-% obj1,11730
+obj3 %-% obj1,12175
+obj3 %-% obj1,24937
+"c(obj1, obj2)",18926
+"c(obj1, obj2)",16204
+"c(obj1, obj2)",16253
+"c(obj1, obj2)",15394
+"c(obj1, obj2)",16294
+"c(obj1, obj2)",16210
+obj3 %-% obj1,13746
+obj3 %-% obj1,12184
+obj3 %-% obj1,12838
+obj3 %-% obj1,13103
+obj3 %-% obj1,24082
+obj3 %-% obj1,13691
+"c(obj1, obj2)",17995
+obj3 %-% obj1,13806
+"c(obj1, obj2)",18055
+"c(obj1, obj2)",16892
+"c(obj1, obj2)",33256
+obj3 %-% obj1,15516
+obj3 %-% obj1,13994
+obj3 %-% obj1,13866
+obj3 %-% obj1,13996
+"c(obj1, obj2)",18586
+"c(obj1, obj2)",16958
+obj3 %-% obj1,15010
+obj3 %-% obj1,13484
+"c(obj1, obj2)",17671
+"c(obj1, obj2)",32594
+"c(obj1, obj2)",20037
+"join_cent_sums(rs1, rs2)",27010
+"unjoin_cent_sums(rs3, rs1)",6638
+"unjoin_cent_sums(rs3, rs1)",2907
+"unjoin_cent_sums(rs3, rs1)",2602
+"unjoin_cent_sums(rs3, rs2)",2419
+"unjoin_cent_sums(rs3, rs1)",2576
+"unjoin_cent_sums(rs3, rs1)",2397
+"unjoin_cent_sums(rs3, rs2)",2266
+"unjoin_cent_sums(rs3, rs1)",2366
+"join_cent_sums(rs1, rs2)",2901
+"unjoin_cent_sums(rs3, rs1)",2394
+"join_cent_sums(rs1, rs2)",2530
+"unjoin_cent_sums(rs3, rs1)",2323
+"unjoin_cent_sums(rs3, rs1)",2802
+"unjoin_cent_sums(rs3, rs2)",2276
+"join_cent_sums(rs1, rs2)",2514
+"unjoin_cent_sums(rs3, rs1)",2420
+"unjoin_cent_sums(rs3, rs1)",17106
+"unjoin_cent_sums(rs3, rs1)",2406
+"join_cent_sums(rs1, rs2)",2828
+"unjoin_cent_sums(rs3, rs2)",2814
+"unjoin_cent_sums(rs3, rs1)",2563
+"unjoin_cent_sums(rs3, rs1)",2574
+"unjoin_cent_sums(rs3, rs2)",2437
+"unjoin_cent_sums(rs3, rs1)",2287
+"unjoin_cent_sums(rs3, rs1)",2271
+"unjoin_cent_sums(rs3, rs2)",2359
+"unjoin_cent_sums(rs3, rs1)",2321
+"unjoin_cent_sums(rs3, rs1)",2457
+"unjoin_cent_sums(rs3, rs1)",2734
+"unjoin_cent_sums(rs3, rs2)",2588
+"join_cent_sums(rs1, rs2)",2975
+"unjoin_cent_sums(rs3, rs2)",2261
+"unjoin_cent_sums(rs3, rs1)",2406
+"join_cent_sums(rs1, rs2)",2779
+"join_cent_sums(rs1, rs2)",2898
+"unjoin_cent_sums(rs3, rs1)",2711
+"join_cent_sums(rs1, rs2)",2995
+"unjoin_cent_sums(rs3, rs2)",2376
+"join_cent_sums(rs1, rs2)",2552
+"unjoin_cent_sums(rs3, rs1)",2255
+"unjoin_cent_sums(rs3, rs2)",2615
+"unjoin_cent_sums(rs3, rs2)",2262
+"unjoin_cent_sums(rs3, rs1)",2342
+"unjoin_cent_sums(rs3, rs2)",2415
+"unjoin_cent_sums(rs3, rs2)",2626
+"unjoin_cent_sums(rs3, rs2)",2532
+"unjoin_cent_sums(rs3, rs2)",2612
+"unjoin_cent_sums(rs3, rs1)",2524
+"unjoin_cent_sums(rs3, rs2)",2423
+"unjoin_cent_sums(rs3, rs2)",2352
+"unjoin_cent_sums(rs3, rs2)",2303
+"join_cent_sums(rs1, rs2)",2879
+"join_cent_sums(rs1, rs2)",2530
+"unjoin_cent_sums(rs3, rs2)",2334
+"unjoin_cent_sums(rs3, rs2)",2327
+"unjoin_cent_sums(rs3, rs2)",2315
+"unjoin_cent_sums(rs3, rs1)",2364
+"unjoin_cent_sums(rs3, rs2)",2273
+"unjoin_cent_sums(rs3, rs1)",2551
+"unjoin_cent_sums(rs3, rs1)",2227
+"join_cent_sums(rs1, rs2)",2661
+"unjoin_cent_sums(rs3, rs2)",2288
+"unjoin_cent_sums(rs3, rs2)",2261
+"unjoin_cent_sums(rs3, rs2)",2273
+"unjoin_cent_sums(rs3, rs2)",2337
+"unjoin_cent_sums(rs3, rs1)",2311
+"unjoin_cent_sums(rs3, rs1)",2247
+"unjoin_cent_sums(rs3, rs2)",2353
+"unjoin_cent_sums(rs3, rs1)",2333
+"unjoin_cent_sums(rs3, rs2)",2580
+"unjoin_cent_sums(rs3, rs2)",2226
+"unjoin_cent_sums(rs3, rs1)",2531
+"unjoin_cent_sums(rs3, rs1)",2300
+"join_cent_sums(rs1, rs2)",2863
+"unjoin_cent_sums(rs3, rs1)",2652
+"unjoin_cent_sums(rs3, rs1)",2439
+"join_cent_sums(rs1, rs2)",2939
+"unjoin_cent_sums(rs3, rs2)",2555
+"unjoin_cent_sums(rs3, rs2)",2407
+"join_cent_sums(rs1, rs2)",3073
+"unjoin_cent_sums(rs3, rs2)",2623
+"join_cent_sums(rs1, rs2)",2723
+"unjoin_cent_sums(rs3, rs2)",2510
+"unjoin_cent_sums(rs3, rs2)",2614
+"unjoin_cent_sums(rs3, rs1)",2973
+"unjoin_cent_sums(rs3, rs1)",2441
+"join_cent_sums(rs1, rs2)",2644
+"unjoin_cent_sums(rs3, rs2)",2294
+"unjoin_cent_sums(rs3, rs1)",3281
+"join_cent_sums(rs1, rs2)",2787
+"unjoin_cent_sums(rs3, rs2)",2862
+"unjoin_cent_sums(rs3, rs2)",2661
+"unjoin_cent_sums(rs3, rs1)",2379
+"unjoin_cent_sums(rs3, rs1)",2799
+"join_cent_sums(rs1, rs2)",2765
+"unjoin_cent_sums(rs3, rs1)",3008
+"join_cent_sums(rs1, rs2)",2607
+"unjoin_cent_sums(rs3, rs1)",2356
+"unjoin_cent_sums(rs3, rs1)",2650
+"join_cent_sums(rs1, rs2)",2810
+"unjoin_cent_sums(rs3, rs2)",2459
+"unjoin_cent_sums(rs3, rs1)",2379
+"unjoin_cent_sums(rs3, rs2)",2342
+"join_cent_sums(rs1, rs2)",2726
+"unjoin_cent_sums(rs3, rs2)",2315
+"unjoin_cent_sums(rs3, rs1)",2208
+"unjoin_cent_sums(rs3, rs2)",2338
+"join_cent_sums(rs1, rs2)",2413
+"unjoin_cent_sums(rs3, rs1)",2303
+"unjoin_cent_sums(rs3, rs2)",2175
+"unjoin_cent_sums(rs3, rs2)",2318
+"unjoin_cent_sums(rs3, rs1)",2179
+"join_cent_sums(rs1, rs2)",2571
+"unjoin_cent_sums(rs3, rs2)",2266
+"join_cent_sums(rs1, rs2)",2464
+"join_cent_sums(rs1, rs2)",2481
+"join_cent_sums(rs1, rs2)",16096
+"join_cent_sums(rs1, rs2)",3174
+"unjoin_cent_sums(rs3, rs1)",2507
+"unjoin_cent_sums(rs3, rs2)",2584
+"unjoin_cent_sums(rs3, rs2)",2585
+"join_cent_sums(rs1, rs2)",2693
+"join_cent_sums(rs1, rs2)",2544
+"unjoin_cent_sums(rs3, rs2)",2823
+"unjoin_cent_sums(rs3, rs2)",2467
+"join_cent_sums(rs1, rs2)",2677
+"unjoin_cent_sums(rs3, rs2)",2535
+"join_cent_sums(rs1, rs2)",2500
+"join_cent_sums(rs1, rs2)",2826
+"join_cent_sums(rs1, rs2)",2546
+"unjoin_cent_sums(rs3, rs1)",2543
+"unjoin_cent_sums(rs3, rs2)",2245
+"join_cent_sums(rs1, rs2)",2665
+"join_cent_sums(rs1, rs2)",2613
+"unjoin_cent_sums(rs3, rs2)",2605
+"unjoin_cent_sums(rs3, rs1)",2535
+"unjoin_cent_sums(rs3, rs2)",2503
+"unjoin_cent_sums(rs3, rs2)",2436
+"join_cent_sums(rs1, rs2)",3025
+"join_cent_sums(rs1, rs2)",2813
+"unjoin_cent_sums(rs3, rs2)",2524
+"unjoin_cent_sums(rs3, rs1)",2522
+"unjoin_cent_sums(rs3, rs2)",2572
+"unjoin_cent_sums(rs3, rs1)",2618
+"join_cent_sums(rs1, rs2)",2491
+"unjoin_cent_sums(rs3, rs2)",2423
+"join_cent_sums(rs1, rs2)",2704
+"unjoin_cent_sums(rs3, rs2)",2529
+"unjoin_cent_sums(rs3, rs2)",2631
+"unjoin_cent_sums(rs3, rs2)",2767
+"unjoin_cent_sums(rs3, rs2)",2329
+"unjoin_cent_sums(rs3, rs2)",2268
+"unjoin_cent_sums(rs3, rs2)",2528
+"unjoin_cent_sums(rs3, rs1)",2391
+"join_cent_sums(rs1, rs2)",2760
+"unjoin_cent_sums(rs3, rs1)",2254
+"join_cent_sums(rs1, rs2)",2655
+"join_cent_sums(rs1, rs2)",2459
+"join_cent_sums(rs1, rs2)",2741
+"unjoin_cent_sums(rs3, rs2)",2271
+"join_cent_sums(rs1, rs2)",2538
+"unjoin_cent_sums(rs3, rs1)",2287
+"join_cent_sums(rs1, rs2)",2467
+"join_cent_sums(rs1, rs2)",2813
+"unjoin_cent_sums(rs3, rs1)",2278
+"join_cent_sums(rs1, rs2)",2482
+"unjoin_cent_sums(rs3, rs1)",2290
+"join_cent_sums(rs1, rs2)",2734
+"join_cent_sums(rs1, rs2)",2379
+"join_cent_sums(rs1, rs2)",2760
+"unjoin_cent_sums(rs3, rs1)",2433
+"unjoin_cent_sums(rs3, rs2)",2167
+"unjoin_cent_sums(rs3, rs2)",2370
+"join_cent_sums(rs1, rs2)",2398
+"unjoin_cent_sums(rs3, rs2)",2355
+"unjoin_cent_sums(rs3, rs2)",2256
+"join_cent_sums(rs1, rs2)",2566
+"unjoin_cent_sums(rs3, rs2)",2241
+"unjoin_cent_sums(rs3, rs2)",2368
+"join_cent_sums(rs1, rs2)",2631
+"unjoin_cent_sums(rs3, rs2)",2542
+"unjoin_cent_sums(rs3, rs2)",2234
+"unjoin_cent_sums(rs3, rs1)",2490
+"unjoin_cent_sums(rs3, rs2)",2262
+"unjoin_cent_sums(rs3, rs1)",2539
+"join_cent_sums(rs1, rs2)",3029
+"unjoin_cent_sums(rs3, rs1)",2405
+"join_cent_sums(rs1, rs2)",2895
+"unjoin_cent_sums(rs3, rs2)",2469
+"join_cent_sums(rs1, rs2)",3051
+"unjoin_cent_sums(rs3, rs1)",2672
+"unjoin_cent_sums(rs3, rs2)",2433
+"unjoin_cent_sums(rs3, rs2)",2423
+"unjoin_cent_sums(rs3, rs1)",2725
+"unjoin_cent_sums(rs3, rs1)",2869
+"unjoin_cent_sums(rs3, rs2)",2515
+"join_cent_sums(rs1, rs2)",3078
+"unjoin_cent_sums(rs3, rs1)",2175
+"join_cent_sums(rs1, rs2)",2487
+"join_cent_sums(rs1, rs2)",2576
+"unjoin_cent_sums(rs3, rs1)",2447
+"join_cent_sums(rs1, rs2)",2616
+"unjoin_cent_sums(rs3, rs1)",2948
+"unjoin_cent_sums(rs3, rs1)",2188
+"unjoin_cent_sums(rs3, rs2)",2437
+"join_cent_sums(rs1, rs2)",2698
+"join_cent_sums(rs1, rs2)",2580
+"join_cent_sums(rs1, rs2)",2486
+"join_cent_sums(rs1, rs2)",2499
+"unjoin_cent_sums(rs3, rs2)",2318
+"unjoin_cent_sums(rs3, rs2)",2179
+"join_cent_sums(rs1, rs2)",2711
+"join_cent_sums(rs1, rs2)",2432
+"join_cent_sums(rs1, rs2)",2494
+"unjoin_cent_sums(rs3, rs1)",2491
+"unjoin_cent_sums(rs3, rs1)",2274
+"unjoin_cent_sums(rs3, rs1)",15453
+"unjoin_cent_sums(rs3, rs1)",2970
+"join_cent_sums(rs1, rs2)",2964
+"unjoin_cent_sums(rs3, rs1)",2627
+"unjoin_cent_sums(rs3, rs2)",2232
+"unjoin_cent_sums(rs3, rs2)",2487
+"join_cent_sums(rs1, rs2)",2668
+"unjoin_cent_sums(rs3, rs2)",2287
+"join_cent_sums(rs1, rs2)",2503
+"unjoin_cent_sums(rs3, rs1)",2287
+"join_cent_sums(rs1, rs2)",2580
+"join_cent_sums(rs1, rs2)",2488
+"join_cent_sums(rs1, rs2)",2779
+"join_cent_sums(rs1, rs2)",2627
+"unjoin_cent_sums(rs3, rs1)",2286
+"join_cent_sums(rs1, rs2)",2550
+"unjoin_cent_sums(rs3, rs2)",2338
+"unjoin_cent_sums(rs3, rs2)",2410
+"unjoin_cent_sums(rs3, rs2)",2238
+"join_cent_sums(rs1, rs2)",2666
+"unjoin_cent_sums(rs3, rs1)",2407
+"unjoin_cent_sums(rs3, rs1)",2438
+"join_cent_sums(rs1, rs2)",2731
+"unjoin_cent_sums(rs3, rs1)",2452
+"join_cent_sums(rs1, rs2)",3036
+"join_cent_sums(rs1, rs2)",2759
+"join_cent_sums(rs1, rs2)",2746
+"unjoin_cent_sums(rs3, rs1)",2467
+"unjoin_cent_sums(rs3, rs2)",2773
+"join_cent_sums(rs1, rs2)",2555
+"join_cent_sums(rs1, rs2)",2506
+"unjoin_cent_sums(rs3, rs2)",2197
+"join_cent_sums(rs1, rs2)",2586
+"unjoin_cent_sums(rs3, rs2)",2416
+"unjoin_cent_sums(rs3, rs1)",2409
+"join_cent_sums(rs1, rs2)",2427
+"unjoin_cent_sums(rs3, rs1)",2442
+"unjoin_cent_sums(rs3, rs1)",2488
+"unjoin_cent_sums(rs3, rs1)",2173
+"unjoin_cent_sums(rs3, rs2)",2286
+"join_cent_sums(rs1, rs2)",2429
+"unjoin_cent_sums(rs3, rs2)",2497
+"unjoin_cent_sums(rs3, rs1)",2356
+"unjoin_cent_sums(rs3, rs1)",2269
+"unjoin_cent_sums(rs3, rs2)",2229
+"unjoin_cent_sums(rs3, rs1)",2515
+"join_cent_sums(rs1, rs2)",2523
+"unjoin_cent_sums(rs3, rs1)",2644
+"unjoin_cent_sums(rs3, rs1)",2333
+"unjoin_cent_sums(rs3, rs1)",2306
+"unjoin_cent_sums(rs3, rs2)",2373
+"unjoin_cent_sums(rs3, rs2)",2848
+"unjoin_cent_sums(rs3, rs1)",2506
+"unjoin_cent_sums(rs3, rs1)",2464
+"join_cent_sums(rs1, rs2)",2702
+"unjoin_cent_sums(rs3, rs2)",2293
+"join_cent_sums(rs1, rs2)",2642
+"join_cent_sums(rs1, rs2)",2517
+"join_cent_sums(rs1, rs2)",2540
+"join_cent_sums(rs1, rs2)",2698
+"join_cent_sums(rs1, rs2)",2518
+"join_cent_sums(rs1, rs2)",2623
+"unjoin_cent_sums(rs3, rs1)",2376
+"join_cent_sums(rs1, rs2)",2654
+"unjoin_cent_sums(rs3, rs2)",2204
+"join_cent_sums(rs1, rs2)",2553
+"unjoin_cent_sums(rs3, rs1)",2221
+"unjoin_cent_sums(rs3, rs1)",2723
+"unjoin_cent_sums(rs3, rs1)",2425
+"join_cent_sums(rs1, rs2)",2646
+"unjoin_cent_sums(rs3, rs2)",2343
+"join_cent_sums(rs1, rs2)",2873
+"unjoin_cent_sums(rs3, rs2)",2368
+"join_cent_sums(rs1, rs2)",2511
+"unjoin_cent_sums(rs3, rs1)",2350
+"unjoin_cent_sums(rs3, rs2)",2399
+"unjoin_cent_sums(rs3, rs1)",2564
+"unjoin_cent_sums(rs3, rs1)",2415
+"unjoin_cent_sums(rs3, rs1)",2269
+"unjoin_cent_sums(rs3, rs1)",2192
+"unjoin_cent_sums(rs3, rs1)",2460
+"unjoin_cent_sums(rs3, rs2)",2282
+"unjoin_cent_sums(rs3, rs2)",2523
+"as.centcosums(x1, max_ord)",161860
+mobj3 %-% mobj1,33210
+"as.centcosums(x1, max_ord)",62610
+mobj3 %-% mobj1,21155
+mobj3 %-% mobj1,19763
+"as.centcosums(x1, max_ord)",58001
+mobj3 %-% mobj1,20764
+"as.centcosums(x1, max_ord)",57458
+"as.centcosums(x1, max_ord)",56766
+"as.centcosums(x1, max_ord)",70802
+mobj3 %-% mobj1,21098
+mobj3 %-% mobj1,18772
+"as.centcosums(x1, max_ord)",71464
+"as.centcosums(x1, max_ord)",57369
+"as.centcosums(x1, max_ord)",55184
+mobj3 %-% mobj1,20649
+"as.centcosums(x1, max_ord)",55318
+mobj3 %-% mobj1,33851
+"as.centcosums(x1, max_ord)",57843
+mobj3 %-% mobj1,19599
+mobj3 %-% mobj1,18414
+"as.centcosums(x1, max_ord)",55651
+mobj3 %-% mobj1,19214
+mobj3 %-% mobj1,18984
+mobj3 %-% mobj1,18025
+"as.centcosums(x1, max_ord)",57236
+mobj3 %-% mobj1,18965
+mobj3 %-% mobj1,31787
+"as.centcosums(x1, max_ord)",59364
+"as.centcosums(x1, max_ord)",56916
+"as.centcosums(x1, max_ord)",56398
+"as.centcosums(x1, max_ord)",54834
+mobj3 %-% mobj1,34650
+mobj3 %-% mobj1,21066
+mobj3 %-% mobj1,17153
+"as.centcosums(x1, max_ord)",70770
+mobj3 %-% mobj1,21016
+mobj3 %-% mobj1,18044
+"as.centcosums(x1, max_ord)",55988
+mobj3 %-% mobj1,18922
+"as.centcosums(x1, max_ord)",55319
+mobj3 %-% mobj1,20071
+mobj3 %-% mobj1,18201
+mobj3 %-% mobj1,17573
+mobj3 %-% mobj1,17864
+"as.centcosums(x1, max_ord)",71180
+mobj3 %-% mobj1,21222
+"as.centcosums(x1, max_ord)",57038
+mobj3 %-% mobj1,19469
+mobj3 %-% mobj1,17597
+mobj3 %-% mobj1,18048
+"as.centcosums(x1, max_ord)",59291
+"as.centcosums(x1, max_ord)",55749
+"as.centcosums(x1, max_ord)",56779
+"as.centcosums(x1, max_ord)",81001
+mobj3 %-% mobj1,21353
+"as.centcosums(x1, max_ord)",57085
+mobj3 %-% mobj1,20161
+"as.centcosums(x1, max_ord)",57691
+mobj3 %-% mobj1,19351
+mobj3 %-% mobj1,18379
+"as.centcosums(x1, max_ord)",55746
+"as.centcosums(x1, max_ord)",69017
+mobj3 %-% mobj1,20867
+"as.centcosums(x1, max_ord)",57967
+"as.centcosums(x1, max_ord)",55033
+mobj3 %-% mobj1,20125
+mobj3 %-% mobj1,18383
+mobj3 %-% mobj1,18175
+mobj3 %-% mobj1,17865
+mobj3 %-% mobj1,18249
+mobj3 %-% mobj1,17304
+mobj3 %-% mobj1,18473
+"as.centcosums(x1, max_ord)",72103
+mobj3 %-% mobj1,20350
+mobj3 %-% mobj1,18108
+"as.centcosums(x1, max_ord)",56209
+"as.centcosums(x1, max_ord)",71641
+mobj3 %-% mobj1,25876
+mobj3 %-% mobj1,33365
+mobj3 %-% mobj1,32218
+mobj3 %-% mobj1,18110
+mobj3 %-% mobj1,17810
+"as.centcosums(x1, max_ord)",71151
+"as.centcosums(x1, max_ord)",56056
+"as.centcosums(x1, max_ord)",57900
+"as.centcosums(x1, max_ord)",55412
+"as.centcosums(x1, max_ord)",55915
+"as.centcosums(x1, max_ord)",57063
+"as.centcosums(x1, max_ord)",70613
+"as.centcosums(x1, max_ord)",58802
+"as.centcosums(x1, max_ord)",55614
+mobj3 %-% mobj1,21137
+mobj3 %-% mobj1,17751
+"as.centcosums(x1, max_ord)",58104
+mobj3 %-% mobj1,19595
+"as.centcosums(x1, max_ord)",69827
+mobj3 %-% mobj1,22684
+"as.centcosums(x1, max_ord)",70520
+mobj3 %-% mobj1,20950
+"as.centcosums(x1, max_ord)",56826
+"as.centcosums(x1, max_ord)",57579
+"as.centcosums(x1, max_ord)",58099
+"as.centcosums(x1, max_ord)",57217
+"as.centcosums(x1, max_ord)",70009
+"as.centcosums(x1, max_ord)",57526
+"as.centcosums(x1, max_ord)",55378
+mobj3 %-% mobj1,19862
+mobj3 %-% mobj1,18517
+mobj3 %-% mobj1,18888
+mobj3 %-% mobj1,17922
+mobj3 %-% mobj1,17542
+mobj3 %-% mobj1,18e3
+mobj3 %-% mobj1,17485
+mobj3 %-% mobj1,17117
+mobj3 %-% mobj1,17723
+"as.centcosums(x1, max_ord)",72526
+"as.centcosums(x1, max_ord)",69370
+mobj3 %-% mobj1,21784
+mobj3 %-% mobj1,18979
+mobj3 %-% mobj1,18765
+"as.centcosums(x1, max_ord)",58615
+"as.centcosums(x1, max_ord)",57542
+mobj3 %-% mobj1,20502
+mobj3 %-% mobj1,18305
+"as.centcosums(x1, max_ord)",70583
+"as.centcosums(x1, max_ord)",60563
+"as.centcosums(x1, max_ord)",57431
+"as.centcosums(x1, max_ord)",57145
+"as.centcosums(x1, max_ord)",57066
+"as.centcosums(x1, max_ord)",57752
+mobj3 %-% mobj1,33595
+"as.centcosums(x1, max_ord)",57849
+"as.centcosums(x1, max_ord)",56978
+mobj3 %-% mobj1,21003
+mobj3 %-% mobj1,17955
+"as.centcosums(x1, max_ord)",56519
+mobj3 %-% mobj1,33219
+"as.centcosums(x1, max_ord)",57521
+"as.centcosums(x1, max_ord)",70780
+"as.centcosums(x1, max_ord)",56622
+"as.centcosums(x1, max_ord)",57047
+"as.centcosums(x1, max_ord)",54975
+"as.centcosums(x1, max_ord)",56312
+"as.centcosums(x1, max_ord)",54891
+mobj3 %-% mobj1,19227
+mobj3 %-% mobj1,19751
+mobj3 %-% mobj1,33755
+"as.centcosums(x1, max_ord)",58856
+"as.centcosums(x1, max_ord)",56510
+"as.centcosums(x1, max_ord)",56696
+"as.centcosums(x1, max_ord)",57680
+mobj3 %-% mobj1,19651
+"as.centcosums(x1, max_ord)",56826
+"as.centcosums(x1, max_ord)",83058
+mobj3 %-% mobj1,21929
+"as.centcosums(x1, max_ord)",56674
+mobj3 %-% mobj1,18911
+mobj3 %-% mobj1,20131
+mobj3 %-% mobj1,17379
+mobj3 %-% mobj1,19010
+"as.centcosums(x1, max_ord)",59175
+mobj3 %-% mobj1,20691
+mobj3 %-% mobj1,19236
+"as.centcosums(x1, max_ord)",70415
+mobj3 %-% mobj1,20467
+"as.centcosums(x1, max_ord)",56077
+"as.centcosums(x1, max_ord)",56078
+"as.centcosums(x1, max_ord)",56939
+"as.centcosums(x1, max_ord)",58360
+"as.centcosums(x1, max_ord)",60416
+mobj3 %-% mobj1,64446
+mobj3 %-% mobj1,20048
+"as.centcosums(x1, max_ord)",55984
+mobj3 %-% mobj1,19954
+mobj3 %-% mobj1,18369
+"as.centcosums(x1, max_ord)",72090
+"as.centcosums(x1, max_ord)",58152
+"as.centcosums(x1, max_ord)",57066
+"as.centcosums(x1, max_ord)",69319
+mobj3 %-% mobj1,21483
+"as.centcosums(x1, max_ord)",57333
+"as.centcosums(x1, max_ord)",56409
+mobj3 %-% mobj1,20630
+mobj3 %-% mobj1,18666
+"as.centcosums(x1, max_ord)",54772
+"as.centcosums(x1, max_ord)",57365
+mobj3 %-% mobj1,32603
+"as.centcosums(x1, max_ord)",57868
+mobj3 %-% mobj1,19667
+mobj3 %-% mobj1,18746
+mobj3 %-% mobj1,17975
+mobj3 %-% mobj1,19156
+"as.centcosums(x1, max_ord)",58240
+"as.centcosums(x1, max_ord)",55997
+mobj3 %-% mobj1,19223
+mobj3 %-% mobj1,32905
+mobj3 %-% mobj1,20109
+mobj3 %-% mobj1,31641
+mobj3 %-% mobj1,20296
+"RollingWindow::RollingMean(x, wins)",276360
+"running_sd3(x, wins)",656636
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2210791
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",484538
+"running_kurt(x, wins)",5375021
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12920787
+"running_sharpe(x, wins)",739197
+"running_tstat(x, wins)",681419
+"running_scaled(x, wins)",1099512
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13242763
+"running_skew4(x, wins)",4069751
+"roll::roll_sd(xm, wins)",6008915
+"running_sum(x, wins)",91328
+"running_sharpe(x, wins)",668311
+"running_apx_median(x, wins)",14408999
+"running_sharpe(x, wins)",681745
+"running_zscored(x, wins)",706913
+"running_sd3(x, wins)",749817
+"running_scaled(x, wins)",705337
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2066531
+"silly_fun(x, wins, sum, na.rm = FALSE)",36457697
+"roll::roll_sd(xm, wins)",7244941
+"running_sd3(x, wins)",723956
+"running_mean(x, wins)",107973
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1982555
+"running_tstat(x, wins)",674117
+"running_zscored(x, wins)",709570
+"running_skew4(x, wins)",3750350
+"running_skew(x, wins)",4979862
+"roll::roll_mean(xm, wins)",2595574
+"roll::roll_sum(xm, wins)",2201566
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1881215
+"roll::roll_sd(xm, wins)",5987115
+"RollingWindow::RollingStd(x, wins)",311746
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",477852
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2028164
+"roll::roll_sd(xm, wins)",5743543
+"RollingWindow::RollingMean(x, wins)",152899
+"running_centered(x, wins)",634661
+"RollingWindow::RollingStd(x, wins)",242314
+"roll::roll_sd(xm, wins)",5725093
+"running_skew(x, wins)",3883032
+"running_tstat(x, wins)",944854
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",411143
+"silly_fun(x, wins, sum, na.rm = FALSE)",32942311
+"roll::roll_sd(xm, wins)",5869432
+"running_tstat(x, wins)",687098
+"roll::roll_sd(xm, wins)",5750865
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",395704
+"running_sharpe(x, wins)",724338
+"running_tstat(x, wins)",685342
+"running_skew(x, wins)",3718272
+"running_kurt(x, wins)",5431187
+"roll::roll_sd(xm, wins)",5762174
+"running_mean(x, wins)",87626
+"roll::roll_sd(xm, wins)",5882833
+"running_zscored(x, wins)",696602
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12727670
+"RollingWindow::RollingSum(x, wins)",252575
+"running_zscored(x, wins)",759046
+"roll::roll_sum(xm, wins)",1948388
+"RollingWindow::RollingMean(x, wins)",157876
+"running_apx_median(x, wins)",14332048
+"roll::roll_sum(xm, wins)",1896492
+"running_scaled(x, wins)",697004
+"running_sd3(x, wins)",661390
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",394448
+"roll::roll_sd(xm, wins)",5864981
+"running_centered(x, wins)",600855
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",373984
+"running_apx_median(x, wins)",14503475
+"running_skew4(x, wins)",3736229
+"running_scaled(x, wins)",686614
+"running_kurt(x, wins)",5483189
+"running_skew4(x, wins)",3739277
+"roll::roll_sd(xm, wins)",5778634
+"running_kurt(x, wins)",5457232
+"running_kurt(x, wins)",5400975
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2045813
+"roll::roll_sum(xm, wins)",1906185
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",382291
+"running_centered(x, wins)",577496
+"running_mean(x, wins)",76364
+"roll::roll_mean(xm, wins)",2129640
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1968683
+"roll::roll_sd(xm, wins)",5722921
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",377463
+"roll::roll_mean(xm, wins)",2203202
+"RollingWindow::RollingSum(x, wins)",129196
+"running_skew4(x, wins)",3822978
+"roll::roll_mean(xm, wins)",2075280
+"running_scaled(x, wins)",700919
+"running_kurt5(x, wins)",6128281
+"roll::roll_sd(xm, wins)",6148571
+"running_apx_median(x, wins)",14701264
+"running_sd3(x, wins)",644357
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",422401
+"running_apx_median(x, wins)",14560225
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",375485
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2125451
+"running_zscored(x, wins)",718206
+"running_skew4(x, wins)",3732949
+"running_centered(x, wins)",616432
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",395964
+"roll::roll_sum(xm, wins)",1935848
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2041495
+"running_apx_median(x, wins)",14924623
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2091316
+"running_skew(x, wins)",3741195
+"silly_fun(x, wins, sum, na.rm = FALSE)",34727992
+"roll::roll_mean(xm, wins)",2272021
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",476798
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",393540
+"running_sd3(x, wins)",634441
+"running_apx_median(x, wins)",14782325
+"running_tstat(x, wins)",687992
+"running_mean(x, wins)",77944
+"RollingWindow::RollingMean(x, wins)",180441
+"RollingWindow::RollingMean(x, wins)",146439
+"running_sd3(x, wins)",636255
+"running_sum(x, wins)",77928
+"running_sum(x, wins)",75567
+"running_kurt(x, wins)",5443784
+"running_kurt5(x, wins)",6086171
+"roll::roll_mean(xm, wins)",2199644
+"roll::roll_sum(xm, wins)",1903470
+"running_centered(x, wins)",612677
+"running_apx_median(x, wins)",14419982
+"running_skew(x, wins)",3628407
+"silly_fun(x, wins, mean, na.rm = FALSE)",65055611
+"running_centered(x, wins)",599285
+"RollingWindow::RollingStd(x, wins)",2554418
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",516152
+"silly_fun(x, wins, sum, na.rm = FALSE)",32811231
+"roll::roll_mean(xm, wins)",2208014
+"running_skew4(x, wins)",3695647
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",443061
+"RollingWindow::RollingMean(x, wins)",169856
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2019594
+"silly_fun(x, wins, sum, na.rm = FALSE)",32658325
+"RollingWindow::RollingStd(x, wins)",2540588
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",455303
+"running_apx_median(x, wins)",15123139
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1809956
+"running_sum(x, wins)",78156
+"running_kurt5(x, wins)",5990754
+"silly_fun(x, wins, sum, na.rm = FALSE)",33521270
+"roll::roll_mean(xm, wins)",2282296
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1998785
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10871122
+"running_sum(x, wins)",96447
+"running_scaled(x, wins)",668235
+"running_apx_median(x, wins)",14415280
+"running_kurt5(x, wins)",5964026
+"running_skew4(x, wins)",3863611
+"roll::roll_sum(xm, wins)",2096182
+"running_scaled(x, wins)",2646032
+"running_scaled(x, wins)",674468
+"running_centered(x, wins)",600710
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1761836
+"running_centered(x, wins)",568811
+"running_sd3(x, wins)",664626
+"RollingWindow::RollingStd(x, wins)",263509
+"running_zscored(x, wins)",697126
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",444404
+"roll::roll_mean(xm, wins)",2095981
+"running_sd3(x, wins)",640188
+"running_skew(x, wins)",3608514
+"running_tstat(x, wins)",669146
+"running_zscored(x, wins)",669109
+"running_skew(x, wins)",3657344
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",384386
+"roll::roll_mean(xm, wins)",2142990
+"RollingWindow::RollingSum(x, wins)",138122
+"running_zscored(x, wins)",694615
+"RollingWindow::RollingStd(x, wins)",232380
+"roll::roll_mean(xm, wins)",2071807
+"running_centered(x, wins)",581899
+"running_skew(x, wins)",3602465
+"silly_fun(x, wins, sum, na.rm = FALSE)",33123116
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",411338
+"running_kurt(x, wins)",5437778
+"running_mean(x, wins)",77872
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",444850
+"running_zscored(x, wins)",671850
+"roll::roll_mean(xm, wins)",2211870
+"running_tstat(x, wins)",677061
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2049296
+"running_zscored(x, wins)",673599
+"running_zscored(x, wins)",666258
+"running_centered(x, wins)",572333
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1956266
+"roll::roll_sd(xm, wins)",5788320
+"running_sd3(x, wins)",652094
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2008496
+"RollingWindow::RollingMean(x, wins)",2268771
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",502832
+"RollingWindow::RollingStd(x, wins)",255140
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",446152
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",370026
+"roll::roll_sd(xm, wins)",5787856
+"RollingWindow::RollingSum(x, wins)",121090
+"running_centered(x, wins)",590218
+"running_zscored(x, wins)",708450
+"roll::roll_sum(xm, wins)",1938322
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10839897
+"running_skew4(x, wins)",3853824
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",461130
+"running_zscored(x, wins)",688156
+"running_apx_median(x, wins)",14471584
+"running_sum(x, wins)",75785
+"RollingWindow::RollingSum(x, wins)",191100
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2034942
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",367788
+"RollingWindow::RollingMean(x, wins)",148580
+"running_kurt5(x, wins)",6028752
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12309376
+"running_skew(x, wins)",3853705
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",436242
+"roll::roll_sum(xm, wins)",1998469
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",396403
+"running_skew4(x, wins)",3731277
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",410596
+"running_tstat(x, wins)",712297
+"running_mean(x, wins)",75322
+"roll::roll_sd(xm, wins)",5817264
+"running_kurt(x, wins)",5298344
+"RollingWindow::RollingStd(x, wins)",235911
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",430349
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",606299
+"roll::roll_sum(xm, wins)",1923509
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",412531
+"RollingWindow::RollingSum(x, wins)",120786
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",385335
+"RollingWindow::RollingStd(x, wins)",329173
+"running_skew4(x, wins)",3702447
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2047926
+"silly_fun(x, wins, sum, na.rm = FALSE)",32557405
+"running_zscored(x, wins)",749212
+"running_skew4(x, wins)",3723615
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2060511
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12974580
+"running_skew4(x, wins)",4299964
+"roll::roll_sd(xm, wins)",6634718
+"RollingWindow::RollingStd(x, wins)",262054
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11262831
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",516207
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1886620
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10795082
+"running_skew4(x, wins)",3890023
+"running_kurt(x, wins)",5519555
+"running_mean(x, wins)",80635
+"RollingWindow::RollingSum(x, wins)",197531
+"silly_fun(x, wins, sum, na.rm = FALSE)",35631150
+"roll::roll_mean(xm, wins)",2232783
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10886755
+"silly_fun(x, wins, sum, na.rm = FALSE)",36080283
+"running_kurt5(x, wins)",6139977
+"running_kurt5(x, wins)",7464908
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",515134
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",440836
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1893068
+"running_sum(x, wins)",77428
+"running_mean(x, wins)",74803
+"running_kurt5(x, wins)",6130970
+"running_zscored(x, wins)",715549
+"running_skew(x, wins)",3780940
+"RollingWindow::RollingSum(x, wins)",178073
+"running_skew(x, wins)",3733149
+"running_apx_median(x, wins)",14642370
+"running_kurt(x, wins)",5373424
+"running_zscored(x, wins)",675069
+"running_mean(x, wins)",79506
+"running_kurt5(x, wins)",6128008
+"running_sharpe(x, wins)",668998
+"running_sd3(x, wins)",614198
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",444286
+"roll::roll_sd(xm, wins)",5833375
+"running_apx_median(x, wins)",14156333
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",385819
+"running_kurt5(x, wins)",5874686
+"running_sum(x, wins)",77131
+"running_kurt5(x, wins)",5914466
+"running_sd3(x, wins)",616644
+"silly_fun(x, wins, mean, na.rm = FALSE)",68611315
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1801229
+"RollingWindow::RollingSum(x, wins)",162892
+"running_kurt(x, wins)",5323690
+"running_tstat(x, wins)",669618
+"silly_fun(x, wins, mean, na.rm = FALSE)",64821997
+"running_sd3(x, wins)",701259
+"silly_fun(x, wins, mean, na.rm = FALSE)",67405871
+"running_skew4(x, wins)",3745827
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",435176
+"roll::roll_sd(xm, wins)",5973778
+"running_kurt(x, wins)",5261429
+"running_sum(x, wins)",73243
+"running_zscored(x, wins)",665089
+"running_sd3(x, wins)",774799
+"running_kurt(x, wins)",5324160
+"roll::roll_sum(xm, wins)",1908449
+"roll::roll_sd(xm, wins)",5931789
+"RollingWindow::RollingSum(x, wins)",132543
+"roll::roll_sum(xm, wins)",1887041
+"RollingWindow::RollingMean(x, wins)",157817
+"running_skew(x, wins)",3583158
+"silly_fun(x, wins, sum, na.rm = FALSE)",35121490
+"roll::roll_sum(xm, wins)",2071399
+"running_centered(x, wins)",728080
+"RollingWindow::RollingSum(x, wins)",142479
+"running_kurt5(x, wins)",6048987
+"running_mean(x, wins)",78231
+"running_skew4(x, wins)",3755606
+"running_sum(x, wins)",109975
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2028281
+"RollingWindow::RollingSum(x, wins)",127904
+"running_skew4(x, wins)",3954134
+"running_tstat(x, wins)",675633
+"running_mean(x, wins)",75726
+"RollingWindow::RollingMean(x, wins)",155710
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2016195
+"running_kurt5(x, wins)",5893761
+"running_mean(x, wins)",75713
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",372791
+"silly_fun(x, wins, mean, na.rm = FALSE)",64112331
+"running_kurt5(x, wins)",5922074
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",435660
+"running_sd3(x, wins)",636191
+"running_tstat(x, wins)",681189
+"RollingWindow::RollingMean(x, wins)",2557059
+"running_kurt5(x, wins)",6022066
+"running_sum(x, wins)",75671
+"running_skew(x, wins)",3637331
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",444801
+"running_sharpe(x, wins)",667756
+"running_kurt(x, wins)",5262270
+"silly_fun(x, wins, sum, na.rm = FALSE)",32781780
+"running_scaled(x, wins)",695072
+"running_sharpe(x, wins)",665129
+"running_sum(x, wins)",76364
+"roll::roll_sd(xm, wins)",5870125
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10715027
+"running_skew4(x, wins)",3826896
+"RollingWindow::RollingStd(x, wins)",314580
+"running_kurt(x, wins)",5305499
+"silly_fun(x, wins, mean, na.rm = FALSE)",67037718
+"running_zscored(x, wins)",733044
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1837404
+"RollingWindow::RollingSum(x, wins)",172358
+"running_skew4(x, wins)",3686252
+"RollingWindow::RollingMean(x, wins)",153123
+"running_skew4(x, wins)",3670514
+"RollingWindow::RollingStd(x, wins)",237588
+"silly_fun(x, wins, mean, na.rm = FALSE)",65379981
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",417368
+"running_sd3(x, wins)",679234
+"running_zscored(x, wins)",684576
+"roll::roll_sd(xm, wins)",6029419
+"running_centered(x, wins)",2775442
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",526190
+"running_skew4(x, wins)",3735410
+"RollingWindow::RollingMean(x, wins)",200712
+"running_sum(x, wins)",76124
+"roll::roll_sd(xm, wins)",5866781
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1755288
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",369825
+"running_kurt(x, wins)",5249835
+"running_sum(x, wins)",74273
+"roll::roll_sum(xm, wins)",1934003
+"roll::roll_mean(xm, wins)",2080646
+"silly_fun(x, wins, sum, na.rm = FALSE)",32854027
+"running_skew(x, wins)",3669719
+"running_scaled(x, wins)",697689
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386024
+"running_tstat(x, wins)",674506
+"RollingWindow::RollingSum(x, wins)",187460
+"running_sum(x, wins)",77814
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2057197
+"roll::roll_sd(xm, wins)",5858991
+"running_mean(x, wins)",85737
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12845190
+"silly_fun(x, wins, mean, na.rm = FALSE)",66389897
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1996668
+"RollingWindow::RollingStd(x, wins)",285328
+"running_mean(x, wins)",83662
+"running_sharpe(x, wins)",684178
+"running_centered(x, wins)",573796
+"running_mean(x, wins)",74791
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386048
+"roll::roll_mean(xm, wins)",2125175
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1771430
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",473129
+"RollingWindow::RollingMean(x, wins)",153495
+"running_sum(x, wins)",77373
+"running_sharpe(x, wins)",666777
+"RollingWindow::RollingStd(x, wins)",233514
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1986282
+"running_kurt5(x, wins)",5977171
+"running_sharpe(x, wins)",670790
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",446441
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",442504
+"running_centered(x, wins)",573242
+"roll::roll_sum(xm, wins)",1995610
+"running_sd3(x, wins)",631146
+"roll::roll_sum(xm, wins)",1901352
+"RollingWindow::RollingSum(x, wins)",76417371
+"running_centered(x, wins)",675499
+"running_sum(x, wins)",85396
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10723932
+"running_tstat(x, wins)",689197
+"running_tstat(x, wins)",681887
+"running_sd3(x, wins)",623980
+"RollingWindow::RollingSum(x, wins)",178616
+"running_scaled(x, wins)",678647
+"RollingWindow::RollingStd(x, wins)",234019
+"running_zscored(x, wins)",670899
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",385984
+"roll::roll_sum(xm, wins)",1942263
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",376154
+"running_kurt(x, wins)",5274091
+"RollingWindow::RollingMean(x, wins)",148072
+"running_kurt5(x, wins)",5892471
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10461396
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",413722
+"running_scaled(x, wins)",687853
+"running_sum(x, wins)",76705
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",434742
+"running_sum(x, wins)",76329
+"roll::roll_mean(xm, wins)",2157645
+"running_mean(x, wins)",84960
+"running_scaled(x, wins)",665390
+"running_mean(x, wins)",74496
+"running_centered(x, wins)",571515
+"running_tstat(x, wins)",699390
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",420330
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",412920
+"running_kurt(x, wins)",5266857
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2143566
+"RollingWindow::RollingMean(x, wins)",282073
+"roll::roll_sd(xm, wins)",7965044
+"running_sd3(x, wins)",830960
+"running_kurt5(x, wins)",6164573
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",446124
+"RollingWindow::RollingMean(x, wins)",198324
+"running_scaled(x, wins)",723427
+"running_skew(x, wins)",3627505
+"running_kurt(x, wins)",5257625
+"running_sharpe(x, wins)",663724
+"RollingWindow::RollingSum(x, wins)",125499
+"running_sharpe(x, wins)",689892
+"running_kurt5(x, wins)",5941565
+"running_tstat(x, wins)",691996
+"running_tstat(x, wins)",721914
+"running_mean(x, wins)",80143
+"running_scaled(x, wins)",674433
+"running_skew4(x, wins)",4731781
+"running_zscored(x, wins)",729170
+"roll::roll_mean(xm, wins)",2188210
+"running_sd3(x, wins)",683124
+"silly_fun(x, wins, mean, na.rm = FALSE)",69978742
+"running_apx_median(x, wins)",15595323
+"silly_fun(x, wins, mean, na.rm = FALSE)",67698155
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",2738975
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10966637
+"RollingWindow::RollingStd(x, wins)",334783
+"running_kurt5(x, wins)",6062587
+"RollingWindow::RollingSum(x, wins)",121568
+"running_centered(x, wins)",585819
+"RollingWindow::RollingStd(x, wins)",234572
+"silly_fun(x, wins, mean, na.rm = FALSE)",77167450
+"RollingWindow::RollingStd(x, wins)",448077
+"silly_fun(x, wins, mean, na.rm = FALSE)",95065179
+"running_apx_median(x, wins)",18710945
+"RollingWindow::RollingSum(x, wins)",228907
+"running_centered(x, wins)",667221
+"running_sum(x, wins)",86559
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",511004
+"running_scaled(x, wins)",763808
+"roll::roll_sd(xm, wins)",8053366
+"running_tstat(x, wins)",1033093
+"running_apx_median(x, wins)",17259335
+"RollingWindow::RollingSum(x, wins)",214160
+"roll::roll_sum(xm, wins)",2610191
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13793152
+"running_kurt5(x, wins)",9462444
+"running_kurt(x, wins)",6417573
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2413205
+"running_skew(x, wins)",4513947
+"silly_fun(x, wins, sum, na.rm = FALSE)",36196388
+"running_sd3(x, wins)",704311
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",484279
+"running_tstat(x, wins)",726081
+"silly_fun(x, wins, sum, na.rm = FALSE)",38658133
+"running_sum(x, wins)",103558
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1794202
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11344015
+"RollingWindow::RollingStd(x, wins)",344141
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",379816
+"RollingWindow::RollingMean(x, wins)",161949
+"running_sharpe(x, wins)",699105
+"running_apx_median(x, wins)",14945846
+"RollingWindow::RollingMean(x, wins)",180259
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2063356
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",501945
+"running_kurt5(x, wins)",6157944
+"RollingWindow::RollingStd(x, wins)",249059
+"running_skew4(x, wins)",3795790
+"running_zscored(x, wins)",691657
+"running_scaled(x, wins)",683290
+"running_sd3(x, wins)",631023
+"running_tstat(x, wins)",713811
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2028133
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",395750
+"running_tstat(x, wins)",680729
+"running_kurt(x, wins)",5407010
+"running_kurt5(x, wins)",6149984
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12660080
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10747773
+"running_centered(x, wins)",639457
+"running_scaled(x, wins)",682365
+"running_centered(x, wins)",587792
+"RollingWindow::RollingMean(x, wins)",217494
+"roll::roll_sd(xm, wins)",5924549
+"silly_fun(x, wins, mean, na.rm = FALSE)",65135706
+"running_scaled(x, wins)",694996
+"RollingWindow::RollingStd(x, wins)",299801
+"RollingWindow::RollingMean(x, wins)",2203950
+"running_zscored(x, wins)",783841
+"roll::roll_sd(xm, wins)",5856716
+"running_sum(x, wins)",85494
+"running_scaled(x, wins)",663342
+"running_skew4(x, wins)",3712512
+"running_skew(x, wins)",3848992
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1799902
+"running_sum(x, wins)",77184
+"running_zscored(x, wins)",682120
+"RollingWindow::RollingMean(x, wins)",162300
+"running_kurt(x, wins)",5536334
+"running_mean(x, wins)",77366
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",455787
+"RollingWindow::RollingMean(x, wins)",149617
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2035494
+"running_skew4(x, wins)",3773052
+"roll::roll_sd(xm, wins)",5897302
+"running_skew4(x, wins)",3712090
+"silly_fun(x, wins, mean, na.rm = FALSE)",65364140
+"silly_fun(x, wins, sum, na.rm = FALSE)",34745194
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2053507
+"running_skew(x, wins)",3628455
+"roll::roll_sd(xm, wins)",5829589
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1735704
+"silly_fun(x, wins, sum, na.rm = FALSE)",35701465
+"running_skew(x, wins)",3633720
+"running_skew(x, wins)",3593523
+"silly_fun(x, wins, mean, na.rm = FALSE)",63551244
+"running_apx_median(x, wins)",14427196
+"silly_fun(x, wins, mean, na.rm = FALSE)",69567316
+"running_mean(x, wins)",101417
+"running_sharpe(x, wins)",672886
+"running_kurt5(x, wins)",6010812
+"running_centered(x, wins)",611062
+"running_centered(x, wins)",568299
+"silly_fun(x, wins, sum, na.rm = FALSE)",34874089
+"running_sharpe(x, wins)",735436
+"roll::roll_sum(xm, wins)",2072629
+"roll::roll_mean(xm, wins)",2093808
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2003826
+"silly_fun(x, wins, sum, na.rm = FALSE)",32670528
+"running_kurt(x, wins)",5598527
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1988885
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1765538
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10953434
+"running_apx_median(x, wins)",14604632
+"running_sd3(x, wins)",621487
+"running_kurt5(x, wins)",6096853
+"running_sum(x, wins)",77515
+"running_mean(x, wins)",75208
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12656905
+"running_sharpe(x, wins)",738733
+"silly_fun(x, wins, sum, na.rm = FALSE)",33167839
+"RollingWindow::RollingSum(x, wins)",225241
+"running_apx_median(x, wins)",15740178
+"running_tstat(x, wins)",779120
+"running_zscored(x, wins)",672649
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",385964
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",396147
+"RollingWindow::RollingStd(x, wins)",287439
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1801156
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1960184
+"silly_fun(x, wins, sum, na.rm = FALSE)",37805938
+"running_sharpe(x, wins)",1308848
+"RollingWindow::RollingSum(x, wins)",343344
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",685680
+"roll::roll_sum(xm, wins)",2616389
+"RollingWindow::RollingSum(x, wins)",153924
+"running_skew4(x, wins)",4221652
+"running_scaled(x, wins)",757586
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",521999
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",467262
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",466002
+"running_sd3(x, wins)",845501
+"running_sd3(x, wins)",723756
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12047295
+"roll::roll_sd(xm, wins)",5945705
+"roll::roll_sum(xm, wins)",2042113
+"running_mean(x, wins)",92428
+"running_skew4(x, wins)",4008392
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",415230
+"roll::roll_mean(xm, wins)",2077961
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",502351
+"running_kurt5(x, wins)",6512998
+"roll::roll_mean(xm, wins)",2186005
+"running_apx_median(x, wins)",15519830
+"running_mean(x, wins)",82553
+"running_zscored(x, wins)",723047
+"running_apx_median(x, wins)",15678372
+"silly_fun(x, wins, mean, na.rm = FALSE)",67642924
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2074480
+"running_scaled(x, wins)",679496
+"roll::roll_sum(xm, wins)",1999591
+"silly_fun(x, wins, sum, na.rm = FALSE)",35197392
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",417051
+"roll::roll_sum(xm, wins)",2003566
+"RollingWindow::RollingMean(x, wins)",165411
+"silly_fun(x, wins, mean, na.rm = FALSE)",64868824
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2027776
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12875790
+"running_mean(x, wins)",106357
+"silly_fun(x, wins, sum, na.rm = FALSE)",32889338
+"running_kurt5(x, wins)",5988384
+"running_kurt(x, wins)",5232964
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10825137
+"silly_fun(x, wins, sum, na.rm = FALSE)",35215413
+"RollingWindow::RollingSum(x, wins)",215148
+"running_sum(x, wins)",83327
+"running_kurt5(x, wins)",5999418
+"running_skew4(x, wins)",3782666
+"running_zscored(x, wins)",670155
+"roll::roll_sum(xm, wins)",1999419
+"running_centered(x, wins)",595980
+"running_zscored(x, wins)",671012
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1802568
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",386086
+"running_kurt(x, wins)",5381057
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",362648
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",357880
+"running_skew(x, wins)",4602209
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2278775
+"roll::roll_sum(xm, wins)",2193271
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",395983
+"RollingWindow::RollingSum(x, wins)",117777
+"running_centered(x, wins)",584844
+"roll::roll_sd(xm, wins)",6771099
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2065879
+"running_mean(x, wins)",83096
+"roll::roll_sum(xm, wins)",1988118
+"RollingWindow::RollingSum(x, wins)",142428
+"running_kurt(x, wins)",5287600
+"silly_fun(x, wins, sum, na.rm = FALSE)",35699912
+"running_sd3(x, wins)",664651
+"RollingWindow::RollingSum(x, wins)",209601
+"running_sd3(x, wins)",695482
+"roll::roll_sum(xm, wins)",2361874
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",414290
+"roll::roll_sd(xm, wins)",5834575
+"RollingWindow::RollingStd(x, wins)",260787
+"running_skew(x, wins)",3963272
+"running_skew(x, wins)",3819447
+"roll::roll_mean(xm, wins)",2144259
+"RollingWindow::RollingStd(x, wins)",258231
+"roll::roll_mean(xm, wins)",2129320
+"running_skew4(x, wins)",4069491
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",469754
+"running_sum(x, wins)",86867
+"running_kurt5(x, wins)",6220924
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1898428
+"RollingWindow::RollingSum(x, wins)",132599
+"running_apx_median(x, wins)",15420286
+"running_zscored(x, wins)",695505
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",464216
+"running_sharpe(x, wins)",790744
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",665369
+"running_mean(x, wins)",113130
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",629844
+"running_kurt(x, wins)",5574242
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2148542
+"running_skew(x, wins)",4160963
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2172252
+"RollingWindow::RollingMean(x, wins)",206790
+"running_kurt(x, wins)",5447586
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2036975
+"running_centered(x, wins)",651353
+"running_scaled(x, wins)",683109
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",393957
+"running_centered(x, wins)",587217
+"running_sd3(x, wins)",679539
+"RollingWindow::RollingMean(x, wins)",202298
+"roll::roll_sd(xm, wins)",5812946
+"roll::roll_mean(xm, wins)",2126344
+"silly_fun(x, wins, mean, na.rm = FALSE)",71284756
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2059386
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",448439
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",469023
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",396847
+"roll::roll_sum(xm, wins)",2290393
+"silly_fun(x, wins, sum, na.rm = FALSE)",37085467
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2063689
+"RollingWindow::RollingStd(x, wins)",309786
+"running_kurt(x, wins)",5480284
+"silly_fun(x, wins, sum, na.rm = FALSE)",34931037
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",491094
+"running_kurt5(x, wins)",6293392
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",429347
+"running_kurt(x, wins)",5717404
+"running_zscored(x, wins)",697461
+"running_kurt(x, wins)",5488463
+"running_scaled(x, wins)",692983
+"silly_fun(x, wins, sum, na.rm = FALSE)",47975221
+"roll::roll_mean(xm, wins)",2461769
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",492174
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11955165
+"running_zscored(x, wins)",791319
+"running_mean(x, wins)",89872
+"roll::roll_mean(xm, wins)",2276912
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2248171
+"running_mean(x, wins)",91332
+"RollingWindow::RollingSum(x, wins)",172779
+"running_tstat(x, wins)",771950
+"running_mean(x, wins)",85836
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2237500
+"roll::roll_sd(xm, wins)",6128176
+"running_skew4(x, wins)",4138522
+"running_mean(x, wins)",82435
+"running_scaled(x, wins)",749252
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",493542
+"roll::roll_sum(xm, wins)",1968759
+"running_tstat(x, wins)",749386
+"running_sd3(x, wins)",687054
+"running_skew4(x, wins)",4135649
+"running_skew(x, wins)",3923013
+"running_kurt(x, wins)",5880855
+"running_mean(x, wins)",83046
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",485949
+"running_apx_median(x, wins)",18292628
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",17375687
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2366206
+"running_apx_median(x, wins)",18391555
+"running_skew(x, wins)",4847221
+"running_sd3(x, wins)",884236
+"silly_fun(x, wins, sum, na.rm = FALSE)",46701590
+"roll::roll_sum(xm, wins)",2783574
+"RollingWindow::RollingMean(x, wins)",469782
+"RollingWindow::RollingMean(x, wins)",402855
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2641085
+"silly_fun(x, wins, sum, na.rm = FALSE)",51741637
+"running_kurt(x, wins)",6274322
+"silly_fun(x, wins, sum, na.rm = FALSE)",45503409
+"roll::roll_sd(xm, wins)",7624736
+"running_skew4(x, wins)",5029555
+"running_skew(x, wins)",4886186
+"running_skew(x, wins)",4684450
+"running_zscored(x, wins)",941424
+"running_kurt5(x, wins)",8015258
+"running_skew(x, wins)",8815581
+"running_kurt(x, wins)",7659845
+"roll::roll_mean(xm, wins)",2914646
+"running_kurt(x, wins)",8222969
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",3024130
+"running_mean(x, wins)",133609
+"roll::roll_sum(xm, wins)",2819519
+"roll::roll_sum(xm, wins)",2678648
+"RollingWindow::RollingMean(x, wins)",240888
+"silly_fun(x, wins, sum, na.rm = FALSE)",41678978
+"roll::roll_sum(xm, wins)",2500871
+"running_skew(x, wins)",4335111
+"RollingWindow::RollingSum(x, wins)",213222
+"running_skew4(x, wins)",4119623
+"RollingWindow::RollingStd(x, wins)",319730
+"roll::roll_mean(xm, wins)",2522576
+"running_mean(x, wins)",105010
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",474719
+"RollingWindow::RollingMean(x, wins)",275729
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14148863
+"running_sd3(x, wins)",781498
+"roll::roll_sum(xm, wins)",2479620
+"running_centered(x, wins)",658561
+"running_sharpe(x, wins)",823377
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",433308
+"running_apx_median(x, wins)",16406231
+"running_tstat(x, wins)",1000802
+"running_sd3(x, wins)",694636
+"running_centered(x, wins)",640807
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2025967
+"running_sd3(x, wins)",723626
+"RollingWindow::RollingMean(x, wins)",237406
+"RollingWindow::RollingMean(x, wins)",179584
+"RollingWindow::RollingStd(x, wins)",268703
+"silly_fun(x, wins, sum, na.rm = FALSE)",41143591
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",775915
+"RollingWindow::RollingSum(x, wins)",216206
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",15348199
+"running_sharpe(x, wins)",941207
+"silly_fun(x, wins, sum, na.rm = FALSE)",49314763
+"RollingWindow::RollingSum(x, wins)",244461
+"roll::roll_sd(xm, wins)",7846974
+"roll::roll_mean(xm, wins)",3516234
+"RollingWindow::RollingMean(x, wins)",334769
+"running_skew4(x, wins)",4792508
+"running_sharpe(x, wins)",911253
+"running_tstat(x, wins)",826496
+"running_skew(x, wins)",4429961
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2901332
+"silly_fun(x, wins, mean, na.rm = FALSE)",81877228
+"silly_fun(x, wins, mean, na.rm = FALSE)",82699089
+"running_centered(x, wins)",689662
+"RollingWindow::RollingMean(x, wins)",322067
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12502688
+"running_sharpe(x, wins)",776095
+"running_sharpe(x, wins)",809398
+"running_kurt(x, wins)",6026585
+"running_apx_median(x, wins)",15488602
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11327051
+"running_centered(x, wins)",616116
+"running_scaled(x, wins)",690952
+"running_skew4(x, wins)",3768096
+"silly_fun(x, wins, mean, na.rm = FALSE)",70751714
+"running_centered(x, wins)",636796
+"running_tstat(x, wins)",712048
+"running_tstat(x, wins)",709262
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1936268
+"running_apx_median(x, wins)",15299400
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11193751
+"RollingWindow::RollingStd(x, wins)",338475
+"running_centered(x, wins)",650986
+"silly_fun(x, wins, mean, na.rm = FALSE)",67529649
+"running_centered(x, wins)",767180
+"roll::roll_sum(xm, wins)",2129584
+"RollingWindow::RollingMean(x, wins)",186422
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2005038
+"roll::roll_mean(xm, wins)",2134442
+"running_sharpe(x, wins)",731494
+"RollingWindow::RollingSum(x, wins)",179165
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2069021
+"RollingWindow::RollingSum(x, wins)",131160
+"running_scaled(x, wins)",711383
+"running_centered(x, wins)",617083
+"roll::roll_sum(xm, wins)",2160300
+"roll::roll_sum(xm, wins)",1907843
+"running_apx_median(x, wins)",14460193
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",452380
+"running_skew(x, wins)",4729167
+"RollingWindow::RollingSum(x, wins)",312966
+"roll::roll_mean(xm, wins)",2957105
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14502283
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",495998
+"running_kurt5(x, wins)",6382005
+"roll::roll_sum(xm, wins)",2065521
+"running_sharpe(x, wins)",694739
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",431547
+"RollingWindow::RollingSum(x, wins)",222157
+"running_sharpe(x, wins)",707782
+"RollingWindow::RollingMean(x, wins)",175820
+"running_sharpe(x, wins)",671746
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",378144
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",449528
+"running_mean(x, wins)",75504
+"running_kurt5(x, wins)",6126124
+"silly_fun(x, wins, mean, na.rm = FALSE)",176127760
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14366981
+"running_skew4(x, wins)",5259268
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2554443
+"RollingWindow::RollingMean(x, wins)",353757
+"running_centered(x, wins)",818605
+"RollingWindow::RollingMean(x, wins)",292612
+"roll::roll_sum(xm, wins)",2460999
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2738858
+"running_skew(x, wins)",4906648
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",916483
+"roll::roll_mean(xm, wins)",2640612
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",553701
+"running_skew(x, wins)",5438664
+"roll::roll_mean(xm, wins)",3093275
+"running_mean(x, wins)",144293
+"running_scaled(x, wins)",889360
+"running_centered(x, wins)",764113
+"roll::roll_mean(xm, wins)",2913492
+"silly_fun(x, wins, sum, na.rm = FALSE)",48667733
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",3090669
+"running_skew(x, wins)",4368509
+"running_centered(x, wins)",721801
+"running_apx_median(x, wins)",17404555
+"RollingWindow::RollingStd(x, wins)",384456
+"roll::roll_mean(xm, wins)",2320811
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2480185
+"running_apx_median(x, wins)",17511869
+"running_skew4(x, wins)",7742914
+"running_sharpe(x, wins)",844302
+"running_kurt5(x, wins)",7206831
+"running_skew(x, wins)",4382796
+"running_mean(x, wins)",94763
+"running_apx_median(x, wins)",16993855
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",548517
+"RollingWindow::RollingMean(x, wins)",264690
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",518276
+"running_tstat(x, wins)",770709
+"roll::roll_sum(xm, wins)",2240363
+"running_tstat(x, wins)",701857
+"silly_fun(x, wins, sum, na.rm = FALSE)",35878401
+"running_tstat(x, wins)",718603
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2172192
+"running_apx_median(x, wins)",16078848
+"roll::roll_mean(xm, wins)",2353245
+"running_kurt5(x, wins)",6233680
+"running_tstat(x, wins)",716232
+"running_centered(x, wins)",734223
+"RollingWindow::RollingMean(x, wins)",221613
+"RollingWindow::RollingSum(x, wins)",139847
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",415377
+"running_skew(x, wins)",3832961
+"roll::roll_mean(xm, wins)",2105615
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",405953
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",467609
+"running_sd3(x, wins)",650601
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2081607
+"running_kurt5(x, wins)",7138595
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14258690
+"silly_fun(x, wins, sum, na.rm = FALSE)",36130655
+"running_centered(x, wins)",604540
+"RollingWindow::RollingMean(x, wins)",265706
+"roll::roll_mean(xm, wins)",2129069
+"running_skew(x, wins)",4271767
+"running_sd3(x, wins)",691931
+"running_mean(x, wins)",88035
+"silly_fun(x, wins, sum, na.rm = FALSE)",38163522
+"RollingWindow::RollingStd(x, wins)",344835
+"roll::roll_mean(xm, wins)",2422273
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2090458
+"RollingWindow::RollingStd(x, wins)",268710
+"running_skew4(x, wins)",4508906
+"running_tstat(x, wins)",721114
+"running_apx_median(x, wins)",16013193
+"silly_fun(x, wins, mean, na.rm = FALSE)",73685263
+"roll::roll_mean(xm, wins)",2276187
+"running_sum(x, wins)",99540
+"roll::roll_sum(xm, wins)",2002883
+"roll::roll_sd(xm, wins)",6044131
+"running_mean(x, wins)",106814
+"running_skew(x, wins)",4477309
+"RollingWindow::RollingSum(x, wins)",279908
+"roll::roll_mean(xm, wins)",2253616
+"running_scaled(x, wins)",694970
+"running_scaled(x, wins)",756178
+"running_centered(x, wins)",607036
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13154274
+"running_sd3(x, wins)",684038
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2126603
+"running_skew(x, wins)",4273456
+"running_sharpe(x, wins)",795337
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",476398
+"silly_fun(x, wins, mean, na.rm = FALSE)",74759702
+"RollingWindow::RollingStd(x, wins)",340995
+"roll::roll_mean(xm, wins)",2202843
+"running_tstat(x, wins)",785951
+"silly_fun(x, wins, mean, na.rm = FALSE)",71106801
+"running_skew(x, wins)",3936269
+"running_tstat(x, wins)",741639
+"roll::roll_sd(xm, wins)",7095113
+"running_mean(x, wins)",95849
+"running_zscored(x, wins)",779973
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",453772
+"roll::roll_sum(xm, wins)",2578492
+"running_kurt(x, wins)",5898609
+"running_centered(x, wins)",627300
+"silly_fun(x, wins, mean, na.rm = FALSE)",74236054
+"RollingWindow::RollingSum(x, wins)",230443
+"running_sum(x, wins)",93152
+"running_kurt5(x, wins)",7151419
+"running_centered(x, wins)",674975
+"running_scaled(x, wins)",726981
+"running_skew(x, wins)",4153143
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11709335
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",510765
+"running_kurt5(x, wins)",6546933
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2553154
+"silly_fun(x, wins, mean, na.rm = FALSE)",74569725
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1900242
+"running_kurt5(x, wins)",6259210
+"roll::roll_sd(xm, wins)",5812144
+"running_scaled(x, wins)",692151
+"running_kurt(x, wins)",6092276
+"roll::roll_sd(xm, wins)",6464297
+"running_skew4(x, wins)",3763634
+"roll::roll_sd(xm, wins)",5865451
+"running_kurt(x, wins)",6105782
+"RollingWindow::RollingStd(x, wins)",475124
+"running_skew4(x, wins)",4964082
+"running_skew4(x, wins)",5119727
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",569531
+"running_kurt(x, wins)",7088191
+"silly_fun(x, wins, sum, na.rm = FALSE)",51706417
+"silly_fun(x, wins, mean, na.rm = FALSE)",99881059
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13599677
+"running_kurt5(x, wins)",7063240
+"running_centered(x, wins)",718382
+"roll::roll_mean(xm, wins)",2416819
+"running_centered(x, wins)",685484
+"running_centered(x, wins)",674732
+"RollingWindow::RollingSum(x, wins)",186778
+"running_kurt5(x, wins)",7625951
+"RollingWindow::RollingSum(x, wins)",237077
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",527752
+"roll::roll_sd(xm, wins)",6266002
+"roll::roll_mean(xm, wins)",2474124
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",456163
+"running_sd3(x, wins)",831728
+"silly_fun(x, wins, mean, na.rm = FALSE)",79730791
+"running_centered(x, wins)",653379
+"running_zscored(x, wins)",730949
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11670826
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",490174
+"running_sum(x, wins)",105518
+"running_sd3(x, wins)",799548
+"running_sd3(x, wins)",630690
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",446276
+"running_skew4(x, wins)",4755511
+"running_scaled(x, wins)",849345
+"running_skew(x, wins)",3658227
+"running_apx_median(x, wins)",15658471
+"running_scaled(x, wins)",713726
+"running_apx_median(x, wins)",19889963
+"running_mean(x, wins)",168853
+"running_skew(x, wins)",4852593
+"roll::roll_sd(xm, wins)",8393042
+"roll::roll_sd(xm, wins)",8927575
+"RollingWindow::RollingSum(x, wins)",216600
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",538032
+"running_skew4(x, wins)",4334070
+"running_kurt5(x, wins)",7600773
+"running_apx_median(x, wins)",19088164
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",681209
+"silly_fun(x, wins, sum, na.rm = FALSE)",41287102
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",457846
+"running_centered(x, wins)",662345
+"running_sharpe(x, wins)",779805
+"RollingWindow::RollingMean(x, wins)",270362
+"roll::roll_sd(xm, wins)",6745037
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",451315
+"running_centered(x, wins)",685003
+"running_sd3(x, wins)",674272
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",440342
+"running_kurt(x, wins)",6920314
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",626707
+"silly_fun(x, wins, sum, na.rm = FALSE)",52101973
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",573225
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",543384
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2987080
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",632753
+"running_mean(x, wins)",118275
+"running_kurt5(x, wins)",7821897
+"running_zscored(x, wins)",826928
+"running_sum(x, wins)",96478
+"running_sharpe(x, wins)",797948
+"RollingWindow::RollingStd(x, wins)",390741
+"running_sd3(x, wins)",737497
+"running_mean(x, wins)",92e3
+"running_kurt5(x, wins)",6995246
+"roll::roll_sum(xm, wins)",2230352
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",533905
+"roll::roll_sum(xm, wins)",2238873
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",469688
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",552569
+"running_sd3(x, wins)",727981
+"running_scaled(x, wins)",782912
+"running_sum(x, wins)",88598
+"RollingWindow::RollingMean(x, wins)",207823
+"RollingWindow::RollingSum(x, wins)",164613
+"silly_fun(x, wins, sum, na.rm = FALSE)",39754620
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2566299
+"running_tstat(x, wins)",808435
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",16058677
+"roll::roll_mean(xm, wins)",2671203
+"running_tstat(x, wins)",921215
+"silly_fun(x, wins, sum, na.rm = FALSE)",52103661
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",16042857
+"running_sharpe(x, wins)",1055535
+"silly_fun(x, wins, mean, na.rm = FALSE)",93268284
+"running_zscored(x, wins)",976867
+"roll::roll_sum(xm, wins)",3114357
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",572304
+"roll::roll_sum(xm, wins)",3165512
+"running_skew(x, wins)",5396574
+"roll::roll_mean(xm, wins)",2695555
+"running_scaled(x, wins)",878632
+"RollingWindow::RollingStd(x, wins)",364168
+"RollingWindow::RollingSum(x, wins)",157991
+"running_sum(x, wins)",99821
+"silly_fun(x, wins, mean, na.rm = FALSE)",85471538
+"RollingWindow::RollingStd(x, wins)",435532
+"running_apx_median(x, wins)",17625533
+"running_sharpe(x, wins)",820350
+"running_scaled(x, wins)",1008505
+"running_sharpe(x, wins)",774097
+"running_kurt5(x, wins)",6885559
+"running_centered(x, wins)",735197
+"silly_fun(x, wins, mean, na.rm = FALSE)",72620416
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",506292
+"running_kurt(x, wins)",6036474
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",2851375
+"roll::roll_sum(xm, wins)",2253954
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2154362
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2254081
+"RollingWindow::RollingMean(x, wins)",244579
+"running_sharpe(x, wins)",806292
+"running_scaled(x, wins)",755555
+"running_sd3(x, wins)",670969
+"silly_fun(x, wins, mean, na.rm = FALSE)",72870124
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2795954
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",498411
+"roll::roll_sum(xm, wins)",2707634
+"running_mean(x, wins)",113014
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",438881
+"running_kurt5(x, wins)",7144752
+"roll::roll_sum(xm, wins)",2311152
+"running_scaled(x, wins)",737419
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",451342
+"RollingWindow::RollingSum(x, wins)",145338
+"roll::roll_sum(xm, wins)",2421893
+"running_skew4(x, wins)",4187140
+"RollingWindow::RollingSum(x, wins)",2508540
+"roll::roll_mean(xm, wins)",2548913
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",518774
+"RollingWindow::RollingStd(x, wins)",306328
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",512202
+"running_apx_median(x, wins)",16314823
+"roll::roll_mean(xm, wins)",2594997
+"running_skew4(x, wins)",4725362
+"silly_fun(x, wins, sum, na.rm = FALSE)",40016261
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",488149
+"RollingWindow::RollingSum(x, wins)",226447
+"RollingWindow::RollingMean(x, wins)",197176
+"running_kurt5(x, wins)",7360976
+"silly_fun(x, wins, mean, na.rm = FALSE)",79196027
+"RollingWindow::RollingSum(x, wins)",235276
+"RollingWindow::RollingMean(x, wins)",215914
+"running_skew(x, wins)",4554342
+"running_zscored(x, wins)",829213
+"running_skew(x, wins)",4259955
+"running_skew(x, wins)",4355644
+"running_kurt(x, wins)",6260320
+"running_sum(x, wins)",102683
+"running_tstat(x, wins)",826429
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2642986
+"RollingWindow::RollingStd(x, wins)",378874
+"RollingWindow::RollingSum(x, wins)",166615
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11750701
+"silly_fun(x, wins, mean, na.rm = FALSE)",74821740
+"running_sum(x, wins)",106501
+"RollingWindow::RollingMean(x, wins)",238385
+"silly_fun(x, wins, sum, na.rm = FALSE)",40238451
+"running_skew(x, wins)",4466635
+"running_sd3(x, wins)",762103
+"running_sum(x, wins)",97440
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2577198
+"running_scaled(x, wins)",928345
+"running_sum(x, wins)",99788
+"running_sharpe(x, wins)",825510
+"roll::roll_sum(xm, wins)",2521242
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",512559
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",560247
+"running_sharpe(x, wins)",1058295
+"running_mean(x, wins)",173656
+"silly_fun(x, wins, sum, na.rm = FALSE)",46241569
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",566756
+"running_apx_median(x, wins)",17369574
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12986135
+"running_apx_median(x, wins)",17951596
+"running_sd3(x, wins)",773879
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2172738
+"running_tstat(x, wins)",804065
+"running_skew(x, wins)",4292689
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2196726
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2461658
+"running_apx_median(x, wins)",18281885
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",16281171
+"running_skew4(x, wins)",4986421
+"running_zscored(x, wins)",876952
+"running_sum(x, wins)",96752
+"running_kurt(x, wins)",6631796
+"running_skew(x, wins)",4940400
+"running_skew4(x, wins)",4915320
+"running_sum(x, wins)",117831
+"RollingWindow::RollingMean(x, wins)",305161
+"RollingWindow::RollingStd(x, wins)",320308
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2448966
+"roll::roll_sum(xm, wins)",2447335
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2427880
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",556534
+"running_centered(x, wins)",940128
+"roll::roll_sum(xm, wins)",2795794
+"running_centered(x, wins)",775219
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13136327
+"running_zscored(x, wins)",943684
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2801130
+"silly_fun(x, wins, mean, na.rm = FALSE)",91714621
+"silly_fun(x, wins, mean, na.rm = FALSE)",93769626
+"roll::roll_sd(xm, wins)",6845663
+"running_sum(x, wins)",112419
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",563134
+"running_zscored(x, wins)",855966
+"RollingWindow::RollingMean(x, wins)",268590
+"running_scaled(x, wins)",850960
+"running_sum(x, wins)",95168
+"running_tstat(x, wins)",861542
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2715162
+"running_sd3(x, wins)",1103124
+"running_sd3(x, wins)",1010092
+"running_skew4(x, wins)",4700813
+"RollingWindow::RollingSum(x, wins)",246768
+"running_kurt5(x, wins)",9740680
+"running_skew4(x, wins)",4694983
+"running_kurt5(x, wins)",8674694
+"RollingWindow::RollingStd(x, wins)",480666
+"RollingWindow::RollingMean(x, wins)",252359
+"roll::roll_sd(xm, wins)",8869592
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13578637
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13140063
+"running_sum(x, wins)",152341
+"silly_fun(x, wins, sum, na.rm = FALSE)",46760194
+"running_sum(x, wins)",138343
+"running_centered(x, wins)",809406
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",544091
+"RollingWindow::RollingMean(x, wins)",273668
+"running_scaled(x, wins)",869573
+"silly_fun(x, wins, mean, na.rm = FALSE)",83161873
+"silly_fun(x, wins, mean, na.rm = FALSE)",96839829
+"running_kurt(x, wins)",7706757
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14324874
+"roll::roll_sum(xm, wins)",2822502
+"running_tstat(x, wins)",1164479
+"running_skew4(x, wins)",4675469
+"silly_fun(x, wins, sum, na.rm = FALSE)",44249009
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14173124
+"running_apx_median(x, wins)",18062043
+"running_sum(x, wins)",114853
+"running_apx_median(x, wins)",18465362
+"running_scaled(x, wins)",1035231
+"running_kurt(x, wins)",6645855
+"RollingWindow::RollingStd(x, wins)",413646
+"running_sharpe(x, wins)",841734
+"silly_fun(x, wins, sum, na.rm = FALSE)",45463366
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",562050
+"roll::roll_sd(xm, wins)",7053254
+"running_mean(x, wins)",121842
+"running_sd3(x, wins)",761300
+"running_apx_median(x, wins)",18392992
+"running_sharpe(x, wins)",858346
+"running_kurt5(x, wins)",7263327
+"roll::roll_sum(xm, wins)",2274741
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2356549
+"RollingWindow::RollingStd(x, wins)",360436
+"running_skew4(x, wins)",4663244
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",582464
+"roll::roll_sum(xm, wins)",2438051
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2463421
+"running_skew(x, wins)",4644882
+"running_zscored(x, wins)",814924
+"roll::roll_mean(xm, wins)",2673188
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12754015
+"running_kurt5(x, wins)",7451992
+"RollingWindow::RollingSum(x, wins)",440134
+"roll::roll_sum(xm, wins)",2578601
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2361953
+"RollingWindow::RollingStd(x, wins)",347398
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",540844
+"running_sd3(x, wins)",2821680
+"running_kurt(x, wins)",6619810
+"running_scaled(x, wins)",995524
+"roll::roll_mean(xm, wins)",2850111
+"running_skew4(x, wins)",4311499
+"running_mean(x, wins)",94460
+"running_sd3(x, wins)",721371
+"running_apx_median(x, wins)",18200837
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",584688
+"silly_fun(x, wins, mean, na.rm = FALSE)",93343278
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",724688
+"RollingWindow::RollingMean(x, wins)",325314
+"roll::roll_sd(xm, wins)",8206673
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2666457
+"silly_fun(x, wins, mean, na.rm = FALSE)",96385585
+"silly_fun(x, wins, sum, na.rm = FALSE)",45104554
+"running_zscored(x, wins)",859664
+"running_skew(x, wins)",4816268
+"running_sum(x, wins)",115469
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",478429
+"silly_fun(x, wins, mean, na.rm = FALSE)",87597263
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",547696
+"running_sd3(x, wins)",790471
+"running_sum(x, wins)",109942
+"running_zscored(x, wins)",809030
+"roll::roll_sd(xm, wins)",8213321
+"running_mean(x, wins)",133778
+"RollingWindow::RollingStd(x, wins)",424950
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",522948
+"running_kurt5(x, wins)",8394640
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",15065883
+"running_zscored(x, wins)",918173
+"silly_fun(x, wins, sum, na.rm = FALSE)",46217265
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",16188506
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",606467
+"running_sum(x, wins)",129431
+"RollingWindow::RollingStd(x, wins)",556566
+"running_apx_median(x, wins)",19614158
+"running_sharpe(x, wins)",850879
+"running_sharpe(x, wins)",815816
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",19469545
+"RollingWindow::RollingMean(x, wins)",663422
+"silly_fun(x, wins, mean, na.rm = FALSE)",169461251
+"running_mean(x, wins)",164535
+"running_centered(x, wins)",773014
+"RollingWindow::RollingMean(x, wins)",254120
+"running_sum(x, wins)",91064
+"RollingWindow::RollingMean(x, wins)",257663
+"running_skew(x, wins)",4363779
+"running_apx_median(x, wins)",20144180
+"running_kurt5(x, wins)",7300482
+"running_sharpe(x, wins)",794769
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",2844089
+"running_centered(x, wins)",759622
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13133322
+"silly_fun(x, wins, mean, na.rm = FALSE)",92764867
+"RollingWindow::RollingStd(x, wins)",724248
+"silly_fun(x, wins, sum, na.rm = FALSE)",44105949
+"running_kurt(x, wins)",6343428
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",453226
+"running_skew4(x, wins)",4912117
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",762386
+"RollingWindow::RollingMean(x, wins)",773818
+"running_mean(x, wins)",141995
+"silly_fun(x, wins, sum, na.rm = FALSE)",43840490
+"running_tstat(x, wins)",858186
+"running_sum(x, wins)",96418
+"roll::roll_mean(xm, wins)",2781985
+"RollingWindow::RollingStd(x, wins)",401061
+"running_sd3(x, wins)",758478
+"running_sd3(x, wins)",734137
+"RollingWindow::RollingStd(x, wins)",314629
+"running_sum(x, wins)",94434
+"running_skew(x, wins)",4341234
+"running_zscored(x, wins)",815809
+"running_skew(x, wins)",4960607
+"running_scaled(x, wins)",985545
+"RollingWindow::RollingMean(x, wins)",419455
+"running_zscored(x, wins)",890105
+"running_kurt5(x, wins)",8019911
+"running_centered(x, wins)",808678
+"RollingWindow::RollingMean(x, wins)",270162
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2378980
+"running_apx_median(x, wins)",19102404
+"running_kurt(x, wins)",7330810
+"running_skew(x, wins)",4296235
+"running_sd3(x, wins)",750030
+"running_tstat(x, wins)",817716
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",4495882
+"running_zscored(x, wins)",945182
+"silly_fun(x, wins, sum, na.rm = FALSE)",44782446
+"running_scaled(x, wins)",847909
+"roll::roll_sd(xm, wins)",8956817
+"running_sd3(x, wins)",993883
+"RollingWindow::RollingStd(x, wins)",494375
+"silly_fun(x, wins, sum, na.rm = FALSE)",43444778
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",542817
+"silly_fun(x, wins, mean, na.rm = FALSE)",90207665
+"RollingWindow::RollingMean(x, wins)",338946
+"roll::roll_sum(xm, wins)",3113050
+"running_apx_median(x, wins)",19662067
+"silly_fun(x, wins, sum, na.rm = FALSE)",51495251
+"running_apx_median(x, wins)",20370351
+"roll::roll_mean(xm, wins)",3915527
+"running_tstat(x, wins)",1050099
+"RollingWindow::RollingSum(x, wins)",232620
+"roll::roll_mean(xm, wins)",3182843
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",474215
+"running_sd3(x, wins)",881896
+"silly_fun(x, wins, mean, na.rm = FALSE)",80597392
+"running_mean(x, wins)",156999
+"roll::roll_sd(xm, wins)",9003088
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2796838
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",608510
+"running_skew4(x, wins)",4489974
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",570811
+"roll::roll_mean(xm, wins)",3225460
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2062953
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",2950752
+"roll::roll_mean(xm, wins)",3908315
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",655024
+"running_sum(x, wins)",107739
+"silly_fun(x, wins, sum, na.rm = FALSE)",45676341
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",660553
+"silly_fun(x, wins, sum, na.rm = FALSE)",47261784
+"running_skew(x, wins)",5264476
+"running_tstat(x, wins)",937357
+"running_sd3(x, wins)",3453092
+"running_kurt(x, wins)",6901550
+"roll::roll_sum(xm, wins)",2444099
+"running_tstat(x, wins)",934428
+"roll::roll_sd(xm, wins)",6720143
+"running_skew(x, wins)",5939139
+"running_tstat(x, wins)",1084437
+"RollingWindow::RollingMean(x, wins)",353642
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14057707
+"running_sum(x, wins)",121458
+"running_sharpe(x, wins)",821951
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",549704
+"running_sum(x, wins)",92278
+"running_sharpe(x, wins)",929128
+"running_apx_median(x, wins)",18607597
+"running_kurt(x, wins)",6492348
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",15153570
+"running_apx_median(x, wins)",19021338
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2639381
+"running_kurt5(x, wins)",7164619
+"running_kurt(x, wins)",7843680
+"running_zscored(x, wins)",840703
+"running_tstat(x, wins)",811101
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",15998751
+"roll::roll_sum(xm, wins)",2900341
+"running_kurt(x, wins)",6535877
+"running_scaled(x, wins)",841407
+"silly_fun(x, wins, mean, na.rm = FALSE)",88458906
+"running_kurt(x, wins)",6645416
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2427509
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",15214517
+"running_mean(x, wins)",123037
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2200563
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2078350
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",528111
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2414584
+"running_mean(x, wins)",92366
+"RollingWindow::RollingMean(x, wins)",236399
+"roll::roll_sum(xm, wins)",2320778
+"running_kurt(x, wins)",7189489
+"running_mean(x, wins)",116494
+"running_skew(x, wins)",5490735
+"RollingWindow::RollingSum(x, wins)",579226
+"running_tstat(x, wins)",938205
+"running_kurt(x, wins)",6656198
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",548096
+"running_sharpe(x, wins)",768789
+"running_tstat(x, wins)",767339
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",511164
+"running_sd3(x, wins)",813538
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2079722
+"running_sharpe(x, wins)",798323
+"running_scaled(x, wins)",783371
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",499215
+"silly_fun(x, wins, sum, na.rm = FALSE)",39514004
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",596573
+"running_zscored(x, wins)",915775
+"silly_fun(x, wins, sum, na.rm = FALSE)",37219439
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11250615
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",470718
+"RollingWindow::RollingSum(x, wins)",143665
+"running_centered(x, wins)",584735
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14597454
+"running_apx_median(x, wins)",18428276
+"roll::roll_mean(xm, wins)",2644052
+"running_kurt5(x, wins)",7104617
+"roll::roll_sd(xm, wins)",6002125
+"roll::roll_sd(xm, wins)",5993102
+"running_zscored(x, wins)",688814
+"RollingWindow::RollingMean(x, wins)",181102
+"silly_fun(x, wins, mean, na.rm = FALSE)",64084540
+"silly_fun(x, wins, mean, na.rm = FALSE)",66443458
+"roll::roll_sd(xm, wins)",5852532
+"running_scaled(x, wins)",684030
+"running_skew4(x, wins)",3670055
+"running_apx_median(x, wins)",14147496
+"running_zscored(x, wins)",667589
+"roll::roll_mean(xm, wins)",2137503
+"running_scaled(x, wins)",708872
+"RollingWindow::RollingStd(x, wins)",271619
+"running_apx_median(x, wins)",14104530
+"running_kurt5(x, wins)",5870684
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",389231
+"running_kurt(x, wins)",5246472
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",394371
+"silly_fun(x, wins, sum, na.rm = FALSE)",35138987
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",472688
+"running_apx_median(x, wins)",14037176
+"running_sum(x, wins)",91321
+"silly_fun(x, wins, sum, na.rm = FALSE)",33249164
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",522206
+"RollingWindow::RollingSum(x, wins)",211289
+"running_kurt(x, wins)",5434462
+"running_mean(x, wins)",79517
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",437861
+"roll::roll_sum(xm, wins)",1957781
+"running_mean(x, wins)",92159
+"roll::roll_sum(xm, wins)",1933e3
+"running_zscored(x, wins)",705435
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1950568
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386745
+"roll::roll_sd(xm, wins)",5909014
+"running_tstat(x, wins)",684130
+"running_zscored(x, wins)",715380
+"RollingWindow::RollingMean(x, wins)",187873
+"roll::roll_sd(xm, wins)",6101921
+"running_scaled(x, wins)",676691
+"running_sharpe(x, wins)",684290
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",484308
+"running_sharpe(x, wins)",686429
+"running_scaled(x, wins)",666902
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1987886
+"running_sum(x, wins)",77326
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1929076
+"running_kurt(x, wins)",5263808
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",384878
+"RollingWindow::RollingSum(x, wins)",134759
+"running_tstat(x, wins)",674291
+"running_scaled(x, wins)",664962
+"running_mean(x, wins)",75258
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12718655
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",478109
+"running_centered(x, wins)",579305
+"RollingWindow::RollingSum(x, wins)",186567
+"running_skew(x, wins)",3711413
+"running_zscored(x, wins)",671144
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10441132
+"running_sharpe(x, wins)",684176
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10302480
+"running_sharpe(x, wins)",678062
+"running_sum(x, wins)",78840
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",481138
+"RollingWindow::RollingSum(x, wins)",1811482
+"RollingWindow::RollingSum(x, wins)",155321
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",452395
+"running_scaled(x, wins)",761860
+"running_tstat(x, wins)",699940
+"running_mean(x, wins)",117374
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",385620
+"RollingWindow::RollingMean(x, wins)",156654
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1831337
+"roll::roll_sd(xm, wins)",5847348
+"running_centered(x, wins)",581093
+"running_mean(x, wins)",72355
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1989245
+"running_tstat(x, wins)",670056
+"running_zscored(x, wins)",709941
+"running_centered(x, wins)",569154
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2029724
+"RollingWindow::RollingMean(x, wins)",158927
+"running_kurt(x, wins)",5268847
+"running_sharpe(x, wins)",667598
+"running_sharpe(x, wins)",660982
+"roll::roll_sum(xm, wins)",1914521
+"running_zscored(x, wins)",688838
+"RollingWindow::RollingStd(x, wins)",243414
+"running_skew(x, wins)",3576567
+"running_kurt(x, wins)",5225175
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",377573
+"roll::roll_mean(xm, wins)",2083830
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",402875
+"RollingWindow::RollingSum(x, wins)",124018
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2158379
+"running_centered(x, wins)",651452
+"RollingWindow::RollingMean(x, wins)",164482
+"RollingWindow::RollingStd(x, wins)",250645
+"roll::roll_sum(xm, wins)",2161517
+"roll::roll_sum(xm, wins)",2140102
+"roll::roll_mean(xm, wins)",2354188
+"RollingWindow::RollingSum(x, wins)",139680
+"running_scaled(x, wins)",721550
+"running_zscored(x, wins)",727070
+"running_mean(x, wins)",82255
+"running_skew4(x, wins)",3907391
+"running_apx_median(x, wins)",15200730
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",510547
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12437022
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",469718
+"running_mean(x, wins)",89277
+"running_tstat(x, wins)",726465
+"running_sharpe(x, wins)",703044
+"running_zscored(x, wins)",708316
+"running_sd3(x, wins)",647539
+"running_sharpe(x, wins)",697621
+"running_sum(x, wins)",84321
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",405993
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2117695
+"RollingWindow::RollingMean(x, wins)",177675
+"RollingWindow::RollingMean(x, wins)",157610
+"running_skew4(x, wins)",3855342
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",406333
+"running_skew(x, wins)",3770892
+"roll::roll_sd(xm, wins)",6011330
+"running_apx_median(x, wins)",14475319
+"running_skew(x, wins)",3693328
+"running_zscored(x, wins)",685034
+"running_centered(x, wins)",602375
+"running_scaled(x, wins)",665874
+"running_scaled(x, wins)",662578
+"running_centered(x, wins)",566394
+"running_sharpe(x, wins)",665368
+"running_sharpe(x, wins)",662572
+"running_skew4(x, wins)",3660497
+"running_skew(x, wins)",3681982
+"silly_fun(x, wins, mean, na.rm = FALSE)",66892953
+"RollingWindow::RollingStd(x, wins)",338065
+"silly_fun(x, wins, mean, na.rm = FALSE)",67631299
+"RollingWindow::RollingMean(x, wins)",242393
+"running_mean(x, wins)",85859
+"running_skew4(x, wins)",3668734
+"running_centered(x, wins)",574392
+"roll::roll_mean(xm, wins)",2154628
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10667542
+"running_tstat(x, wins)",692678
+"running_skew(x, wins)",3702952
+"roll::roll_sd(xm, wins)",5874848
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",400960
+"roll::roll_sum(xm, wins)",1919166
+"running_kurt(x, wins)",5365353
+"running_kurt5(x, wins)",5867812
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",411551
+"running_sharpe(x, wins)",699753
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12477263
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1835158
+"running_kurt(x, wins)",5285272
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",401041
+"running_skew(x, wins)",3572034
+"running_skew4(x, wins)",3640589
+"running_tstat(x, wins)",670386
+"running_zscored(x, wins)",667739
+"roll::roll_sum(xm, wins)",1979026
+"silly_fun(x, wins, mean, na.rm = FALSE)",72808672
+"running_scaled(x, wins)",854096
+"running_mean(x, wins)",96242
+"RollingWindow::RollingSum(x, wins)",217734
+"running_skew4(x, wins)",4476252
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",446009
+"roll::roll_mean(xm, wins)",2263440
+"running_kurt5(x, wins)",6272525
+"roll::roll_sd(xm, wins)",5692368
+"running_scaled(x, wins)",736657
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2162677
+"running_sum(x, wins)",82596
+"RollingWindow::RollingStd(x, wins)",271330
+"running_sum(x, wins)",118267
+"running_kurt5(x, wins)",6306803
+"running_zscored(x, wins)",711258
+"running_mean(x, wins)",80296
+"running_sum(x, wins)",78469
+"RollingWindow::RollingMean(x, wins)",179538
+"running_tstat(x, wins)",710899
+"running_skew(x, wins)",3780865
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",4059351
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",412139
+"running_mean(x, wins)",79892
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1859348
+"running_zscored(x, wins)",727524
+"running_sharpe(x, wins)",703773
+"RollingWindow::RollingStd(x, wins)",260998
+"running_centered(x, wins)",605400
+"running_kurt5(x, wins)",6196207
+"roll::roll_sum(xm, wins)",1922258
+"running_mean(x, wins)",84557
+"running_kurt5(x, wins)",6207597
+"running_centered(x, wins)",584826
+"silly_fun(x, wins, mean, na.rm = FALSE)",64829617
+"running_apx_median(x, wins)",15371907
+"running_apx_median(x, wins)",14444528
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",454215
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2039524
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",463724
+"running_scaled(x, wins)",672641
+"running_kurt(x, wins)",5251548
+"RollingWindow::RollingSum(x, wins)",149985
+"running_apx_median(x, wins)",14228434
+"running_sum(x, wins)",80449
+"running_zscored(x, wins)",2866758
+"running_tstat(x, wins)",718157
+"running_sum(x, wins)",75714
+"running_sd3(x, wins)",617422
+"running_zscored(x, wins)",668091
+"RollingWindow::RollingSum(x, wins)",159083
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2008231
+"RollingWindow::RollingStd(x, wins)",255237
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2016591
+"roll::roll_mean(xm, wins)",2194083
+"running_zscored(x, wins)",680577
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10802048
+"running_skew(x, wins)",3989442
+"running_kurt(x, wins)",5727085
+"RollingWindow::RollingMean(x, wins)",236840
+"running_apx_median(x, wins)",15290267
+"running_tstat(x, wins)",730461
+"running_mean(x, wins)",83118
+"running_sum(x, wins)",81171
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2191259
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10916575
+"running_mean(x, wins)",92017
+"RollingWindow::RollingStd(x, wins)",330028
+"silly_fun(x, wins, mean, na.rm = FALSE)",67855542
+"roll::roll_sum(xm, wins)",2019163
+"RollingWindow::RollingStd(x, wins)",277622
+"roll::roll_sd(xm, wins)",5795946
+"running_zscored(x, wins)",758947
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",415877
+"running_tstat(x, wins)",678129
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2007125
+"running_skew(x, wins)",3601212
+"running_skew4(x, wins)",3701692
+"roll::roll_sd(xm, wins)",5763558
+"silly_fun(x, wins, mean, na.rm = FALSE)",66346918
+"running_sharpe(x, wins)",713909
+"running_sd3(x, wins)",689127
+"running_kurt(x, wins)",5319339
+"running_kurt5(x, wins)",5864628
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",450331
+"running_sharpe(x, wins)",673734
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1989474
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10821467
+"running_apx_median(x, wins)",14158456
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",450558
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2067911
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",387386
+"running_mean(x, wins)",76502
+"RollingWindow::RollingStd(x, wins)",298354
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",385057
+"running_zscored(x, wins)",687904
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1977399
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",2273168
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1842146
+"running_sharpe(x, wins)",693952
+"running_skew(x, wins)",3589833
+"running_mean(x, wins)",76583
+"silly_fun(x, wins, mean, na.rm = FALSE)",64898813
+"running_zscored(x, wins)",729860
+"running_skew4(x, wins)",3956161
+"running_kurt(x, wins)",5371078
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10928994
+"running_sum(x, wins)",93155
+"silly_fun(x, wins, sum, na.rm = FALSE)",37301101
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",480657
+"running_kurt5(x, wins)",6352502
+"roll::roll_sd(xm, wins)",5948073
+"running_apx_median(x, wins)",14567373
+"roll::roll_sum(xm, wins)",2253091
+"running_kurt(x, wins)",5508843
+"silly_fun(x, wins, sum, na.rm = FALSE)",37578214
+"running_scaled(x, wins)",796032
+"running_mean(x, wins)",88060
+"running_scaled(x, wins)",719042
+"RollingWindow::RollingMean(x, wins)",271962
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",456826
+"roll::roll_sd(xm, wins)",6804486
+"RollingWindow::RollingSum(x, wins)",206769
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11383725
+"roll::roll_sd(xm, wins)",5887956
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2137469
+"silly_fun(x, wins, sum, na.rm = FALSE)",37505471
+"running_sd3(x, wins)",964997
+"running_skew(x, wins)",4087022
+"running_scaled(x, wins)",698087
+"silly_fun(x, wins, mean, na.rm = FALSE)",71740362
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10719827
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",415870
+"running_skew4(x, wins)",3684884
+"running_sd3(x, wins)",617107
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1781274
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",450151
+"RollingWindow::RollingSum(x, wins)",180968
+"roll::roll_sum(xm, wins)",1965231
+"running_kurt(x, wins)",5246997
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",405464
+"running_skew(x, wins)",3626034
+"silly_fun(x, wins, sum, na.rm = FALSE)",34994612
+"running_skew4(x, wins)",3769477
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",466473
+"silly_fun(x, wins, mean, na.rm = FALSE)",63797378
+"running_sharpe(x, wins)",696981
+"running_kurt(x, wins)",5257968
+"running_kurt5(x, wins)",5913134
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11116315
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",2363019
+"running_sd3(x, wins)",766986
+"roll::roll_mean(xm, wins)",2146132
+"silly_fun(x, wins, sum, na.rm = FALSE)",33845088
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2213398
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2172174
+"RollingWindow::RollingStd(x, wins)",325041
+"running_mean(x, wins)",90969
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",485732
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1884147
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2096046
+"running_kurt5(x, wins)",5893685
+"silly_fun(x, wins, mean, na.rm = FALSE)",71106788
+"running_skew(x, wins)",3671414
+"silly_fun(x, wins, sum, na.rm = FALSE)",35229636
+"RollingWindow::RollingStd(x, wins)",367967
+"running_sum(x, wins)",93072
+"running_zscored(x, wins)",698660
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386992
+"running_kurt(x, wins)",5504017
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2215227
+"RollingWindow::RollingSum(x, wins)",221589
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",4392118
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",464884
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",525320
+"running_mean(x, wins)",83698
+"running_mean(x, wins)",80456
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",483962
+"running_sum(x, wins)",80637
+"running_scaled(x, wins)",744185
+"running_sum(x, wins)",80023
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",417839
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1953076
+"roll::roll_sd(xm, wins)",6321350
+"running_centered(x, wins)",772093
+"running_skew4(x, wins)",4082863
+"running_kurt(x, wins)",5614130
+"running_sum(x, wins)",96330
+"roll::roll_mean(xm, wins)",2499217
+"roll::roll_sd(xm, wins)",6370937
+"running_centered(x, wins)",591609
+"running_skew4(x, wins)",4157309
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2093708
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",455309
+"running_mean(x, wins)",77093
+"running_centered(x, wins)",575083
+"running_kurt5(x, wins)",5935804
+"running_sharpe(x, wins)",716832
+"RollingWindow::RollingMean(x, wins)",219397
+"running_kurt(x, wins)",5540762
+"roll::roll_sum(xm, wins)",2166243
+"running_scaled(x, wins)",675029
+"RollingWindow::RollingMean(x, wins)",185403
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",387517
+"roll::roll_mean(xm, wins)",2105401
+"roll::roll_sd(xm, wins)",5883570
+"running_sum(x, wins)",88917
+"running_kurt5(x, wins)",6322673
+"running_scaled(x, wins)",683580
+"running_zscored(x, wins)",694605
+"running_apx_median(x, wins)",14255840
+"silly_fun(x, wins, sum, na.rm = FALSE)",3512e4
+"running_kurt5(x, wins)",5966158
+"roll::roll_mean(xm, wins)",2183318
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10624488
+"running_skew4(x, wins)",3676030
+"RollingWindow::RollingStd(x, wins)",305372
+"running_skew4(x, wins)",3646209
+"running_apx_median(x, wins)",14309158
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10443385
+"running_apx_median(x, wins)",14191647
+"silly_fun(x, wins, sum, na.rm = FALSE)",109211967
+"running_apx_median(x, wins)",14239513
+"running_sd3(x, wins)",634006
+"RollingWindow::RollingMean(x, wins)",223422
+"running_sharpe(x, wins)",675757
+"silly_fun(x, wins, mean, na.rm = FALSE)",67409299
+"silly_fun(x, wins, sum, na.rm = FALSE)",34257058
+"running_tstat(x, wins)",721391
+"running_skew4(x, wins)",3818178
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",461485
+"running_sd3(x, wins)",704596
+"roll::roll_mean(xm, wins)",2928278
+"running_sum(x, wins)",91715
+"roll::roll_sd(xm, wins)",5866190
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",458681
+"running_scaled(x, wins)",722909
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2000750
+"roll::roll_mean(xm, wins)",2666143
+"running_scaled(x, wins)",686359
+"running_apx_median(x, wins)",14587060
+"running_centered(x, wins)",609645
+"running_tstat(x, wins)",727072
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2075550
+"running_skew4(x, wins)",3933830
+"RollingWindow::RollingStd(x, wins)",346463
+"roll::roll_mean(xm, wins)",2146827
+"silly_fun(x, wins, sum, na.rm = FALSE)",36427347
+"running_sd3(x, wins)",662731
+"RollingWindow::RollingStd(x, wins)",324341
+"running_centered(x, wins)",594574
+"running_mean(x, wins)",79593
+"running_tstat(x, wins)",928280
+"running_apx_median(x, wins)",15858623
+"silly_fun(x, wins, mean, na.rm = FALSE)",66079003
+"running_centered(x, wins)",618003
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1831001
+"running_mean(x, wins)",84221
+"RollingWindow::RollingSum(x, wins)",202329
+"running_skew(x, wins)",3697415
+"RollingWindow::RollingSum(x, wins)",150195
+"silly_fun(x, wins, mean, na.rm = FALSE)",67549149
+"running_sharpe(x, wins)",755982
+"running_zscored(x, wins)",762907
+"running_sharpe(x, wins)",669058
+"running_kurt(x, wins)",5378919
+"running_centered(x, wins)",598756
+"running_skew(x, wins)",3667822
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1805361
+"running_kurt5(x, wins)",5876190
+"running_mean(x, wins)",78146
+"running_sum(x, wins)",75841
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1936070
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1880242
+"running_kurt5(x, wins)",5953447
+"running_sharpe(x, wins)",668088
+"roll::roll_sum(xm, wins)",1963205
+"RollingWindow::RollingSum(x, wins)",134806
+"running_zscored(x, wins)",681035
+"silly_fun(x, wins, sum, na.rm = FALSE)",32594020
+"running_zscored(x, wins)",727923
+"running_sd3(x, wins)",2875250
+"running_skew4(x, wins)",3707170
+"roll::roll_sd(xm, wins)",5867079
+"roll::roll_sd(xm, wins)",5767966
+"roll::roll_mean(xm, wins)",2112803
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",382069
+"running_skew(x, wins)",3599091
+"running_skew(x, wins)",3674232
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",447182
+"roll::roll_sd(xm, wins)",5738431
+"silly_fun(x, wins, mean, na.rm = FALSE)",69457365
+"running_tstat(x, wins)",767204
+"running_zscored(x, wins)",739256
+"running_scaled(x, wins)",758266
+"running_centered(x, wins)",673547
+"running_zscored(x, wins)",1027521
+"running_sd3(x, wins)",1243867
+"running_sharpe(x, wins)",1334653
+"running_skew4(x, wins)",5276826
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",15875933
+"running_tstat(x, wins)",808553
+"running_sharpe(x, wins)",749335
+"running_tstat(x, wins)",728125
+"running_centered(x, wins)",624658
+"RollingWindow::RollingMean(x, wins)",365018
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",470883
+"running_sum(x, wins)",82299
+"running_centered(x, wins)",996498
+"running_sharpe(x, wins)",848460
+"running_scaled(x, wins)",780338
+"roll::roll_sd(xm, wins)",6353018
+"RollingWindow::RollingMean(x, wins)",335792
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",513031
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",434387
+"running_centered(x, wins)",665258
+"roll::roll_sum(xm, wins)",2005400
+"running_scaled(x, wins)",727139
+"RollingWindow::RollingStd(x, wins)",280592
+"running_sharpe(x, wins)",721944
+"roll::roll_mean(xm, wins)",2368832
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2138564
+"running_mean(x, wins)",105886
+"running_centered(x, wins)",619705
+"running_sd3(x, wins)",664058
+"roll::roll_mean(xm, wins)",2451228
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11610169
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",596708
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",496168
+"running_tstat(x, wins)",735750
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",483821
+"roll::roll_sum(xm, wins)",1985352
+"silly_fun(x, wins, mean, na.rm = FALSE)",71189314
+"running_tstat(x, wins)",816960
+"running_mean(x, wins)",80759
+"running_kurt(x, wins)",5332788
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",436597
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",449994
+"RollingWindow::RollingStd(x, wins)",282924
+"roll::roll_sum(xm, wins)",2404291
+"running_skew4(x, wins)",4290451
+"silly_fun(x, wins, sum, na.rm = FALSE)",36244117
+"running_kurt(x, wins)",5599775
+"running_skew4(x, wins)",4279600
+"running_kurt5(x, wins)",6301248
+"RollingWindow::RollingStd(x, wins)",334969
+"running_skew(x, wins)",3810438
+"RollingWindow::RollingMean(x, wins)",190018
+"running_tstat(x, wins)",1023354
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",414079
+"running_centered(x, wins)",602120
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",437272
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11797530
+"RollingWindow::RollingMean(x, wins)",2280441
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11346524
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",484239
+"silly_fun(x, wins, mean, na.rm = FALSE)",67512684
+"running_sharpe(x, wins)",721206
+"running_apx_median(x, wins)",17290435
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2135148
+"roll::roll_sum(xm, wins)",2401357
+"RollingWindow::RollingSum(x, wins)",160863
+"roll::roll_sum(xm, wins)",1951015
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",418456
+"silly_fun(x, wins, sum, na.rm = FALSE)",34174429
+"RollingWindow::RollingSum(x, wins)",396719
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",559523
+"running_scaled(x, wins)",765620
+"running_sd3(x, wins)",646417
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386104
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2066887
+"running_sum(x, wins)",78838
+"roll::roll_sd(xm, wins)",5829837
+"running_mean(x, wins)",87297
+"running_kurt(x, wins)",5778490
+"RollingWindow::RollingStd(x, wins)",285241
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1997854
+"roll::roll_sum(xm, wins)",1974574
+"running_kurt5(x, wins)",6387558
+"RollingWindow::RollingStd(x, wins)",277432
+"running_centered(x, wins)",580919
+"running_kurt(x, wins)",5323230
+"running_sharpe(x, wins)",669576
+"running_scaled(x, wins)",662179
+"roll::roll_sd(xm, wins)",6042944
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12834219
+"running_scaled(x, wins)",856928
+"running_sum(x, wins)",90525
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1843868
+"running_scaled(x, wins)",676543
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",458839
+"running_zscored(x, wins)",721541
+"running_mean(x, wins)",77271
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",384864
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11031096
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",547591
+"running_centered(x, wins)",588429
+"RollingWindow::RollingStd(x, wins)",376467
+"running_tstat(x, wins)",680150
+"running_kurt(x, wins)",5275782
+"running_zscored(x, wins)",675845
+"roll::roll_sd(xm, wins)",6176400
+"running_kurt(x, wins)",5279445
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",444681
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",443205
+"running_skew(x, wins)",3999985
+"running_centered(x, wins)",579489
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",485838
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",446340
+"running_centered(x, wins)",567803
+"running_tstat(x, wins)",668575
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2064084
+"roll::roll_sum(xm, wins)",2042488
+"roll::roll_mean(xm, wins)",2140380
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",627370
+"running_skew(x, wins)",3717507
+"running_sd3(x, wins)",616679
+"running_kurt5(x, wins)",5927993
+"roll::roll_sum(xm, wins)",2266828
+"RollingWindow::RollingSum(x, wins)",1861741
+"running_sd3(x, wins)",795443
+"running_apx_median(x, wins)",17084745
+"RollingWindow::RollingSum(x, wins)",245432
+"roll::roll_sum(xm, wins)",2476973
+"running_centered(x, wins)",676183
+"running_apx_median(x, wins)",17347290
+"RollingWindow::RollingStd(x, wins)",366289
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2228306
+"silly_fun(x, wins, sum, na.rm = FALSE)",39020826
+"running_skew(x, wins)",4439249
+"running_sum(x, wins)",124320
+"running_skew(x, wins)",4113957
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2003593
+"running_mean(x, wins)",87902
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11872532
+"running_scaled(x, wins)",770328
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",437005
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12075357
+"running_skew4(x, wins)",4383474
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2270358
+"silly_fun(x, wins, sum, na.rm = FALSE)",38428247
+"running_skew4(x, wins)",4845833
+"running_skew(x, wins)",4743337
+"running_sharpe(x, wins)",925227
+"roll::roll_sd(xm, wins)",8421942
+"roll::roll_mean(xm, wins)",2926508
+"roll::roll_sd(xm, wins)",8866350
+"roll::roll_mean(xm, wins)",4076027
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",553612
+"running_scaled(x, wins)",998485
+"RollingWindow::RollingSum(x, wins)",279529
+"RollingWindow::RollingMean(x, wins)",235002
+"running_tstat(x, wins)",948310
+"running_sum(x, wins)",119632
+"running_mean(x, wins)",103951
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",619152
+"running_centered(x, wins)",810810
+"running_zscored(x, wins)",986549
+"silly_fun(x, wins, mean, na.rm = FALSE)",80837323
+"running_scaled(x, wins)",832265
+"roll::roll_sum(xm, wins)",2960308
+"running_sum(x, wins)",109814
+"RollingWindow::RollingStd(x, wins)",313970
+"running_sharpe(x, wins)",805339
+"running_scaled(x, wins)",792572
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2334704
+"running_centered(x, wins)",719167
+"silly_fun(x, wins, mean, na.rm = FALSE)",82082833
+"running_kurt(x, wins)",6028481
+"running_scaled(x, wins)",831457
+"running_kurt5(x, wins)",7873158
+"running_sd3(x, wins)",1037480
+"roll::roll_sd(xm, wins)",8195032
+"running_skew(x, wins)",4926211
+"running_zscored(x, wins)",811802
+"running_skew(x, wins)",4458359
+"silly_fun(x, wins, sum, na.rm = FALSE)",39611690
+"running_kurt(x, wins)",6723656
+"RollingWindow::RollingStd(x, wins)",380793
+"roll::roll_sum(xm, wins)",2021425
+"RollingWindow::RollingSum(x, wins)",153301
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",472509
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",435924
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2243093
+"silly_fun(x, wins, sum, na.rm = FALSE)",41805056
+"running_centered(x, wins)",794203
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",577441
+"running_kurt(x, wins)",6573724
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2362913
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2285127
+"running_sd3(x, wins)",704914
+"running_skew4(x, wins)",4256888
+"running_apx_median(x, wins)",18052683
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",16072286
+"running_centered(x, wins)",748318
+"running_zscored(x, wins)",806139
+"running_skew(x, wins)",4303424
+"running_tstat(x, wins)",814750
+"running_sd3(x, wins)",748228
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",589640
+"running_apx_median(x, wins)",17037387
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2216008
+"running_kurt5(x, wins)",8512318
+"running_kurt(x, wins)",6550554
+"running_scaled(x, wins)",829210
+"running_centered(x, wins)",708702
+"silly_fun(x, wins, sum, na.rm = FALSE)",42307457
+"running_skew(x, wins)",4439064
+"silly_fun(x, wins, sum, na.rm = FALSE)",40015576
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2391966
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2730465
+"running_kurt(x, wins)",7378984
+"running_apx_median(x, wins)",18032714
+"roll::roll_sum(xm, wins)",2935107
+"roll::roll_sum(xm, wins)",3049572
+"RollingWindow::RollingStd(x, wins)",368843
+"running_mean(x, wins)",100229
+"RollingWindow::RollingSum(x, wins)",149336
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",405220
+"silly_fun(x, wins, mean, na.rm = FALSE)",78374125
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2626996
+"running_scaled(x, wins)",828584
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",540356
+"running_mean(x, wins)",102136
+"running_centered(x, wins)",745731
+"running_zscored(x, wins)",800394
+"running_zscored(x, wins)",803343
+"running_tstat(x, wins)",806293
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",504641
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",560398
+"running_sharpe(x, wins)",881113
+"running_kurt5(x, wins)",7300253
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2188047
+"RollingWindow::RollingStd(x, wins)",362577
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12676922
+"running_sd3(x, wins)",777726
+"running_sum(x, wins)",97588
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2365787
+"silly_fun(x, wins, sum, na.rm = FALSE)",41610856
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2153490
+"RollingWindow::RollingSum(x, wins)",240199
+"running_kurt5(x, wins)",7029120
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12271833
+"roll::roll_sd(xm, wins)",6963514
+"silly_fun(x, wins, sum, na.rm = FALSE)",40779612
+"silly_fun(x, wins, sum, na.rm = FALSE)",42015232
+"RollingWindow::RollingMean(x, wins)",542439
+"silly_fun(x, wins, sum, na.rm = FALSE)",41969601
+"running_kurt(x, wins)",6625509
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",580005
+"running_sum(x, wins)",111563
+"running_sum(x, wins)",90185
+"running_scaled(x, wins)",811854
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2085009
+"running_sum(x, wins)",101821
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2403008
+"roll::roll_sd(xm, wins)",7119941
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2118430
+"roll::roll_sd(xm, wins)",7651336
+"RollingWindow::RollingStd(x, wins)",344287
+"running_kurt(x, wins)",6578329
+"RollingWindow::RollingSum(x, wins)",229785
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",521853
+"roll::roll_sd(xm, wins)",8403954
+"roll::roll_mean(xm, wins)",2659132
+"running_sd3(x, wins)",693145
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",491534
+"roll::roll_mean(xm, wins)",2512518
+"running_apx_median(x, wins)",16924595
+"RollingWindow::RollingMean(x, wins)",272424
+"silly_fun(x, wins, mean, na.rm = FALSE)",76678688
+"running_sum(x, wins)",109545
+"RollingWindow::RollingSum(x, wins)",214337
+"running_skew4(x, wins)",4354506
+"RollingWindow::RollingStd(x, wins)",411357
+"running_scaled(x, wins)",1203345
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2824739
+"RollingWindow::RollingSum(x, wins)",232329
+"RollingWindow::RollingStd(x, wins)",323278
+"roll::roll_sd(xm, wins)",7381209
+"RollingWindow::RollingSum(x, wins)",213146
+"silly_fun(x, wins, mean, na.rm = FALSE)",94784396
+"RollingWindow::RollingMean(x, wins)",264662
+"running_sum(x, wins)",102228
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",445602
+"silly_fun(x, wins, mean, na.rm = FALSE)",97762248
+"running_apx_median(x, wins)",18834434
+"RollingWindow::RollingStd(x, wins)",422446
+"roll::roll_mean(xm, wins)",2999344
+"running_mean(x, wins)",132773
+"running_skew4(x, wins)",5126855
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",17818480
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",14788745
+"roll::roll_sum(xm, wins)",3367756
+"silly_fun(x, wins, mean, na.rm = FALSE)",86606051
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2163126
+"running_centered(x, wins)",638060
+"silly_fun(x, wins, mean, na.rm = FALSE)",87996310
+"running_sd3(x, wins)",794310
+"roll::roll_sd(xm, wins)",7787631
+"running_kurt5(x, wins)",7027188
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2155852
+"running_tstat(x, wins)",842198
+"running_skew4(x, wins)",5342304
+"roll::roll_sd(xm, wins)",6160184
+"running_mean(x, wins)",100516
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13125484
+"roll::roll_sd(xm, wins)",6405049
+"running_tstat(x, wins)",793213
+"running_apx_median(x, wins)",16972007
+"running_kurt5(x, wins)",6744113
+"RollingWindow::RollingStd(x, wins)",2442359
+"RollingWindow::RollingSum(x, wins)",203666
+"silly_fun(x, wins, sum, na.rm = FALSE)",35385035
+"running_apx_median(x, wins)",15623283
+"RollingWindow::RollingStd(x, wins)",336707
+"RollingWindow::RollingMean(x, wins)",180818
+"running_tstat(x, wins)",744534
+"RollingWindow::RollingMean(x, wins)",171624
+"roll::roll_sum(xm, wins)",2027693
+"running_sharpe(x, wins)",701840
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",389950
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1845467
+"RollingWindow::RollingSum(x, wins)",129763
+"running_tstat(x, wins)",699163
+"running_sharpe(x, wins)",686160
+"running_zscored(x, wins)",689709
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13375176
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",421599
+"RollingWindow::RollingMean(x, wins)",232562
+"running_mean(x, wins)",83692
+"silly_fun(x, wins, mean, na.rm = FALSE)",67300320
+"running_skew4(x, wins)",3704589
+"running_skew4(x, wins)",3754730
+"silly_fun(x, wins, mean, na.rm = FALSE)",63915087
+"RollingWindow::RollingMean(x, wins)",248966
+"running_kurt5(x, wins)",5906799
+"RollingWindow::RollingSum(x, wins)",157735
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1970523
+"silly_fun(x, wins, sum, na.rm = FALSE)",35866473
+"running_kurt5(x, wins)",5952061
+"running_tstat(x, wins)",679777
+"silly_fun(x, wins, sum, na.rm = FALSE)",32943124
+"running_zscored(x, wins)",691952
+"running_sum(x, wins)",78550
+"running_sharpe(x, wins)",669080
+"silly_fun(x, wins, sum, na.rm = FALSE)",35347656
+"running_zscored(x, wins)",694657
+"running_zscored(x, wins)",673406
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1892772
+"silly_fun(x, wins, mean, na.rm = FALSE)",65496097
+"running_zscored(x, wins)",699649
+"running_sum(x, wins)",80232
+"RollingWindow::RollingSum(x, wins)",198895
+"running_sum(x, wins)",79470
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386485
+"running_tstat(x, wins)",672587
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",4201406
+"RollingWindow::RollingStd(x, wins)",332084
+"running_zscored(x, wins)",702610
+"running_mean(x, wins)",76968
+"silly_fun(x, wins, mean, na.rm = FALSE)",64317369
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2046119
+"running_mean(x, wins)",86726
+"running_centered(x, wins)",583276
+"running_kurt5(x, wins)",5919921
+"running_skew4(x, wins)",3642419
+"running_sd3(x, wins)",880819
+"running_scaled(x, wins)",704030
+"RollingWindow::RollingStd(x, wins)",316949
+"running_apx_median(x, wins)",14065717
+"running_skew(x, wins)",3673280
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",387355
+"running_sharpe(x, wins)",771906
+"running_apx_median(x, wins)",14188230
+"RollingWindow::RollingMean(x, wins)",198065
+"running_sharpe(x, wins)",671132
+"silly_fun(x, wins, sum, na.rm = FALSE)",35088263
+"running_skew(x, wins)",3617642
+"running_kurt(x, wins)",5226296
+"running_sd3(x, wins)",621696
+"RollingWindow::RollingSum(x, wins)",196106
+"roll::roll_mean(xm, wins)",2148295
+"running_kurt5(x, wins)",5877664
+"RollingWindow::RollingMean(x, wins)",173950
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",388039
+"running_zscored(x, wins)",670121
+"running_skew(x, wins)",3579435
+"running_sd3(x, wins)",618281
+"roll::roll_mean(xm, wins)",2119218
+"running_skew4(x, wins)",3651714
+"running_scaled(x, wins)",664050
+"running_sum(x, wins)",75983
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10776238
+"roll::roll_mean(xm, wins)",2166836
+"running_tstat(x, wins)",680787
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",390588
+"running_sharpe(x, wins)",665446
+"running_kurt5(x, wins)",11121999
+"RollingWindow::RollingMean(x, wins)",378730
+"roll::roll_sum(xm, wins)",2146600
+"running_tstat(x, wins)",711935
+"running_centered(x, wins)",572617
+"running_kurt(x, wins)",5276494
+"roll::roll_sd(xm, wins)",5809632
+"roll::roll_mean(xm, wins)",2229405
+"silly_fun(x, wins, mean, na.rm = FALSE)",138938932
+"running_kurt5(x, wins)",5911828
+"RollingWindow::RollingMean(x, wins)",211151
+"RollingWindow::RollingStd(x, wins)",260495
+"running_sum(x, wins)",79109
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2083579
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1930575
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",392574
+"running_apx_median(x, wins)",14182284
+"running_sd3(x, wins)",626819
+"RollingWindow::RollingStd(x, wins)",237637
+"running_sharpe(x, wins)",670927
+"running_sd3(x, wins)",616930
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",385149
+"running_apx_median(x, wins)",17368080
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",475133
+"running_tstat(x, wins)",685221
+"running_tstat(x, wins)",685019
+"running_centered(x, wins)",588897
+"running_sd3(x, wins)",637811
+"running_apx_median(x, wins)",14419863
+"running_sharpe(x, wins)",689873
+"roll::roll_mean(xm, wins)",2462417
+"running_sd3(x, wins)",811662
+"running_sharpe(x, wins)",741190
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",478190
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",509823
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",413760
+"running_zscored(x, wins)",726909
+"running_tstat(x, wins)",726456
+"running_kurt5(x, wins)",6738668
+"running_sum(x, wins)",114882
+"running_scaled(x, wins)",911224
+"running_scaled(x, wins)",843124
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11614647
+"RollingWindow::RollingMean(x, wins)",251792
+"roll::roll_mean(xm, wins)",2415974
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1907355
+"running_mean(x, wins)",88612
+"roll::roll_sum(xm, wins)",2166468
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2323967
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2125521
+"running_kurt5(x, wins)",5936533
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1931577
+"silly_fun(x, wins, sum, na.rm = FALSE)",33019926
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2123607
+"running_tstat(x, wins)",682677
+"RollingWindow::RollingSum(x, wins)",164623
+"running_tstat(x, wins)",800826
+"RollingWindow::RollingStd(x, wins)",2415832
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",473119
+"running_sum(x, wins)",88199
+"RollingWindow::RollingSum(x, wins)",140864
+"roll::roll_sum(xm, wins)",1931452
+"running_scaled(x, wins)",722815
+"silly_fun(x, wins, mean, na.rm = FALSE)",64909582
+"running_zscored(x, wins)",789887
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",661157
+"running_sharpe(x, wins)",717843
+"running_kurt(x, wins)",5390303
+"running_skew4(x, wins)",3695162
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1992337
+"running_apx_median(x, wins)",14247558
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",387689
+"running_skew(x, wins)",3597395
+"running_skew4(x, wins)",3633496
+"running_sharpe(x, wins)",666592
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1989854
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",385820
+"silly_fun(x, wins, sum, na.rm = FALSE)",34955024
+"silly_fun(x, wins, sum, na.rm = FALSE)",32751409
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2166575
+"roll::roll_mean(xm, wins)",2156840
+"running_kurt5(x, wins)",5972831
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1949563
+"running_zscored(x, wins)",675414
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",421213
+"running_kurt(x, wins)",5253885
+"running_zscored(x, wins)",671363
+"running_sharpe(x, wins)",671277
+"running_sharpe(x, wins)",668869
+"silly_fun(x, wins, mean, na.rm = FALSE)",67381237
+"RollingWindow::RollingMean(x, wins)",310142
+"roll::roll_sd(xm, wins)",5999937
+"running_kurt5(x, wins)",5962459
+"running_kurt(x, wins)",5273592
+"silly_fun(x, wins, sum, na.rm = FALSE)",34960648
+"RollingWindow::RollingStd(x, wins)",331475
+"RollingWindow::RollingStd(x, wins)",264499
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",377445
+"roll::roll_mean(xm, wins)",2123224
+"RollingWindow::RollingStd(x, wins)",255406
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",455480
+"silly_fun(x, wins, mean, na.rm = FALSE)",66299271
+"running_apx_median(x, wins)",14247315
+"running_skew4(x, wins)",3639118
+"running_apx_median(x, wins)",14102833
+"running_tstat(x, wins)",674712
+"running_sd3(x, wins)",615663
+"silly_fun(x, wins, mean, na.rm = FALSE)",65097033
+"silly_fun(x, wins, mean, na.rm = FALSE)",67288461
+"roll::roll_sd(xm, wins)",6066993
+"RollingWindow::RollingSum(x, wins)",144905
+"RollingWindow::RollingStd(x, wins)",230503
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",464724
+"running_skew4(x, wins)",3754959
+"running_scaled(x, wins)",680921
+"RollingWindow::RollingSum(x, wins)",117940
+"RollingWindow::RollingMean(x, wins)",144338
+"silly_fun(x, wins, mean, na.rm = FALSE)",69783201
+"running_centered(x, wins)",655798
+"silly_fun(x, wins, mean, na.rm = FALSE)",75148027
+"running_tstat(x, wins)",762666
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1913818
+"running_kurt(x, wins)",5696034
+"running_kurt(x, wins)",5429339
+"running_sharpe(x, wins)",668823
+"running_skew4(x, wins)",3992765
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",452102
+"running_sd3(x, wins)",618383
+"running_kurt(x, wins)",5338219
+"running_kurt5(x, wins)",6000099
+"running_tstat(x, wins)",674512
+"running_sd3(x, wins)",648290
+"running_apx_median(x, wins)",14283099
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2040226
+"running_sharpe(x, wins)",673424
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",410441
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",449558
+"roll::roll_mean(xm, wins)",2191426
+"silly_fun(x, wins, mean, na.rm = FALSE)",63764149
+"silly_fun(x, wins, sum, na.rm = FALSE)",34731867
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",466149
+"roll::roll_sd(xm, wins)",5834924
+"running_sum(x, wins)",90849
+"RollingWindow::RollingStd(x, wins)",232854
+"running_zscored(x, wins)",673474
+"silly_fun(x, wins, mean, na.rm = FALSE)",73425490
+"running_sharpe(x, wins)",868309
+"running_sum(x, wins)",89159
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2112360
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",651570
+"roll::roll_mean(xm, wins)",2872953
+"running_kurt5(x, wins)",6860150
+"running_sd3(x, wins)",654762
+"RollingWindow::RollingSum(x, wins)",184700
+"running_apx_median(x, wins)",14788287
+"running_skew4(x, wins)",3702786
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",431560
+"RollingWindow::RollingMean(x, wins)",178641
+"running_tstat(x, wins)",740675
+"running_sd3(x, wins)",806929
+"silly_fun(x, wins, mean, na.rm = FALSE)",64402164
+"running_sd3(x, wins)",652940
+"roll::roll_sum(xm, wins)",2006410
+"running_apx_median(x, wins)",14198393
+"running_sharpe(x, wins)",674576
+"running_kurt(x, wins)",5326227
+"silly_fun(x, wins, sum, na.rm = FALSE)",37306928
+"running_tstat(x, wins)",786191
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",11262041
+"RollingWindow::RollingStd(x, wins)",341685
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",426613
+"roll::roll_mean(xm, wins)",2384232
+"running_scaled(x, wins)",741945
+"roll::roll_sum(xm, wins)",2169242
+"roll::roll_mean(xm, wins)",2346688
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2118056
+"roll::roll_mean(xm, wins)",2354848
+"running_sd3(x, wins)",684657
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",416978
+"running_skew(x, wins)",3897050
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",430126
+"running_skew4(x, wins)",3967313
+"running_tstat(x, wins)",727380
+"running_kurt5(x, wins)",6461299
+"silly_fun(x, wins, mean, na.rm = FALSE)",66338997
+"running_tstat(x, wins)",697521
+"running_sharpe(x, wins)",677008
+"roll::roll_sd(xm, wins)",5841015
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1953111
+"RollingWindow::RollingSum(x, wins)",153060
+"running_zscored(x, wins)",679719
+"running_sum(x, wins)",76688
+"silly_fun(x, wins, sum, na.rm = FALSE)",33626308
+"roll::roll_mean(xm, wins)",2208018
+"running_mean(x, wins)",87857
+"RollingWindow::RollingStd(x, wins)",273843
+"RollingWindow::RollingMean(x, wins)",158814
+"running_kurt(x, wins)",5249338
+"running_scaled(x, wins)",669672
+"running_sum(x, wins)",76486
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",13062589
+"silly_fun(x, wins, mean, na.rm = FALSE)",63820251
+"roll::roll_sd(xm, wins)",5870086
+"running_centered(x, wins)",591074
+"running_scaled(x, wins)",666596
+"running_skew(x, wins)",3613560
+"running_sd3(x, wins)",621908
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",434620
+"roll::roll_sum(xm, wins)",1943812
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",407488
+"roll::roll_sd(xm, wins)",5863455
+"running_sum(x, wins)",87399
+"running_centered(x, wins)",571725
+"roll::roll_mean(xm, wins)",2086400
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",399499
+"RollingWindow::RollingSum(x, wins)",132985
+"running_mean(x, wins)",77967
+"roll::roll_sum(xm, wins)",1908022
+"running_apx_median(x, wins)",14146201
+"RollingWindow::RollingStd(x, wins)",250467
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1999440
+"running_sharpe(x, wins)",671303
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",384477
+"running_scaled(x, wins)",2890426
+"RollingWindow::RollingMean(x, wins)",185083
+"running_zscored(x, wins)",701652
+"running_skew(x, wins)",3599134
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",374407
+"running_scaled(x, wins)",668708
+"RollingWindow::RollingSum(x, wins)",123876
+"running_mean(x, wins)",77043
+"RollingWindow::RollingMean(x, wins)",162649
+"roll::roll_mean(xm, wins)",2121663
+"running_mean(x, wins)",88882
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1756214
+"running_sd3(x, wins)",617675
+"running_tstat(x, wins)",698579
+"running_centered(x, wins)",620159
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10473153
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10328983
+"running_sum(x, wins)",90073
+"running_scaled(x, wins)",666035
+"running_skew4(x, wins)",3687149
+"RollingWindow::RollingMean(x, wins)",220259
+"roll::roll_mean(xm, wins)",2133093
+"running_sd3(x, wins)",634160
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",383147
+"running_skew4(x, wins)",3734e3
+"running_sum(x, wins)",76548
+"running_sum(x, wins)",73945
+"running_tstat(x, wins)",666503
+"silly_fun(x, wins, sum, na.rm = FALSE)",34639647
+"running_centered(x, wins)",597588
+"RollingWindow::RollingStd(x, wins)",317032
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1995899
+"RollingWindow::RollingSum(x, wins)",147655
+"running_kurt5(x, wins)",6151429
+"roll::roll_mean(xm, wins)",2459794
+"running_apx_median(x, wins)",15050420
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",391848
+"RollingWindow::RollingStd(x, wins)",270594
+"running_apx_median(x, wins)",14170199
+"running_sd3(x, wins)",627178
+"roll::roll_mean(xm, wins)",2115054
+"RollingWindow::RollingSum(x, wins)",144389
+"roll::roll_mean(xm, wins)",2092619
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",384521
+"running_kurt5(x, wins)",5899241
+"RollingWindow::RollingStd(x, wins)",2275662
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10679413
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",417862
+"running_scaled(x, wins)",685642
+"running_zscored(x, wins)",706142
+"running_skew4(x, wins)",3826262
+"running_skew(x, wins)",3671275
+"roll::roll_sum(xm, wins)",1993084
+"running_sd3(x, wins)",634584
+"running_tstat(x, wins)",694171
+"running_apx_median(x, wins)",14805048
+"running_skew4(x, wins)",3758009
+"silly_fun(x, wins, mean, na.rm = FALSE)",70248862
+"running_skew(x, wins)",3938777
+"silly_fun(x, wins, mean, na.rm = FALSE)",70648733
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2135917
+"silly_fun(x, wins, mean, na.rm = FALSE)",74730432
+"roll::roll_sd(xm, wins)",5932725
+"running_zscored(x, wins)",748153
+"running_kurt5(x, wins)",6383307
+"silly_fun(x, wins, mean, na.rm = FALSE)",66967239
+"running_kurt(x, wins)",5318414
+"running_mean(x, wins)",77349
+"running_sharpe(x, wins)",671345
+"roll::roll_sd(xm, wins)",5843188
+"running_centered(x, wins)",586680
+"RollingWindow::RollingSum(x, wins)",131487
+"running_apx_median(x, wins)",14114470
+"running_sharpe(x, wins)",666456
+"running_sharpe(x, wins)",671810
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",386143
+"running_sd3(x, wins)",622566
+"running_skew4(x, wins)",3632968
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1947107
+"running_zscored(x, wins)",672192
+"running_mean(x, wins)",75538
+"running_sum(x, wins)",77291
+"running_apx_median(x, wins)",14173058
+"RollingWindow::RollingSum(x, wins)",134580
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",387266
+"roll::roll_mean(xm, wins)",2166500
+"running_skew4(x, wins)",3714675
+"running_scaled(x, wins)",672380
+"running_kurt5(x, wins)",5886584
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",377212
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2412242
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2199923
+"running_kurt(x, wins)",5784328
+"running_kurt5(x, wins)",5998458
+"roll::roll_sum(xm, wins)",1983103
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",459123
+"RollingWindow::RollingStd(x, wins)",248342
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12710238
+"running_sharpe(x, wins)",695095
+"RollingWindow::RollingStd(x, wins)",296076
+"running_skew4(x, wins)",3644478
+"running_sum(x, wins)",81244
+"running_skew(x, wins)",3560350
+"silly_fun(x, wins, mean, na.rm = FALSE)",64525818
+"running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)",412529
+"running_tstat(x, wins)",693685
+"silly_fun(x, wins, sum, na.rm = FALSE)",34891362
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",469860
+"roll::roll_sum(xm, wins)",2039896
+"running_zscored(x, wins)",672925
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",387009
+"roll::roll_sd(xm, wins)",5972730
+"running_kurt(x, wins)",5408099
+"running_kurt5(x, wins)",6036692
+"running_mean(x, wins)",74649
+"running_kurt5(x, wins)",6002113
+"silly_fun(x, wins, sum, na.rm = FALSE)",34635056
+"roll::roll_mean(xm, wins)",2268329
+"RollingWindow::RollingStd(x, wins)",286387
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10530312
+"silly_fun(x, wins, mean, na.rm = FALSE)",64388145
+"running_sum(x, wins)",98232
+"running_sharpe(x, wins)",684182
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2033237
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",12860711
+"running_scaled(x, wins)",822071
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1807044
+"silly_fun(x, wins, mean, na.rm = FALSE)",64744917
+"running_skew(x, wins)",3675832
+"RollingWindow::RollingMean(x, wins)",229518
+"running_sd3(x, wins)",626486
+"running_mean(x, wins)",78402
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2045920
+"running_apx_median(x, wins)",14084864
+"RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",402380
+"running_apx_median(x, wins)",14220383
+"running_scaled(x, wins)",671114
+"roll::roll_sum(xm, wins)",1964758
+"silly_fun(x, wins, mean, na.rm = FALSE)",65927906
+"RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1810023
+"running_skew(x, wins)",3603429
+"running_mean(x, wins)",77589
+"RollingWindow::RollingSum(x, wins)",161386
+"roll::roll_mean(xm, wins)",2098781
+"RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1740982
+"running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)",452208
+"RcppRoll::roll_sd(xm, n = wins, align = ""right"", fill = NA)",10576002
