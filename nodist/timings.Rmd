@@ -237,17 +237,17 @@ allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
 		group_by(sernum,expr) %>%
 			summarize(meantime=mean(time,na.rm=TRUE)) %>%
 		ungroup() %>%
-		mutate(is_numeraire=grepl('^sum\\(x\\)$',expr)) %>%
-		arrange(!is_numeraire) %>%
 		group_by(sernum) %>%
-			mutate(numv=first(meantime)) %>%
+			mutate(sumx_time=median(ifelse(grepl('^sum\\(x\\)$',expr),meantime,NA),na.rm=TRUE)) %>%
 		ungroup() %>%
-		mutate(normalized=meantime / numv) %>%
+		mutate(normalized=meantime / sumx_time) %>%
 		arrange(sernum) %>%
 		group_by(expr) %>%
-			mutate(first_norm=first(normalized)) %>%
+			mutate(first_norm=first(normalized),
+						 last_norm=last(normalized)) %>%
 		ungroup() %>%
-		mutate(relchange=normalized / first_norm)
+		mutate(relchange=normalized / first_norm,
+					 last_status=last_norm / first_norm)
 	
 library(ggplot2)
 ph <- allt %>%
@@ -269,17 +269,10 @@ ph <- allt %>%
 print(ph)
 
 allt %>% 
-	arrange(sernum) %>%
-	group_by(expr) %>%
-		mutate(perfo=mean(relchange,na.rm=TRUE),
-					 first_mean=first(meantime),
-					 last_mean=last(meantime)) %>%
-	ungroup() %>%
+	select(-sernum) %>%
 	distinct(expr,.keep_all=TRUE) %>%
-	select(expr,first_mean,last_mean,perfo) %>%
-	mutate(rel_mean=last_mean / first_mean) %>%
-	arrange(desc(perfo)) %>%
-	head(n=10) %>%
+	arrange(desc(last_status)) %>%
+	head(n=50) %>%
 	kable()
 	
 ```
