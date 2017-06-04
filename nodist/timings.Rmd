@@ -269,7 +269,7 @@ ph <- allt %>%
 print(ph)
 
 allt %>% 
-	select(-sernum) %>%
+	select(-sernum,-relchange,-meantime,-sumx_time,-normalized) %>%
 	distinct(expr,.keep_all=TRUE) %>%
 	arrange(desc(last_status)) %>%
 	head(n=50) %>%

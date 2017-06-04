@@ -2311,7 +2311,6 @@ mobj3 %-% mobj1,17591
 "RollingWindow::RollingSum(x, wins)",195558
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2276938
 "silly_fun(x, wins, mean, na.rm = FALSE)",81207824
-sum(x),14728
 "running_apx_median(x, wins)",16395551
 "running_zscored(x, wins)",820148
 "running_sharpe(x, wins)",734900
@@ -2319,16 +2318,13 @@ sum(x),14728
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2280236
 "running_apx_median(x, wins)",15031266
 "roll::roll_sum(xm, wins)",2074483
-sum(x),13197
 "silly_fun(x, wins, mean, na.rm = FALSE)",81064637
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2096367
-sum(x),13049
 "roll::roll_sd(xm, wins)",6868745
 "running_tstat(x, wins)",974866
 "RollingWindow::RollingMean(x, wins)",244374
 "running_skew4(x, wins)",3879427
 "RollingWindow::RollingMean(x, wins)",202205
-sum(x),10547
 "running_scaled(x, wins)",725541
 "roll::roll_sum(xm, wins)",2046095
 "silly_fun(x, wins, mean, na.rm = FALSE)",75109661
@@ -2336,7 +2332,6 @@ sum(x),10547
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",411152
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",2741142
 "running_sum(x, wins)",69272
-sum(x),10005
 "running_sharpe(x, wins)",710635
 "silly_fun(x, wins, sum, na.rm = FALSE)",39495791
 "running_centered(x, wins)",663235
@@ -2346,7 +2341,6 @@ sum(x),10005
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2164915
 "running_apx_median(x, wins)",15997970
 "running_kurt5(x, wins)",6873342
-sum(x),12690
 "silly_fun(x, wins, mean, na.rm = FALSE)",87048252
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2045527
 "roll::roll_sd(xm, wins)",6948674
@@ -2364,7 +2358,6 @@ sum(x),12690
 "RollingWindow::RollingSum(x, wins)",170083
 "running_apx_median(x, wins)",14702345
 "RollingWindow::RollingSum(x, wins)",192150
-sum(x),10981
 "running_mean(x, wins)",175532
 "running_centered(x, wins)",615713
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",427649
@@ -2393,7 +2386,6 @@ sum(x),10981
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",416622
 "silly_fun(x, wins, sum, na.rm = FALSE)",39050014
 "silly_fun(x, wins, mean, na.rm = FALSE)",71008317
-sum(x),10277
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2172602
 "running_apx_median(x, wins)",13910092
 "roll::roll_sd(xm, wins)",7236519
@@ -2405,7 +2397,6 @@ sum(x),10277
 "roll::roll_mean(xm, wins)",3002378
 "running_zscored(x, wins)",904538
 "RollingWindow::RollingSum(x, wins)",216244
-sum(x),14341
 "silly_fun(x, wins, sum, na.rm = FALSE)",45473944
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2113281
 "RollingWindow::RollingSum(x, wins)",184353
@@ -2415,8 +2406,6 @@ sum(x),14341
 "running_apx_median(x, wins)",15743559
 "RollingWindow::RollingSum(x, wins)",209239
 "silly_fun(x, wins, sum, na.rm = FALSE)",43654468
-sum(x),11454
-sum(x),10514
 "roll::roll_mean(xm, wins)",2460811
 "running_scaled(x, wins)",807425
 "running_apx_median(x, wins)",17059372
@@ -2425,7 +2414,6 @@ sum(x),10514
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2408907
 "running_skew4(x, wins)",6368576
 "running_skew4(x, wins)",4844870
-sum(x),19101
 "running_tstat(x, wins)",846023
 "running_sum(x, wins)",70958
 "running_scaled(x, wins)",836847
@@ -2436,12 +2424,10 @@ sum(x),19101
 "running_mean(x, wins)",283839
 "silly_fun(x, wins, mean, na.rm = FALSE)",91068745
 "roll::roll_sum(xm, wins)",2870887
-sum(x),15047
 "silly_fun(x, wins, mean, na.rm = FALSE)",89729764
 "running_kurt5(x, wins)",7114353
 "silly_fun(x, wins, sum, na.rm = FALSE)",48501525
 "roll::roll_mean(xm, wins)",2728269
-sum(x),15381
 "running_mean(x, wins)",196870
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",541852
 "running_skew4(x, wins)",4889585
@@ -2468,13 +2454,10 @@ sum(x),15381
 "roll::roll_mean(xm, wins)",2502486
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2257813
 "running_skew4(x, wins)",4150924
-sum(x),11219
 "running_sum(x, wins)",35075
-sum(x),9680
 "running_kurt5(x, wins)",7211979
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2352137
 "silly_fun(x, wins, mean, na.rm = FALSE)",88835442
-sum(x),14205
 "RollingWindow::RollingSum(x, wins)",284598
 "roll::roll_sd(xm, wins)",7922760
 "running_sharpe(x, wins)",849440
@@ -2505,12 +2488,10 @@ sum(x),14205
 "running_zscored(x, wins)",782835
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2225206
 "running_zscored(x, wins)",746748
-sum(x),10454
 "running_mean(x, wins)",167764
 "RollingWindow::RollingMean(x, wins)",266471
 "running_tstat(x, wins)",750286
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",487047
-sum(x),20308
 "running_tstat(x, wins)",898421
 "silly_fun(x, wins, mean, na.rm = FALSE)",87677859
 "silly_fun(x, wins, sum, na.rm = FALSE)",45079493
@@ -2567,7 +2548,6 @@ sum(x),20308
 "running_zscored(x, wins)",760473
 "RollingWindow::RollingMean(x, wins)",257634
 "silly_fun(x, wins, mean, na.rm = FALSE)",85097610
-sum(x),12948
 "silly_fun(x, wins, mean, na.rm = FALSE)",74750156
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",453053
 "running_centered(x, wins)",570795
@@ -2585,7 +2565,6 @@ sum(x),12948
 "running_sharpe(x, wins)",691915
 "running_sum(x, wins)",28098
 "RollingWindow::RollingMean(x, wins)",160157
-sum(x),9731
 "roll::roll_sd(xm, wins)",5960351
 "running_scaled(x, wins)",703176
 "running_tstat(x, wins)",673185
@@ -2613,15 +2592,11 @@ sum(x),9731
 "running_skew4(x, wins)",3616965
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2016688
 "silly_fun(x, wins, mean, na.rm = FALSE)",71207754
-sum(x),13056
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1990838
-sum(x),8766
 "silly_fun(x, wins, mean, na.rm = FALSE)",72905197
 "silly_fun(x, wins, mean, na.rm = FALSE)",69576119
 "running_apx_median(x, wins)",13278901
 "RollingWindow::RollingMean(x, wins)",260691
-sum(x),11178
-sum(x),10111
 "running_sum(x, wins)",70845
 "running_mean(x, wins)",195715
 "RollingWindow::RollingSum(x, wins)",165394
@@ -2669,7 +2644,6 @@ sum(x),10111
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1799818
 "running_centered(x, wins)",564737
 "running_centered(x, wins)",549668
-sum(x),8834
 "silly_fun(x, wins, mean, na.rm = FALSE)",74658877
 "roll::roll_sum(xm, wins)",2227869
 "running_tstat(x, wins)",697479
@@ -2693,7 +2667,6 @@ sum(x),8834
 "RollingWindow::RollingSum(x, wins)",214415
 "running_apx_median(x, wins)",13317651
 "silly_fun(x, wins, mean, na.rm = FALSE)",72302337
-sum(x),12195
 "running_sum(x, wins)",47159
 "running_mean(x, wins)",148197
 "running_skew4(x, wins)",3651546
@@ -2705,12 +2678,10 @@ sum(x),12195
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1809896
 "running_scaled(x, wins)",676540
 "running_sum(x, wins)",29825
-sum(x),8568
 "roll::roll_sd(xm, wins)",6176396
 "running_mean(x, wins)",147625
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1982001
 "running_zscored(x, wins)",706086
-sum(x),8769
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1723420
 "running_centered(x, wins)",552564
 "running_sum(x, wins)",27860
@@ -2747,12 +2718,10 @@ sum(x),8769
 "roll::roll_mean(xm, wins)",2077408
 "running_mean(x, wins)",158913
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2030404
-sum(x),35945
 "running_apx_median(x, wins)",13829505
 "RollingWindow::RollingSum(x, wins)",204454
 "RollingWindow::RollingSum(x, wins)",116811
 "running_zscored(x, wins)",726780
-sum(x),10333
 "running_sharpe(x, wins)",725839
 "RollingWindow::RollingSum(x, wins)",118624
 "silly_fun(x, wins, mean, na.rm = FALSE)",71565608
@@ -2762,7 +2731,6 @@ sum(x),10333
 "running_sharpe(x, wins)",723994
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1808130
 "running_sum(x, wins)",29594
-sum(x),17459
 "running_tstat(x, wins)",704110
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",421543
 "running_sharpe(x, wins)",739945
@@ -2803,7 +2771,6 @@ sum(x),17459
 "roll::roll_mean(xm, wins)",2251436
 "running_zscored(x, wins)",668336
 "running_sharpe(x, wins)",670574
-sum(x),9193
 "silly_fun(x, wins, sum, na.rm = FALSE)",34481967
 "running_kurt5(x, wins)",6176103
 "running_apx_median(x, wins)",13716945
@@ -2811,7 +2778,6 @@ sum(x),9193
 "roll::roll_sd(xm, wins)",6368352
 "running_mean(x, wins)",223953
 "running_kurt5(x, wins)",5865416
-sum(x),10273
 "running_zscored(x, wins)",684887
 "running_mean(x, wins)",146433
 "RollingWindow::RollingSum(x, wins)",2327106
@@ -2837,7 +2803,6 @@ sum(x),10273
 "running_tstat(x, wins)",893737
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",471313
 "running_tstat(x, wins)",712706
-sum(x),10044
 "silly_fun(x, wins, sum, na.rm = FALSE)",38839430
 "silly_fun(x, wins, mean, na.rm = FALSE)",75326584
 "running_mean(x, wins)",180498
@@ -2846,7 +2811,6 @@ sum(x),10044
 "running_sharpe(x, wins)",902861
 "running_tstat(x, wins)",846063
 "roll::roll_mean(xm, wins)",2216744
-sum(x),10443
 "running_skew4(x, wins)",3867522
 "running_kurt5(x, wins)",6312457
 "running_apx_median(x, wins)",14706331
@@ -2885,14 +2849,12 @@ sum(x),10443
 "RollingWindow::RollingSum(x, wins)",251196
 "silly_fun(x, wins, sum, na.rm = FALSE)",36361644
 "running_centered(x, wins)",605633
-sum(x),9163
 "running_apx_median(x, wins)",16393677
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",623851
 "running_skew4(x, wins)",4560525
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2356188
 "running_scaled(x, wins)",757503
 "running_kurt5(x, wins)",6478856
-sum(x),11728
 "running_sum(x, wins)",33701
 "running_centered(x, wins)",597484
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2181286
@@ -2900,16 +2862,13 @@ sum(x),11728
 "running_scaled(x, wins)",728626
 "running_centered(x, wins)",620021
 "running_skew4(x, wins)",3628519
-sum(x),9790
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",543171
 "silly_fun(x, wins, mean, na.rm = FALSE)",83277815
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2483155
 "running_scaled(x, wins)",893666
 "running_centered(x, wins)",755504
-sum(x),13578
 "silly_fun(x, wins, mean, na.rm = FALSE)",83665299
 "roll::roll_sd(xm, wins)",6781361
-sum(x),17086
 "RollingWindow::RollingSum(x, wins)",200472
 "RollingWindow::RollingMean(x, wins)",179031
 "running_skew4(x, wins)",3946490
@@ -2920,7 +2879,6 @@ sum(x),17086
 "RollingWindow::RollingMean(x, wins)",370025
 "running_mean(x, wins)",234626
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2717273
-sum(x),16563
 "running_tstat(x, wins)",853209
 "running_sharpe(x, wins)",731269
 "running_mean(x, wins)",161897
@@ -2967,7 +2925,6 @@ sum(x),16563
 "roll::roll_sd(xm, wins)",5920464
 "RollingWindow::RollingSum(x, wins)",197559
 "silly_fun(x, wins, sum, na.rm = FALSE)",34298364
-sum(x),11678
 "running_scaled(x, wins)",746957
 "roll::roll_mean(xm, wins)",2186193
 "running_sharpe(x, wins)",689696
@@ -3023,7 +2980,6 @@ sum(x),11678
 "roll::roll_sum(xm, wins)",2002176
 "RollingWindow::RollingSum(x, wins)",137325
 "running_zscored(x, wins)",712344
-sum(x),9689
 "running_kurt5(x, wins)",6216175
 "running_apx_median(x, wins)",15022636
 "running_sharpe(x, wins)",786713
@@ -3057,7 +3013,6 @@ sum(x),9689
 "running_scaled(x, wins)",717749
 "running_zscored(x, wins)",799052
 "running_sharpe(x, wins)",725278
-sum(x),10998
 "running_sharpe(x, wins)",697112
 "running_zscored(x, wins)",881576
 "running_scaled(x, wins)",794529
@@ -3217,7 +3172,6 @@ sum(x),10998
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",506451
 "roll::roll_mean(xm, wins)",2169030
 "RollingWindow::RollingSum(x, wins)",192226
-sum(x),1e4
 "running_tstat(x, wins)",731370
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2381334
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",658563
@@ -3242,7 +3196,6 @@ sum(x),1e4
 "running_skew4(x, wins)",4804097
 "running_apx_median(x, wins)",17713767
 "running_apx_median(x, wins)",16975579
-sum(x),15936
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2230620
 "RollingWindow::RollingMean(x, wins)",244391
 "silly_fun(x, wins, sum, na.rm = FALSE)",45826383
@@ -3310,7 +3263,6 @@ sum(x),15936
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",4960486
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2055118
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",599525
-sum(x),12367
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2472041
 "running_sharpe(x, wins)",776728
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2323132
@@ -3320,7 +3272,6 @@ sum(x),12367
 "silly_fun(x, wins, mean, na.rm = FALSE)",82932e3
 "running_tstat(x, wins)",828711
 "roll::roll_mean(xm, wins)",2756678
-sum(x),23850
 "running_centered(x, wins)",700010
 "running_tstat(x, wins)",774176
 "roll::roll_sd(xm, wins)",6349096
@@ -3341,7 +3292,6 @@ sum(x),23850
 "roll::roll_sd(xm, wins)",6166674
 "roll::roll_sd(xm, wins)",7035699
 "roll::roll_sum(xm, wins)",2259426
-sum(x),16791
 "roll::roll_mean(xm, wins)",2274617
 "roll::roll_mean(xm, wins)",2269614
 "running_sharpe(x, wins)",763856
@@ -3351,7 +3301,6 @@ sum(x),16791
 "running_centered(x, wins)",616326
 "RollingWindow::RollingMean(x, wins)",193654
 "roll::roll_sd(xm, wins)",6251523
-sum(x),10140
 "running_tstat(x, wins)",749384
 "running_kurt5(x, wins)",7152461
 "roll::roll_mean(xm, wins)",2330571
@@ -3379,7 +3328,6 @@ sum(x),10140
 "roll::roll_sd(xm, wins)",8560732
 "roll::roll_sum(xm, wins)",2107753
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1941981
-sum(x),12983
 "running_apx_median(x, wins)",16073059
 "roll::roll_mean(xm, wins)",2428282
 "roll::roll_mean(xm, wins)",2291853
@@ -3396,8 +3344,6 @@ sum(x),12983
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2488085
 "roll::roll_sum(xm, wins)",2023848
 "running_scaled(x, wins)",810485
-sum(x),10686
-sum(x),8715
 "silly_fun(x, wins, mean, na.rm = FALSE)",79490208
 "running_mean(x, wins)",224825
 "running_kurt5(x, wins)",6717861
@@ -3421,7 +3367,6 @@ sum(x),8715
 "roll::roll_mean(xm, wins)",2631149
 "running_scaled(x, wins)",787463
 "running_zscored(x, wins)",760973
-sum(x),10620
 "RollingWindow::RollingMean(x, wins)",189785
 "roll::roll_mean(xm, wins)",2281876
 "running_scaled(x, wins)",748660
@@ -3442,7 +3387,6 @@ sum(x),10620
 "RollingWindow::RollingMean(x, wins)",258840
 "running_kurt5(x, wins)",7264792
 "running_mean(x, wins)",184288
-sum(x),11469
 "silly_fun(x, wins, sum, na.rm = FALSE)",42693009
 "RollingWindow::RollingMean(x, wins)",2919823
 "RollingWindow::RollingMean(x, wins)",230201
@@ -3465,7 +3409,6 @@ sum(x),11469
 "roll::roll_sd(xm, wins)",6155753
 "running_sum(x, wins)",33735
 "roll::roll_sum(xm, wins)",2066956
-sum(x),9735
 "RollingWindow::RollingMean(x, wins)",168453
 "roll::roll_sum(xm, wins)",2004136
 "running_tstat(x, wins)",709372
@@ -3494,7 +3437,6 @@ sum(x),9735
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2096936
 "running_scaled(x, wins)",690372
 "running_scaled(x, wins)",691401
-sum(x),9600
 "roll::roll_sum(xm, wins)",1967286
 "running_centered(x, wins)",564609
 "running_zscored(x, wins)",667641
@@ -3589,7 +3531,6 @@ sum(x),9600
 "running_tstat(x, wins)",669948
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",1941181
 "running_centered(x, wins)",605380
-sum(x),9422
 "roll::roll_mean(xm, wins)",2103105
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2034562
 "running_kurt5(x, wins)",5792787
@@ -3604,7 +3545,6 @@ sum(x),9422
 "running_centered(x, wins)",601897
 "running_tstat(x, wins)",729642
 "silly_fun(x, wins, sum, na.rm = FALSE)",37656042
-sum(x),11698
 "silly_fun(x, wins, sum, na.rm = FALSE)",38463495
 "running_mean(x, wins)",184396
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",1934702
@@ -3622,7 +3562,6 @@ sum(x),11698
 "roll::roll_mean(xm, wins)",2353277
 "running_scaled(x, wins)",699984
 "roll::roll_sd(xm, wins)",5928199
-sum(x),9759
 "RollingWindow::RollingSum(x, wins)",121876
 "roll::roll_sum(xm, wins)",1936182
 "running_zscored(x, wins)",701558
@@ -3646,7 +3585,6 @@ sum(x),9759
 "running_kurt5(x, wins)",5852089
 "running_scaled(x, wins)",699876
 "running_mean(x, wins)",160764
-sum(x),11224
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",465250
 "running_centered(x, wins)",583237
 "running_mean(x, wins)",146914
@@ -3654,16 +3592,13 @@ sum(x),11224
 "running_scaled(x, wins)",733975
 "running_skew4(x, wins)",3643193
 "RollingWindow::RollingMean(x, wins)",159632
-sum(x),8809
 "silly_fun(x, wins, mean, na.rm = FALSE)",74393794
-sum(x),10700
 "running_mean(x, wins)",177234
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",431688
 "silly_fun(x, wins, sum, na.rm = FALSE)",37680492
 "running_sum(x, wins)",90581
 "silly_fun(x, wins, sum, na.rm = FALSE)",39337125
 "running_sum(x, wins)",50379
-sum(x),9425
 "running_skew4(x, wins)",3846369
 "RollingWindow::RollingSum(x, wins)",193710
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",357840
@@ -3702,9 +3637,7 @@ sum(x),9425
 "roll::roll_sd(xm, wins)",6875911
 "RollingWindow::RollingMean(x, wins)",212968
 "running_tstat(x, wins)",802629
-sum(x),10060
 "running_kurt5(x, wins)",6276075
-sum(x),9301
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2296665
 "running_sharpe(x, wins)",712331
 "RollingWindow::RollingMean(x, wins)",168044
@@ -3728,7 +3661,6 @@ sum(x),9301
 "silly_fun(x, wins, sum, na.rm = FALSE)",112646344
 "running_tstat(x, wins)",697824
 "running_mean(x, wins)",149742
-sum(x),8683
 "running_sharpe(x, wins)",670865
 "running_skew4(x, wins)",3725036
 "roll::roll_sd(xm, wins)",6115141
@@ -3751,11 +3683,9 @@ sum(x),8683
 "running_sharpe(x, wins)",696931
 "running_zscored(x, wins)",974551
 "RollingWindow::RollingMean(x, wins)",193164
-sum(x),10284
 "running_kurt5(x, wins)",6074886
 "running_sharpe(x, wins)",733346
 "roll::roll_sd(xm, wins)",6236938
-sum(x),9481
 "RollingWindow::RollingSum(x, wins)",150633
 "running_sum(x, wins)",30543
 "running_sum(x, wins)",26140
@@ -3764,7 +3694,6 @@ sum(x),9481
 "running_zscored(x, wins)",692446
 "silly_fun(x, wins, mean, na.rm = FALSE)",72341279
 "running_mean(x, wins)",167077
-sum(x),9393
 "RollingWindow::RollingSum(x, wins)",2432840
 "running_tstat(x, wins)",712330
 "running_kurt5(x, wins)",5836464
@@ -3792,7 +3721,6 @@ sum(x),9393
 "roll::roll_sd(xm, wins)",6142693
 "roll::roll_mean(xm, wins)",2063588
 "running_skew4(x, wins)",3767775
-sum(x),9833
 "RollingWindow::RollingMean(x, wins)",165470
 "running_sharpe(x, wins)",670502
 "silly_fun(x, wins, mean, na.rm = FALSE)",76322878
@@ -3815,14 +3743,11 @@ sum(x),9833
 "running_tstat(x, wins)",798434
 "roll::roll_sd(xm, wins)",6085304
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",374483
-sum(x),9983
-sum(x),8756
 "roll::roll_mean(xm, wins)",2030748
 "running_sharpe(x, wins)",741301
 "running_scaled(x, wins)",700350
 "running_scaled(x, wins)",720435
 "running_centered(x, wins)",598757
-sum(x),9245
 "running_kurt5(x, wins)",6838221
 "silly_fun(x, wins, sum, na.rm = FALSE)",40727084
 "running_skew4(x, wins)",3988910
@@ -3830,7 +3755,6 @@ sum(x),9245
 "roll::roll_sum(xm, wins)",2314508
 "running_mean(x, wins)",174519
 "running_apx_median(x, wins)",15804991
-sum(x),15311
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2172129
 "running_sum(x, wins)",39446
 "running_mean(x, wins)",165259
@@ -3843,7 +3767,6 @@ sum(x),15311
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2629480
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2920204
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2369e3
-sum(x),13237
 "running_centered(x, wins)",605057
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2430004
 "running_skew4(x, wins)",4204288
@@ -3862,7 +3785,6 @@ sum(x),13237
 "running_skew4(x, wins)",4196526
 "running_tstat(x, wins)",1101743
 "running_apx_median(x, wins)",15589914
-sum(x),14023
 "RollingWindow::RollingSum(x, wins)",225298
 "running_apx_median(x, wins)",15252515
 "silly_fun(x, wins, sum, na.rm = FALSE)",41279060
@@ -3905,7 +3827,6 @@ sum(x),14023
 "running_tstat(x, wins)",959131
 "roll::roll_mean(xm, wins)",3026829
 "running_centered(x, wins)",870646
-sum(x),13314
 "roll::roll_sum(xm, wins)",3198180
 "roll::roll_sd(xm, wins)",9010714
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2747749
@@ -3950,7 +3871,6 @@ sum(x),13314
 "running_mean(x, wins)",184221
 "running_zscored(x, wins)",942096
 "running_apx_median(x, wins)",18075176
-sum(x),21095
 "running_sum(x, wins)",78447
 "running_centered(x, wins)",743907
 "running_centered(x, wins)",677281
@@ -3965,9 +3885,7 @@ sum(x),21095
 "running_kurt5(x, wins)",7326186
 "silly_fun(x, wins, sum, na.rm = FALSE)",48685370
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2281198
-sum(x),14114
 "running_kurt5(x, wins)",7123959
-sum(x),18512
 "RollingWindow::RollingSum(x, wins)",319178
 "running_kurt5(x, wins)",7703476
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2820755
@@ -3983,7 +3901,6 @@ sum(x),18512
 "running_centered(x, wins)",768101
 "running_centered(x, wins)",768642
 "running_zscored(x, wins)",900878
-sum(x),14923
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2724728
 "running_apx_median(x, wins)",17091450
 "roll::roll_sum(xm, wins)",3399087
@@ -4021,10 +3938,8 @@ sum(x),14923
 "running_sharpe(x, wins)",824405
 "running_tstat(x, wins)",818684
 "running_kurt5(x, wins)",7108446
-sum(x),13966
 "running_apx_median(x, wins)",17936135
 "running_kurt5(x, wins)",7107638
-sum(x),15057
 "RollingWindow::RollingSum(x, wins)",329120
 "running_skew4(x, wins)",4726230
 "running_centered(x, wins)",865282
@@ -4091,7 +4006,6 @@ sum(x),15057
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",517449
 "running_mean(x, wins)",207156
 "RollingWindow::RollingMean(x, wins)",210088
-sum(x),12761
 "roll::roll_mean(xm, wins)",3595521
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",741233
 "roll::roll_sum(xm, wins)",3205434
@@ -4134,7 +4048,6 @@ sum(x),12761
 "RcppRoll::roll_mean(xm, n = wins, align = ""right"", fill = NA)",2468581
 "running_kurt5(x, wins)",6877192
 "running_mean(x, wins)",243898
-sum(x),14104
 "running_sum(x, wins)",57436
 "running_sharpe(x, wins)",765855
 "running_centered(x, wins)",681012
@@ -4149,12 +4062,10 @@ sum(x),14104
 "silly_fun(x, wins, mean, na.rm = FALSE)",85478491
 "silly_fun(x, wins, sum, na.rm = FALSE)",39194971
 "running_zscored(x, wins)",756922
-sum(x),9433
 "RollingWindow::RollingSum(x, wins)",204908
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",386978
 "running_mean(x, wins)",155195
 "roll::roll_sum(xm, wins)",2123202
-sum(x),9744
 "RollingWindow::RollingMean(x, wins)",175336
 "running_centered(x, wins)",559433
 "RollingWindow::RollingSum(x, wins)",135326
@@ -4184,9 +4095,7 @@ sum(x),9744
 "silly_fun(x, wins, mean, na.rm = FALSE)",73941255
 "running_mean(x, wins)",266387
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",571826
-sum(x),10639
 "running_sharpe(x, wins)",752441
-sum(x),9137
 "silly_fun(x, wins, mean, na.rm = FALSE)",77043228
 "running_apx_median(x, wins)",14318978
 "running_scaled(x, wins)",728319
@@ -4207,7 +4116,6 @@ sum(x),9137
 "running_sharpe(x, wins)",911086
 "RollingWindow::RollingMean(x, wins)",287330
 "running_mean(x, wins)",182156
-sum(x),9672
 "RollingWindow::RollingSum(x, wins)",121967
 "running_mean(x, wins)",183120
 "running_tstat(x, wins)",839347
@@ -4237,11 +4145,9 @@ sum(x),9672
 "running_centered(x, wins)",588622
 "running_tstat(x, wins)",686935
 "running_zscored(x, wins)",699992
-sum(x),9540
 "running_scaled(x, wins)",695552
 "roll::roll_sum(xm, wins)",2090376
 "running_apx_median(x, wins)",14759146
-sum(x),11583
 "silly_fun(x, wins, sum, na.rm = FALSE)",37787558
 "running_apx_median(x, wins)",13986468
 "running_apx_median(x, wins)",14011474
@@ -4252,7 +4158,6 @@ sum(x),11583
 "running_zscored(x, wins)",719834
 "roll::roll_sum(xm, wins)",1956643
 "running_apx_median(x, wins)",13994868
-sum(x),9512
 "running_kurt5(x, wins)",5968902
 "roll::roll_sd(xm, wins)",6065598
 "running_apx_median(x, wins)",13510017
@@ -4265,8 +4170,6 @@ sum(x),9512
 "running_kurt5(x, wins)",5946550
 "RollingWindow::RollingSum(x, wins, na_method = ""ignore"")",443510
 "running_sum(x, wins)",31416
-sum(x),8926
-sum(x),8263
 "running_zscored(x, wins)",696243
 "roll::roll_sd(xm, wins)",6004203
 "running_centered(x, wins)",560322
@@ -4367,8 +4270,6 @@ sum(x),8263
 "running_scaled(x, wins)",704556
 "RollingWindow::RollingMean(x, wins)",162358
 "roll::roll_mean(xm, wins)",2380545
-sum(x),12502
-sum(x),10199
 "silly_fun(x, wins, mean, na.rm = FALSE)",74894755
 "silly_fun(x, wins, mean, na.rm = FALSE)",76034426
 "silly_fun(x, wins, mean, na.rm = FALSE)",71043869
@@ -4388,7 +4289,6 @@ sum(x),10199
 "RcppRoll::roll_sum(xm, n = wins, align = ""right"", fill = NA)",2084236
 "running_sharpe(x, wins)",710711
 "roll::roll_sum(xm, wins)",2018423
-sum(x),10087
 "running_apx_median(x, wins)",13437515
 "roll::roll_sum(xm, wins)",2004249
 "running_mean(x, wins)",2090110
