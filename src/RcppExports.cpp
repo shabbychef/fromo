@@ -6,14 +6,14 @@
 using namespace Rcpp;
 
 // sd3
-NumericVector sd3(SEXP v, bool na_rm, SEXP wts, double sg_df, bool check_wts, bool normalize_wts);
+NumericVector sd3(SEXP v, bool na_rm, Rcpp::Nullable<SEXP> wts, double sg_df, bool check_wts, bool normalize_wts);
 RcppExport SEXP fromo_sd3(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<SEXP> >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< double >::type sg_df(sg_dfSEXP);
     Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
@@ -242,261 +242,309 @@ BEGIN_RCPP
 END_RCPP
 }
 // running_sd3
-NumericMatrix running_sd3(SEXP v, SEXP window, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_sd3(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_sd3(v, window, na_rm, min_df, used_df, restart_period));
-    return rcpp_result_gen;
-END_RCPP
-}
-// running_sd
-NumericMatrix running_sd(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
-RcppExport SEXP fromo_running_sd(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
-    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_sd(v, window, na_rm, min_df, restart_period));
-    return rcpp_result_gen;
-END_RCPP
-}
-// running_skew
-NumericMatrix running_skew(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
-RcppExport SEXP fromo_running_skew(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
-    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_skew(v, window, na_rm, min_df, restart_period));
-    return rcpp_result_gen;
-END_RCPP
-}
-// running_kurt
-NumericMatrix running_kurt(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
-RcppExport SEXP fromo_running_kurt(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
-    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_kurt(v, window, na_rm, min_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sd3(v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_skew4
-NumericMatrix running_skew4(SEXP v, SEXP window, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_skew4(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_skew4(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_skew4(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_skew4(v, window, na_rm, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_skew4(v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_kurt5
-NumericMatrix running_kurt5(SEXP v, SEXP window, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_kurt5(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_kurt5(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_kurt5(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_kurt5(v, window, na_rm, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_kurt5(v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
-// running_cent_moments
-NumericMatrix running_cent_moments(SEXP v, SEXP window, int max_order, bool na_rm, bool max_order_only, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_cent_moments(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP max_order_onlySEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+// running_sd
+NumericMatrix running_sd(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_sd(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sd(v, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_skew
+NumericMatrix running_skew(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_skew(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_skew(v, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_kurt
+NumericMatrix running_kurt(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_kurt(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_kurt(v, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_cent_moments
+NumericMatrix running_cent_moments(SEXP v, SEXP window, SEXP wts, int max_order, bool na_rm, bool max_order_only, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_cent_moments(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP max_order_onlySEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< bool >::type max_order_only(max_order_onlySEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_cent_moments(v, window, max_order, na_rm, max_order_only, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_cent_moments(v, window, wts, max_order, na_rm, max_order_only, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_std_moments
-NumericMatrix running_std_moments(SEXP v, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_std_moments(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_std_moments(SEXP v, SEXP window, SEXP wts, int max_order, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_std_moments(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_std_moments(v, window, max_order, na_rm, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_std_moments(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_cumulants
-NumericMatrix running_cumulants(SEXP v, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_cumulants(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_cumulants(SEXP v, SEXP window, SEXP wts, int max_order, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_cumulants(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_cumulants(v, window, max_order, na_rm, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_cumulants(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_apx_quantiles
-NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_apx_quantiles(SEXP vSEXP, SEXP pSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window, SEXP wts, int max_order, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_apx_quantiles(SEXP vSEXP, SEXP pSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_apx_quantiles(v, p, window, max_order, na_rm, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_apx_quantiles(v, p, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_apx_median
-NumericMatrix running_apx_median(SEXP v, SEXP window, int max_order, bool na_rm, int min_df, int used_df, int restart_period);
-RcppExport SEXP fromo_running_apx_median(SEXP vSEXP, SEXP windowSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_apx_median(SEXP v, SEXP window, SEXP wts, int max_order, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_apx_median(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type used_df(used_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_apx_median(v, window, max_order, na_rm, min_df, used_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_apx_median(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_centered
-NumericMatrix running_centered(SEXP v, SEXP window, bool na_rm, int min_df, int lookahead, int restart_period);
-RcppExport SEXP fromo_running_centered(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_centered(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int lookahead, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_centered(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type lookahead(lookaheadSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_centered(v, window, na_rm, min_df, lookahead, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_centered(v, window, wts, na_rm, min_df, lookahead, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_scaled
-NumericMatrix running_scaled(SEXP v, SEXP window, bool na_rm, int min_df, int lookahead, int restart_period);
-RcppExport SEXP fromo_running_scaled(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_scaled(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int lookahead, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_scaled(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type lookahead(lookaheadSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_scaled(v, window, na_rm, min_df, lookahead, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_scaled(v, window, wts, na_rm, min_df, lookahead, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_zscored
-NumericMatrix running_zscored(SEXP v, SEXP window, bool na_rm, int min_df, int lookahead, int restart_period);
-RcppExport SEXP fromo_running_zscored(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_zscored(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int lookahead, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_zscored(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type lookahead(lookaheadSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_zscored(v, window, na_rm, min_df, lookahead, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_zscored(v, window, wts, na_rm, min_df, lookahead, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_sharpe
-NumericMatrix running_sharpe(SEXP v, SEXP window, bool na_rm, bool compute_se, int min_df, int restart_period);
-RcppExport SEXP fromo_running_sharpe(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP compute_seSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_sharpe(SEXP v, SEXP window, SEXP wts, bool na_rm, bool compute_se, int min_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_sharpe(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP compute_seSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< bool >::type compute_se(compute_seSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_sharpe(v, window, na_rm, compute_se, min_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sharpe(v, window, wts, na_rm, compute_se, min_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_tstat
-NumericMatrix running_tstat(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
-RcppExport SEXP fromo_running_tstat(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
+NumericMatrix running_tstat(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts, bool normalize_wts);
+RcppExport SEXP fromo_running_tstat(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_tstat(v, window, na_rm, min_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_tstat(v, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts));
     return rcpp_result_gen;
 END_RCPP
 }

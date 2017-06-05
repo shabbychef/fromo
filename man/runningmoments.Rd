@@ -2,43 +2,48 @@
 % Please edit documentation in R/RcppExports.R
 \name{running_sd3}
 \alias{running_sd3}
+\alias{running_skew4}
+\alias{running_kurt5}
 \alias{running_sd}
 \alias{running_skew}
 \alias{running_kurt}
-\alias{running_skew4}
-\alias{running_kurt5}
 \alias{running_cent_moments}
 \alias{running_std_moments}
 \alias{running_cumulants}
 \title{Compute first K moments over a sliding window}
 \usage{
-running_sd3(v, window = NULL, na_rm = FALSE, min_df = 0L, used_df = 1L,
-  restart_period = 100L)
+running_sd3(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  used_df = 1L, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 
-running_sd(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L)
+running_skew4(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  used_df = 1L, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 
-running_skew(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L)
+running_kurt5(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  used_df = 1L, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 
-running_kurt(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L)
+running_sd(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
 
-running_skew4(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1L, restart_period = 100L)
+running_skew(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
 
-running_kurt5(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1L, restart_period = 100L)
+running_kurt(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
 
-running_cent_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
-  max_order_only = FALSE, min_df = 0L, used_df = 0L,
-  restart_period = 100L)
+running_cent_moments(v, window = NULL, wts = NULL, max_order = 5L,
+  na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0L,
+  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
 
-running_std_moments(v, window = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0L, restart_period = 100L)
+running_std_moments(v, window = NULL, wts = NULL, max_order = 5L,
+  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  check_wts = FALSE, normalize_wts = TRUE)
 
-running_cumulants(v, window = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0L, restart_period = 100L)
+running_cumulants(v, window = NULL, wts = NULL, max_order = 5L,
+  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{
 \item{v}{a vector}
@@ -46,6 +51,14 @@ running_cumulants(v, window = NULL, max_order = 5L, na_rm = FALSE,
 \item{window}{the window size. if given as finite integer or double, passed through.
 If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 to an infinite window size. If negative, an error will be thrown.}
+
+\item{wts}{an optional vector of weights. Weights are \sQuote{replication}
+weights, meaning a value of 2 is shorthand for having two observations
+with the corresponding \code{v} value. If \code{NULL}, corresponds to
+equal weights, the default. Note that weights are typically only meaningfully defined
+up to a multiplicative constant, meaning the units of weights are
+immaterial. When weights are \code{NA}, the same rules for checking \code{v}
+are applied.}
 
 \item{na_rm}{whether to remove NA, false by default.}
 
@@ -62,6 +75,15 @@ loss of precision, the computation of moments is restarted periodically based on
 this parameter. Larger values mean fewer restarts and faster, though less accurate
 results. Note that the code checks for negative second and fourth moments and
 recomputes when needed.}
+
+\item{check_wts}{a boolean for whether the code shall check for negative
+weights, and throw an error when they are found. Default false for speed.}
+
+\item{normalize_wts}{a boolean for whether the weights should be
+renormalized to have a mean value of 1. This mean is computed over elements
+which contribute to the moments, so if \code{na_rm} is set, that means non-NA
+elements of \code{wts} that correspond to non-NA elements of the data
+vector.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
 

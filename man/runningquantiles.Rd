@@ -5,11 +5,13 @@
 \alias{running_apx_median}
 \title{Compute approximate quantiles over a sliding window}
 \usage{
-running_apx_quantiles(v, p, window = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0L, restart_period = 100L)
+running_apx_quantiles(v, p, window = NULL, wts = NULL, max_order = 5L,
+  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  check_wts = FALSE, normalize_wts = TRUE)
 
-running_apx_median(v, window = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0L, restart_period = 100L)
+running_apx_median(v, window = NULL, wts = NULL, max_order = 5L,
+  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{
 \item{v}{a vector}
@@ -19,6 +21,14 @@ running_apx_median(v, window = NULL, max_order = 5L, na_rm = FALSE,
 \item{window}{the window size. if given as finite integer or double, passed through.
 If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 to an infinite window size. If negative, an error will be thrown.}
+
+\item{wts}{an optional vector of weights. Weights are \sQuote{replication}
+weights, meaning a value of 2 is shorthand for having two observations
+with the corresponding \code{v} value. If \code{NULL}, corresponds to
+equal weights, the default. Note that weights are typically only meaningfully defined
+up to a multiplicative constant, meaning the units of weights are
+immaterial. When weights are \code{NA}, the same rules for checking \code{v}
+are applied.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
 
@@ -37,6 +47,15 @@ loss of precision, the computation of moments is restarted periodically based on
 this parameter. Larger values mean fewer restarts and faster, though less accurate
 results. Note that the code checks for negative second and fourth moments and
 recomputes when needed.}
+
+\item{check_wts}{a boolean for whether the code shall check for negative
+weights, and throw an error when they are found. Default false for speed.}
+
+\item{normalize_wts}{a boolean for whether the weights should be
+renormalized to have a mean value of 1. This mean is computed over elements
+which contribute to the moments, so if \code{na_rm} is set, that means non-NA
+elements of \code{wts} that correspond to non-NA elements of the data
+vector.}
 }
 \value{
 A matrix, with one row for each element of \code{x}, and one column for each element of \code{q}.

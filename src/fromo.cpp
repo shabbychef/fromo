@@ -52,6 +52,7 @@
 //cat(sprintf('#define MAX_ORD %d\nconst int bincoef[%d][%d] = {',ncol(refv)-1,ncol(refv),ncol(refv)),
     //paste0('{\n',lapply(seq_len(nrow(refv)),function(rn) { paste0(sprintf('%9s',as.character(refv[rn,])),collapse=', ') }),'},\n'),
     //'};\n\n',file='/tmp/binc.txt')
+   
 
 #define MAX_ORD 29
 const int bincoef[30][30] = {
@@ -110,15 +111,17 @@ using namespace Rcpp;
 template <typename T, typename W, bool has_wts>
 NumericVector quasiWeightedWelford(T v,
                                    W wts,
+                                   int & nok,
                                    int bottom = 0,
                                    int top = -1,
                                    const bool na_rm = false,
                                    const bool check_wts = false,
                                    const bool normalize_wts = true) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
-    int nok;
     const bool renormalize = has_wts && normalize_wts;
 
+
+    //2FIX: use Kahan compensated summation for the weights too
     // preallocated with zeros:
     NumericVector xret(3);
     if (! has_wts) { nextw = 1.0; }
@@ -186,15 +189,17 @@ NumericVector quasiWeightedWelford(T v,
 template <typename T, typename W, bool has_wts>
 NumericVector quasiWeightedMoments(T v,
                                    W wts,
+                                   int & nok,
                                    int ord = 3,
                                    int bottom = 0,
                                    int top = -1,
                                    const bool na_rm = false,
                                    const bool check_wts = false,
                                    const bool normalize_wts = true) {
-    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
-    int nok;
+    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm, nbyn;
     const bool renormalize = has_wts && normalize_wts;
+
+    //2FIX: use Kahan compensated summation for the weights too
 
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
@@ -222,6 +227,7 @@ NumericVector quasiWeightedMoments(T v,
             } 
 
             if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
+                // 2FIX: check for zero weight??
                 if (renormalize) { ++nok; }
                 della = nextv - xret[1];
                 nelm = xret[0];
@@ -241,14 +247,15 @@ NumericVector quasiWeightedMoments(T v,
                     } else {
                         drat = delnel * nelm;
                     }
+                    nbyn = -nextw / nelm;
                     ac_dn = pow(drat,ord);
-                    ac_on = pow(-nextw / nelm,ord-1);
+                    ac_on = pow(nbyn,ord-1);
 
                     for (int ppp=ord;ppp >= 2;ppp--) {
                         xret[ppp] += ac_dn * nextw * (1.0 - ac_on);
                         if (ppp > 2) {
                             if (drat != 0) { ac_dn /= drat; }
-                            ac_on *= -nelm / nextw;
+                            ac_on /= nbyn;
                         }
                         ac_de = -delnel;
                         for (int qqq=1;qqq <= ppp-2;qqq++) {
@@ -261,13 +268,13 @@ NumericVector quasiWeightedMoments(T v,
                 }
             }
         }
-        if (renormalize) {
+        if (renormalize) {//FOLDUP
             renorm = double(nok) / xret[0];
             xret[0] = double(nok);
             for (int ppp=2;ppp <= ord;ppp++) {
                 xret[ppp] *= renorm;
             }
-        }
+        }//UNFOLD
     }
     return xret;
 }
@@ -281,7 +288,8 @@ NumericVector quasiMoments(T v,
                            bool normalize_wts = true) {
     NumericVector retv;
     NumericVector dummy_wts;
-    retv = quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, ord, bottom, top, na_rm, false, normalize_wts);
+    int nok;
+    retv = quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts);
     return retv;
 }
 
@@ -289,15 +297,16 @@ NumericVector quasiMoments(T v,
 template <typename T>
 NumericVector quasiWeightedMomentsCurryOne(T v, SEXP wts, int ord, const bool na_rm, const bool check_wts, const bool normalize_wts) {
     NumericVector dummy_wts;
+    int nok;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
-            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case REALSXP: { return quasiWeightedMoments<T,NumericVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case REALSXP: { return quasiWeightedMoments<T,NumericVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
             default: stop("Unsupported weight type"); // nocov
         }
     }
-    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
+    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); 
 }
 
 // wrap one level
@@ -1385,15 +1394,29 @@ NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
 enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev, ret_skew, ret_exkurt };
 
-template <typename T,ReturnWhat retwhat>
+template <typename T,ReturnWhat retwhat,typename W,bool has_wts>
 NumericMatrix runningQMoments(T v,
+                              W wts,
                               int ord = 3,
                               int window = NA_INTEGER,
                               int recom_period = 100, 
                               int lookahead = 0,
                               const int min_df = 0,
-                              bool na_rm = false) {
-    double nextv, prevv, compv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de;
+                              bool na_rm = false,
+                              const bool check_wts = false,
+                              const bool normalize_wts = true) {
+
+    double nextv, prevv, compv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, nbyn, renorm;
+
+    int nok;
+    const bool renormalize = has_wts && normalize_wts;
+    double nextw;
+    if (! has_wts) { nextw = 1.0; }
+
+    if (has_wts) {
+        if (renormalize) { nok = 0; }
+        if (wts.size() < v.size()) { stop("size of wts does not match v"); }
+    }
 
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
@@ -1416,7 +1439,6 @@ NumericMatrix runningQMoments(T v,
     // only for retwhat==sharpese, but cannot define outside its scope.
     // no bigs.
     double sigma,skew,exkurt,sr;
-
 
     int iii,jjj,lll,mmm,ppp,qqq,tr_iii,tr_jjj;
     int numel = v.size();
@@ -1457,30 +1479,48 @@ NumericMatrix runningQMoments(T v,
             iii = MIN(numel-1,tr_iii);
             jjj = MAX(0,tr_jjj+1);
             if (jjj <= iii) {
-                vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+                //vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+                //do not normalize! we will normalize at the end if needed by adjusting for nok.
+                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, jjj, iii+1, na_rm, check_wts, false);
             }
             subcount = 0;
         } else {
             if ((tr_iii < numel) && (tr_iii >= 0)) {
                 // add on nextv:
                 nextv = double(v[tr_iii]);
-                if (! (na_rm && ISNAN(nextv))) {//FOLDUP
+                if (has_wts) { 
+                    nextw = double(wts[tr_iii]); 
+                    if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
+                } 
+                if (! (na_rm && (ISNAN(prevv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { //FOLDUP
+                    if (renormalize) { ++nok; }
                     della = nextv - vret[1];
                     nelm = vret[0];
-                    nel = ++vret[0];
-                    delnel = della / nel;
+                    if (has_wts) {
+                        vret[0] += nextw;
+                        nel = vret[0];
+                        delnel = della * nextw / nel;
+                    } else {
+                        nel = ++vret[0];
+                        delnel = della / nel;
+                    }
                     vret[1] += delnel;
 
                     if (nelm > 0) {//FOLDUP
-                        drat = delnel * nelm;
+                        if (has_wts) {
+                            drat = della * nelm / nel;
+                        } else {
+                            drat = delnel * nelm;
+                        }
+                        nbyn = -nextw / nelm;
                         ac_dn = pow(drat,ord);
-                        ac_on = pow(-1.0 / nelm,ord-1);
+                        ac_on = pow(nbyn,ord-1);
 
                         for (int ppp=ord;ppp >= 2;ppp--) {
-                            vret[ppp] += ac_dn * (1.0 - ac_on);
+                            vret[ppp] += ac_dn * nextw * (1.0 - ac_on);
                             if (ppp > 2) {
                                 if (drat != 0) { ac_dn /= drat; }
-                                ac_on *= -nelm;
+                                ac_on /= nbyn;
                             }
                             if (ord_beyond) { // premature optimization
                                 ac_de = -delnel;
@@ -1493,31 +1533,54 @@ NumericMatrix runningQMoments(T v,
                             }
                         }
                     }//UNFOLD
-                }//UNFOLD
-            }
+                }
+            }//UNFOLD
+            // renomalize????
             // remove prevv:
             if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                 prevv = double(v[tr_jjj]);
-                if (! (na_rm && ISNAN(prevv))) {//FOLDUP
+                if (has_wts) { 
+                    nextw = double(wts[tr_jjj]);
+                    if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
+                } 
+                if (! (na_rm && (ISNAN(prevv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { //FOLDUP
+                    if (renormalize) { --nok; }
                     della = prevv - vret[1];
-                    nel = --vret[0];
-                    nelm = nel + 1;
-
-                    if (nel > 0) {
+                    nelm = vret[0];
+                    if (has_wts) {
+                        vret[0] -= nextw;
+                        nel = vret[0];
+                        delnel = della * nextw / nel;
+                    } else {
+                        nel = --vret[0];
                         delnel = della / nel;
+                    }
+                    if (nel > 0) {
+                        if (has_wts) {
+                            delnel = della * nextw / nel;
+                        } else {
+                            delnel = della / nel;
+                        }
                         vret[1] -= delnel;
                         // correct delta
-                        della = delnel * nelm;
+                        //della = delnel * nelm;
+
+                        if (has_wts) {
+                            drat = della * nelm / nel;
+                        } else {
+                            drat = delnel * nelm;
+                        }
 
                         drat = delnel * nel;
+                        nbyn = -nextw / nel;
                         ac_dn = drat * drat;
-                        ac_on = - 1.0 / (nel);
+                        ac_on = nbyn;
 
                         for (int ppp=2;ppp <= ord;ppp++) {
                             vret[ppp] -= ac_dn * (1.0 - ac_on);
                             if (ppp < ord) {
                                 ac_dn *= drat;
-                                ac_on /= -nel;
+                                ac_on *= nbyn;
                             }
                             if (ord_beyond) { // premature optimization
                                 ac_de = -delnel;
@@ -1555,6 +1618,13 @@ NumericMatrix runningQMoments(T v,
         // fill in the value in the output.//FOLDUP
         if (retwhat==matrix) {
             if (vret[0] >= min_df) {
+                if (renormalize) {//FOLDUP
+                    renorm = double(nok) / vret[0];
+                    vret[0] = double(nok);
+                    for (int ppp=2;ppp <= ord;ppp++) {
+                        vret[ppp] *= renorm;
+                    }
+                }//UNFOLD
                 // put them in backwards!
                 if (vret[0] >= ord) {
                     for (mmm=0;mmm <= ord;++mmm) {
@@ -1575,6 +1645,14 @@ NumericMatrix runningQMoments(T v,
             }
         } else if (retwhat==extreme) {
             if (vret[0] >= min_df) {
+                if (renormalize) {//FOLDUP
+                    renorm = double(nok) / vret[0];
+                    vret[0] = double(nok);
+                    for (int ppp=2;ppp <= ord;ppp++) {
+                        vret[ppp] *= renorm;
+                    }
+                }//UNFOLD
+
                 // put them in backwards!
                 if (vret[0] >= ord) {
                     xret(lll,0) = vret[ord];
@@ -1594,23 +1672,55 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,0) = COMP_CENTERED(compv,vret);
                 }
                 if (retwhat==scaled) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        vret[2] *= renorm;
+                    }//UNFOLD
                     compv = double(v[lll]);
                     xret(lll,0) = (compv) / COMP_SD(vret);
                 }
                 if (retwhat==zscore) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        vret[2] *= renorm;
+                    }//UNFOLD
                     compv = double(v[lll]);
                     xret(lll,0) = COMP_CENTERED(compv,vret) / COMP_SD(vret);
                 }
                 if (retwhat==sharpe) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        vret[2] *= renorm;
+                    }//UNFOLD
                     xret(lll,0) = COMP_SHARPE(vret);
                 }
                 if (retwhat==tstat) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        vret[2] *= renorm;
+                    }//UNFOLD
                     xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
                 }
                 if (retwhat==stdev) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        vret[2] *= renorm;
+                    }//UNFOLD
                     xret(lll,0) = COMP_SD(vret);
                 }
                 if (retwhat==sharpese) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        for (int ppp=2;ppp <= ord;ppp++) {
+                            vret[ppp] *= renorm;
+                        }
+                    }//UNFOLD
                     skew = COMP_SKEW(vret);
                     exkurt = COMP_EXKURT(vret);
                     sr = COMP_SHARPE(vret);
@@ -1618,9 +1728,23 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / vret[0]);
                 }
                 if (retwhat==ret_skew) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        for (int ppp=2;ppp <= ord;ppp++) {
+                            vret[ppp] *= renorm;
+                        }
+                    }//UNFOLD
                     xret(lll,0) = COMP_SKEW(vret);
                 }
                 if (retwhat==ret_exkurt) {
+                    if (renormalize) {//FOLDUP
+                        renorm = double(nok) / vret[0];
+                        vret[0] = double(nok);
+                        for (int ppp=2;ppp <= ord;ppp++) {
+                            vret[ppp] *= renorm;
+                        }
+                    }//UNFOLD
                     xret(lll,0) = COMP_EXKURT(vret);
                 }
             } else {
@@ -1633,43 +1757,67 @@ NumericMatrix runningQMoments(T v,
     return xret;
 }
 
+template <typename T,ReturnWhat retwhat>
+NumericMatrix runningQMomentsCurryOne(T v, 
+                                      SEXP wts, 
+                                      int ord=3, 
+                                      int window=NA_INTEGER,
+                                      int recom_period=100,
+                                      int lookahead=0,
+                                      const int min_df=0,
+                                      const bool na_rm=false, 
+                                      const bool check_wts=false, 
+                                      const bool normalize_wts=false) {
+
+    if (!Rf_isNull(wts)) {  
+        switch (TYPEOF(wts)) {
+            case  INTSXP: { return runningQMoments<T,retwhat,IntegerVector,true>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+            case REALSXP: { return runningQMoments<T,retwhat,NumericVector,true>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+            case  LGLSXP: { return runningQMoments<T,retwhat,LogicalVector,true>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+            default: stop("Unsupported weight type"); // nocov
+        }
+    }
+    NumericVector dummy_wts;
+    return runningQMoments<T,retwhat,NumericVector,false>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); 
+}
+
 template <ReturnWhat retwhat>
-NumericMatrix runningQMomentsCurryOne(SEXP v,
-                                      int ord = 3,
-                                      int window = NA_INTEGER,
-                                      int recom_period = 100, 
-                                      int lookahead = 0,
-                                      const int min_df = 0,
-                                      bool na_rm = false) {
+NumericMatrix runningQMomentsCurryTwo(SEXP v, 
+                                      SEXP wts, 
+                                      int ord=3, 
+                                      int window=NA_INTEGER,
+                                      int recom_period=100,
+                                      int lookahead=0,
+                                      const int min_df=0,
+                                      const bool na_rm=false, 
+                                      const bool check_wts=false, 
+                                      const bool normalize_wts=false) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMoments<IntegerVector,retwhat>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
-        case REALSXP: { return runningQMoments<NumericVector,retwhat>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
-        case  LGLSXP: { return runningQMoments<LogicalVector,retwhat>(v, ord, window, recom_period, lookahead, min_df, na_rm); }
-        default: stop("Unsupported input type");
+        case  INTSXP: { return runningQMomentsCurryOne<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+        case REALSXP: { return runningQMomentsCurryOne<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+        case  LGLSXP: { return runningQMomentsCurryOne<LogicalVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+        default: stop("Unsupported weight type"); // nocov
     }
-    // CRAN checks are broken: 'warning: control reaches end of non-void function'
-    // ... only for a crappy automated warning.
-    return NumericMatrix(1,1); // nocov
+    // have to have fallthrough for CRAN check.
+    NumericMatrix retv;
+    return retv;
 }
-
-NumericMatrix runningQMomentsCurryTwo(SEXP v,
-                                      int ord = 3,
-                                      int window = NA_INTEGER,
-                                      int recom_period = 100, 
-                                      int lookahead = 0,
-                                      const int min_df = 0,
-                                      bool na_rm = false,
-                                      bool max_order_only = false) {
-    if (max_order_only) {
-        return runningQMomentsCurryOne<extreme>(v, ord, window, recom_period, lookahead, min_df, na_rm);
-    }
-    return runningQMomentsCurryOne<matrix>(v, ord, window, recom_period, lookahead, min_df, na_rm);
-}
-
 
 // wrap the call:
-NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period, const int min_df, bool na_rm, bool max_order_only) {
-    return runningQMomentsCurryTwo(v, ord, window, recom_period, 0, min_df, na_rm, max_order_only);
+NumericMatrix wrapRunningQMoments(SEXP v, 
+                                  SEXP wts, 
+                                  int ord,
+                                  int window,
+                                  int recom_period,
+                                  const int min_df,
+                                  const bool na_rm,
+                                  const bool check_wts,
+                                  const bool normalize_wts,
+                                  const bool max_order_only) {
+    if (max_order_only) {
+        return runningQMomentsCurryTwo<extreme>(v, wts, ord, window, recom_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    } 
+    return runningQMomentsCurryTwo<matrix>(v, wts, ord, window, recom_period, 0, min_df, na_rm, check_wts, normalize_wts);
 }
 
 
@@ -1748,55 +1896,30 @@ NumericMatrix wrapRunningQMoments(SEXP v, int ord, int window, int recom_period,
 //'
 //' @template etc
 //' @template ref-romo
+//' @template param-wts
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
+NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+                          bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, 2, wins, restart_period, min_df, na_rm, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, 2, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-udf));
     }
     return preval;
 }
-// just the sd nothing else.
-//' @rdname runningmoments
-//' @export
-// [[Rcpp::export]]
-NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
-//2FIX: introduce used_df ... 
-    int wins=get_wins(window);
-    return runningQMomentsCurryOne<stdev>(v, 2, wins, restart_period, 0, min_df, na_rm);
-}
-// just the sd nothing else.
-//' @rdname runningmoments
-//' @export
-// [[Rcpp::export]]
-NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
-//2FIX: introduce used_df ... 
-    int wins=get_wins(window);
-    return runningQMomentsCurryOne<ret_skew>(v, 3, wins, restart_period, 0, min_df, na_rm);
-}
-// just the sd nothing else.
-//' @rdname runningmoments
-//' @export
-// [[Rcpp::export]]
-NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
-//2FIX: introduce used_df ... 
-    int wins=get_wins(window);
-    return runningQMomentsCurryOne<ret_exkurt>(v, 4, wins, restart_period, 0, min_df, na_rm);
-}
-
 // return the skew, the standard deviation, the mean, and the dof
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
+NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue,bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+                            bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, 3, wins, restart_period, min_df, na_rm, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, 3, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,3)) * preval(iii,0) / pow(preval(iii,1),1.5);
@@ -1809,10 +1932,11 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100) {
+NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+                            bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, 4, wins, restart_period, min_df, na_rm, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, 4, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
@@ -1821,19 +1945,52 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, bool na_rm=false, 
     }
     return preval;
 }
+// just the sd nothing else.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
+                         bool check_wts=false, bool normalize_wts=true) {
+//2FIX: introduce used_df ... 
+    int wins=get_wins(window);
+    return runningQMomentsCurryTwo<stdev>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+}
+// just the skew nothing else.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
+                         bool check_wts=false, bool normalize_wts=true) {
+//2FIX: introduce used_df ... 
+    int wins=get_wins(window);
+    return runningQMomentsCurryTwo<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+}
+// just the kurtosis nothing else.
+//' @rdname runningmoments
+//' @export
+// [[Rcpp::export]]
+NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
+                         bool check_wts=false, bool normalize_wts=true) {
+//2FIX: introduce used_df ... 
+    int wins=get_wins(window);
+    return runningQMomentsCurryTwo<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+}
+
 // return the centered moments down to the 2nd, then the mean, and the dof.
 //' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
 //' the maximum order centered moment, and return in a vector.
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, bool max_order_only=false, 
-                                   int min_df=0, int used_df=0, int restart_period=100) {
+NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, 
+                                   int max_order=5, bool na_rm=false, bool max_order_only=false, 
+                                   int min_df=0, int used_df=0, int restart_period=100, 
+                                   bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     int ncolm1,ncolm2;
     double denom;
     double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm, max_order_only);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, max_order, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, max_order_only);
     ncolm1 = preval.ncol() - 1;
     ncolm2 = ncolm1 - 1;
     if (max_order > 1) {
@@ -1863,12 +2020,15 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, int max_ord
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, 
+                                  int max_order=5, bool na_rm=false, 
+                                  int min_df=0, int used_df=0, int restart_period=100, 
+                                  bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double denom;
     double udf = (double)used_df;
     double sigma;
-    NumericMatrix preval = wrapRunningQMoments(v, max_order, wins, restart_period, min_df, na_rm, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, max_order, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
     if (max_order > 1) {
         // fix the higher than mean columns;
         for (int iii=0;iii < preval.nrow();++iii) {
@@ -1888,8 +2048,11 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, int max_orde
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
-    NumericMatrix cumulants = running_cent_moments(v, window, max_order, na_rm, false, min_df, used_df, restart_period);
+NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, SEXP wts=R_NilValue, 
+                                int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
+                                bool check_wts=false, bool normalize_wts=true) {
+    NumericMatrix cumulants = running_cent_moments(v, window, wts, max_order, na_rm, false, min_df, used_df, restart_period, check_wts, normalize_wts);
+
     NumericVector temp_moments(1+max_order);
     int iii,jjj,mmm,ppp;
     // moments to cumulants. it's a snap! (c.f. PDQutils)
@@ -1954,11 +2117,15 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, int max_order=
 //' @seealso \code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
 //' @template etc
 //' @template ref-romo
+//' @template param-wts
 //' @rdname runningquantiles
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
-    NumericMatrix cumulants = running_cumulants(v, window, max_order, na_rm, min_df, used_df, restart_period);
+NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, SEXP wts=R_NilValue,
+                                    int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
+                                    bool check_wts=false, bool normalize_wts=true) {
+    NumericMatrix cumulants = running_cumulants(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts);
+
     int iii,jjj,mmm,nnn,qqq,lll;
     int ja,jb,jal,jbl;
     double fac,aa,bc;
@@ -2068,10 +2235,12 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
 //' @rdname runningquantiles
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100) {
+NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, SEXP wts=R_NilValue, 
+                                 int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
+                                 bool check_wts=false, bool normalize_wts=true) {
     NumericVector p(1);
     p(0) = 0.5;
-    NumericMatrix vret = running_apx_quantiles(v,p,window,max_order,na_rm,min_df,used_df,restart_period);
+    NumericMatrix vret = running_apx_quantiles(v,p,wts,window,max_order,na_rm,min_df,used_df,restart_period,check_wts,normalize_wts);
     return vret;
 }
 
@@ -2157,44 +2326,49 @@ NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, int max_order
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100) {
+NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                               bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<centered>(v, 1, wins, restart_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryTwo<centered>(v, wts, 1, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
 }
 // scale the input
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100) {
+NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<scaled>(v, 2, wins, restart_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryTwo<scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
 }
 // zscore the input
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100) {
+NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<zscore>(v, 2, wins, restart_period, lookahead, min_df, na_rm);
+    return runningQMomentsCurryTwo<zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
 }
 // sharpe on the input
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, bool na_rm=false, bool compute_se=false, int min_df=0, int restart_period=100) {
+NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, bool compute_se=false, int min_df=0, int restart_period=100,
+                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     if (compute_se) {
-        return runningQMomentsCurryOne<sharpese>(v, 4, wins, restart_period, 0, min_df, na_rm);
+        return runningQMomentsCurryTwo<sharpese>(v, wts, 4, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
     } 
-    return runningQMomentsCurryOne<sharpe>(v, 2, wins, restart_period, 0, min_df, na_rm);
+    return runningQMomentsCurryTwo<sharpe>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
 }
 // t stat of the input
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100) {
+NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
+                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryOne<tstat>(v, 2, wins, restart_period, 0, min_df, na_rm);
+    return runningQMomentsCurryTwo<tstat>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
 }
 
 
