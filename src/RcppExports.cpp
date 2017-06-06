@@ -435,14 +435,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // running_apx_median
-NumericMatrix running_apx_median(SEXP v, SEXP window, SEXP wts, int max_order, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
+NumericMatrix running_apx_median(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, int max_order, bool na_rm, int min_df, int used_df, int restart_period, bool check_wts, bool normalize_wts);
 RcppExport SEXP fromo_running_apx_median(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);

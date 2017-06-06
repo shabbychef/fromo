@@ -2263,7 +2263,7 @@ NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue,
                                  bool check_wts=false, bool normalize_wts=true) {
     NumericVector p(1);
     p(0) = 0.5;
-    NumericMatrix vret = running_apx_quantiles(v,p,wts,window,max_order,na_rm,min_df,used_df,restart_period,check_wts,normalize_wts);
+    NumericMatrix vret = running_apx_quantiles(v,p,window,wts,max_order,na_rm,min_df,used_df,restart_period,check_wts,normalize_wts);
     return vret;
 }
 
