@@ -123,6 +123,9 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		for (na_rm in c(FALSE,TRUE)) {
 			running_sum(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_mean(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_sd(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_skew(x,window=window,restart_period=50L,na_rm=na_rm)
+			running_kurt(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_sd3(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(x,window=window,restart_period=50L,na_rm=na_rm)
 			running_kurt5(x,window=window,restart_period=50L,na_rm=na_rm)
@@ -134,6 +137,9 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 
 			running_sum(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_mean(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_sd(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_skew(y,window=window,restart_period=50L,na_rm=na_rm)
+			running_kurt(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_sd3(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(y,window=window,restart_period=50L,na_rm=na_rm)
 			running_kurt5(y,window=window,restart_period=50L,na_rm=na_rm)
@@ -143,6 +149,9 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			running_cumulants(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 			running_apx_quantiles(y,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
 
+			running_sd(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_skew(z,window=window,restart_period=50L,na_rm=na_rm)
+			running_kurt(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_sd3(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_skew4(z,window=window,restart_period=50L,na_rm=na_rm)
 			running_kurt5(z,window=window,restart_period=50L,na_rm=na_rm)
@@ -154,6 +163,10 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		}
 	}
 	for (min_df in c(2L,10L)) {
+		running_mean(x,window=window,min_df=min_df)
+		running_sd(x,window=window,min_df=min_df)
+		running_skew(x,window=window,min_df=min_df)
+		running_kurt(x,window=window,min_df=min_df)
 		running_sd3(x,window=window,min_df=min_df)
 		running_skew4(x,window=window,min_df=min_df)
 		running_kurt5(x,window=window,min_df=min_df)
@@ -163,6 +176,10 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		running_cumulants(x,max_order=5L,window=window,min_df=min_df)
 		running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,min_df=min_df)
 
+		running_mean(y,window=window,min_df=min_df)
+		running_sd(y,window=window,min_df=min_df)
+		running_skew(y,window=window,min_df=min_df)
+		running_kurt(y,window=window,min_df=min_df)
 		running_sd3(y,window=window,min_df=min_df)
 		running_skew4(y,window=window,min_df=min_df)
 		running_kurt5(y,window=window,min_df=min_df)
@@ -172,6 +189,10 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 		running_cumulants(y,max_order=5L,window=window,min_df=min_df)
 		running_apx_quantiles(y,p=ptiles,max_order=5L,window=window,min_df=min_df)
 
+		running_mean(z,window=window,min_df=min_df)
+		running_sd(z,window=window,min_df=min_df)
+		running_skew(z,window=window,min_df=min_df)
+		running_kurt(z,window=window,min_df=min_df)
 		running_sd3(z,window=window,min_df=min_df)
 		running_skew4(z,window=window,min_df=min_df)
 		running_kurt5(z,window=window,min_df=min_df)
@@ -184,6 +205,9 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 
 	expect_error(running_sum(q))
 	expect_error(running_mean(q))
+	expect_error(running_sd(q))
+	expect_error(running_skew(q))
+	expect_error(running_kurt(q))
 	expect_error(running_sd3(q))
 	expect_error(running_skew4(q))
 	expect_error(running_kurt5(q))
@@ -194,6 +218,46 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(running_apx_quantiles(q,p=ptiles,max_order=5L))
 	expect_error(running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(running_apx_median(q,p=ptiles,max_order=5L))
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("running foo and weights",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
+	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
+	nel <- 20
+	xall <- list(rnorm(nel),
+							 as.integer(rnorm(nel,sd=100)))
+	wall <- list(rep(1.0,nel),
+							 rep(2L,nel),
+							 NULL)
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+
+	for (x in xall) {
+		for (wts in wall) {
+			for (window in c(5,21,Inf,NULL)) {
+				for (na_rm in c(FALSE,TRUE)) {
+						#running_sum(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						#running_mean(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_sd(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_skew(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_kurt(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_sd3(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_skew4(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_kurt5(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
+						running_cent_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+						running_cent_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE)
+						running_std_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+						running_cumulants(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+						running_apx_quantiles(x,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+						running_apx_median(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
+				}
+			}
+		}
+	}
 
 	# sentinel
 	expect_true(TRUE)
@@ -242,16 +306,16 @@ test_that("NA restart period?",{#FOLDUP
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
 	set.char.seed("3d318f1d-9921-4a20-84fc-c5ffc722d52c")
-	xvals <- list(rnorm(1e5,mean=1e10))
-	x <- rnorm(1e4)
+	xvals <- list(rnorm(1e2,mean=1e10))
+	x <- rnorm(1e3)
 	x[x < 1.0] <- NA
 	xvals[[length(xvals)+1]] <- x
-	x <- rnorm(1e4)
+	x <- rnorm(1e3)
 	x[x < 1.5] <- NA
 	xvals[[length(xvals)+1]] <- x
 
 	for (x in xvals) {
-		window <- 500L
+		window <- 50L
 		restart_period <- NA_integer_
 		na_rm <- TRUE
 		running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm)

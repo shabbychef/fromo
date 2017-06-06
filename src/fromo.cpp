@@ -2257,7 +2257,8 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
 //' @rdname runningquantiles
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, SEXP wts=R_NilValue, 
+NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, 
+                                 Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                  int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
                                  bool check_wts=false, bool normalize_wts=true) {
     NumericVector p(1);
