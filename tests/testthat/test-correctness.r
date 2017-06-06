@@ -117,17 +117,15 @@ test_that("unit weighted sd, skew, kurt are correct",{#FOLDUP
 	x <- rnorm(1000)
 	ones <- rep(1,length(x))
 
-	sid0 <- sd3(x)
-	ske0 <- skew4(x)
-	krt0 <- kurt5(x)
+	expect_equal(sd3(x),sd3(x,wts=ones),tolerance=1e-9)
+	expect_equal(skew4(x),skew4(x,wts=ones),tolerance=1e-9)
+	expect_equal(kurt5(x),kurt5(x,wts=ones),tolerance=1e-9)
+	# 2FIX: probably normalize_wts=FALSE should be the default????
+	expect_equal(running_sd(x),running_sd(x,wts=ones,normalize_wts=FALSE),tolerance=1e-9)
+	expect_equal(running_skew(x),running_skew(x,wts=ones,normalize_wts=FALSE),tolerance=1e-9)
+	expect_equal(running_kurt(x),running_kurt(x,wts=ones,normalize_wts=FALSE),tolerance=1e-9)
 
-	sid <- sd3(x,wts=ones)
-	ske <- skew4(x,wts=ones)
-	krt <- kurt5(x,wts=ones)
-
-	expect_equal(sid0,sid,tolerance=1e-9)
-	expect_equal(ske0,ske,tolerance=1e-9)
-	expect_equal(krt0,krt,tolerance=1e-9)
+	# 2FIX: add more.
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
@@ -399,6 +397,68 @@ test_that("running adjustments are correct",{#FOLDUP
 					}
 				}
 			}
+		}
+	}
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+test_that("running weights work correctly",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
+	set.char.seed("b82d252c-681b-4b98-9bb3-ffd17feeb4a1")
+	na_rm <- FALSE
+
+	for (xlen in c(20,50)) {
+		x <- rnorm(xlen)
+		wtlist <- list(rep(1L,xlen), runif(xlen))
+		for (wts in wtlist) {
+			for (window in c(5,30,Inf)) { # FOLDUP
+
+				# 2FIX: add to this!
+				#dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
+				#dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+				#dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+
+				#fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
+				## the dumb value:
+				#dumbv <- x - dumb_mean;
+				#expect_equal(max(abs(dumbv - fastv)),0,tolerance=1e-12)
+
+				#fastv <- running_scaled(x,window=window,restart_period=restart_period,na_rm=na_rm)
+				## the dumb value:
+				#dumbv <- x / dumb_sd
+				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+
+				#fastv <- running_zscored(x,window=window,restart_period=restart_period,na_rm=na_rm)
+				## the dumb value:
+				#dumbv <- (x - dumb_mean) / dumb_sd
+				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+
+				#fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm)
+				## the dumb value:
+				#dumbv <- dumb_mean / dumb_sd
+				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+
+				#fastv <- running_tstat(x,window=window,restart_period=restart_period,na_rm=na_rm)
+				## the dumb value:
+				#dumbv <- (dumb_mean * sqrt(dumb_count)) / dumb_sd
+				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+
+				#fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm,compute_se=TRUE)
+				## the dumb value:
+				#dumb_sr <- dumb_mean / dumb_sd
+				#expect_equal(max(abs(dumb_sr[2:length(x)] - fastv[2:length(x),1])),0,tolerance=1e-12)
+
+				#if (require(moments)) {
+					#dumb_skew <- sapply(seq_along(x),function(iii) { moments::skewness(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+					#dumb_exkurt <- sapply(seq_along(x),function(iii) { moments::kurtosis(x[max(1,iii-window+1):iii],na.rm=na_rm) - 3.0 },simplify=TRUE)
+					#dumb_merse <- sqrt((1 + 0.25 * (2+dumb_exkurt) * dumb_sr^2 - dumb_skew * dumb_sr) / dumb_count)
+					#expect_equal(max(abs(dumb_merse[5:length(x)] - fastv[5:length(x),2])),0,tolerance=1e-9)
+				#}
+				
+			}# UNFOLD
 		}
 	}
 
