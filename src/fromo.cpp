@@ -1203,6 +1203,7 @@ NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_
     switch (TYPEOF(v)) {
         case  INTSXP: { return runningKahansCurryThree<IntegerVector, int>(v, window, min_df, recom_period, compute_sum, na_rm); }
         case REALSXP: { return runningKahansCurryThree<NumericVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
+        case  LGLSXP: { return runningKahansCurryThree<LogicalVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
         default: stop("Unsupported input type");
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
