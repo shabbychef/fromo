@@ -588,7 +588,7 @@ running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_
 #' @template ref-romo
 #' @rdname runningadjustments
 #' @export
-running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = FALSE) {
     .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, lookahead, restart_period, check_wts, normalize_wts)
 }
 

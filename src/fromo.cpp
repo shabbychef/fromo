@@ -112,14 +112,13 @@ template <typename T, typename W, bool has_wts>
 NumericVector quasiWeightedWelford(T v,
                                    W wts,
                                    int & nok,
-                                   int bottom = 0,
-                                   int top = -1,
-                                   const bool na_rm = false,
-                                   const bool check_wts = false,
-                                   const bool normalize_wts = true) {
+                                   int bottom,
+                                   int top,
+                                   const bool na_rm,
+                                   const bool check_wts,
+                                   const bool normalize_wts) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
     const bool renormalize = has_wts && normalize_wts;
-
 
     //2FIX: use Kahan compensated summation for the weights too
     // preallocated with zeros:
@@ -190,12 +189,12 @@ template <typename T, typename W, bool has_wts>
 NumericVector quasiWeightedMoments(T v,
                                    W wts,
                                    int & nok,
-                                   int ord = 3,
-                                   int bottom = 0,
-                                   int top = -1,
-                                   const bool na_rm = false,
-                                   const bool check_wts = false,
-                                   const bool normalize_wts = true) {
+                                   int ord,
+                                   int bottom,
+                                   int top,
+                                   const bool na_rm,
+                                   const bool check_wts,
+                                   const bool normalize_wts) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm, nbyn;
     const bool renormalize = has_wts && normalize_wts;
 
@@ -207,7 +206,7 @@ NumericVector quasiWeightedMoments(T v,
     NumericVector xret(1+ord);
 
     if (ord==2) {
-        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,bottom,top,na_rm,check_wts,normalize_wts);
+        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,nok,bottom,top,na_rm,check_wts,normalize_wts);
     } else {
         if (! has_wts) { nextw = 1.0; }
         
@@ -279,18 +278,17 @@ NumericVector quasiWeightedMoments(T v,
     return xret;
 }
 
+// anyone using this? anyone?
 template <typename T>
 NumericVector quasiMoments(T v, 
-                           int ord = 3,
-                           int bottom = 0,
-                           int top = -1,
-                           bool na_rm = false,
-                           bool normalize_wts = true) {
-    NumericVector retv;
+                           int ord,
+                           int bottom,
+                           int top,
+                           bool na_rm,
+                           bool normalize_wts) {
     NumericVector dummy_wts;
     int nok;
-    retv = quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts);
-    return retv;
+    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts);
 }
 
 // wrap one level
@@ -298,6 +296,7 @@ template <typename T>
 NumericVector quasiWeightedMomentsCurryOne(T v, SEXP wts, int ord, const bool na_rm, const bool check_wts, const bool normalize_wts) {
     NumericVector dummy_wts;
     int nok;
+    nok = 0;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
             case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
@@ -1032,28 +1031,39 @@ NumericMatrix unjoin_cent_cosums(NumericMatrix ret3,NumericMatrix ret2) {
 //   if Inf or NA, return NA_INTEGER;
 //   else convert to integer via as<int>( )
 int get_wins(SEXP window) {
-    if (Rf_isNull(window)) { return NA_INTEGER; }
-    switch (TYPEOF(window)) {
-        case  INTSXP: { return as<int>(window); break; }
-        case REALSXP: { 
-                          double wins = as<double>(window);
-                          if ((NumericVector::is_na(wins)) || 
-                              (traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
-                              return NA_INTEGER;
+    if (!Rf_isNull(window)) {
+        switch (TYPEOF(window)) {
+            case  INTSXP: { return as<int>(window); }
+            case REALSXP: { 
+                              double wins = as<double>(window);
+                              if ((NumericVector::is_na(wins)) || 
+                                  (traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
+                                  return NA_INTEGER;
+                              }
+                              return (int)wins;
                           }
-                          return (int)wins;
-                          break;
-                      }
-        default: stop("Unsupported input type");
+            default: stop("Unsupported input type");
+        }
     }
-    // CRAN checks are broken: 'warning: control reaches end of non-void function'
-    // ... only for a crappy automated warning.
-    return -1;
+    return NA_INTEGER; 
 }
+
+//template <T>
+//Rcpp::Nullable<T> get_wts(SEXP wts) {
+    //if (!Rf_isNull(window)) {
+        //return Rcpp::Nullable<T>(wts);
+    //}
+    //return Rcpp::Nullable<T>();
+//}
+
 
 // running sums, via Kahans algo//FOLDUP
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
-NumericMatrix runningKahans(VEC v,int window = NA_INTEGER,const int min_df = 1,int recom_period = NA_INTEGER) {
+NumericMatrix runningKahans(VEC v,
+                            int window,
+                            const int min_df,
+                            int recom_period) {
+
     DAT nextv, prevv;
     double muv, tmpv, nxtv, errsum;
     muv = 0.0;
@@ -1156,20 +1166,20 @@ NumericMatrix runningKahans(VEC v,int window = NA_INTEGER,const int min_df = 1,i
 // c.f. the 'curious pattern' where arguments get turned
 // into template arguments.
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
-NumericMatrix runningKahansCurryOne(VEC v,int window = NA_INTEGER,
-                                   const int min_df = 1,
-                                   int recom_period = NA_INTEGER,
-                                   bool compute_sum=false) {
+NumericMatrix runningKahansCurryOne(VEC v,int window,
+                                   const int min_df,
+                                   int recom_period,
+                                   bool compute_sum) {
     if (compute_sum) {
         return runningKahans<VEC,DAT,na_rm,do_recompute,true>(v, window, min_df, recom_period);
     } 
     return runningKahans<VEC,DAT,na_rm,do_recompute,false>(v, window, min_df, recom_period);
 }
 template <typename VEC,typename DAT,bool na_rm>
-NumericMatrix runningKahansCurryTwo(VEC v,int window = NA_INTEGER,
-                                   const int min_df = 1,
-                                   int recom_period = NA_INTEGER,
-                                   bool compute_sum=false) {
+NumericMatrix runningKahansCurryTwo(VEC v,int window,
+                                   const int min_df,
+                                   int recom_period,
+                                   bool compute_sum) {
     const bool do_recompute = !IntegerVector::is_na(recom_period);
     if (do_recompute) {
         return runningKahansCurryOne<VEC,DAT,na_rm,true>(v, window, min_df, recom_period, compute_sum);
@@ -1177,11 +1187,11 @@ NumericMatrix runningKahansCurryTwo(VEC v,int window = NA_INTEGER,
     return runningKahansCurryOne<VEC,DAT,na_rm,false>(v, window, min_df, recom_period, compute_sum);
 }
 template <typename VEC,typename DAT>
-NumericMatrix runningKahansCurryThree(VEC v,int window = NA_INTEGER,
-                                     const int min_df = 1,
-                                     int recom_period = NA_INTEGER,
-                                     bool compute_sum=false,
-                                     bool na_rm=false) {
+NumericMatrix runningKahansCurryThree(VEC v,int window,
+                                     const int min_df,
+                                     int recom_period,
+                                     bool compute_sum,
+                                     bool na_rm) {
     if (na_rm) {
         return runningKahansCurryTwo<VEC,DAT,true>(v, window, min_df, recom_period, compute_sum);
     } 
@@ -1397,14 +1407,14 @@ enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, shar
 template <typename T,ReturnWhat retwhat,typename W,bool has_wts>
 NumericMatrix runningQMoments(T v,
                               W wts,
-                              int ord = 3,
-                              int window = NA_INTEGER,
-                              int recom_period = 100, 
-                              int lookahead = 0,
-                              const int min_df = 0,
-                              bool na_rm = false,
-                              const bool check_wts = false,
-                              const bool normalize_wts = true) {
+                              int ord,
+                              int window,
+                              int recom_period,
+                              int lookahead,
+                              const int min_df,
+                              bool na_rm,
+                              const bool check_wts,
+                              const bool normalize_wts) {
 
     double nextv, prevv, compv, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, nbyn, renorm;
 
@@ -1604,7 +1614,8 @@ NumericMatrix runningQMoments(T v,
                             iii = MIN(numel-1,tr_iii);
                             jjj = MAX(0,tr_jjj+1);
                             if (jjj <= iii) {
-                                vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
+                                //do not normalize! we will normalize at the end if needed by adjusting for nok.
+                                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, jjj, iii+1, na_rm, check_wts, false);
                             }
                             subcount = 0;
                             break;
@@ -1759,39 +1770,34 @@ NumericMatrix runningQMoments(T v,
 
 template <typename T,ReturnWhat retwhat>
 NumericMatrix runningQMomentsCurryOne(T v, 
-                                      SEXP wts, 
-                                      int ord=3, 
-                                      int window=NA_INTEGER,
-                                      int recom_period=100,
-                                      int lookahead=0,
-                                      const int min_df=0,
-                                      const bool na_rm=false, 
-                                      const bool check_wts=false, 
-                                      const bool normalize_wts=false) {
+                                      Rcpp::Nullable< Rcpp::NumericVector > wts,
+                                      int ord,
+                                      int window,
+                                      int recom_period,
+                                      int lookahead,
+                                      const int min_df,
+                                      const bool na_rm,
+                                      const bool check_wts,
+                                      const bool normalize_wts) {
 
-    if (!Rf_isNull(wts)) {  
-        switch (TYPEOF(wts)) {
-            case  INTSXP: { return runningQMoments<T,retwhat,IntegerVector,true>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
-            case REALSXP: { return runningQMoments<T,retwhat,NumericVector,true>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
-            case  LGLSXP: { return runningQMoments<T,retwhat,LogicalVector,true>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
-            default: stop("Unsupported weight type"); // nocov
-        }
+    if (wts.isNotNull()) {
+        return runningQMoments<T,retwhat,NumericVector,true>(v, wts.get(), ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); 
     }
     NumericVector dummy_wts;
-    return runningQMoments<T,retwhat,NumericVector,false>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); 
+    return runningQMoments<T,retwhat,NumericVector,false>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); 
 }
 
 template <ReturnWhat retwhat>
 NumericMatrix runningQMomentsCurryTwo(SEXP v, 
-                                      SEXP wts, 
-                                      int ord=3, 
-                                      int window=NA_INTEGER,
-                                      int recom_period=100,
-                                      int lookahead=0,
-                                      const int min_df=0,
-                                      const bool na_rm=false, 
-                                      const bool check_wts=false, 
-                                      const bool normalize_wts=false) {
+                                      Rcpp::Nullable< Rcpp::NumericVector > wts,
+                                      int ord,
+                                      int window,
+                                      int recom_period,
+                                      int lookahead,
+                                      const int min_df,
+                                      const bool na_rm,
+                                      const bool check_wts,
+                                      const bool normalize_wts) {
     switch (TYPEOF(v)) {
         case  INTSXP: { return runningQMomentsCurryOne<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
         case REALSXP: { return runningQMomentsCurryOne<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
@@ -1805,7 +1811,7 @@ NumericMatrix runningQMomentsCurryTwo(SEXP v,
 
 // wrap the call:
 NumericMatrix wrapRunningQMoments(SEXP v, 
-                                  SEXP wts, 
+                                  Rcpp::Nullable< Rcpp::NumericVector > wts,
                                   int ord,
                                   int window,
                                   int recom_period,
@@ -1900,7 +1906,9 @@ NumericMatrix wrapRunningQMoments(SEXP v,
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, 
+                          Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                          bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
                           bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double udf=(double)used_df;
@@ -1915,7 +1923,9 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValu
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue,bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, 
+                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                            bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double udf=(double)used_df;
@@ -1932,7 +1942,9 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilVa
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, 
+                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                            bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double udf=(double)used_df;
@@ -1949,7 +1961,9 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilVa
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
+NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, 
+                         Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                         bool na_rm=false, int min_df=0, int restart_period=100,
                          bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
@@ -1959,8 +1973,10 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
-                         bool check_wts=false, bool normalize_wts=true) {
+NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, 
+                           Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                           bool na_rm=false, int min_df=0, int restart_period=100,
+                           bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
     return runningQMomentsCurryTwo<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
@@ -1969,8 +1985,10 @@ NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilVal
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
-                         bool check_wts=false, bool normalize_wts=true) {
+NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, 
+                           Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                           bool na_rm=false, int min_df=0, int restart_period=100,
+                           bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
     return runningQMomentsCurryTwo<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
@@ -1982,7 +2000,8 @@ NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilVal
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, 
+NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, 
+                                   Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                    int max_order=5, bool na_rm=false, bool max_order_only=false, 
                                    int min_df=0, int used_df=0, int restart_period=100, 
                                    bool check_wts=false, bool normalize_wts=true) {
@@ -2020,7 +2039,8 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, SEXP wts = 
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, 
+NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, 
+                                  Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                   int max_order=5, bool na_rm=false, 
                                   int min_df=0, int used_df=0, int restart_period=100, 
                                   bool check_wts=false, bool normalize_wts=true) {
@@ -2048,7 +2068,8 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, SEXP wts = R
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, SEXP wts=R_NilValue, 
+NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, 
+                                Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                 int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
                                 bool check_wts=false, bool normalize_wts=true) {
     NumericMatrix cumulants = running_cent_moments(v, window, wts, max_order, na_rm, false, min_df, used_df, restart_period, check_wts, normalize_wts);
@@ -2121,7 +2142,8 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, SEXP wts=R_Nil
 //' @rdname runningquantiles
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, SEXP wts=R_NilValue,
+NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, 
+                                    Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                     int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
                                     bool check_wts=false, bool normalize_wts=true) {
     NumericMatrix cumulants = running_cumulants(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts);
@@ -2326,8 +2348,11 @@ NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, SEXP wts=R_Ni
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
-                               bool check_wts=false, bool normalize_wts=true) {
+NumericMatrix running_centered(SEXP v, 
+                               SEXP window = R_NilValue, 
+                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                               bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                               bool check_wts=false, bool normalize_wts=false) {
     int wins=get_wins(window);
     return runningQMomentsCurryTwo<centered>(v, wts, 1, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
 }
@@ -2335,7 +2360,9 @@ NumericMatrix running_centered(SEXP v, SEXP window = R_NilValue, SEXP wts = R_Ni
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, 
+                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                             bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     return runningQMomentsCurryTwo<scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
@@ -2344,7 +2371,9 @@ NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilV
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, 
+                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                              bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
                               bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     return runningQMomentsCurryTwo<zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
@@ -2353,7 +2382,9 @@ NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, SEXP wts = R_Nil
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, bool compute_se=false, int min_df=0, int restart_period=100,
+NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, 
+                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                             bool na_rm=false, bool compute_se=false, int min_df=0, int restart_period=100,
                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     if (compute_se) {
@@ -2365,8 +2396,10 @@ NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilV
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, SEXP wts = R_NilValue, bool na_rm=false, int min_df=0, int restart_period=100,
-                             bool check_wts=false, bool normalize_wts=true) {
+NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, 
+                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                            bool na_rm=false, int min_df=0, int restart_period=100,
+                            bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     return runningQMomentsCurryTwo<tstat>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
 }

@@ -10,7 +10,7 @@
 \usage{
 running_centered(v, window = NULL, wts = NULL, na_rm = FALSE,
   min_df = 0L, lookahead = 0L, restart_period = 100L, check_wts = FALSE,
-  normalize_wts = TRUE)
+  normalize_wts = FALSE)
 
 running_scaled(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
   lookahead = 0L, restart_period = 100L, check_wts = FALSE,
