@@ -226,6 +226,7 @@ library(readr)
 library(tidyr)
 library(knitr)
 
+mysernum <- as.character(packageVersion('fromo') )
 allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
 		dplyr::filter(grepl('^timings_\\d.+\\d+.csv$',fname)) %>%
 		group_by(fname) %>%
@@ -234,6 +235,7 @@ allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
 		tidyr::unnest() %>%
 		mutate(sernum=gsub('^timings_(.+).csv$','\\1',fname)) %>%
 		dplyr::select(-fname) %>%
+		rbind(resdf %>% dplyr::mutate(sernum=mysernum)) %>%
 		group_by(sernum,expr) %>%
 			summarize(meantime=mean(time,na.rm=TRUE)) %>%
 		ungroup() %>%

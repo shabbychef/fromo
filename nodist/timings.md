@@ -25,7 +25,7 @@ print(Sys.info())
 ##                                       sysname                                       release                                       version 
 ##                                       "Linux"                            "4.4.0-77-generic" "#98-Ubuntu SMP Wed Apr 26 08:34:02 UTC 2017" 
 ##                                      nodename                                       machine                                         login 
-##                                "261486475bd6"                                      "x86_64"                                     "unknown" 
+##                                "850b5bb3499b"                                      "x86_64"                                     "unknown" 
 ##                                          user                                effective_user 
 ##                                        "spav"                                        "spav"
 ```
@@ -77,16 +77,16 @@ print(checkit)
 
 ```
 ## Unit: microseconds
-##         expr   min    lq  mean median    uq   max neval   cld
-##       sum(x)    80    80    97     87    99   287   100 a    
-##      mean(x)   162   166   195    179   211   343   100 a    
-##        sd(x)   460   469   544    504   570  1024   100 ab   
-##  skewness(x)  8301  8665  9990   9923 10865 15263   100   c  
-##  kurtosis(x)  8120  8237  9614   9627 10459 13230   100   c  
-##       sd3(x)   848   859   986    932  1097  1328   100  b   
-##     skew4(x)  8575  8653  9840   9397 10754 15992   100   c  
-##     kurt5(x) 15403 15829 17920  18068 19515 22010   100    d 
-##     dumbk(x) 17055 18634 20368  19961 22205 29449   100     e
+##         expr   min    lq  mean median    uq   max neval     cld
+##       sum(x)    80    80    81     80    81    90   100 a      
+##      mean(x)   162   164   169    165   168   278   100 a      
+##        sd(x)   459   462   475    468   481   602   100  b     
+##  skewness(x)  8278  8313  8595   8374  8533 10489   100     e  
+##  kurtosis(x)  8111  8131  8388   8187  8348 10466   100    d   
+##       sd3(x)   848   851   870    860   881  1064   100   c    
+##     skew4(x)  8535  8564  8654   8596  8706  9554   100     e  
+##     kurt5(x) 15373 15426 15651  15493 15731 17211   100      f 
+##     dumbk(x) 17062 17120 17712  17270 18133 20193   100       g
 ```
 
 ```r
@@ -111,9 +111,9 @@ print(checkit)
 ```
 ## Unit: microseconds
 ##                                                                          expr   min    lq  mean median    uq   max neval cld
-##  cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE) 16297 16451 17165  16620 17377 24266   100   c
-##                                                               sd3(x, wts = w)   980   984  1024   1001  1018  1741   100 a  
-##                                                                 slow_sd(x, w)  1391  1421  1952   1518  2597  3708   100  b
+##  cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE) 16272 16348 16517  16437 16566 17503   100   c
+##                                                               sd3(x, wts = w)   980   982  1005    991  1017  1215   100 a  
+##                                                                 slow_sd(x, w)  1397  1409  1912   1449  2749  3730   100  b
 ```
 
 ```r
@@ -134,10 +134,10 @@ print(checkit)
 ```
 ## Unit: microseconds
 ##                expr  min   lq mean median   uq  max neval  cld
-##  as.centsums(x1, 1)  193  209  229    211  237  412   100  b  
-##  as.centsums(x1, 2)  114  124  144    126  144  321   100 a   
-##  as.centsums(x1, 3)  862  936  990    941 1010 1349   100   c 
-##  as.centsums(x1, 4) 1503 1636 1785   1681 1959 2346   100    d
+##  as.centsums(x1, 1)  193  194  199    195  197  240   100  b  
+##  as.centsums(x1, 2)  113  115  120    116  119  272   100 a   
+##  as.centsums(x1, 3)  863  868  878    870  882  997   100   c 
+##  as.centsums(x1, 4) 1506 1509 1524   1513 1533 1594   100    d
 ```
 
 ```r
@@ -156,8 +156,8 @@ print(checkit)
 ```
 ## Unit: microseconds
 ##           expr min lq mean median uq max neval cld
-##  c(obj1, obj2)  15 18   26     21 29 257   100   a
-##  obj3 %-% obj1  12 14   23     17 26 153   100   a
+##  c(obj1, obj2)  14 15   19     16 17 179   100   a
+##  obj3 %-% obj1  11 12   15     12 13 114   100   a
 ```
 
 ```r
@@ -176,10 +176,10 @@ print(checkit)
 
 ```
 ## Unit: microseconds
-##                        expr min  lq mean median  uq max neval cld
-##    join_cent_sums(rs1, rs2) 2.5 2.7  3.9    2.9 3.2  51   100   a
-##  unjoin_cent_sums(rs3, rs2) 2.3 2.5  3.9    2.7 2.9  75   100   a
-##  unjoin_cent_sums(rs3, rs1) 2.3 2.5  3.3    2.7 3.0  47   100   a
+##                        expr min  lq mean median  uq  max neval cld
+##    join_cent_sums(rs1, rs2) 2.1 2.3  2.9    2.3 2.5 26.3   100   b
+##  unjoin_cent_sums(rs3, rs2) 1.9 2.0  2.1    2.1 2.2  2.9   100  a 
+##  unjoin_cent_sums(rs3, rs1) 1.9 2.0  2.3    2.1 2.3 14.5   100  ab
 ```
 
 ```r
@@ -211,8 +211,8 @@ print(checkit)
 ```
 ## Unit: microseconds
 ##                        expr min lq mean median uq max neval cld
-##  as.centcosums(x1, max_ord)  56 59   73     61 79 187   100   b
-##             mobj3 %-% mobj1  18 20   25     21 24  79   100  a
+##  as.centcosums(x1, max_ord)  53 54   60     56 62 145   100   b
+##             mobj3 %-% mobj1  17 18   21     19 20  36   100  a
 ```
 
 ```r
@@ -273,33 +273,33 @@ print(checkit)
 ```
 ## Unit: microseconds
 ##                                                           expr   min    lq  mean median    uq    max neval        cld
-##                         silly_fun(x, wins, sum, na.rm = FALSE) 31793 33275 36183  34947 36669 108920   100         i 
-##                        silly_fun(x, wins, mean, na.rm = FALSE) 65520 68439 74873  70756 75372 145223   100          j
-##                                           running_sum(x, wins)    73    78    88     82    94    137   100 a         
-##                                          running_mean(x, wins)    73    77    88     84    94    140   100 a         
-##                                       roll::roll_sum(xm, wins)  1890  1946  2049   2000  2077   2873   100  bcd      
-##                                      roll::roll_mean(xm, wins)  2074  2112  2263   2179  2356   3022   100    de     
-##                                        roll::roll_sd(xm, wins)  5737  5800  6179   5894  6479   8205   100      f    
-##       RollingWindow::RollingSum(x, wins, na_method = "ignore")   355   381   518    412   471   2597   100 a  d      
-##                             RollingWindow::RollingSum(x, wins)   110   134   200    155   192   2020   100 a         
-##                            RollingWindow::RollingMean(x, wins)   141   161   345    187   238   2811   100 ab        
-##                             RollingWindow::RollingStd(x, wins)   224   253   400    284   324   2576   100 a c       
-##   RcppRoll::roll_sum(xm, n = wins, align = "right", fill = NA)  1756  1943  2040   1988  2119   2752   100  bcd      
-##  RcppRoll::roll_mean(xm, n = wins, align = "right", fill = NA)  1723  1993  2124   2045  2194   4518   100   cd      
-##    RcppRoll::roll_sd(xm, n = wins, align = "right", fill = NA) 10184 10728 11780  11456 12548  16826   100       g   
-##    running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)   355   365   396    383   398    651   100 a c       
-##      running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)   413   419   457    430   461    724   100 a c       
-##                                           running_sd3(x, wins)   584   595  1427    616   666  73148   100 a  d      
-##                                          running_skew(x, wins)  3630  3670  3892   3766  3995   5639   100     e     
-##                                         running_skew4(x, wins)  3644  3683  3924   3770  4010   5747   100     e     
-##                                          running_kurt(x, wins)  5328  5391  5712   5575  5884   7425   100      f    
-##                                         running_kurt5(x, wins)  5942  6002  6419   6138  6633   8293   100      f    
-##                                         running_tstat(x, wins)   622   632   687    654   700   1201   100 a  d      
-##                                       running_zscored(x, wins)   625   630   706    652   698   2881   100 a  d      
-##                                        running_sharpe(x, wins)   620   632   687    663   701    897   100 a  d      
-##                                    running_apx_median(x, wins) 14065 14321 15247  14689 16232  18678   100        h  
-##                                      running_centered(x, wins)   556   567   599    583   622    736   100 a  d      
-##                                        running_scaled(x, wins)   620   631   698    656   701   2404   100 a  d
+##                         silly_fun(x, wins, sum, na.rm = FALSE) 32340 33174 35256  34692 35489 107522   100         i 
+##                        silly_fun(x, wins, mean, na.rm = FALSE) 64760 66221 70167  67948 69411 144029   100          j
+##                                           running_sum(x, wins)    73    77    83     79    86    120   100 a         
+##                                          running_mean(x, wins)    74    77   107     80    88   2364   100 a         
+##                                       roll::roll_sum(xm, wins)  1782  1827  2703   1869  1945  80413   100    de     
+##                                      roll::roll_mean(xm, wins)  1965  2003  2092   2039  2129   3647   100   c e     
+##                                        roll::roll_sd(xm, wins)  5427  5491  5638   5535  5623   7163   100      f    
+##       RollingWindow::RollingSum(x, wins, na_method = "ignore")   365   388   481    414   451   2600   100 a c       
+##                             RollingWindow::RollingSum(x, wins)   112   138   255    151   192   2801   100 a         
+##                            RollingWindow::RollingMean(x, wins)   144   163   313    183   222   2994   100 ab        
+##                             RollingWindow::RollingStd(x, wins)   226   253   452    270   318   3301   100 a c       
+##   RcppRoll::roll_sum(xm, n = wins, align = "right", fill = NA)  1753  1945  2003   1980  2029   3968   100  bcd      
+##  RcppRoll::roll_mean(xm, n = wins, align = "right", fill = NA)  1731  1864  1989   2010  2055   2885   100  bcd      
+##    RcppRoll::roll_sd(xm, n = wins, align = "right", fill = NA) 10359 10639 11334  10818 12218  15091   100       g   
+##    running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)   356   361   378    370   387    479   100 a c       
+##      running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)   413   421   441    429   443    679   100 a c       
+##                                           running_sd3(x, wins)   587   594   667    605   627   3061   100 a c       
+##                                          running_skew(x, wins)  3635  3657  3725   3689  3759   4267   100     e     
+##                                         running_skew4(x, wins)  3646  3675  3763   3704  3774   5886   100     e     
+##                                          running_kurt(x, wins)  5329  5369  5518   5405  5563   6923   100      f    
+##                                         running_kurt5(x, wins)  5937  5972  6143   6030  6139   8581   100      f    
+##                                         running_tstat(x, wins)   621   630   651    641   653    880   100 a c       
+##                                       running_zscored(x, wins)   624   630   680    647   668   2890   100 a c       
+##                                        running_sharpe(x, wins)   621   629   672    644   660   2837   100 a c       
+##                                    running_apx_median(x, wins) 14036 14131 14422  14238 14499  16871   100        h  
+##                                      running_centered(x, wins)   556   565   586    575   591    747   100 a c       
+##                                        running_scaled(x, wins)   618   628   671    643   659   2911   100 a c
 ```
 
 ```r
@@ -325,11 +325,13 @@ library(readr)
 library(tidyr)
 library(knitr)
 
+mysernum <- as.character(packageVersion("fromo"))
 allt <- data.frame(fname = dir(".", "*.csv"), stringsAsFactors = FALSE) %>% 
     dplyr::filter(grepl("^timings_\\d.+\\d+.csv$", 
         fname)) %>% group_by(fname) %>% mutate(tims = list(readr::read_csv(fname))) %>% 
     ungroup() %>% tidyr::unnest() %>% mutate(sernum = gsub("^timings_(.+).csv$", 
-    "\\1", fname)) %>% dplyr::select(-fname) %>% group_by(sernum, 
+    "\\1", fname)) %>% dplyr::select(-fname) %>% rbind(resdf %>% 
+    dplyr::mutate(sernum = mysernum)) %>% group_by(sernum, 
     expr) %>% summarize(meantime = mean(time, na.rm = TRUE)) %>% 
     ungroup() %>% group_by(sernum) %>% mutate(sumx_time = median(ifelse(grepl("^sum\\(x\\)$", 
     expr), meantime, NA), na.rm = TRUE)) %>% ungroup() %>% 
@@ -369,55 +371,55 @@ allt %>% select(-sernum, -relchange, -meantime, -sumx_time,
 
 |expr                                                                         | first_norm| last_norm| last_status|
 |:----------------------------------------------------------------------------|----------:|---------:|-----------:|
-|RollingWindow::RollingSum(x, wins)                                           |       3.72|     12.49|        3.36|
-|running_sum(x, wins)                                                         |       0.51|      0.98|        1.95|
-|RollingWindow::RollingMean(x, wins)                                          |       3.15|      3.83|        1.22|
-|RollingWindow::RollingStd(x, wins)                                           |       4.48|      4.93|        1.10|
-|running_skew(x, wins)                                                        |      39.66|     43.13|        1.09|
-|kurt5(x)                                                                     |     173.12|    183.06|        1.06|
-|skew4(x)                                                                     |      97.66|    102.73|        1.05|
-|mobj3 %-% mobj1                                                              |       0.26|      0.27|        1.04|
-|as.centcosums(x1, max_ord)                                                   |       0.75|      0.76|        1.02|
-|mean(x)                                                                      |       2.07|      2.09|        1.01|
-|skewness(x)                                                                  |     100.16|    100.82|        1.01|
-|kurtosis(x)                                                                  |      98.46|     98.79|        1.00|
-|sd3(x)                                                                       |      10.52|     10.53|        1.00|
+|running_sum(x, wins)                                                         |       0.51|      0.96|        1.89|
+|running_sd3(x, wins)                                                         |       8.72|     11.76|        1.35|
+|join_cent_sums(rs1, rs2)                                                     |       0.03|      0.04|        1.18|
+|RollingWindow::RollingMean(x, wins)                                          |       3.15|      3.70|        1.17|
+|obj3 %-% obj1                                                                |       0.19|      0.22|        1.15|
+|kurt5(x)                                                                     |     173.12|    188.56|        1.09|
+|running_skew(x, wins)                                                        |      39.66|     42.78|        1.08|
+|unjoin_cent_sums(rs3, rs1)                                                   |       0.03|      0.03|        1.07|
+|RollingWindow::RollingStd(x, wins)                                           |       4.48|      4.79|        1.07|
+|skew4(x)                                                                     |      97.66|    103.88|        1.06|
+|skewness(x)                                                                  |     100.16|    104.39|        1.04|
+|kurtosis(x)                                                                  |      98.46|    101.11|        1.03|
+|c(obj1, obj2)                                                                |       0.25|      0.25|        1.02|
+|dumbk(x)                                                                     |     209.85|    213.89|        1.02|
+|unjoin_cent_sums(rs3, rs2)                                                   |       0.03|      0.03|        1.01|
 |sum(x)                                                                       |       1.00|      1.00|        1.00|
-|dumbk(x)                                                                     |     209.85|    208.23|        0.99|
-|sd(x)                                                                        |       5.82|      5.75|        0.99|
-|unjoin_cent_sums(rs3, rs1)                                                   |       0.03|      0.03|        0.99|
-|join_cent_sums(rs1, rs2)                                                     |       0.03|      0.03|        0.97|
-|RollingWindow::RollingSum(x, wins, na_method = "ignore")                     |       6.93|      6.68|        0.96|
-|cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE) |     200.65|    191.57|        0.95|
-|RcppRoll::roll_sd(xm, n = wins, align = "right", fill = NA)                  |     140.59|    134.07|        0.95|
-|running_apx_median(x, wins)                                                  |     179.28|    166.76|        0.93|
-|running_kurt5(x, wins)                                                       |      76.25|     70.88|        0.93|
-|running_skew4(x, wins)                                                       |      48.07|     44.28|        0.92|
-|running_centered(x, wins)                                                    |       7.68|      7.07|        0.92|
-|running_kurt(x, wins)                                                        |      70.61|     63.91|        0.91|
-|sd3(x, wts = w)                                                              |      13.06|     11.73|        0.90|
-|as.centsums(x1, 4)                                                           |      20.20|     18.05|        0.89|
-|running_scaled(x, wins)                                                      |       9.03|      7.99|        0.88|
-|roll::roll_mean(xm, wins)                                                    |      28.39|     25.02|        0.88|
-|silly_fun(x, wins, mean, na.rm = FALSE)                                      |     943.85|    828.47|        0.88|
-|running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)                    |       6.29|      5.50|        0.87|
-|obj3 %-% obj1                                                                |       0.19|      0.16|        0.87|
-|as.centsums(x1, 3)                                                           |      11.79|     10.28|        0.87|
-|c(obj1, obj2)                                                                |       0.25|      0.21|        0.87|
-|running_sd3(x, wins)                                                         |       8.72|      7.50|        0.86|
-|RcppRoll::roll_sum(xm, n = wins, align = "right", fill = NA)                 |      26.10|     22.42|        0.86|
-|running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)                  |       5.19|      4.45|        0.86|
-|RcppRoll::roll_mean(xm, n = wins, align = "right", fill = NA)                |      26.80|     22.90|        0.85|
-|roll::roll_sd(xm, wins)                                                      |      77.75|     66.40|        0.85|
-|running_sharpe(x, wins)                                                      |       9.22|      7.76|        0.84|
-|roll::roll_sum(xm, wins)                                                     |      27.28|     22.92|        0.84|
-|silly_fun(x, wins, sum, na.rm = FALSE)                                       |     501.06|    412.92|        0.82|
-|running_tstat(x, wins)                                                       |       9.32|      7.61|        0.82|
-|as.centsums(x1, 1)                                                           |       2.83|      2.29|        0.81|
-|running_zscored(x, wins)                                                     |       9.49|      7.59|        0.80|
-|as.centsums(x1, 2)                                                           |       1.83|      1.43|        0.78|
-|unjoin_cent_sums(rs3, rs2)                                                   |       0.03|      0.03|        0.77|
+|mobj3 %-% mobj1                                                              |       0.26|      0.26|        1.00|
+|sd3(x)                                                                       |      10.52|     10.43|        0.99|
+|as.centcosums(x1, max_ord)                                                   |       0.75|      0.74|        0.99|
+|mean(x)                                                                      |       2.07|      2.04|        0.99|
+|sd(x)                                                                        |       5.82|      5.72|        0.98|
+|roll::roll_sum(xm, wins)                                                     |      27.28|     26.71|        0.98|
+|cent_moments(x, max_order = 4, wts = w, na_rm = TRUE, normalize_wts = FALSE) |     200.65|    189.18|        0.94|
+|running_apx_median(x, wins)                                                  |     179.28|    166.64|        0.93|
+|running_kurt5(x, wins)                                                       |      76.25|     70.56|        0.93|
+|RcppRoll::roll_sd(xm, n = wins, align = "right", fill = NA)                  |     140.59|    129.83|        0.92|
+|as.centsums(x1, 4)                                                           |      20.20|     18.58|        0.92|
+|running_skew4(x, wins)                                                       |      48.07|     43.18|        0.90|
+|running_kurt(x, wins)                                                        |      70.61|     63.08|        0.89|
+|as.centsums(x1, 3)                                                           |      11.79|     10.49|        0.89|
+|sd3(x, wts = w)                                                              |      13.06|     11.39|        0.87|
+|RcppRoll::roll_sum(xm, n = wins, align = "right", fill = NA)                 |      26.10|     22.71|        0.87|
+|running_centered(x, wins)                                                    |       7.68|      6.66|        0.87|
+|silly_fun(x, wins, mean, na.rm = FALSE)                                      |     943.85|    814.66|        0.86|
+|RcppRoll::roll_mean(xm, n = wins, align = "right", fill = NA)                |      26.80|     23.10|        0.86|
+|roll::roll_mean(xm, wins)                                                    |      28.39|     24.46|        0.86|
+|roll::roll_sd(xm, wins)                                                      |      77.75|     66.37|        0.85|
+|running_scaled(x, wins)                                                      |       9.03|      7.69|        0.85|
+|as.centsums(x1, 1)                                                           |       2.83|      2.40|        0.85|
+|running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)                  |       5.19|      4.35|        0.84|
+|running_sharpe(x, wins)                                                      |       9.22|      7.63|        0.83|
+|running_zscored(x, wins)                                                     |       9.49|      7.78|        0.82|
+|RollingWindow::RollingSum(x, wins, na_method = "ignore")                     |       6.93|      5.61|        0.81|
+|as.centsums(x1, 2)                                                           |       1.83|      1.48|        0.81|
+|running_tstat(x, wins)                                                       |       9.32|      7.52|        0.81|
+|running_sd(x, wins, na_rm = TRUE, restart_period = 1000L)                    |       6.29|      5.04|        0.80|
+|silly_fun(x, wins, sum, na.rm = FALSE)                                       |     501.06|    401.28|        0.80|
+|RollingWindow::RollingSum(x, wins)                                           |       3.72|      2.55|        0.69|
 |running_sum(x, wins, robust = FALSE)                                         |       0.63|      0.42|        0.66|
-|running_mean(x, wins)                                                        |       2.36|      1.24|        0.53|
+|running_sum(x, wins, robust = TRUE)                                          |       1.88|      0.90|        0.48|
 
 

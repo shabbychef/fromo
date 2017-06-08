@@ -2785,11 +2785,9 @@ NumericVector cent2raw(NumericVector input) {
 //
 // 2FIX:
 //
+// running means need weights !!! 
 // compensated summation for weights where necessary
 // no Kahans for running sum of integers or logicals
-//
-
-
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

@@ -448,14 +448,29 @@ test_that("running weights work correctly",{#FOLDUP
 
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
-		wtlist <- list(rep(1L,xlen), runif(xlen))
+		wtlist <- list(rep(1L,xlen), 2+5*runif(xlen))
 		for (wts in wtlist) {
 			for (window in c(5,30,Inf)) { # FOLDUP
 
 				# 2FIX: add to this!
-				#dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
-				#dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
-				#dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+				dumb_count <- sapply(seq_along(x),function(iii) { sum(sign(abs(x[max(1,iii-window+1):iii])+1),na.rm=na_rm) },simplify=TRUE)
+				dumb_sumwt <- sapply(seq_along(x),function(iii) { sum(wts[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
+				dumb_mean <- sapply(seq_along(x),function(iii) { 
+															mydx <- max(1,iii-window+1):iii
+															mywts <- wts[mydx]
+															sum(mywts * x[mydx],na.rm=na_rm) / dumb_sumwt[iii]
+							 },simplify=TRUE)
+				dumb_var <- sapply(seq_along(x),function(iii) { 
+															mydx <- max(1,iii-window+1):iii
+															mywts <- wts[mydx]
+															sum(mywts * (x[mydx] - dumb_mean[iii])^2,na.rm=na_rm) / (dumb_sumwt[iii] - 1)
+							 },simplify=TRUE)
+				dumb_sd <- sqrt(dumb_var)
+
+				# ack! need weights!
+				fastv <- running_mean(x,window=window,na_rm=na_rm)
+				fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE)
+
 
 				#fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
 				## the dumb value:
