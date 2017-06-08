@@ -116,9 +116,11 @@ NumericVector quasiWeightedWelford(T v,
                                    int top,
                                    const bool na_rm,
                                    const bool check_wts,
-                                   const bool normalize_wts) {
+                                   const bool normalize_wts,
+                                   const bool sum_nok = false) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm;
     const bool renormalize = has_wts && normalize_wts;
+    const bool inc_nok = sum_nok || renormalize;
 
     //2FIX: use Kahan compensated summation for the weights too
     // preallocated with zeros:
@@ -129,7 +131,7 @@ NumericVector quasiWeightedWelford(T v,
         top = v.size(); 
     }
     if (has_wts) {
-        if (renormalize) { nok = 0; }
+        if (inc_nok) { nok = 0; }
         if (wts.size() < top) { stop("size of wts does not match v"); }
     }
 
@@ -141,7 +143,7 @@ NumericVector quasiWeightedWelford(T v,
         } 
 
         if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
-            if (renormalize) { ++nok; }
+            if (inc_nok) { ++nok; }
             della = nextv - xret[1];
             nelm = xret[0];
             if (has_wts) {
@@ -194,9 +196,11 @@ NumericVector quasiWeightedMoments(T v,
                                    int top,
                                    const bool na_rm,
                                    const bool check_wts,
-                                   const bool normalize_wts) {
+                                   const bool normalize_wts,
+                                   const bool sum_nok = false) {
     double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm, nbyn;
     const bool renormalize = has_wts && normalize_wts;
+    const bool inc_nok = sum_nok || renormalize;
 
     //2FIX: use Kahan compensated summation for the weights too
 
@@ -206,7 +210,7 @@ NumericVector quasiWeightedMoments(T v,
     NumericVector xret(1+ord);
 
     if (ord==2) {
-        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,nok,bottom,top,na_rm,check_wts,normalize_wts);
+        xret = quasiWeightedWelford<T,W,has_wts>(v,wts,nok,bottom,top,na_rm,check_wts,normalize_wts,sum_nok);
     } else {
         if (! has_wts) { nextw = 1.0; }
         
@@ -215,7 +219,7 @@ NumericVector quasiWeightedMoments(T v,
         }
         if (has_wts) {
             if (wts.size() < top) { stop("size of wts does not match v"); }
-            if (renormalize) { nok = 0; }
+            if (inc_nok) { nok = 0; }
         }
 
         for (int iii=bottom;iii < top;++iii) {
@@ -227,7 +231,7 @@ NumericVector quasiWeightedMoments(T v,
 
             if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
                 // 2FIX: check for zero weight??
-                if (renormalize) { ++nok; }
+                if (inc_nok) { ++nok; }
                 della = nextv - xret[1];
                 nelm = xret[0];
                 if (has_wts) {
@@ -288,28 +292,38 @@ NumericVector quasiMoments(T v,
                            bool normalize_wts) {
     NumericVector dummy_wts;
     int nok;
-    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts);
+    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts, false);
 }
 
 // wrap one level
 template <typename T>
-NumericVector quasiWeightedMomentsCurryOne(T v, SEXP wts, int ord, const bool na_rm, const bool check_wts, const bool normalize_wts) {
+NumericVector quasiWeightedMomentsCurryOne(T v, 
+                                           SEXP wts, 
+                                           int ord, 
+                                           const bool na_rm, 
+                                           const bool check_wts, 
+                                           const bool normalize_wts) {
     NumericVector dummy_wts;
     int nok;
     nok = 0;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
-            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case REALSXP: { return quasiWeightedMoments<T,NumericVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
+            case REALSXP: { return quasiWeightedMoments<T,NumericVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
+            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
             default: stop("Unsupported weight type"); // nocov
         }
     }
-    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts); 
+    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); 
 }
 
 // wrap one level
-NumericVector quasiWeightedMomentsCurryTwo(SEXP v, SEXP wts, int ord, const bool na_rm, const bool check_wts, const bool normalize_wts) {
+NumericVector quasiWeightedMomentsCurryTwo(SEXP v, 
+                                           SEXP wts, 
+                                           int ord, 
+                                           const bool na_rm, 
+                                           const bool check_wts, 
+                                           const bool normalize_wts) {
     switch (TYPEOF(v)) {
         case  INTSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
         case REALSXP: { return quasiWeightedMomentsCurryOne<NumericVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
@@ -466,7 +480,6 @@ NumericVector quasiWeightedMomentsCurryTwo(SEXP v, SEXP wts, int ord, const bool
 //' @export
 // [[Rcpp::export]]
 NumericVector sd3(SEXP v, bool na_rm=false, SEXP wts = R_NilValue, double sg_df=1.0, bool check_wts=false, bool normalize_wts=true) {
-
     NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, 2, na_rm, check_wts, normalize_wts);
     NumericVector vret = NumericVector::create(COMP_SD_TWO(preval,sg_df),
                                                preval[1],
@@ -1163,6 +1176,113 @@ NumericMatrix runningKahans(VEC v,
     return xret;
 }
 
+//// specialize for integers!?
+//template <bool na_rm,bool do_recompute,bool compute_sum>
+//NumericMatrix runningKahans<IntegerVector,int>(VEC v,
+                                               //int window,
+                                               //const int min_df,
+                                               //int recom_period) {
+
+    //DAT nextv, prevv;
+    //double muv, tmpv, nxtv, errsum;
+    //muv = 0.0;
+    //errsum = 0.0;
+    //if (min_df < 1) { stop("BAD CODE: must give positive min_df"); }
+
+    ////2FIX: use recom_period and do_recompute ... 
+    //// 2FIX: later you should use the infwin to prevent some computations
+    //// from happening. like subtracting old observations, say.
+    //const bool infwin = IntegerVector::is_na(window);
+    //if ((window < 1) && (!infwin)) { stop("must give positive window"); }
+
+    //int iii,jjj,lll;
+    //int numel = v.size();
+    //int nel;
+    //NumericMatrix xret(numel,1);
+    //int sub_count;
+
+    //sub_count = 0;
+
+    //nel = 0;
+    //jjj = 0;
+    //// now run through iii
+    //for (iii=0;iii < numel;++iii) {
+        //if (na_rm) {
+            //nextv = v[iii];
+            //if (!ISNAN(nextv)) { 
+                    //tmpv = double(nextv) - errsum;
+                    //nxtv = muv + tmpv;
+                    //errsum = (nxtv - muv) - tmpv;
+                    //muv = nxtv;
+                    //++nel;
+                //} 
+            //} else {
+                //tmpv = double(v[iii]) - errsum;
+                //nxtv = muv + tmpv;
+                //errsum = (nxtv - muv) - tmpv;
+                //muv = nxtv;
+                //++nel;
+            //}
+            //if (!infwin && (iii >= window)) {
+                //if (na_rm) {
+                    //prevv = v[jjj];
+                    //if (!ISNAN(prevv)) {
+                        //tmpv = double(-prevv) - errsum;
+                        //nxtv = muv + tmpv;
+                        //errsum = (nxtv - muv) - tmpv;
+                        //muv = nxtv;
+                        //--nel;
+                        //if (do_recompute) { ++sub_count; }
+                    //}
+                //} else {
+                    //tmpv = double(-v[jjj]) - errsum;
+                    //nxtv = muv + tmpv;
+                    //errsum = (nxtv - muv) - tmpv;
+                    //muv = nxtv;
+                    //--nel;
+                    //if (do_recompute) { ++sub_count; }
+                //}
+                //++jjj;
+            //}
+        //} else {
+            //// recompute;
+            //++jjj;
+            //muv = 0.0;
+            //nel = 0;
+            //errsum = 0.0;
+            //for (lll=jjj;lll <= iii;++lll) {
+                //if (na_rm) {
+                    //nextv = v[lll];
+                    //if (!ISNAN(nextv)) {
+                        //tmpv = double(nextv) - errsum;
+                        //nxtv = muv + tmpv;
+                        //errsum = (nxtv - muv) - tmpv;
+                        //muv = nxtv;
+                        //++nel;
+                    //}
+                //} else {
+                    //tmpv = double(v[lll]) - errsum;
+                    //nxtv = muv + tmpv;
+                    //errsum = (nxtv - muv) - tmpv;
+                    //muv = nxtv;
+                    //++nel;
+                //}
+            //}
+            //sub_count = 0;
+        //}
+        //if (nel < min_df) { xret[iii] = NA_REAL; } else { 
+            //if (compute_sum) {
+                //xret[iii] = muv; 
+            //} else {
+                //xret[iii] = muv / nel; 
+            //}
+        //}
+    //}
+    //return xret;
+//}
+
+
+
 // c.f. the 'curious pattern' where arguments get turned
 // into template arguments.
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
@@ -1471,6 +1591,8 @@ NumericMatrix runningQMoments(T v,
     NumericMatrix xret(numel,ncols);
     // this is the current estimate, fill it in as we go.
     NumericVector vret(1+ord);
+    // possibly needed for renormalization:
+    NumericVector rr_vret(1+ord);
 
     // as an invariant, we will start the computation
     // with vret, which is initialized as the summed
@@ -1490,9 +1612,16 @@ NumericMatrix runningQMoments(T v,
             iii = MIN(numel-1,tr_iii);
             jjj = MAX(0,tr_jjj+1);
             if (jjj <= iii) {
+                if (renormalize) { nok=0; }
                 //vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
                 //do not normalize! we will normalize at the end if needed by adjusting for nok.
-                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, jjj, iii+1, na_rm, check_wts, false);
+                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, 
+                                                         jjj,       //bottom
+                                                         iii+1,     //top
+                                                         na_rm, 
+                                                         check_wts, 
+                                                         false,     //normalize_wts,
+                                                         renormalize);     //sum_nok!
             }
             subcount = 0;
         } else {
@@ -1615,8 +1744,16 @@ NumericMatrix runningQMoments(T v,
                             iii = MIN(numel-1,tr_iii);
                             jjj = MAX(0,tr_jjj+1);
                             if (jjj <= iii) {
+                                if (renormalize) { nok=0; }
                                 //do not normalize! we will normalize at the end if needed by adjusting for nok.
-                                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, jjj, iii+1, na_rm, check_wts, false);
+                                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, 
+                                                                         jjj,       //bottom
+                                                                         iii+1,     //top
+                                                                         na_rm, 
+                                                                         check_wts, 
+                                                                         false,     //normalize_wts,
+                                                                         renormalize);      //sum_nok!
+
                             }
                             subcount = 0;
                             break;
@@ -1627,137 +1764,166 @@ NumericMatrix runningQMoments(T v,
         }
         tr_jjj++;
 
+        // ugh
+        if (renormalize) {
+            renorm = double(nok) / vret[0];
+            rr_vret[0] = double(nok);
+            rr_vret[1] = vret[1];
+            for (int ppp=2;ppp <= ord;ppp++) {
+                rr_vret[ppp] = vret[ppp] * renorm;
+            }
+        }
+
         // fill in the value in the output.//FOLDUP
+
         if (retwhat==matrix) {
-            if (vret[0] >= min_df) {
-                if (renormalize) {//FOLDUP
-                    renorm = double(nok) / vret[0];
-                    vret[0] = double(nok);
-                    for (int ppp=2;ppp <= ord;ppp++) {
-                        vret[ppp] *= renorm;
-                    }
-                }//UNFOLD
-                // put them in backwards!
-                if (vret[0] >= ord) {
-                    for (mmm=0;mmm <= ord;++mmm) {
-                        xret(lll,ord-mmm) = vret[mmm];
+            if (renormalize) {
+                if (rr_vret[0] >= min_df) {
+                    // put them in backwards!
+                    if (rr_vret[0] >= ord) {
+                        for (mmm=0;mmm <= ord;++mmm) {
+                            xret(lll,ord-mmm) = rr_vret[mmm];
+                        }
+                    } else {
+                        for (mmm=0;mmm <= rr_vret[0];++mmm) {
+                            xret(lll,ord-mmm) = rr_vret[mmm];
+                        }
+                        for (mmm=rr_vret[0]+1;mmm <= ord;++mmm) {
+                            xret(lll,ord-mmm) = NAN;
+                        }
                     }
                 } else {
-                    for (mmm=0;mmm <= vret[0];++mmm) {
-                        xret(lll,ord-mmm) = vret[mmm];
-                    }
-                    for (mmm=vret[0]+1;mmm <= ord;++mmm) {
-                        xret(lll,ord-mmm) = NAN;
+                    for (mmm=0;mmm <= ord;++mmm) {
+                        xret(lll,mmm) = NAN;
                     }
                 }
             } else {
-                for (mmm=0;mmm <= ord;++mmm) {
-                    xret(lll,mmm) = NAN;
+                if (vret[0] >= min_df) {
+                    // put them in backwards!
+                    if (vret[0] >= ord) {
+                        for (mmm=0;mmm <= ord;++mmm) {
+                            xret(lll,ord-mmm) = vret[mmm];
+                        }
+                    } else {
+                        for (mmm=0;mmm <= vret[0];++mmm) {
+                            xret(lll,ord-mmm) = vret[mmm];
+                        }
+                        for (mmm=vret[0]+1;mmm <= ord;++mmm) {
+                            xret(lll,ord-mmm) = NAN;
+                        }
+                    }
+                } else {
+                    for (mmm=0;mmm <= ord;++mmm) {
+                        xret(lll,mmm) = NAN;
+                    }
                 }
             }
         } else if (retwhat==extreme) {
-            if (vret[0] >= min_df) {
-                if (renormalize) {//FOLDUP
-                    renorm = double(nok) / vret[0];
-                    vret[0] = double(nok);
-                    for (int ppp=2;ppp <= ord;ppp++) {
-                        vret[ppp] *= renorm;
+            if (renormalize) {
+                if (rr_vret[0] >= min_df) {
+                    // put them in backwards!
+                    if (rr_vret[0] >= ord) {
+                        xret(lll,0) = rr_vret[ord];
+                        xret(lll,1) = rr_vret[0];
+                    } else {
+                        xret(lll,0) = rr_vret[ord];
+                        xret(lll,1) = NAN;
                     }
-                }//UNFOLD
-
-                // put them in backwards!
-                if (vret[0] >= ord) {
-                    xret(lll,0) = vret[ord];
-                    xret(lll,1) = vret[0];
                 } else {
-                    xret(lll,0) = vret[ord];
+                    xret(lll,0) = NAN;
                     xret(lll,1) = NAN;
                 }
             } else {
-                xret(lll,0) = NAN;
-                xret(lll,1) = NAN;
+                if (vret[0] >= min_df) {
+                    // put them in backwards!
+                    if (vret[0] >= ord) {
+                        xret(lll,0) = vret[ord];
+                        xret(lll,1) = vret[0];
+                    } else {
+                        xret(lll,0) = vret[ord];
+                        xret(lll,1) = NAN;
+                    }
+                } else {
+                    xret(lll,0) = NAN;
+                    xret(lll,1) = NAN;
+                }
             }
         } else {
-            if (vret[0] >= min_df) {
+            if ((!renormalize && (vret[0] >= min_df)) ||
+                (renormalize && (rr_vret[0] >= min_df))) {
                 if (retwhat==centered) {
                     compv = double(v[lll]);
-                    xret(lll,0) = COMP_CENTERED(compv,vret);
+                    if (renormalize) {
+                        xret(lll,0) = COMP_CENTERED(compv,rr_vret);
+                    } else {
+                        xret(lll,0) = COMP_CENTERED(compv,vret);
+                    }
                 }
                 if (retwhat==scaled) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        vret[2] *= renorm;
-                    }//UNFOLD
                     compv = double(v[lll]);
-                    xret(lll,0) = (compv) / COMP_SD(vret);
+                    if (renormalize) {
+                        xret(lll,0) = (compv) / COMP_SD(rr_vret);
+                    } else {
+                        xret(lll,0) = (compv) / COMP_SD(vret);
+                    }
                 }
                 if (retwhat==zscore) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        vret[2] *= renorm;
-                    }//UNFOLD
                     compv = double(v[lll]);
-                    xret(lll,0) = COMP_CENTERED(compv,vret) / COMP_SD(vret);
+                    if (renormalize) {
+                        xret(lll,0) = COMP_CENTERED(compv,rr_vret) / COMP_SD(rr_vret);
+                    } else {
+                        xret(lll,0) = COMP_CENTERED(compv,vret) / COMP_SD(vret);
+                    }
                 }
                 if (retwhat==sharpe) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        vret[2] *= renorm;
-                    }//UNFOLD
-                    xret(lll,0) = COMP_SHARPE(vret);
+                    if (renormalize) {
+                        xret(lll,0) = COMP_SHARPE(rr_vret);
+                    } else {
+                        xret(lll,0) = COMP_SHARPE(vret);
+                    }
                 }
                 if (retwhat==tstat) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        vret[2] *= renorm;
-                    }//UNFOLD
-                    xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
+                    if (renormalize) {
+                        xret(lll,0) = (rr_vret[1]) / (sqrt(rr_vret[2] / (rr_vret[0] * (rr_vret[0]-1.0))));
+                    } else {
+                        xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
+                    }
                 }
                 if (retwhat==stdev) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        vret[2] *= renorm;
-                    }//UNFOLD
-                    xret(lll,0) = COMP_SD(vret);
+                    if (renormalize) {
+                        xret(lll,0) = COMP_SD(rr_vret);
+                    } else {
+                        xret(lll,0) = COMP_SD(vret);
+                    }
                 }
                 if (retwhat==sharpese) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        for (int ppp=2;ppp <= ord;ppp++) {
-                            vret[ppp] *= renorm;
-                        }
-                    }//UNFOLD
-                    skew = COMP_SKEW(vret);
-                    exkurt = COMP_EXKURT(vret);
-                    sr = COMP_SHARPE(vret);
-                    xret(lll,0) = sr;
-                    xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / vret[0]);
+                    if (renormalize) {
+                        skew = COMP_SKEW(rr_vret);
+                        exkurt = COMP_EXKURT(rr_vret);
+                        sr = COMP_SHARPE(rr_vret);
+                        xret(lll,0) = sr;
+                        xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / rr_vret[0]);
+                    } else {
+                        skew = COMP_SKEW(vret);
+                        exkurt = COMP_EXKURT(vret);
+                        sr = COMP_SHARPE(vret);
+                        xret(lll,0) = sr;
+                        xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / vret[0]);
+                    }
                 }
                 if (retwhat==ret_skew) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        for (int ppp=2;ppp <= ord;ppp++) {
-                            vret[ppp] *= renorm;
-                        }
-                    }//UNFOLD
-                    xret(lll,0) = COMP_SKEW(vret);
+                    if (renormalize) {
+                        xret(lll,0) = COMP_SKEW(rr_vret);
+                    } else {
+                        xret(lll,0) = COMP_SKEW(vret);
+                    }
                 }
                 if (retwhat==ret_exkurt) {
-                    if (renormalize) {//FOLDUP
-                        renorm = double(nok) / vret[0];
-                        vret[0] = double(nok);
-                        for (int ppp=2;ppp <= ord;ppp++) {
-                            vret[ppp] *= renorm;
-                        }
-                    }//UNFOLD
-                    xret(lll,0) = COMP_EXKURT(vret);
+                    if (renormalize) {
+                        xret(lll,0) = COMP_EXKURT(rr_vret);
+                    } else {
+                        xret(lll,0) = COMP_EXKURT(vret);
+                    }
                 }
             } else {
                 xret(lll,0) = NAN;
@@ -2615,6 +2781,15 @@ NumericVector cent2raw(NumericVector input) {
     //return NumericMatrix(1,1);
 //}
 ////UNFOLD
+
+//
+// 2FIX:
+//
+// compensated summation for weights where necessary
+// no Kahans for running sum of integers or logicals
+//
+
+
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

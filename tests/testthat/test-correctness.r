@@ -120,7 +120,11 @@ test_that("unit weighted sd, skew, kurt are correct",{#FOLDUP
 	expect_equal(sd3(x),sd3(x,wts=ones),tolerance=1e-9)
 	expect_equal(skew4(x),skew4(x,wts=ones),tolerance=1e-9)
 	expect_equal(kurt5(x),kurt5(x,wts=ones),tolerance=1e-9)
-	# 2FIX: probably normalize_wts=FALSE should be the default????
+	# 2FIX: probably normalize_wts=FALSE should be the default???? for speed?
+	expect_equal(running_sd(x),running_sd(x,wts=ones,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_skew(x),running_skew(x,wts=ones,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_kurt(x),running_kurt(x,wts=ones,normalize_wts=TRUE),tolerance=1e-9)
+
 	expect_equal(running_sd(x),running_sd(x,wts=ones,normalize_wts=FALSE),tolerance=1e-9)
 	expect_equal(running_skew(x),running_skew(x,wts=ones,normalize_wts=FALSE),tolerance=1e-9)
 	expect_equal(running_kurt(x),running_kurt(x,wts=ones,normalize_wts=FALSE),tolerance=1e-9)
@@ -134,16 +138,48 @@ test_that("normalize weights works",{#FOLDUP
 	x <- rnorm(25)
 	wts <- runif(length(x))
 
-	sid_1 <- sd3(x,wts=wts,normalize_wts=TRUE)
-	ske_1 <- skew4(x,wts=wts,normalize_wts=TRUE)
-	krt_1 <- kurt5(x,wts=wts,normalize_wts=TRUE)
-	sid_2 <- sd3(x,wts=2*wts,normalize_wts=TRUE)
-	ske_2 <- skew4(x,wts=2*wts,normalize_wts=TRUE)
-	krt_2 <- kurt5(x,wts=2*wts,normalize_wts=TRUE)
+	expect_equal(sd3(x,wts=wts,normalize_wts=TRUE),
+							 sd3(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(skew4(x,wts=wts,normalize_wts=TRUE),
+							 skew4(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(kurt5(x,wts=wts,normalize_wts=TRUE),
+							 kurt5(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
 
-	expect_equal(sid_1,sid_2,tolerance=1e-9)
-	expect_equal(ske_1,ske_2,tolerance=1e-9)
-	expect_equal(krt_1,krt_2,tolerance=1e-9)
+	expect_equal(running_sd(x,wts=wts,normalize_wts=TRUE),
+							 running_sd(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_skew(x,wts=wts,normalize_wts=TRUE),
+							 running_skew(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_kurt(x,wts=wts,normalize_wts=TRUE),
+							 running_kurt(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_sd3(x,wts=wts,normalize_wts=TRUE),
+							 running_sd3(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_skew4(x,wts=wts,normalize_wts=TRUE),
+							 running_skew4(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_kurt5(x,wts=wts,normalize_wts=TRUE),
+							 running_kurt5(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_sharpe(x,wts=wts,normalize_wts=TRUE),
+							 running_sharpe(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_centered(x,wts=wts,normalize_wts=TRUE),
+							 running_centered(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_apx_median(x,wts=wts,normalize_wts=TRUE),
+							 running_apx_median(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_tstat(x,wts=wts,normalize_wts=TRUE),
+							 running_tstat(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_zscored(x,wts=wts,normalize_wts=TRUE),
+							 running_zscored(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_scaled(x,wts=wts,normalize_wts=TRUE),
+							 running_scaled(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+	expect_equal(running_apx_quantiles(x,p=ptiles,wts=wts,normalize_wts=TRUE),
+							 running_apx_quantiles(x,p=ptiles,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_cent_moments(x,wts=wts,normalize_wts=TRUE),
+							 running_cent_moments(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_std_moments(x,wts=wts,normalize_wts=TRUE),
+							 running_std_moments(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_cumulants(x,wts=wts,normalize_wts=TRUE),
+							 running_cumulants(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
