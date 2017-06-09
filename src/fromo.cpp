@@ -1070,6 +1070,24 @@ int get_wins(SEXP window) {
 //}
 
 
+enum ReturnWhat { matrix, extreme, 
+    centered, scaled, zscore, sharpe, tstat, sharpese, 
+    ret_stdev, ret_skew, ret_exkurt, ret_sum, ret_mean };
+
+// running (weighted) sum or mean;
+// and optimized by class of input?
+
+//template <typename RET,typename T, typename W, bool has_wts, ReturnWhat retwhat>
+//RET runningSumish(T v,W wts, int window,
+                  //const int min_df,
+                  //int recom_period,
+                  //const bool na_rm,
+                  //const bool check_wts,
+                  //const bool normalize_wts) {
+
+//}
+
+
 // running sums, via Kahans algo//FOLDUP
 template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
 NumericMatrix runningKahans(VEC v,
@@ -1523,7 +1541,6 @@ NumericMatrix running_mean(SEXP v, SEXP window = R_NilValue, bool na_rm=false, i
 // ret_mat return a rows x (1+ord) matrix of the running centered sums
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
-enum ReturnWhat { matrix, extreme, centered, scaled, zscore, sharpe, tstat, sharpese, stdev, ret_skew, ret_exkurt };
 
 template <typename T,ReturnWhat retwhat,typename W,bool has_wts>
 NumericMatrix runningQMoments(T v,
@@ -1562,7 +1579,7 @@ NumericMatrix runningQMoments(T v,
     if (min_df < 0) { stop("require positive min_df"); }
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
-    if ((((retwhat==scaled) || (retwhat==zscore) || (retwhat==sharpe) || (retwhat==tstat) || (retwhat==stdev)) && (ord < 2)) ||
+    if ((((retwhat==scaled) || (retwhat==zscore) || (retwhat==sharpe) || (retwhat==tstat) || (retwhat==ret_stdev)) && (ord < 2)) ||
         ((retwhat==ret_skew) && (ord < 3)) ||
         (((retwhat==sharpese) || (retwhat==ret_exkurt)) && (ord < 4))) { 
         stop("bad code: order too small to support this computation"); 
@@ -1889,7 +1906,7 @@ NumericMatrix runningQMoments(T v,
                         xret(lll,0) = (vret[1]) / (sqrt(vret[2] / (vret[0] * (vret[0]-1.0))));
                     }
                 }
-                if (retwhat==stdev) {
+                if (retwhat==ret_stdev) {
                     if (renormalize) {
                         xret(lll,0) = COMP_SD(rr_vret);
                     } else {
@@ -2134,7 +2151,7 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue,
                          bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<stdev>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<ret_stdev>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
 }
 // just the skew nothing else.
 //' @rdname runningmoments

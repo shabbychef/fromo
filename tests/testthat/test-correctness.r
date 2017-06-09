@@ -159,6 +159,8 @@ test_that("normalize weights works",{#FOLDUP
 							 running_kurt5(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
 	expect_equal(running_sharpe(x,wts=wts,normalize_wts=TRUE),
 							 running_sharpe(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
+	expect_equal(running_sharpe(x,wts=wts,normalize_wts=TRUE,compute_se=TRUE),
+							 running_sharpe(x,wts=2*wts,normalize_wts=TRUE,compute_se=TRUE),tolerance=1e-9)
 	expect_equal(running_centered(x,wts=wts,normalize_wts=TRUE),
 							 running_centered(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
 	expect_equal(running_apx_median(x,wts=wts,normalize_wts=TRUE),
