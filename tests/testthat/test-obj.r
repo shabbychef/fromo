@@ -116,6 +116,28 @@ test_that("cosums monoidal homomorphism",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("cosums make zero?",{#FOLDUP
+	set.char.seed("6e06ef0e-fb0e-4adb-b27d-028db8028f20")
+
+	x <- matrix(rnorm(100*4),ncol=4)
+	y <- matrix(rnorm(100*4),ncol=4)
+	order <- 2L
+	xobj <- as.centcosums(x,order=order, na.omit=TRUE)
+	yobj <- as.centcosums(y,order=order, na.omit=TRUE)
+	# x - x = 0
+	allz <- xobj %-% xobj
+	expect_true(all(cosums(allz)==0))
+
+	# x + 0 = x
+	# 0 + y = y
+	xalt <- c(xobj,allz)
+	yalt <- c(allz,yobj)
+	expect_equal(cosums(xalt),cosums(xobj),tolerance=1e-9)
+	expect_equal(cosums(yalt),cosums(yobj),tolerance=1e-9)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
 # 2FIX: check the effects of NA
 #UNFOLD
 

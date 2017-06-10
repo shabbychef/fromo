@@ -213,31 +213,35 @@ BEGIN_RCPP
 END_RCPP
 }
 // running_sum
-NumericMatrix running_sum(SEXP v, SEXP window, bool na_rm, int restart_period);
-RcppExport SEXP fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP) {
+SEXP running_sum(SEXP v, SEXP window, SEXP wts, bool na_rm, int restart_period, bool check_wts);
+RcppExport SEXP fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, na_rm, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, wts, na_rm, restart_period, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }
 // running_mean
-NumericMatrix running_mean(SEXP v, SEXP window, bool na_rm, int min_df, int restart_period);
-RcppExport SEXP fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP) {
+SEXP running_mean(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts);
+RcppExport SEXP fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
     Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
     Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_mean(v, window, na_rm, min_df, restart_period));
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_mean(v, window, wts, na_rm, min_df, restart_period, check_wts));
     return rcpp_result_gen;
 END_RCPP
 }

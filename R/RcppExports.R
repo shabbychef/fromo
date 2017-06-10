@@ -303,16 +303,17 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 #' @template etc
 #' @template ref-romo
 #' @template ref-kahan
+#' @inheritParams sd3
 #' @rdname runningmean 
 #' @export
-running_sum <- function(v, window = NULL, na_rm = FALSE, restart_period = 10000L) {
-    .Call('fromo_running_sum', PACKAGE = 'fromo', v, window, na_rm, restart_period)
+running_sum <- function(v, window = NULL, wts = NULL, na_rm = FALSE, restart_period = 10000L, check_wts = FALSE) {
+    .Call('fromo_running_sum', PACKAGE = 'fromo', v, window, wts, na_rm, restart_period, check_wts)
 }
 
 #' @rdname runningmean
 #' @export
-running_mean <- function(v, window = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L) {
-    .Call('fromo_running_mean', PACKAGE = 'fromo', v, window, na_rm, min_df, restart_period)
+running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L, check_wts = FALSE) {
+    .Call('fromo_running_mean', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, restart_period, check_wts)
 }
 
 #' @title

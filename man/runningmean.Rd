@@ -5,10 +5,11 @@
 \alias{running_mean}
 \title{Compute sums or means over a sliding window.}
 \usage{
-running_sum(v, window = NULL, na_rm = FALSE, restart_period = 10000L)
+running_sum(v, window = NULL, wts = NULL, na_rm = FALSE,
+  restart_period = 10000L, check_wts = FALSE)
 
-running_mean(v, window = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 10000L)
+running_mean(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
+  restart_period = 10000L, check_wts = FALSE)
 }
 \arguments{
 \item{v}{a vector.}
@@ -17,6 +18,14 @@ running_mean(v, window = NULL, na_rm = FALSE, min_df = 0L,
 If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
 to an infinite window size. If negative, an error will be thrown.}
 
+\item{wts}{an optional vector of weights. Weights are \sQuote{replication}
+weights, meaning a value of 2 is shorthand for having two observations
+with the corresponding \code{v} value. If \code{NULL}, corresponds to
+equal weights, the default. Note that weights are typically only meaningfully defined
+up to a multiplicative constant, meaning the units of weights are
+immaterial. When weights are \code{NA}, the same rules for checking \code{v}
+are applied.}
+
 \item{na_rm}{whether to remove NA, false by default.}
 
 \item{restart_period}{the recompute period. because subtraction of elements can cause
@@ -24,6 +33,9 @@ loss of precision, the computation of moments is restarted periodically based on
 this parameter. Larger values mean fewer restarts and faster, though potentially less 
 accurate results. Unlike in the computation of even order moments, loss of precision
 is unlikely to be disastrous, so the default value is rather large.}
+
+\item{check_wts}{a boolean for whether the code shall check for negative
+weights, and throw an error when they are found. Default false for speed.}
 
 \item{min_df}{the minimum df to return a value, otherwise \code{NaN} is returned,
 only for the means computation.
