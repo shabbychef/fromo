@@ -2984,6 +2984,7 @@ NumericVector cent2raw(NumericVector input) {
 //
 // 2FIX: make a compensated summation class/object ?
 // 2FIX: inline code for adding a (weighted) observation ?
+// 2FIX: default to infinity for windows, not NULL...
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

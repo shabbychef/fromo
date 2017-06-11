@@ -117,7 +117,7 @@ test_that("cosums monoidal homomorphism",{#FOLDUP
 	expect_true(TRUE)
 })#UNFOLD
 test_that("cosums make zero?",{#FOLDUP
-	set.char.seed("6e06ef0e-fb0e-4adb-b27d-028db8028f20")
+	set.char.seed("5fbdb6e1-64ee-48dd-9131-98c66cfd1486")
 
 	x <- matrix(rnorm(100*4),ncol=4)
 	y <- matrix(rnorm(100*4),ncol=4)
@@ -138,6 +138,25 @@ test_that("cosums make zero?",{#FOLDUP
 	# sentinel
 	expect_true(TRUE)
 })#UNFOLD
+test_that("cosums bad input?",{#FOLDUP
+	set.char.seed("6e06ef0e-fb0e-4adb-b27d-028db8028f20")
+
+	x <- matrix(rnorm(100*4),ncol=4)
+	y <- matrix(rnorm(100*6),ncol=6)
+
+	order <- 2L
+	xobj <- as.centcosums(x,order=order, na.omit=TRUE)
+	yobj <- as.centcosums(y,order=order, na.omit=TRUE)
+
+	# these should all be erorrs??
+	#expect_error(c(xobj,yobj))
+	#expect_error(xobj %-% yobj)
+
+	# sentinel
+	expect_true(TRUE)
+})#UNFOLD
+
+
 # 2FIX: check the effects of NA
 #UNFOLD
 
