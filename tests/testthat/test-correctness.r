@@ -349,11 +349,11 @@ test_that("running ops are correct",{#FOLDUP
 						# running sum and mean
 						fastv <- running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- dumb_sum
-						expect_equal(dumbv[2:xlen],fastv[2:xlen,],tolerance=1e-7 * toler)
+						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
 
 						fastv <- running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm)
 						dumbv <- dumb_mean
-						expect_equal(dumbv[2:xlen],fastv[2:xlen,],tolerance=1e-7 * toler)
+						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
 
 						if (require(PDQutils)) {
 							# cumulants

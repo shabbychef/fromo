@@ -1083,7 +1083,7 @@ RET runningSumish(T v,W wts,int window,
                   int recom_period,
                   const bool na_rm,
                   const bool check_wts) {
-    if ((retwhat==ret_mean) && (min_df < 1)) { stop("BAD CODE: must give positive min_df"); }
+    if (min_df < 0) { stop("BAD CODE: must give positive min_df"); }
 
     oneT nextv, prevv;
     double f_vsum, tmpv, nxtv, verrsum;
