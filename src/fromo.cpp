@@ -1069,6 +1069,67 @@ int get_wins(SEXP window) {
     //return Rcpp::Nullable<T>();
 //}
 
+// Kahan compensated summation object.
+template<class T>
+class Kahan {
+    public:
+        inline Kahan() : m_val(0), m_errs(0) {}
+
+        inline Kahan(const T &t): m_val(t), m_errs(0) {}
+
+        inline T as() { return m_val; }
+
+        inline Kahan& operator += (const T& rhs) {
+            return add(rhs);
+        }
+        inline Kahan& operator -= (const T& rhs) {
+            return add(-rhs);
+        }
+        inline Kahan& operator= (T rhs) {
+            m_val = rhs;
+            m_errs = 0;
+            return *this;
+        }
+    public:
+        T m_val;
+    private:
+        T m_errs;
+        inline Kahan& add(const T& rhs) {
+            T tmpv, nxtv;
+            tmpv = rhs - m_errs;
+            nxtv = m_val + tmpv;
+            m_errs = (nxtv - m_val) - tmpv;
+            m_val = nxtv;
+            return *this;
+        }
+};
+template<>
+class Kahan<int> {
+    public:
+        inline Kahan() : m_val(0) {}
+
+        inline Kahan(const int &t): m_val(t) {}
+
+        inline int as() { return m_val; }
+
+        inline Kahan& operator += (const int& rhs) {
+            return add(rhs);
+        }
+        inline Kahan& operator -= (const int& rhs) {
+            return add(-rhs);
+        }
+        inline Kahan& operator= (int rhs) {
+            m_val = rhs;
+            return *this;
+        }
+    public:
+        int m_val;
+    private:
+        inline Kahan& add(const int& rhs) {
+            m_val += rhs;
+            return *this;
+        }
+};
 
 enum ReturnWhat { matrix, extreme, 
     centered, scaled, zscore, sharpe, tstat, sharpese, 
@@ -1076,6 +1137,9 @@ enum ReturnWhat { matrix, extreme,
 
 // running (weighted) sum or mean;
 // and optimized by class of input?
+//
+// 2FIX: oneT and oneW should be the accumulator types, not one type.
+// that is sum of logicals should go to int !?
 
 template <typename RET,typename T,typename oneT,bool v_robustly,typename W,typename oneW,bool w_robustly,ReturnWhat retwhat,bool has_wts,bool do_recompute>
 RET runningSumish(T v,W wts,int window,
@@ -1086,11 +1150,9 @@ RET runningSumish(T v,W wts,int window,
     if (min_df < 0) { stop("BAD CODE: must give positive min_df"); }
 
     oneT nextv, prevv;
-    double f_vsum, tmpv, nxtv, verrsum;
-    int i_vsum;
 
-    double f_wsum, tmpw, nxtw, werrsum;
-    int i_wsum;
+    Kahan<oneT> fvsum;
+    Kahan<oneW> fwsum;
 
     int nel;
     // subtraction count
@@ -1104,20 +1166,8 @@ RET runningSumish(T v,W wts,int window,
         prevw=nextw;
     }
 
-    if (v_robustly) {
-        f_vsum = 0.0;
-        verrsum = 0.0;
-    } else {
-        i_vsum = 0;
-    }
-    if (has_wts) {
-        if (w_robustly) {
-            f_wsum = 0.0;
-            werrsum = 0.0;
-        } else {
-            i_wsum = 0;
-        }
-    }
+    fvsum = oneT(0);
+    if (has_wts) { fwsum = oneW(0); }
     nel = 0;
     sub_count = 0;
 
@@ -1143,23 +1193,9 @@ RET runningSumish(T v,W wts,int window,
             } 
             nextv = v[iii];
             if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
-                if (v_robustly) {
-                    tmpv = double(nextv) - verrsum;
-                    nxtv = f_vsum + tmpv;
-                    verrsum = (nxtv - f_vsum) - tmpv;
-                    f_vsum = nxtv;
-                } else {
-                    i_vsum += nextv;
-                }
+                fvsum += oneT(nextv);
                 if (has_wts) {
-                    if (w_robustly) {
-                        tmpw = double(nextw) - werrsum;
-                        nxtw = f_wsum + tmpw;
-                        werrsum = (nxtw - f_wsum) - tmpw;
-                        f_wsum = nxtw;
-                    } else {
-                        i_wsum += nextw;
-                    }
+                    fwsum += oneW(nextw);
                 } else {
                     ++nel;
                 }
@@ -1172,25 +1208,10 @@ RET runningSumish(T v,W wts,int window,
                 } 
                 prevv = v[jjj];
                 if (! (na_rm && (ISNAN(prevv) || (has_wts && (ISNAN(prevw) || (prevw <= 0)))))) { 
-                    if (v_robustly) {
-                        tmpv = double(-prevv) - verrsum;
-                        nxtv = f_vsum + tmpv;
-                        verrsum = (nxtv - f_vsum) - tmpv;
-                        f_vsum = nxtv;
-                        if (do_recompute) { ++sub_count; }
-                    } else {
-                        i_vsum -= nextv;
-                    }
+                    fvsum -= oneT(prevv);
+                    if (do_recompute) { ++sub_count; }
                     if (has_wts) {
-                        if (w_robustly) {
-                            tmpw = double(-prevw) - werrsum;
-                            nxtw = f_wsum + tmpw;
-                            werrsum = (nxtw - f_wsum) - tmpw;
-                            f_wsum = nxtw;
-                            if (do_recompute && (!v_robustly)) { ++sub_count; }
-                        } else {
-                            i_wsum -= nextw;
-                        }
+                        fwsum -= oneW(prevw);
                     } else {
                         --nel;
                     }
@@ -1201,20 +1222,8 @@ RET runningSumish(T v,W wts,int window,
             // flat out recompute;//FOLDUP
             ++jjj;
             // init//FOLDUP
-            if (v_robustly) {
-                f_vsum = 0.0;
-                verrsum = 0.0;
-            } else {
-                i_vsum = 0;
-            }
-            if (has_wts) {
-                if (w_robustly) {
-                    f_wsum = 0.0;
-                    werrsum = 0.0;
-                } else {
-                    i_wsum = 0;
-                }
-            }
+            fvsum = oneT(0);
+            if (has_wts) { fwsum = oneW(0); }
             nel = 0;
             sub_count = 0;//UNFOLD
             for (lll=jjj;lll <= iii;++lll) {
@@ -1225,23 +1234,9 @@ RET runningSumish(T v,W wts,int window,
                 } 
                 nextv = v[lll];
                 if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
-                    if (v_robustly) {
-                        tmpv = double(nextv) - verrsum;
-                        nxtv = f_vsum + tmpv;
-                        verrsum = (nxtv - f_vsum) - tmpv;
-                        f_vsum = nxtv;
-                    } else {
-                        i_vsum += nextv;
-                    }
+                    fvsum += oneT(nextv);
                     if (has_wts) {
-                        if (w_robustly) {
-                            tmpw = double(nextw) - werrsum;
-                            nxtw = f_wsum + tmpw;
-                            werrsum = (nxtw - f_wsum) - tmpw;
-                            f_wsum = nxtw;
-                        } else {
-                            i_wsum += nextw;
-                        }
+                        fwsum += oneW(nextw);
                     } else {
                         ++nel;
                     }
@@ -1250,33 +1245,16 @@ RET runningSumish(T v,W wts,int window,
             sub_count = 0;//UNFOLD
         }
         // store em
-        if ((has_wts && ((w_robustly && (f_wsum < min_df)) || (!w_robustly && (i_wsum < min_df)))) ||
-            (!has_wts && (nel < min_df))) { 
+        if ((has_wts && (fwsum.as() < min_df)) || (!has_wts && (nel < min_df))) { 
             xret[iii] = oneT(NA_REAL); 
         } else { 
             if (retwhat==ret_sum) {
-                if (v_robustly) { xret[iii] = f_vsum; } else { xret[iii] = i_vsum; }
+                xret[iii] = fvsum.as(); 
             } else {
-                if (v_robustly) { 
-                    if (has_wts) {
-                        if (w_robustly) {
-                            xret[iii] = f_vsum /  f_wsum;
-                        } else {
-                            xret[iii] = f_vsum /  i_wsum;
-                        }
-                    } else {
-                        xret[iii] = f_vsum/nel; 
-                    }
-                } else { 
-                    if (has_wts) {
-                        if (w_robustly) {
-                            xret[iii] = i_vsum /  f_wsum;
-                        } else {
-                            xret[iii] = i_vsum /  i_wsum;
-                        }
-                    } else {
-                        xret[iii] = i_vsum/nel; 
-                    }
+                if (has_wts) {
+                    xret[iii] = fvsum.as() /  double(fwsum.as());
+                } else {
+                    xret[iii] = fvsum.as()/nel; 
                 }
             }
         }
@@ -1357,164 +1335,6 @@ SEXP runningSumishCurryFour(SEXP v,
     }
     return runningSumishCurryThree<retwhat,false>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int);
 }
-
-
-
-
-//// running sums, via Kahans algo//FOLDUP
-//template <typename VEC,typename DAT,bool na_rm,bool do_recompute,bool compute_sum>
-//NumericMatrix runningKahans(VEC v,
-                            //int window,
-                            //const int min_df,
-                            //int recom_period) {
-
-    //DAT nextv, prevv;
-    //double muv, tmpv, nxtv, errsum;
-    //muv = 0.0;
-    //errsum = 0.0;
-    //if (min_df < 1) { stop("BAD CODE: must give positive min_df"); }
-
-    ////2FIX: use recom_period and do_recompute ... 
-    //// 2FIX: later you should use the infwin to prevent some computations
-    //// from happening. like subtracting old observations, say.
-    //const bool infwin = IntegerVector::is_na(window);
-    //if ((window < 1) && (!infwin)) { stop("must give positive window"); }
-
-    //int iii,jjj,lll;
-    //int numel = v.size();
-    //int nel;
-    //NumericMatrix xret(numel,1);
-    //int sub_count;
-
-    //sub_count = 0;
-
-    //nel = 0;
-    //jjj = 0;
-    //// now run through iii
-    //for (iii=0;iii < numel;++iii) {
-        //if (!do_recompute || (sub_count < recom_period)) {
-            //if (na_rm) {
-                //nextv = v[iii];
-                //if (!ISNAN(nextv)) { 
-                    //tmpv = double(nextv) - errsum;
-                    //nxtv = muv + tmpv;
-                    //errsum = (nxtv - muv) - tmpv;
-                    //muv = nxtv;
-                    //++nel;
-                //} 
-            //} else {
-                //tmpv = double(v[iii]) - errsum;
-                //nxtv = muv + tmpv;
-                //errsum = (nxtv - muv) - tmpv;
-                //muv = nxtv;
-                //++nel;
-            //}
-            //if (!infwin && (iii >= window)) {
-                //if (na_rm) {
-                    //prevv = v[jjj];
-                    //if (!ISNAN(prevv)) {
-                        //tmpv = double(-prevv) - errsum;
-                        //nxtv = muv + tmpv;
-                        //errsum = (nxtv - muv) - tmpv;
-                        //muv = nxtv;
-                        //--nel;
-                        //if (do_recompute) { ++sub_count; }
-                    //}
-                //} else {
-                    //tmpv = double(-v[jjj]) - errsum;
-                    //nxtv = muv + tmpv;
-                    //errsum = (nxtv - muv) - tmpv;
-                    //muv = nxtv;
-                    //--nel;
-                    //if (do_recompute) { ++sub_count; }
-                //}
-                //++jjj;
-            //}
-        //} else {
-            //// recompute;
-            //++jjj;
-            //muv = 0.0;
-            //nel = 0;
-            //errsum = 0.0;
-            //for (lll=jjj;lll <= iii;++lll) {
-                //if (na_rm) {
-                    //nextv = v[lll];
-                    //if (!ISNAN(nextv)) {
-                        //tmpv = double(nextv) - errsum;
-                        //nxtv = muv + tmpv;
-                        //errsum = (nxtv - muv) - tmpv;
-                        //muv = nxtv;
-                        //++nel;
-                    //}
-                //} else {
-                    //tmpv = double(v[lll]) - errsum;
-                    //nxtv = muv + tmpv;
-                    //errsum = (nxtv - muv) - tmpv;
-                    //muv = nxtv;
-                    //++nel;
-                //}
-            //}
-            //sub_count = 0;
-        //}
-        //if (nel < min_df) { xret[iii] = NA_REAL; } else { 
-            //if (compute_sum) {
-                //xret[iii] = muv; 
-            //} else {
-                //xret[iii] = muv / nel; 
-            //}
-        //}
-    //}
-    //return xret;
-//}
-
-//// c.f. the 'curious pattern' where arguments get turned
-//// into template arguments.
-//template <typename VEC,typename DAT,bool na_rm,bool do_recompute>
-//NumericMatrix runningKahansCurryOne(VEC v,int window,
-                                   //const int min_df,
-                                   //int recom_period,
-                                   //bool compute_sum) {
-    //if (compute_sum) {
-        //return runningKahans<VEC,DAT,na_rm,do_recompute,true>(v, window, min_df, recom_period);
-    //} 
-    //return runningKahans<VEC,DAT,na_rm,do_recompute,false>(v, window, min_df, recom_period);
-//}
-//template <typename VEC,typename DAT,bool na_rm>
-//NumericMatrix runningKahansCurryTwo(VEC v,int window,
-                                   //const int min_df,
-                                   //int recom_period,
-                                   //bool compute_sum) {
-    //const bool do_recompute = !IntegerVector::is_na(recom_period);
-    //if (do_recompute) {
-        //return runningKahansCurryOne<VEC,DAT,na_rm,true>(v, window, min_df, recom_period, compute_sum);
-    //} 
-    //return runningKahansCurryOne<VEC,DAT,na_rm,false>(v, window, min_df, recom_period, compute_sum);
-//}
-//template <typename VEC,typename DAT>
-//NumericMatrix runningKahansCurryThree(VEC v,int window,
-                                     //const int min_df,
-                                     //int recom_period,
-                                     //bool compute_sum,
-                                     //bool na_rm) {
-    //if (na_rm) {
-        //return runningKahansCurryTwo<VEC,DAT,true>(v, window, min_df, recom_period, compute_sum);
-    //} 
-    //return runningKahansCurryTwo<VEC,DAT,false>(v, window, min_df, recom_period, compute_sum);
-//}
-
-//// wrap the call:
-//NumericMatrix wrapRunningKahans(SEXP v, int window, const int min_df, int recom_period, bool na_rm, bool compute_sum=false) {
-    //switch (TYPEOF(v)) {
-        //case  INTSXP: { return runningKahansCurryThree<IntegerVector, int>(v, window, min_df, recom_period, compute_sum, na_rm); }
-        //case REALSXP: { return runningKahansCurryThree<NumericVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
-        //case  LGLSXP: { return runningKahansCurryThree<LogicalVector, double>(v, window, min_df, recom_period, compute_sum, na_rm); }
-        //default: stop("Unsupported input type");
-    //}
-    //// CRAN checks are broken: 'warning: control reaches end of non-void function'
-    //// ... only for a crappy automated warning.
-    //return NumericMatrix(1,1);
-//}
-////UNFOLD
 
 // running geometric means//FOLDUP
 // what to do about zeros or negatives?
@@ -2985,6 +2805,19 @@ NumericVector cent2raw(NumericVector input) {
 // 2FIX: make a compensated summation class/object ?
 // 2FIX: inline code for adding a (weighted) observation ?
 // 2FIX: default to infinity for windows, not NULL...
+
+// notes on Rcpp
+// http://thecoatlessprofessor.com/programming/rcpp/unofficial-rcpp-api-docs/#nan-constants
+//
+// types in R!
+// INTSXP REALSXP CPLXSXP
+//
+// https://stackoverflow.com/questions/25172419/how-can-i-get-the-sexptype-of-an-sexp-value
+// overload += in c++
+// https://stackoverflow.com/questions/34663785/c-operator-overload
+// https://stackoverflow.com/questions/4581961/c-how-to-overload-operator
+// 
+
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

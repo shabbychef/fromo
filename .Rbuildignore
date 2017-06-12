@@ -17,6 +17,7 @@ man-roxygen
 ^fromo.*.tar.gz$
 ^fromo.Rcheck$
 ^fromo$
+fromo/libs
 ^github_extra
 unit_test.log
 LICENSE
