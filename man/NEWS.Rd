@@ -10,11 +10,13 @@ News for package 'fromo'
 \newcommand{\cranfromo}{\CRANpkg{fromo}}
 \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 }
-\section{\fromo{} Version 0.2.0 (2016-) }{
+\section{\fromo{} Version 0.1.4 (2017-) }{
 
 \itemize{
 \item move github figures to location CRAN understands.
-\item add \sQuote{std_cumulants}
+\item add \code{std_cumulants}
+\item add \code{\link{running_sum}}, \code{\link{running_mean}}.
+\item add weighted moments computation.
 }
 }
 

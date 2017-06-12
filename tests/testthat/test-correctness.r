@@ -442,7 +442,7 @@ test_that("running adjustments are correct",{#FOLDUP
 })#UNFOLD
 test_that("running weights work correctly",{#FOLDUP
 	# hey, Volkswagon called while you were out:
-	skip_on_cran()
+	#skip_on_cran()
 
 	set.char.seed("b82d252c-681b-4b98-9bb3-ffd17feeb4a1")
 	na_rm <- FALSE
@@ -469,9 +469,10 @@ test_that("running weights work correctly",{#FOLDUP
 				dumb_sd <- sqrt(dumb_var)
 
 				# ack! need weights!
-				fastv <- running_mean(x,window=window,na_rm=na_rm)
-				fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE)
+				fastv <- running_mean(x,wts=wts,window=window,na_rm=na_rm)
+				expect_equal(fastv,dumb_mean,tolerance=1e-8)
 
+				#fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE)
 
 				#fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
 				## the dumb value:
