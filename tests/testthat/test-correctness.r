@@ -468,11 +468,11 @@ test_that("running weights work correctly",{#FOLDUP
 							 },simplify=TRUE)
 				dumb_sd <- sqrt(dumb_var)
 
-				# ack! need weights!
-				fastv <- running_mean(x,wts=wts,window=window,na_rm=na_rm)
+				fastv <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm)
 				expect_equal(fastv,dumb_mean,tolerance=1e-8)
 
-				#fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE)
+				fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE)
+				fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
 
 				#fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
 				## the dumb value:

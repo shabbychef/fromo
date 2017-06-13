@@ -1,5 +1,5 @@
 /*
- 
+
   This file is part of fromo.
   
   fromo is free software: you can redistribute it and/or modify
@@ -168,16 +168,241 @@ class Kahan<int> {
 };
 //UNFOLD
 
-// Welford object.
-// holds a vector xx
-// xx[0] is number of elements in summation.
-// xx[1] is sum of weights in summation (typically equal to xx[0])
-// xx[2] is weighted mean of x.
-// xx[3] is weighted sum of (x - xx[2])^2
-// xx[4] is weighted sum of (x - xx[2])^3
-// xx[5] is weighted sum of (x - xx[2])^4
+// Welford-Terriberry object.
+// holds the following:
+// m_nel : the number of distinct observations going into this sum.
+// note that weighted observations are treated as one here.
+// m_wsum : a Kahan<W> object of the total weight. When unweighted
+// observations are used, this is just a duplicate of m_nel.
+// m_ord : the integer order of the summation.
+// a vector xx of length m_ord;
+// xx[0] is ignored. keep it zero.
+// xx[1] is weighted mean of x.
+// xx[2] is weighted sum of (x - xx[1])^2
+// xx[3] is weighted sum of (x - xx[1])^3
+// xx[4] is weighted sum of (x - xx[1])^4
 // ...
 
+// ord_beyond must be used for (ord > 2)
+template<class W,bool ord_beyond>
+class Welford {
+    public:
+        int m_ord;
+        int m_nel;
+        Kahan<W> m_wsum;
+        NumericVector m_xx;
+    public:
+        inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {}
+
+    public:
+        inline double var(const bool normalize,const double used_df) {
+            double renorm;
+            if (normalize) {
+                renorm = double(m_nel) / double(m_wsum.as());
+                return ((renorm * m_xx[2]) / (double(m_nel) - used_df));
+            } else {
+                return ((m_xx[2]) / (double(m_wsum.as()) - used_df));
+            }
+        }
+        inline double sd(const bool normalize,const double used_df) {
+            return sqrt(this.var(normalize,used_df));
+        }
+        inline double skew() {
+            return (sqrt(double(m_wsum.as())) * m_xx[3] / pow(m_xx[2],1.5));
+        }
+        inline double exkurt() {
+            return ((double(m_wsum.as()) * m_xx[4] / (pow(m_xx[2],2.0))) - 3.0);
+        }
+        // getters 
+        inline int nel() { return m_nel; }
+        inline W wsum() { return m_wsum.as(); }
+        inline NumericVector as() { return m_xx; }
+
+    public:
+        // add another (weighted) observation to our set of x
+        inline Welford& add_one (const double xval, const W wt) {
+            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            m_nel++;
+            della = xval - m_xx[1];
+            nelm = double(m_wsum.as());
+            m_wsum += wt;
+            nel = double(m_wsum.as());
+            delnel = della * double(wt) / nel;
+            m_xx[1] += delnel;
+            if (nelm > 0) {
+                drat = della * nelm / nel;
+                nbyn = -wt / nelm;
+                ac_dn = pow(drat,m_ord);
+                ac_on = pow(nbyn,m_ord-1);
+
+                for (int ppp=m_ord;ppp >= 2;ppp--) {
+                    m_xx[ppp] += ac_dn * wt * (1.0 - ac_on);
+                    if (ord_beyond) {
+                        if (ppp > 2) {
+                            if (drat != 0) { ac_dn /= drat; }
+                            ac_on /= nbyn;
+                            ac_de = -delnel;
+
+                            for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                m_xx[ppp] += bincoef[ppp][qqq] * ac_de * m_xx[ppp-qqq];
+                                if (qqq < ppp - 2) {
+                                    ac_de *= -delnel;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+        // remove one (weighted) observation from our set of x
+        inline Welford& rem_one (const double xval, const W wt) {
+            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            m_nel--;
+            della = xval - m_xx[1];
+            nelm = double(m_wsum.as());
+            m_wsum -= wt;
+            nel = double(m_wsum.as());
+            if (nel > 0) {
+                delnel = della * double(wt) / nel;
+                m_xx[1] -= delnel;
+                drat = delnel * nel;
+                nbyn = -double(wt) / nel;
+                ac_dn = drat*drat;
+                ac_on = nbyn;
+
+                for (int ppp=2;ppp <= m_ord;ppp++) {
+                    m_xx[ppp] -= ac_dn * (1.0 - ac_on);
+                    if (ord_beyond) {
+                        if (ppp < m_ord) {
+                            ac_dn *= drat;
+                            ac_on *= nbyn;
+                        }
+                        ac_de = -delnel;
+                        for (int qqq=1;qqq <= ppp-2;qqq++) {
+                            m_xx[ppp] -= bincoef[ppp][qqq] * ac_de * m_xx[ppp-qqq];
+                            if (qqq < ppp - 2) {
+                                ac_de *= -delnel;
+                            }
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+        // join two Welford objects together
+        inline Welford& join(const Welford& rhs) {
+            double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+            double ac_nfoo,ac_n2,ac_mn1,ac_del,ac_mn2,ac_n1;
+            W n2wt;
+            int ppp,qqq;
+            n1 = double(m_wsum.as());
+            if (n1 <= 0) {
+                m_nel = rhs.m_nel;
+                m_wsum = rhs.m_wsum;
+                m_xx = rhs.m_xx;
+                return *this;
+            }
+            // else onboard the observations
+            m_nel += rhs.m_nel;
+            n2wt = rhs.m_wsum.as();
+            m_wsum += n2wt;
+            n2 = double(n2wt);
+            if (n2 <= 0) {
+                return *this;
+            }
+            ntot = double(m_wsum.as());
+            n1rat = n1 / ntot;
+            n2rat = n2 / ntot;
+            del21 = rhs.m_xx[1] - m_xx[1];
+            mupart = del21 * n2rat;
+
+            m_xx[1] += mupart;
+            nfoo = n1 * mupart;
+            ac_nfoo = pow(nfoo,m_ord);
+            ac_n2 = pow(n2,1-m_ord);
+            ac_mn1 = pow(-n1,1-m_ord);
+
+            for (ppp=m_ord;ppp >= 2;ppp--) {
+                m_xx[ppp] += rhs.m_xx[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+                if (ord_beyond) {
+                    if (ppp > 2) {
+                        if (nfoo != 0) { ac_nfoo /= nfoo; }
+                        ac_n2 *= n2;
+                        ac_mn1 *= (-n1);
+
+                        ac_del = del21;
+                        ac_mn2 = -n2rat;
+                        ac_n1 = n1rat;
+                        for (int qqq=1;qqq <= (ppp-2); qqq++) {
+                            m_xx[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * m_xx[ppp-qqq] + ac_n1 * rhs.m_xx[ppp-qqq]);
+                            if (qqq < (ppp-2)) {
+                                ac_del *= del21;
+                                ac_mn2 *= (-n2rat);
+                                ac_n1  *= (n1rat);
+                            }
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+        // remove one from another
+        inline Welford& unjoin(const Welford& rhs) {
+            double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+            double ac_nfoo,ac_n2,ac_mn1;
+            double ac_del,ac_mn2,ac_n1;
+            int ppp,qqq;
+
+            n1 = double(m_wsum.as());
+            W n2wt;
+            n2wt = rhs.m_wsum.as();
+            n2 = double(n2wt);
+            if (n2 <= 0) { return *this; }
+            if (n2 > n1) { stop("cannot subtract more observations than were seen."); }
+
+            mupart = rhs.m_xx[1] - m_xx[1];
+
+            ntot = double(m_wsum.as());
+            m_wsum -= n2wt;
+            m_nel  -= rhs.m_nel;
+
+            n1rat = n1 / ntot;
+            n2rat = n2 / ntot;
+
+            m_xx[1] -= (n2/n1) * mupart;
+
+            del21 = mupart / n1rat;
+            nfoo = mupart * n2;
+
+            ac_nfoo = nfoo * nfoo;
+            ac_n2 = 1.0 / n2;
+            ac_mn1 = -1.0 / n1;
+            for (ppp=2;ppp <= m_ord;ppp++) {
+                m_xx[ppp] -= rhs.m_xx[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+                if (ord_beyond) {
+                    if (ppp < m_ord) {
+                        ac_nfoo *= nfoo; 
+                        ac_n2 /= n2;
+                        ac_mn1 /= (-n1);
+                    }
+                    ac_del = del21;
+                    ac_mn2 = -n2rat;
+                    ac_n1 = n1rat;
+                    for (int qqq=1;qqq <= (ppp-2); qqq++) {
+                        m_xx[ppp] -= bincoef[ppp][qqq] * ac_del * (ac_mn2 * m_xx[ppp-qqq] + ac_n1 * rhs.m_xx[ppp-qqq]);
+                        if (qqq < (ppp-2)) {
+                            ac_del *= del21;
+                            ac_mn2 *= (-n2rat);
+                            ac_n1  *= (n1rat);
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+
+};
 
 
 // univariate sums, moments, cumulants//FOLDUP
@@ -265,7 +490,7 @@ NumericVector quasiWeightedWelford(T v,
 // if normalize_wts and wts are non-null, then
 // we essentially renormalize the weights to
 // have mean 1.
-template <typename T, typename W, bool has_wts>
+template <typename T, typename W, typename oneW, bool has_wts>
 NumericVector quasiWeightedMoments(T v,
                                    W wts,
                                    int & nok,
@@ -276,7 +501,7 @@ NumericVector quasiWeightedMoments(T v,
                                    const bool check_wts,
                                    const bool normalize_wts,
                                    const bool sum_nok = false) {
-    double nextv, nextw, nel, nelm, della, delnel, drat, ac_dn, ac_on, ac_de, renorm, nbyn;
+    double nextv, nextw, renorm;
     const bool renormalize = has_wts && normalize_wts;
     const bool inc_nok = sum_nok || renormalize;
 
@@ -284,71 +509,43 @@ NumericVector quasiWeightedMoments(T v,
 
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
+
     // preallocated with zeros:
-    NumericVector xret(1+ord);
+    Welford<oneW,true> frets = Welford<oneW,true>(ord);
+    NumericVector xret;
+    // what? that works? what?
+    // 2FIX: wrap another level for ord_beyond and wrap that in here.
+    // then kill the nok summation nonsense and renormalization?
 
     if (ord==2) {
         xret = quasiWeightedWelford<T,W,has_wts>(v,wts,nok,bottom,top,na_rm,check_wts,normalize_wts,sum_nok);
     } else {
-        if (! has_wts) { nextw = 1.0; }
-        
         if ((top < 0) || (top > v.size())) {
             top = v.size(); 
         }
+        if (inc_nok) { nok = 0; }
         if (has_wts) {
             if (wts.size() < top) { stop("size of wts does not match v"); }
-            if (inc_nok) { nok = 0; }
-        }
-
-        for (int iii=bottom;iii < top;++iii) {
-            nextv = v[iii];
-            if (has_wts) { 
+            for (int iii=bottom;iii < top;++iii) {
+                nextv = v[iii];
                 nextw = double(wts[iii]); 
                 if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
-            } 
 
-            if (! (na_rm && (ISNAN(nextv) || (has_wts && ISNAN(nextw))))) {
-                // 2FIX: check for zero weight??
-                if (inc_nok) { ++nok; }
-                della = nextv - xret[1];
-                nelm = xret[0];
-                if (has_wts) {
-                    xret[0] += nextw;
-                    nel = xret[0];
-                    delnel = della * nextw / nel;
-                } else {
-                    nel = ++xret[0];
-                    delnel = della / nel;
-                }
-                xret[1] += delnel;
-
-                if (nelm > 0) {
-                    if (has_wts) {
-                        drat = della * nelm / nel;
-                    } else {
-                        drat = delnel * nelm;
-                    }
-                    nbyn = -nextw / nelm;
-                    ac_dn = pow(drat,ord);
-                    ac_on = pow(nbyn,ord-1);
-
-                    for (int ppp=ord;ppp >= 2;ppp--) {
-                        xret[ppp] += ac_dn * nextw * (1.0 - ac_on);
-                        if (ppp > 2) {
-                            if (drat != 0) { ac_dn /= drat; }
-                            ac_on /= nbyn;
-                        }
-                        ac_de = -delnel;
-                        for (int qqq=1;qqq <= ppp-2;qqq++) {
-                            xret[ppp] += bincoef[ppp][qqq] * ac_de * xret[ppp-qqq];
-                            if (qqq < ppp - 2) {
-                                ac_de *= -delnel;
-                            }
-                        }
-                    }
+                if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
+                    // 2FIX: check for zero weight??
+                    frets.add_one(nextv,nextw);
                 }
             }
+        } else {
+            for (int iii=bottom;iii < top;++iii) {
+                nextv = v[iii];
+                if (! (na_rm && ISNAN(nextv))) { frets.add_one(nextv,1); }
+            }
         }
+        xret = frets.as();
+        nok += frets.nel(); 
+        xret[0] = double(frets.wsum());
+
         if (renormalize) {//FOLDUP
             renorm = double(nok) / xret[0];
             xret[0] = double(nok);
@@ -370,7 +567,7 @@ NumericVector quasiMoments(T v,
                            bool normalize_wts) {
     NumericVector dummy_wts;
     int nok;
-    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts, false);
+    return quasiWeightedMoments<T,NumericVector,int,false>(v, dummy_wts, nok, ord, bottom, top, na_rm, false, normalize_wts, false);
 }
 
 // wrap one level
@@ -386,13 +583,13 @@ NumericVector quasiWeightedMomentsCurryOne(T v,
     nok = 0;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
-            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
-            case REALSXP: { return quasiWeightedMoments<T,NumericVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
-            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
+            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,int,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
+            case REALSXP: { return quasiWeightedMoments<T,NumericVector,double,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
+            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,int,true>(v, wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); }
             default: stop("Unsupported weight type"); // nocov
         }
     }
-    return quasiWeightedMoments<T,NumericVector,false>(v, dummy_wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); 
+    return quasiWeightedMoments<T,NumericVector,int,false>(v, dummy_wts, nok, ord, 0, -1, na_rm, check_wts, normalize_wts, false); 
 }
 
 // wrap one level
@@ -1513,6 +1710,7 @@ SEXP running_mean(SEXP v,
     // 2FIX: accept NULL restart period and propagate that forward:
     int wins=get_wins(window);
     // turn min_df = 0 into min_df = 1 for later?
+    // 2FIX: if you have weights, want a different value. ugh.
     if (min_df < 1) { min_df = 1; }
     return runningSumishCurryFour<ret_mean>(v,wts,wins,min_df,restart_period,na_rm,check_wts);
 }
@@ -1649,7 +1847,7 @@ NumericMatrix runningQMoments(T v,
                 if (renormalize) { nok=0; }
                 //vret = quasiMoments<T>(v, ord, jjj, iii + 1, na_rm);
                 //do not normalize! we will normalize at the end if needed by adjusting for nok.
-                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, 
+                vret = quasiWeightedMoments<T,W,double,has_wts>(v, wts, nok, ord, 
                                                          jjj,       //bottom
                                                          iii+1,     //top
                                                          na_rm, 
@@ -1780,7 +1978,7 @@ NumericMatrix runningQMoments(T v,
                             if (jjj <= iii) {
                                 if (renormalize) { nok=0; }
                                 //do not normalize! we will normalize at the end if needed by adjusting for nok.
-                                vret = quasiWeightedMoments<T,W,has_wts>(v, wts, nok, ord, 
+                                vret = quasiWeightedMoments<T,W,double,has_wts>(v, wts, nok, ord, 
                                                                          jjj,       //bottom
                                                                          iii+1,     //top
                                                                          na_rm, 
