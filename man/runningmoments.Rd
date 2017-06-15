@@ -13,36 +13,39 @@
 \title{Compute first K moments over a sliding window}
 \usage{
 running_sd3(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1L, restart_period = 100L, check_wts = FALSE,
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
   normalize_wts = TRUE)
 
 running_skew4(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1L, restart_period = 100L, check_wts = FALSE,
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
   normalize_wts = TRUE)
 
 running_kurt5(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1L, restart_period = 100L, check_wts = FALSE,
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
   normalize_wts = TRUE)
 
 running_sd(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 
 running_skew(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 
 running_kurt(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 
 running_cent_moments(v, window = NULL, wts = NULL, max_order = 5L,
-  na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0L,
+  na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0,
   restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
 
 running_std_moments(v, window = NULL, wts = NULL, max_order = 5L,
-  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L,
   check_wts = FALSE, normalize_wts = TRUE)
 
 running_cumulants(v, window = NULL, wts = NULL, max_order = 5L,
-  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L,
   check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{

@@ -6,11 +6,11 @@
 \title{Compute approximate quantiles over a sliding window}
 \usage{
 running_apx_quantiles(v, p, window = NULL, wts = NULL, max_order = 5L,
-  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L,
   check_wts = FALSE, normalize_wts = TRUE)
 
 running_apx_median(v, window = NULL, wts = NULL, max_order = 5L,
-  na_rm = FALSE, min_df = 0L, used_df = 0L, restart_period = 100L,
+  na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L,
   check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{

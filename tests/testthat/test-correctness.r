@@ -529,13 +529,26 @@ test_that("join/unjoin",{#FOLDUP
 	rs1 <- cent_sums(x1,max_ord)
 	rs2 <- cent_sums(x2,max_ord)
 	rs3 <- cent_sums(c(x1,x2),max_ord)
+	# make sure these don't change? 
+	copy_rs1 <- rs1 + 0
+	copy_rs2 <- rs2 + 0
 	rs3alt <- join_cent_sums(rs1,rs2)
-	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
+	expect_equal(rs1,copy_rs1,tolerance=1e-7)
+	expect_equal(rs2,copy_rs2,tolerance=1e-7)
+	expect_equal(rs3,rs3alt,tolerance=1e-7)
+
+	copy_rs1 <- rs1 + 0
+	copy_rs2 <- rs2 + 0
+	copy_rs3 <- rs3 + 0
 
 	rs1alt <- unjoin_cent_sums(rs3,rs2)
 	rs2alt <- unjoin_cent_sums(rs3,rs1)
-	expect_lt(max(abs(rs1 - rs1alt)),1e-7)
-	expect_lt(max(abs(rs2 - rs2alt)),1e-7)
+	expect_equal(rs1,copy_rs1,tolerance=1e-7)
+	expect_equal(rs2,copy_rs2,tolerance=1e-7)
+	expect_equal(rs3,copy_rs3,tolerance=1e-7)
+
+	expect_equal(rs1,rs1alt,tolerance=1e-7)
+	expect_equal(rs2,rs2alt,tolerance=1e-7)
 
 	# sentinel
 	expect_true(TRUE)

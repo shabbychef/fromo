@@ -280,7 +280,8 @@ class Welford {
         inline NumericVector as() const { return m_xx; }
         inline NumericVector asvec() const { 
             // copy
-            NumericVector resu = NumericVector(m_xx);
+            //NumericVector resu = NumericVector(m_xx);
+            NumericVector resu = Rcpp::clone(m_xx);
             resu[0] = double(wsum());
             return resu;
         }
@@ -879,9 +880,12 @@ NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_Ni
 NumericVector join_cent_sums(NumericVector ret1,NumericVector ret2) {
     if (ret1.size() != ret2.size()) { stop("mismatch in sizes."); }
     int ord = ret1.size() - 1;
+    NumericVector cret1 = Rcpp::clone(ret1);
+    NumericVector cret2 = Rcpp::clone(ret2);
+
     // always safe to do ord_beyond=true, as it is just an optimization.
-    Welford<double,false,true> frets1 = Welford<double,false,true>(ord,ret1);
-    Welford<double,false,true> frets2 = Welford<double,false,true>(ord,ret2);
+    Welford<double,true,true> frets1 = Welford<double,true,true>(ord,cret1);
+    Welford<double,true,true> frets2 = Welford<double,true,true>(ord,cret2);
     frets1.join(frets2);
     return frets1.asvec();
 }
@@ -892,10 +896,12 @@ NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
     // subtract ret2 from ret3
     if (ret3.size() != ret2.size()) { stop("mismatch in sizes."); }
     int ord = ret3.size() - 1;
+    NumericVector cret3 = Rcpp::clone(ret3);
+    NumericVector cret2 = Rcpp::clone(ret2);
 
     // always safe to do ord_beyond=true, as it is just an optimization.
-    Welford<double,false,true> frets3 = Welford<double,false,true>(ord,ret3);
-    Welford<double,false,true> frets2 = Welford<double,false,true>(ord,ret2);
+    Welford<double,true,true> frets3 = Welford<double,true,true>(ord,cret3);
+    Welford<double,true,true> frets2 = Welford<double,true,true>(ord,cret2);
     frets3.unjoin(frets2);
     return frets3.asvec();
 }
@@ -1179,7 +1185,8 @@ int get_wins(SEXP window) {
     //return Rcpp::Nullable<T>();
 //}
 
-enum ReturnWhat { matrix, extreme, 
+enum ReturnWhat { matrix, extreme, ret_maxonly,
+    ret_sd3, ret_skew4, ret_kurt5,
     centered, scaled, zscore, sharpe, tstat, sharpese, 
     ret_stdev, ret_skew, ret_exkurt, ret_sum, ret_mean };
 
@@ -1590,24 +1597,23 @@ SEXP running_mean(SEXP v,
 // in summary:
 // ret_mat return a rows x (1+ord) matrix of the running centered sums
 // ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
-// ret_extreme return a rows x 2 matrix of the count and the maximum centered sum
 
 template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
 NumericMatrix runningQMoments(T v,
                               W wts,
-                              int ord,
-                              int window,
-                              int recom_period,
-                              int lookahead,
+                              const int ord,
+                              const int window,
+                              const int recom_period,
+                              const int lookahead,
                               const int min_df,
-                              bool na_rm,
+                              const double used_df,
+                              const bool na_rm,
                               const bool check_wts,
                               const bool normalize_wts) {
 
     Welford<oneW,has_wts,ord_beyond> frets = Welford<oneW,has_wts,ord_beyond>(ord);
 
     // 2FIX:
-    double used_df = 1.0;
     double nextv, prevv;
     double nextw;
     const bool renormalize = has_wts && normalize_wts;
@@ -1742,7 +1748,6 @@ NumericMatrix runningQMoments(T v,
                     for (mmm=0;mmm <= mydf;++mmm) {
                         xret(lll,ord-mmm) = vret[mmm];
                     }
-                    //change to ceiling(mydf) + 1?
                     for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
                         xret(lll,ord-mmm) = NAN;
                     }
@@ -1752,7 +1757,7 @@ NumericMatrix runningQMoments(T v,
                     xret(lll,mmm) = NAN;
                 }
             }
-        } else if (retwhat==extreme) {
+        } else if (retwhat==ret_maxonly) {
             vret = frets.asvec();
             if (renormalize) { 
                 mydf = double(frets.nel());
@@ -1762,19 +1767,10 @@ NumericMatrix runningQMoments(T v,
             } else {
                 mydf = vret[0];
             }
-
-            if (mydf >= min_df) {
-                // put them in backwards!
-                if (mydf >= ord) {
-                    xret(lll,0) = vret[ord];
-                    xret(lll,1) = vret[0];
-                } else {
-                    xret(lll,0) = vret[ord];
-                    xret(lll,1) = NAN;
-                }
+            if ((mydf >= min_df) && (mydf >= ord)) {
+                xret(lll,0) = vret[ord] / (vret[0] - used_df);
             } else {
                 xret(lll,0) = NAN;
-                xret(lll,1) = NAN;
             }
         } else {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
@@ -1816,37 +1812,39 @@ NumericMatrix runningQMoments(T v,
 template <typename T,ReturnWhat retwhat>
 NumericMatrix runningQMomentsCurryOne(T v, 
                                       Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                      int ord,
-                                      int window,
-                                      int recom_period,
-                                      int lookahead,
+                                      const int ord,
+                                      const int window,
+                                      const int recom_period,
+                                      const int lookahead,
                                       const int min_df,
+                                      const double used_df,
                                       const bool na_rm,
                                       const bool check_wts,
                                       const bool normalize_wts) {
 
     if (wts.isNotNull()) {
-        return runningQMoments<T,retwhat,NumericVector,double,true,true>(v, wts.get(), ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); 
+        return runningQMoments<T,retwhat,NumericVector,double,true,true>(v, wts.get(), ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
     }
     NumericVector dummy_wts;
-    return runningQMoments<T,retwhat,NumericVector,double,false,true>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); 
+    return runningQMoments<T,retwhat,NumericVector,double,false,true>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
 }
 
 template <ReturnWhat retwhat>
 NumericMatrix runningQMomentsCurryTwo(SEXP v, 
                                       Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                      int ord,
-                                      int window,
-                                      int recom_period,
-                                      int lookahead,
+                                      const int ord,
+                                      const int window,
+                                      const int recom_period,
+                                      const int lookahead,
                                       const int min_df,
+                                      const double used_df,
                                       const bool na_rm,
                                       const bool check_wts,
                                       const bool normalize_wts) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMomentsCurryOne<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
-        case REALSXP: { return runningQMomentsCurryOne<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
-        case  LGLSXP: { return runningQMomentsCurryOne<LogicalVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, na_rm, check_wts, normalize_wts); } 
+        case  INTSXP: { return runningQMomentsCurryOne<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
+        case REALSXP: { return runningQMomentsCurryOne<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
+        case  LGLSXP: { return runningQMomentsCurryOne<LogicalVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
         default: stop("Unsupported weight type"); // nocov
     }
     // have to have fallthrough for CRAN check.
@@ -1857,18 +1855,19 @@ NumericMatrix runningQMomentsCurryTwo(SEXP v,
 // wrap the call:
 NumericMatrix wrapRunningQMoments(SEXP v, 
                                   Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                  int ord,
-                                  int window,
-                                  int recom_period,
+                                  const int ord,
+                                  const int window,
+                                  const int recom_period,
                                   const int min_df,
+                                  const double used_df,
                                   const bool na_rm,
                                   const bool check_wts,
                                   const bool normalize_wts,
                                   const bool max_order_only) {
     if (max_order_only) {
-        return runningQMomentsCurryTwo<extreme>(v, wts, ord, window, recom_period, 0, min_df, na_rm, check_wts, normalize_wts);
+        return runningQMomentsCurryTwo<ret_maxonly>(v, wts, ord, window, recom_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
     } 
-    return runningQMomentsCurryTwo<matrix>(v, wts, ord, window, recom_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<matrix>(v, wts, ord, window, recom_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 
 
@@ -1953,14 +1952,14 @@ NumericMatrix wrapRunningQMoments(SEXP v,
 // [[Rcpp::export]]
 NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, 
                           Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                          bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+                          bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                           bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, wts, 2, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, 2, wins, restart_period, min_df, used_df, 
+                                               na_rm, check_wts, normalize_wts, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
-        preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-udf));
+        preval(iii,0) = sqrt(preval(iii,0)/(preval(iii,2)-used_df));
     }
     return preval;
 }
@@ -1970,15 +1969,15 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                            bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, wts, 3, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, 3, wins, restart_period, min_df, used_df, 
+                                               na_rm, check_wts, normalize_wts, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = sqrt(preval(iii,3)) * preval(iii,0) / pow(preval(iii,1),1.5);
-        preval(iii,1) = sqrt(preval(iii,1)/(preval(iii,3)-udf));
+        preval(iii,1) = sqrt(preval(iii,1)/(preval(iii,3)-used_df));
     }
     return preval;
 }
@@ -1989,16 +1988,16 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                            bool na_rm=false, int min_df=0, int used_df=1, int restart_period=100,
+                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, wts, 4, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, 4, wins, restart_period, min_df, used_df,
+                                               na_rm, check_wts, normalize_wts, false);
     // fix the higher than mean columns;
     for (int iii=0;iii < preval.nrow();++iii) {
         preval(iii,0) = (preval(iii,4) * preval(iii,0) / pow(preval(iii,2),2.0)) - 3.0;
         preval(iii,1) = sqrt(preval(iii,4)) * preval(iii,1) / pow(preval(iii,2),1.5);
-        preval(iii,2) = sqrt(preval(iii,2)/(preval(iii,4)-udf));
+        preval(iii,2) = sqrt(preval(iii,2)/(preval(iii,4)-used_df));
     }
     return preval;
 }
@@ -2008,11 +2007,12 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, 
                          Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                         bool na_rm=false, int min_df=0, int restart_period=100,
+                         bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                          bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_stdev>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<ret_stdev>(v, wts, 2, wins, restart_period, 0, min_df, used_df,
+                                              na_rm, check_wts, normalize_wts);
 }
 // just the skew nothing else.
 //' @rdname runningmoments
@@ -2020,11 +2020,12 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, 
                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                           bool na_rm=false, int min_df=0, int restart_period=100,
+                           bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                            bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
+                                             na_rm, check_wts, normalize_wts);
 }
 // just the kurtosis nothing else.
 //' @rdname runningmoments
@@ -2032,11 +2033,12 @@ NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, 
                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                           bool na_rm=false, int min_df=0, int restart_period=100,
+                           bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                            bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, used_df,
+                                               na_rm, check_wts, normalize_wts);
 }
 
 // return the centered moments down to the 2nd, then the mean, and the dof.
@@ -2048,29 +2050,21 @@ NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue, 
                                    Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                    int max_order=5, bool na_rm=false, bool max_order_only=false, 
-                                   int min_df=0, int used_df=0, int restart_period=100, 
+                                   int min_df=0, double used_df=0.0, int restart_period=100, 
                                    bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     int ncolm1,ncolm2;
     double denom;
-    double udf=(double)used_df;
-    NumericMatrix preval = wrapRunningQMoments(v, wts, max_order, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, max_order_only);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, max_order, wins, restart_period, min_df, used_df, na_rm, check_wts, normalize_wts, max_order_only);
     ncolm1 = preval.ncol() - 1;
     ncolm2 = ncolm1 - 1;
     if (max_order > 1) {
-        if (max_order_only) {
-            // 2FIX: this is not as space efficient as it could be,
-            // and a bit of a mess!
-            NumericMatrix retval(Dimension(preval.nrow(),1));
-            for (int iii=0;iii < preval.nrow();++iii) {
-                denom = preval(iii,1) - udf;
-                retval(iii,0) = preval(iii,0) / denom;
-            }
-            return retval;
+        if (max_order_only) { // done upstream, as all of it should be...
+            return preval;
         } else {
             // fix the higher than mean columns;
             for (int iii=0;iii < preval.nrow();++iii) {
-                denom = preval(iii,ncolm1) - udf;
+                denom = preval(iii,ncolm1) - used_df;
                 for (int mmm=0;mmm < ncolm2;++mmm) {
                     preval(iii,mmm) = preval(iii,mmm) / denom;
                 }
@@ -2087,17 +2081,16 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue, 
                                   Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                   int max_order=5, bool na_rm=false, 
-                                  int min_df=0, int used_df=0, int restart_period=100, 
+                                  int min_df=0, double used_df=0, int restart_period=100, 
                                   bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     double denom;
-    double udf = (double)used_df;
     double sigma;
-    NumericMatrix preval = wrapRunningQMoments(v, wts, max_order, wins, restart_period, min_df, na_rm, check_wts, normalize_wts, false);
+    NumericMatrix preval = wrapRunningQMoments(v, wts, max_order, wins, restart_period, min_df, used_df, na_rm, check_wts, normalize_wts, false);
     if (max_order > 1) {
         // fix the higher than mean columns;
         for (int iii=0;iii < preval.nrow();++iii) {
-            denom = preval(iii,max_order) - udf;
+            denom = preval(iii,max_order) - used_df;
             sigma = sqrt(preval(iii,max_order-2) / denom);
             preval(iii,max_order-2) = sigma;
 
@@ -2115,7 +2108,7 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, 
                                 Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                                int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
+                                int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
                                 bool check_wts=false, bool normalize_wts=true) {
     NumericMatrix cumulants = running_cent_moments(v, window, wts, max_order, na_rm, false, min_df, used_df, restart_period, check_wts, normalize_wts);
 
@@ -2189,7 +2182,7 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, 
                                     Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                                    int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
+                                    int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
                                     bool check_wts=false, bool normalize_wts=true) {
     NumericMatrix cumulants = running_cumulants(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts);
 
@@ -2304,7 +2297,7 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
 // [[Rcpp::export]]
 NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, 
                                  Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                                 int max_order=5, bool na_rm=false, int min_df=0, int used_df=0, int restart_period=100,
+                                 int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
                                  bool check_wts=false, bool normalize_wts=true) {
     NumericVector p(1);
     p(0) = 0.5;
@@ -2397,10 +2390,10 @@ NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_centered(SEXP v, 
                                SEXP window = R_NilValue, 
                                Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                               bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                               bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                                bool check_wts=false, bool normalize_wts=false) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<centered>(v, wts, 1, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<centered>(v, wts, 1, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // scale the input
 //' @rdname runningadjustments
@@ -2408,10 +2401,10 @@ NumericMatrix running_centered(SEXP v,
 // [[Rcpp::export]]
 NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, 
                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                             bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                             bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // zscore the input
 //' @rdname runningadjustments
@@ -2419,10 +2412,10 @@ NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                              bool na_rm=false, int min_df=0, int lookahead=0, int restart_period=100,
+                              bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                               bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // sharpe on the input
 //' @rdname runningadjustments
@@ -2430,13 +2423,13 @@ NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, 
                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                             bool na_rm=false, bool compute_se=false, int min_df=0, int restart_period=100,
+                             bool na_rm=false, bool compute_se=false, int min_df=0, double used_df=1.0, int restart_period=100,
                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     if (compute_se) {
-        return runningQMomentsCurryTwo<sharpese>(v, wts, 4, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+        return runningQMomentsCurryTwo<sharpese>(v, wts, 4, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
     } 
-    return runningQMomentsCurryTwo<sharpe>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<sharpe>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // t stat of the input
 //' @rdname runningadjustments
@@ -2444,10 +2437,10 @@ NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue,
 // [[Rcpp::export]]
 NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                            bool na_rm=false, int min_df=0, int restart_period=100,
+                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<tstat>(v, wts, 2, wins, restart_period, 0, min_df, na_rm, check_wts, normalize_wts);
+    return runningQMomentsCurryTwo<tstat>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 
 

@@ -9,23 +9,24 @@
 \title{Compare data to moments computed over a sliding window.}
 \usage{
 running_centered(v, window = NULL, wts = NULL, na_rm = FALSE,
-  min_df = 0L, lookahead = 0L, restart_period = 100L, check_wts = FALSE,
-  normalize_wts = FALSE)
+  min_df = 0L, used_df = 1, lookahead = 0L, restart_period = 100L,
+  check_wts = FALSE, normalize_wts = FALSE)
 
 running_scaled(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  lookahead = 0L, restart_period = 100L, check_wts = FALSE,
+  used_df = 1, lookahead = 0L, restart_period = 100L, check_wts = FALSE,
   normalize_wts = TRUE)
 
 running_zscored(v, window = NULL, wts = NULL, na_rm = FALSE,
-  min_df = 0L, lookahead = 0L, restart_period = 100L, check_wts = FALSE,
-  normalize_wts = TRUE)
+  min_df = 0L, used_df = 1, lookahead = 0L, restart_period = 100L,
+  check_wts = FALSE, normalize_wts = TRUE)
 
 running_sharpe(v, window = NULL, wts = NULL, na_rm = FALSE,
-  compute_se = FALSE, min_df = 0L, restart_period = 100L,
+  compute_se = FALSE, min_df = 0L, used_df = 1, restart_period = 100L,
   check_wts = FALSE, normalize_wts = TRUE)
 
 running_tstat(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE)
+  used_df = 1, restart_period = 100L, check_wts = FALSE,
+  normalize_wts = TRUE)
 }
 \arguments{
 \item{v}{a vector}
@@ -48,6 +49,10 @@ are applied.}
 This can be used to prevent \emph{e.g.} Z-scores from being computed on only 3
 observations. Defaults to zero, meaning no restriction, which can result in 
 infinite Z-scores during the burn-in period.}
+
+\item{used_df}{the number of degrees of freedom consumed, used in the denominator
+of the centered moments computation. These are subtracted from the number of
+observations.}
 
 \item{lookahead}{for some of the operations, the value is compared to 
 mean and standard deviation possibly using 'future' or 'past' information
