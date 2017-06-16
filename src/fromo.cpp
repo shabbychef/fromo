@@ -419,16 +419,16 @@ class Welford {
             double ac_del,ac_mn2,ac_n1;
             int ppp,qqq;
 
-            n1 = double(m_wsum.as());
+            ntot = double(m_wsum.as());
             n2 = double(rhs.m_wsum.as());
 
             if (n2 <= 0) { return *this; }
-            if (n2 > n1) { stop("cannot subtract more observations than were seen."); }
+            if (n2 > ntot) { stop("cannot subtract more observations than were seen."); }
 
             mupart = rhs.m_xx[1] - m_xx[1];
 
-            ntot = double(m_wsum.as());
             m_wsum -= rhs.m_wsum;
+            n1 = double(m_wsum.as());
             if (has_wts) { m_nel -= rhs.m_nel; }
 
             n1rat = n1 / ntot;
