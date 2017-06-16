@@ -1185,8 +1185,7 @@ int get_wins(SEXP window) {
     //return Rcpp::Nullable<T>();
 //}
 
-enum ReturnWhat { matrix, 
-    ret_maxonly, // maxonly is a *centered* moment
+enum ReturnWhat { ret_centmaxonly, // maxonly is a *centered* moment
     ret_centmoments, 
     ret_stdmoments, 
     ret_sd3, ret_skew4, ret_exkurt5,
@@ -1574,8 +1573,7 @@ NumericMatrix runningQMoments(T v,
     // preallocated with zeros; should
     // probably be NA?
     int ncols;
-    if ((retwhat==matrix) || 
-        (retwhat==ret_centmoments) ||
+    if ((retwhat==ret_centmoments) ||
         (retwhat==ret_stdmoments) ||
         (retwhat==ret_sd3) || 
         (retwhat==ret_skew4) ||
@@ -1652,8 +1650,7 @@ NumericMatrix runningQMoments(T v,
         tr_jjj++;
 
         // fill in the value in the output.//FOLDUP
-        if ((retwhat==matrix) || 
-            (retwhat==ret_centmoments) ||
+        if ((retwhat==ret_centmoments) ||
             (retwhat==ret_stdmoments) ||
             (retwhat==ret_sd3) ||
             (retwhat==ret_skew4) ||
@@ -1670,28 +1667,7 @@ NumericMatrix runningQMoments(T v,
             } else {
                 mydf = vret[0];
             }
-            if (retwhat==matrix) {//FOLDUP
-                if (mydf >= min_df) {
-                    // put them in backwards!
-                    if (mydf >= ord) {
-                        for (mmm=0;mmm <= ord;++mmm) {
-                            xret(lll,ord-mmm) = vret[mmm];
-                        }
-                    } else {
-                        for (mmm=0;mmm <= mydf;++mmm) {
-                            xret(lll,ord-mmm) = vret[mmm];
-                        }
-                        for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
-                            xret(lll,ord-mmm) = NAN;
-                        }
-                    }
-                } else {
-                    for (mmm=0;mmm <= ord;++mmm) {
-                        xret(lll,mmm) = NAN;
-                    }
-                }
-            } //UNFOLD
-            else if (retwhat==ret_centmoments) {//FOLDUP
+            if (retwhat==ret_centmoments) {//FOLDUP
                 if (mydf >= min_df) {
                     denom = vret[0] - used_df;
                     xret(lll,ord) = vret[0];
@@ -1819,7 +1795,7 @@ NumericMatrix runningQMoments(T v,
                     }
                 }
             }//UNFOLD
-        } else if (retwhat==ret_maxonly) {
+        } else if (retwhat==ret_centmaxonly) {
             vret = frets.asvec();
             if (renormalize) { 
                 mydf = double(frets.nel());
@@ -1913,25 +1889,6 @@ NumericMatrix runningQMomentsCurryTwo(SEXP v,
     NumericMatrix retv;
     return retv;
 }
-
-// wrap the call:
-NumericMatrix wrapRunningQMoments(SEXP v, 
-                                  Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                  const int ord,
-                                  const int window,
-                                  const int recom_period,
-                                  const int min_df,
-                                  const double used_df,
-                                  const bool na_rm,
-                                  const bool check_wts,
-                                  const bool normalize_wts,
-                                  const bool max_order_only) {
-    if (max_order_only) {
-        return runningQMomentsCurryTwo<ret_maxonly>(v, wts, ord, window, recom_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
-    } 
-    return runningQMomentsCurryTwo<matrix>(v, wts, ord, window, recom_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
-}
-
 
 //' @title
 //' Compute first K moments over a sliding window
@@ -2099,11 +2056,9 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue,
                                    int max_order=5, bool na_rm=false, bool max_order_only=false, 
                                    int min_df=0, double used_df=0.0, int restart_period=100, 
                                    bool check_wts=false, bool normalize_wts=true) {
-    // 2FIX: get rid of the max_order_only ?
     int wins=get_wins(window);
     if (max_order_only) {
-        //2FIX: this is borken now!!!
-        return runningQMomentsCurryTwo<ret_maxonly>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
+        return runningQMomentsCurryTwo<ret_centmaxonly>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
                                                     na_rm, check_wts, normalize_wts);
     } 
     return runningQMomentsCurryTwo<ret_centmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
@@ -2132,7 +2087,8 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue,
                                 Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                 int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
                                 bool check_wts=false, bool normalize_wts=true) {
-    NumericMatrix cumulants = running_cent_moments(v, window, wts, max_order, na_rm, false, min_df, used_df, restart_period, check_wts, normalize_wts);
+    NumericMatrix cumulants = running_cent_moments(v, window, wts, max_order, na_rm, 
+                                                   false, min_df, used_df, restart_period, check_wts, normalize_wts);
 
     NumericVector temp_moments(1+max_order);
     int iii,jjj,mmm,ppp;
