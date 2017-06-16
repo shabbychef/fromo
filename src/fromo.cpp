@@ -1691,17 +1691,18 @@ NumericMatrix runningQMoments(T v,
                     }
                 }
             } //UNFOLD
-            if (retwhat==ret_centmoments) {//FOLDUP
+            else if (retwhat==ret_centmoments) {//FOLDUP
                 if (mydf >= min_df) {
                     denom = vret[0] - used_df;
                     xret(lll,ord) = vret[0];
+                    xret(lll,ord-1) = vret[1];
                     // put them in backwards!
                     if (mydf >= ord) {
-                        for (mmm=1;mmm <= ord;++mmm) {
+                        for (mmm=2;mmm <= ord;++mmm) {
                             xret(lll,ord-mmm) = vret[mmm] / denom;
                         }
                     } else {
-                        for (mmm=1;mmm <= mydf;++mmm) {
+                        for (mmm=2;mmm <= mydf;++mmm) {
                             xret(lll,ord-mmm) = vret[mmm] / denom;
                         }
                         for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
@@ -1714,11 +1715,12 @@ NumericMatrix runningQMoments(T v,
                     }
                 }
             } //UNFOLD
-            if (retwhat==ret_stdmoments) {//FOLDUP
+            else if (retwhat==ret_stdmoments) {//FOLDUP
                 if (mydf >= min_df) {
                     denom = vret[0] - used_df;
                     sigma = COMP_SD_TWO(vret,used_df);
                     xret(lll,ord) = vret[0];
+                    xret(lll,ord-1) = vret[1];
                     xret(lll,ord-2) = sigma;
                     // put them in backwards!
                     if (mydf >= ord) {
