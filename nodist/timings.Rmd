@@ -270,13 +270,32 @@ ph <- allt %>%
 				 title='fromo microbenchmark timings')
 print(ph)
 
+ph <- allt %>%
+		ggplot(aes(sernum,relchange)) +
+		geom_boxplot(aes(group=sernum),alpha=0.7) + 
+		stat_summary(aes(group="1",color='mean'),fun.y=mean,geom="line") + 
+		scale_y_log10() + 
+		labs(x='release',
+				 y='normalized time taken, relative to first iteration',
+				 color='stat',
+				 title='fromo microbenchmark timings')
+print(ph)
+
+	
+allt %>% 
+	select(expr,sernum,relchange,last_status) %>%
+	tidyr::spread(key='sernum',value='relchange') %>%
+	arrange(desc(last_status)) %>%
+	select(-last_status) %>%
+	head(n=40) %>%
+	kable()
+
 allt %>% 
 	select(-sernum,-relchange,-meantime,-sumx_time,-normalized) %>%
 	distinct(expr,.keep_all=TRUE) %>%
 	arrange(desc(last_status)) %>%
-	head(n=50) %>%
+	head(n=20) %>%
 	kable()
-	
 ```
 
 
