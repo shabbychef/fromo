@@ -256,6 +256,7 @@ ph <- allt %>%
 		ggplot(aes(sernum,normalized,group=expr,color=expr)) +
 		geom_line() + geom_point() +
 		scale_y_log10() + guides(colour=FALSE) + 
+		theme(axis.text.x=element_text(angle = -90, hjust = 0)) + 
 		labs(x='release',
 				 y='mean time taken, relative to sum(x)',
 				 title='fromo microbenchmark timings')
@@ -265,6 +266,7 @@ ph <- allt %>%
 		ggplot(aes(sernum,relchange,group=expr,color=expr)) +
 		geom_line() + geom_point() +
 		scale_y_log10() + guides(colour=FALSE) + 
+		theme(axis.text.x=element_text(angle = -90, hjust = 0)) + 
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
 				 title='fromo microbenchmark timings')
@@ -275,6 +277,7 @@ ph <- allt %>%
 		geom_boxplot(aes(group=sernum),alpha=0.7) + 
 		stat_summary(aes(group="1",color='mean'),fun.y=mean,geom="line") + 
 		scale_y_log10() + 
+		theme(axis.text.x=element_text(angle = -90, hjust = 0)) + 
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
 				 color='stat',

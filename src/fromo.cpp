@@ -211,6 +211,8 @@ class Kahan<int> {
 // xx[4] is weighted sum of (x - xx[1])^4
 // ...
 
+// Welford Terriberry
+// generic//FOLDUP
 // ord_beyond must be used for (ord > 2)
 // when has_wts is true, we accumulate the number of
 // elements in m_nel; 
@@ -218,7 +220,6 @@ template<class W,bool has_wts,bool ord_beyond>
 class Welford {
     public:
         int m_ord;
-        Kahan<W> m_wsum;
         NumericVector m_xx;
     public:
         inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {}
@@ -229,6 +230,7 @@ class Welford {
         inline Welford(const int &ord, 
                        const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {}
     private:
+        Kahan<W> m_wsum;
         int m_nel;
     public:
         // reset to zero
@@ -467,7 +469,254 @@ class Welford {
         }
 
 };
+//UNFOLD
+// no wts//FOLDUP
+// ord_beyond must be used for (ord > 2)
+// when has_wts is true, we accumulate the number of
+// elements in m_nel; 
+template<class W,bool ord_beyond>
+class Welford<W,false,ord_beyond> {
+    public:
+        int m_ord;
+        NumericVector m_xx;
+    public:
+        inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_xx(NumericVector(ord+1)) {}
+        inline Welford(const int &ord, 
+                       const int &nel, 
+                       const W &sumwt, 
+                       const NumericVector &xx) : m_ord(ord), m_nel(nel), m_xx(NumericVector(xx)) {}
+        inline Welford(const int &ord, 
+                       const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_xx(NumericVector(xx)) {}
+    private:
+        int m_nel;
+    public:
+        // reset to zero
+        inline Welford& tare() {
+            m_nel = 0;
+            for (int iii=0;iii < m_xx.length();++iii) {
+                m_xx[iii] = 0;
+            }
+            return *this;
+        }
+        inline double var(const bool normalize,const double used_df) const {
+            double renorm;
+            return ((m_xx[2]) / (double(m_nel) - used_df));
+        }
+        inline double mean() const {
+            return m_xx[1];
+        }
+        inline double sd(const bool normalize,const double used_df) const {
+            return sqrt(var(normalize,used_df));
+        }
+        inline double skew() const {
+            return (sqrt(double(m_nel)) * m_xx[3] / pow(m_xx[2],1.5));
+        }
+        inline double exkurt() const {
+            return ((double(m_nel) * m_xx[4] / (pow(m_xx[2],2.0))) - 3.0);
+        }
+        inline double sharpe(const bool normalize,const double used_df) const {
+            return double(m_xx[1]) / sd(normalize,used_df);
+        }
+        inline double centered(const double xval) const {
+            return (xval - m_xx[1]);
+        }
+        inline double scaled(const double xval,const bool normalize,const double used_df) const {
+            return (xval/sd(normalize,used_df));
+        }
+        inline double zscored(const double xval,const bool normalize,const double used_df) const {
+            return ((xval - m_xx[1])/sd(normalize,used_df));
+        }
 
+        // getters 
+        inline int nel() const { return m_nel; }
+        inline W wsum() const { return W(m_nel); }
+        inline NumericVector as() const { return m_xx; }
+        inline NumericVector asvec() const { 
+            // copy
+            //NumericVector resu = NumericVector(m_xx);
+            NumericVector resu = Rcpp::clone(m_xx);
+            resu[0] = double(m_nel);
+            return resu;
+        }
+    public:
+        // add another (weighted) observation to our set of x
+        inline Welford& add_one (const double xval, const W wt) {
+            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            della = xval - m_xx[1];
+            nelm = double(m_nel);
+            m_nel++;
+            nel = double(m_nel);
+            delnel = della * double(wt) / nel;
+            m_xx[1] += delnel;
+            if (nelm > 0) {
+                drat = della * nelm / nel;
+                nbyn = -wt / nelm;
+                ac_dn = pow(drat,m_ord);
+                ac_on = pow(nbyn,m_ord-1);
+
+                for (int ppp=m_ord;ppp >= 2;ppp--) {
+                    m_xx[ppp] += ac_dn * wt * (1.0 - ac_on);
+                    if (ord_beyond) {
+                        if (ppp > 2) {
+                            if (drat != 0) { ac_dn /= drat; }
+                            ac_on /= nbyn;
+                            ac_de = -delnel;
+
+                            for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                m_xx[ppp] += bincoef[ppp][qqq] * ac_de * m_xx[ppp-qqq];
+                                if (qqq < ppp - 2) {
+                                    ac_de *= -delnel;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+        // remove one (weighted) observation from our set of x
+        inline Welford& rem_one (const double xval, const W wt) {
+            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            della = xval - m_xx[1];
+            nelm = double(m_nel);
+            --m_nel;
+            nel = double(m_nel);
+            if (nel > 0) {
+                delnel = della * double(wt) / nel;
+                m_xx[1] -= delnel;
+                drat = delnel * nel;
+                nbyn = -double(wt) / nel;
+                ac_dn = drat*drat;
+                ac_on = nbyn;
+
+                for (int ppp=2;ppp <= m_ord;ppp++) {
+                    m_xx[ppp] -= ac_dn * (1.0 - ac_on);
+                    if (ord_beyond) {
+                        if (ppp < m_ord) {
+                            ac_dn *= drat;
+                            ac_on *= nbyn;
+                        }
+                        ac_de = -delnel;
+                        for (int qqq=1;qqq <= ppp-2;qqq++) {
+                            m_xx[ppp] -= bincoef[ppp][qqq] * ac_de * m_xx[ppp-qqq];
+                            if (qqq < ppp - 2) {
+                                ac_de *= -delnel;
+                            }
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+        // join two Welford objects together
+        inline Welford& join(const Welford& rhs) {
+            double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+            double ac_nfoo,ac_n2,ac_mn1,ac_del,ac_mn2,ac_n1;
+            int ppp,qqq;
+            if (m_nel <= 0) {
+                m_nel = rhs.m_nel;
+                // clone it?
+                m_xx = Rcpp::clone(rhs.m_xx);
+                return *this;
+            }
+            // else onboard the observations
+            if (rhs.m_nel <= 0) {
+                return *this;
+            }
+            n1 = double(m_nel);
+            n2 = double(rhs.m_nel);
+            m_nel += rhs.m_nel; 
+            ntot = double(m_nel);
+            n1rat = n1 / ntot;
+            n2rat = n2 / ntot;
+            del21 = rhs.m_xx[1] - m_xx[1];
+            mupart = del21 * n2rat;
+
+            m_xx[1] += mupart;
+            nfoo = n1 * mupart;
+            ac_nfoo = pow(nfoo,m_ord);
+            ac_n2 = pow(n2,1-m_ord);
+            ac_mn1 = pow(-n1,1-m_ord);
+
+            for (ppp=m_ord;ppp >= 2;ppp--) {
+                m_xx[ppp] += rhs.m_xx[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+                if (ord_beyond) {
+                    if (ppp > 2) {
+                        if (nfoo != 0) { ac_nfoo /= nfoo; }
+                        ac_n2 *= n2;
+                        ac_mn1 *= (-n1);
+
+                        ac_del = del21;
+                        ac_mn2 = -n2rat;
+                        ac_n1 = n1rat;
+                        for (int qqq=1;qqq <= (ppp-2); qqq++) {
+                            m_xx[ppp] += bincoef[ppp][qqq] * ac_del * (ac_mn2 * m_xx[ppp-qqq] + ac_n1 * rhs.m_xx[ppp-qqq]);
+                            if (qqq < (ppp-2)) {
+                                ac_del *= del21;
+                                ac_mn2 *= (-n2rat);
+                                ac_n1  *= (n1rat);
+                            }
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+        // remove one from another
+        inline Welford& unjoin(const Welford& rhs) {
+            double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
+            double ac_nfoo,ac_n2,ac_mn1;
+            double ac_del,ac_mn2,ac_n1;
+            int ppp,qqq;
+
+            ntot = double(m_nel);
+            n2 = double(rhs.m_nel);
+
+            if (n2 <= 0) { return *this; }
+            if (n2 > ntot) { stop("cannot subtract more observations than were seen."); }
+
+            mupart = rhs.m_xx[1] - m_xx[1];
+
+            m_nel -= rhs.m_nel;
+            n1 = double(m_nel);
+
+            n1rat = n1 / ntot;
+            n2rat = n2 / ntot;
+
+            m_xx[1] -= (n2/n1) * mupart;
+
+            del21 = mupart / n1rat;
+            nfoo = mupart * n2;
+
+            ac_nfoo = nfoo * nfoo;
+            ac_n2 = 1.0 / n2;
+            ac_mn1 = -1.0 / n1;
+            for (ppp=2;ppp <= m_ord;ppp++) {
+                m_xx[ppp] -= rhs.m_xx[ppp] + (ac_nfoo * (ac_n2 - ac_mn1));
+                if (ord_beyond) {
+                    if (ppp < m_ord) {
+                        ac_nfoo *= nfoo; 
+                        ac_n2 /= n2;
+                        ac_mn1 /= (-n1);
+                    }
+                    ac_del = del21;
+                    ac_mn2 = -n2rat;
+                    ac_n1 = n1rat;
+                    for (int qqq=1;qqq <= (ppp-2); qqq++) {
+                        m_xx[ppp] -= bincoef[ppp][qqq] * ac_del * (ac_mn2 * m_xx[ppp-qqq] + ac_n1 * rhs.m_xx[ppp-qqq]);
+                        if (qqq < (ppp-2)) {
+                            ac_del *= del21;
+                            ac_mn2 *= (-n2rat);
+                            ac_n1  *= (n1rat);
+                        }
+                    }
+                }
+            }
+            return *this;
+        }
+
+};
+//UNFOLD
 
 // univariate sums, moments, cumulants//FOLDUP
 
