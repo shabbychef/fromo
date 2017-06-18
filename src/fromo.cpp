@@ -131,6 +131,13 @@ class Kahan {
             m_errs = 0;
             return *this;
         }
+        // these are prefix;
+        inline Kahan& operator++ () {
+            return add(T(1));
+        }
+        inline Kahan& operator-- () {
+            return add(T(-1));
+        }
     public:
         T m_val;
     private:
@@ -184,6 +191,15 @@ class Kahan<int> {
         }
         inline Kahan& operator= (int rhs) {
             m_val = rhs;
+            return *this;
+        }
+        // these are prefix;
+        inline Kahan& operator ++ () {
+            m_val ++;
+            return *this;
+        }
+        inline Kahan& operator -- () {
+            m_val --;
             return *this;
         }
     public:
@@ -1092,6 +1108,47 @@ class Welford<W,false,false> {
 // we essentially renormalize the weights to
 // have mean 1.
 
+template <typename T,typename W,typename oneW,bool has_wts>
+NumericVector quasiSumThing(T v,
+                            W wts,
+                            int ord,
+                            int bottom,
+                            int top,
+                            const bool na_rm,
+                            const bool check_wts) {
+    double nextv, nextw;
+    Kahan<double> fwvsum;
+    Kahan<oneW> fwsum;
+    double totwt;
+
+    if ((top < 0) || (top > v.size())) { top = v.size(); }
+    if (has_wts) {
+        if (wts.size() < top) { stop("size of wts does not match v"); }
+        for (int iii=bottom;iii < top;++iii) {
+            nextv = v[iii];
+            nextw = double(wts[iii]); 
+            if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
+
+            if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
+                // 2FIX: check for zero weight??
+                fwvsum += nextv * nextw;
+                fwsum += nextw;
+            }
+        }
+    } else {
+        for (int iii=bottom;iii < top;++iii) {
+            nextv = v[iii];
+            if (! (na_rm && ISNAN(nextv))) { 
+                fwvsum += nextv; 
+                ++fwsum;
+            }
+        }
+    }
+    totwt = double(fwsum.as());
+    NumericVector vret = NumericVector::create(totwt,double(fwvsum.as()) / totwt);
+    return vret;
+}
+
 template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond>
 Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
                                                     W wts,
@@ -1139,7 +1196,11 @@ NumericVector quasiWeightedMoments(T v,
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
     NumericVector xret;
 
-    if (ord > 2) {
+    if (ord == 1) {
+        //2FIX: no normalization??
+        xret = quasiSumThing<T,W,oneW,has_wts>(v,wts,ord,bottom,top,na_rm,check_wts);
+        return xret;
+    } else if (ord > 2) {
         Welford<oneW,has_wts,true> frets = quasiWeightedThing<T,W,oneW,has_wts,true>(v,wts,ord,bottom,top,na_rm,check_wts);
         xret = frets.asvec();
         nok = double(frets.nel());

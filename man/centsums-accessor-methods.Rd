@@ -3,10 +3,10 @@
 \docType{methods}
 \name{accessor}
 \alias{accessor}
-\alias{sums}
-\alias{sums,centsums-method}
 \alias{moments}
 \alias{moments,centsums-method}
+\alias{sums}
+\alias{sums,centsums-method}
 \title{Accessor methods.}
 \usage{
 sums(x)
@@ -36,3 +36,4 @@ the fromo package.
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}
 }
+

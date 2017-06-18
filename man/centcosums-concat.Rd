@@ -15,3 +15,4 @@ Concatenate centcosums objects.
 \seealso{
 join_cent_cosums
 }
+

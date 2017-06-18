@@ -9,7 +9,7 @@ License: LGPL-3
 Title: Fast Robust Moments
 BugReports: https://github.com/shabbychef/fromo/issues
 Description: Fast computation of moments via 'Rcpp'. Supports computation on
-   vectors and matrices, and Monoidal append of moments.
+    vectors and matrices, and Monoidal append of moments.
 Imports:
     Rcpp (>= 0.12.3),
     methods
@@ -19,7 +19,7 @@ Suggests:
     moments,
     PDQutils,
     microbenchmark
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
 URL: https://github.com/shabbychef/fromo
 Collate:
     'fromo.r'

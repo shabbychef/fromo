@@ -3,7 +3,6 @@
 \name{as.centcosums}
 \alias{as.centcosums}
 \alias{as.centcosums.default}
-\alias{as.centcosums}
 \title{Coerce to a centcosums object.}
 \usage{
 as.centcosums(x, order=2, na.omit=TRUE)
@@ -43,3 +42,4 @@ cs <- as.centcosums(x, order=2)
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}
 }
+

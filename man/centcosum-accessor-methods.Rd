@@ -3,11 +3,11 @@
 \docType{methods}
 \name{centcosums-accessor}
 \alias{centcosums-accessor}
+\alias{comoments}
+\alias{comoments,centcosums-method}
 \alias{cosums}
 \alias{cosums,centcosums-method}
 \alias{sums,centcosums-method}
-\alias{comoments}
-\alias{comoments,centcosums-method}
 \title{Accessor methods.}
 \usage{
 cosums(x)
@@ -37,3 +37,4 @@ the fromo package.
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}
 }
+
