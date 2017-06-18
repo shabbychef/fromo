@@ -2276,10 +2276,10 @@ NumericMatrix runningQMoments(T v,
             iii = MIN(numel-1,tr_iii);
             jjj = MAX(0,tr_jjj+1);
             if (jjj <= iii) {
-                frets = quasiWeightedThing<T,W,oneW,has_wts,true>(v,wts,ord,
-                                                                  jjj,       //bottom
-                                                                  iii+1,     //top
-                                                                  na_rm, check_wts);
+                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond>(v,wts,ord,
+                                                                        jjj,       //bottom
+                                                                        iii+1,     //top
+                                                                        na_rm, check_wts);
             }
             subcount = 0;
         } else {
@@ -2517,24 +2517,46 @@ NumericMatrix runningQMoments(T v,
     return xret;
 }
 
-template <typename T,ReturnWhat retwhat>
-NumericMatrix runningQMomentsCurryOne(T v, 
-                                      Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                      const int ord,
-                                      const int window,
-                                      const int recom_period,
-                                      const int lookahead,
-                                      const int min_df,
-                                      const double used_df,
-                                      const bool na_rm,
-                                      const bool check_wts,
-                                      const bool normalize_wts) {
+template <typename T,ReturnWhat retwhat,bool ord_beyond>
+NumericMatrix runningQMomentsCurryZero(T v, 
+                                       Rcpp::Nullable< Rcpp::NumericVector > wts,
+                                       const int ord,
+                                       const int window,
+                                       const int recom_period,
+                                       const int lookahead,
+                                       const int min_df,
+                                       const double used_df,
+                                       const bool na_rm,
+                                       const bool check_wts,
+                                       const bool normalize_wts) {
 
+    //2FIX: typeof wts?
     if (wts.isNotNull()) {
-        return runningQMoments<T,retwhat,NumericVector,double,true,true>(v, wts.get(), ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+        return runningQMoments<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
     }
     NumericVector dummy_wts;
-    return runningQMoments<T,retwhat,NumericVector,double,false,true>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    return runningQMoments<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+}
+
+
+
+template <typename T,ReturnWhat retwhat>
+NumericMatrix runningQMomentsCurryOne(T v, 
+                                       Rcpp::Nullable< Rcpp::NumericVector > wts,
+                                       const int ord,
+                                       const int window,
+                                       const int recom_period,
+                                       const int lookahead,
+                                       const int min_df,
+                                       const double used_df,
+                                       const bool na_rm,
+                                       const bool check_wts,
+                                       const bool normalize_wts) {
+
+    if (ord > 2) {
+        return runningQMomentsCurryZero<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    }
+    return runningQMomentsCurryZero<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
 }
 
 template <ReturnWhat retwhat>
