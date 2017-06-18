@@ -96,10 +96,14 @@ const int bincoef[30][30] = {
 #include <Rcpp.h>
 using namespace Rcpp;
 
+#define COMP_VAR(sumwxsq,sumw,used_df) (sumwxsq / (sumw - used_df))
 #define COMP_SD_TWO(preval,used_df) (sqrt(preval[2]/(preval[0]-used_df)))
 #define COMP_SD(preval) COMP_SD_TWO(preval,1.0)
-#define COMP_SKEW(preval) (sqrt(preval[0]) * preval[3] / pow(preval[2],1.5))
-#define COMP_EXKURT(preval) ((preval[0] * preval[4] / (pow(preval[2],2.0))) - 3.0)
+#define COMP_SKEW_TWO(preval,wsum) (sqrt(wsum) * preval[3] / pow(preval[2],1.5))
+#define COMP_SKEW(preval) COMP_SKEW_TWO(preval,preval[0])
+#define COMP_KURT_TWO(preval,wsum) ((wsum * preval[4] / (pow(preval[2],2.0))))
+#define COMP_EXKURT_TWO(preval,wsum) ((COMP_KURT_TWO(preval,wsum)) - 3.0)
+#define COMP_EXKURT(preval) COMP_EXKURT_TWO(preval,preval[0])
 #define COMP_SHARPE(preval) ((preval[1]) / (sqrt(preval[2] / (preval[0]-1.0))))
 
 #define COMP_CENTERED(x,preval) (x - preval[1])
@@ -302,6 +306,9 @@ class Welford {
             NumericVector resu = Rcpp::clone(m_xx);
             resu[0] = double(wsum());
             return resu;
+        }
+        inline NumericVector vecpart() const { 
+            return m_xx;
         }
     public:
         // add another (weighted) observation to our set of x
@@ -553,6 +560,9 @@ class Welford<W,false,ord_beyond> {
             NumericVector resu = Rcpp::clone(m_xx);
             resu[0] = double(m_nel);
             return resu;
+        }
+        inline NumericVector vecpart() const { 
+            return m_xx;
         }
     public:
         // add another (weighted) observation to our set of x
@@ -2181,6 +2191,258 @@ SEXP running_mean(SEXP v,
 // in summary:
 // ret_mat return a rows x (1+ord) matrix of the running centered sums
 
+template<ReturnWhat retwhat,typename F,bool renormalize>
+inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,const double min_df) {}
+
+// ret_centmoments//FOLDUP
+template<typename F,bool renormalize>
+inline void mom_interp<ret_centmoments,F,renormalize(NumericMatrix xret,const int rownum,const int ord,const F frets,const double thisx,const double min_df) {
+    double denom,renorm;
+    NumericVector vret = frets.vecpart();
+    double mydf,dwsum;
+    int mmm;
+    dwsum = double(frets.wsum());
+    if (renormalize) { 
+        mydf = double(frets.nel());
+        renorm = mydf / dwsum;
+    } else {
+        mydf = dwsum;
+    }
+
+    if (mydf >= min_df) {
+        denom = mydf - used_df;
+        if (renormalize) { denom /= renorm; }
+        xret(rownum,ord) = mydf; 
+        xret(rownum,ord-1) = vret[1];
+
+        // put them in backwards!
+        if (mydf >= ord) {
+            for (mmm=2;mmm <= ord;++mmm) {
+                xret(rownum,ord-mmm) = vret[mmm] / denom;
+            }
+        } else {
+            for (mmm=2;mmm <= mydf;++mmm) {
+                xret(rownum,ord-mmm) = vret[mmm] / denom;
+            }
+            for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
+                xret(rownum,ord-mmm) = NAN;
+            }
+        }
+    } else {
+        for (mmm=0;mmm <= ord;++mmm) {
+            xret(rownum,mmm) = NAN;
+        }
+    }
+}
+//UNFOLD
+// ret_stdmoments//FOLDUP
+template<typename F,bool renormalize>
+inline void mom_interp<ret_stdmoments,F,renormalize(NumericMatrix xret,const int rownum,const int ord,const F frets,const double thisx,const double min_df) {
+    double denom,renorm;
+    NumericVector vret = frets.vecpart();
+    double mydf,dwsum;
+    double sigmasq,sigma,sigmapow;
+    int mmm;
+    dwsum = double(frets.wsum());
+    if (renormalize) { 
+        mydf = double(frets.nel());
+        renorm = mydf / dwsum;
+    } else {
+        mydf = dwsum;
+    }
+
+    if (mydf >= min_df) {
+        denom = mydf - used_df;
+        if (renormalize) { denom /= renorm; }
+        sigmasq = vret[2] / denom;
+        sigma = sqrt(sigmasq)
+        xret(rownum,ord) = mydf; 
+        xret(rownum,ord-1) = vret[1];
+        xret(rownum,ord-2) = sigma;
+
+        // put them in backwards!
+        if (mydf >= ord) {
+            for (mmm=3;mmm <= ord;++mmm) {
+                sigmasq *= sigma;
+                xret(rownum,ord-mmm) = vret[mmm] / (denom * sigmasq);
+            }
+        } else {
+            for (mmm=3;mmm <= mydf;++mmm) {
+                sigmasq *= sigma;
+                xret(rownum,ord-mmm) = vret[mmm] / (denom * sigmasq);
+            }
+            for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
+                xret(rownum,ord-mmm) = NAN;
+            }
+        }
+    } else {
+        for (mmm=0;mmm <= ord;++mmm) {
+            xret(rownum,mmm) = NAN;
+        }
+    }
+}
+//UNFOLD
+// ret_sd3//FOLDUP
+template<typename F,bool renormalize>
+inline void mom_interp<ret_sd3,F,renormalize(NumericMatrix xret,const int rownum,const int ord,const F frets,const double thisx,const double min_df) {
+    double denom,renorm;
+    NumericVector vret = frets.vecpart();
+    double mydf,dwsum;
+    double sigmasq,sigma,sigmapow;
+    int mmm;
+    dwsum = double(frets.wsum());
+    if (renormalize) { 
+        mydf = double(frets.nel());
+        renorm = mydf / dwsum;
+    } else {
+        mydf = dwsum;
+    }
+
+    if (mydf >= min_df) {
+        denom = mydf - used_df;
+        if (renormalize) { denom /= renorm; }
+        sigmasq = vret[2] / denom;
+        sigma = sqrt(sigmasq)
+
+        // put them in backwards!
+        if (mydf >= ord) {
+            xret(rownum,2) = mydf; 
+            xret(rownum,1) = vret[1];
+            xret(rownum,0) = sigma;
+        } else {
+            xret(rownum,2) = mydf; 
+            if (mydf >= 1) { 
+                xret(rownum,1) = vret[1]; 
+            } else  {
+                xret(rownum,1) = NAN;
+            }
+            xret(rownum,0) = NAN;
+        }
+    } else {
+        xret(rownum,2) = NAN;
+        xret(rownum,1) = NAN;
+        xret(rownum,0) = NAN;
+    }
+}
+//UNFOLD
+// ret_skew4//FOLDUP
+template<typename F,bool renormalize>
+inline void mom_interp<ret_skew4,F,renormalize(NumericMatrix xret,const int rownum,const int ord,const F frets,const double thisx,const double min_df) {
+    double denom,renorm;
+    NumericVector vret = frets.vecpart();
+    double mydf,dwsum;
+    double sigmasq,sigma,sigmapow;
+    int mmm;
+    dwsum = double(frets.wsum());
+    if (renormalize) { 
+        mydf = double(frets.nel());
+        renorm = mydf / dwsum;
+    } else {
+        mydf = dwsum;
+    }
+
+    if (mydf >= min_df) {
+        denom = mydf - used_df;
+        if (renormalize) { denom /= renorm; }
+        sigmasq = vret[2] / denom;
+        sigma = sqrt(sigmasq)
+
+        // put them in backwards!
+        if (mydf >= ord) {
+            xret(rownum,3) = mydf; 
+            xret(rownum,2) = vret[1];
+            xret(rownum,1) = sigma;
+            // uhoh! renormalization!
+            xret(rownum,0) = COMP_SKEW_TWO(vret,mydf) / sqrt(renorm);
+        } else {
+            xret(rownum,3) = mydf; 
+            if (mydf >= 1) {
+                xret(rownum,2) = vret[1];
+                if (mydf >= 2) {
+                    xret(rownum,1) = sigma;
+                } else {
+                    xret(rownum,1) = NAN;
+                }
+            } else {
+                xret(rownum,2) = NAN;
+                xret(rownum,1) = NAN;
+            }
+            xret(rownum,0) = NAN;
+        }
+    } else {
+        xret(rownum,3) = NAN;
+        xret(rownum,2) = NAN;
+        xret(rownum,1) = NAN;
+        xret(rownum,0) = NAN;
+    }
+}
+//UNFOLD
+// ret_exkurt5//FOLDUP
+template<typename F,bool renormalize>
+inline void mom_interp<ret_exkurt5,F,renormalize(NumericMatrix xret,const int rownum,const int ord,const F frets,const double thisx,const double min_df) {
+    double denom,renorm;
+    NumericVector vret = frets.vecpart();
+    double mydf,dwsum;
+    double sigmasq,sigma,sigmapow;
+    int mmm;
+    dwsum = double(frets.wsum());
+    if (renormalize) { 
+        mydf = double(frets.nel());
+        renorm = mydf / dwsum;
+    } else {
+        mydf = dwsum;
+    }
+
+    if (mydf >= min_df) {
+        denom = mydf - used_df;
+        if (renormalize) { denom /= renorm; }
+        sigmasq = vret[2] / denom;
+        sigma = sqrt(sigmasq)
+
+        // put them in backwards!
+        if (mydf >= ord) {
+            xret(rownum,4) = mydf; 
+            xret(rownum,3) = vret[1];
+            xret(rownum,2) = sigma;
+            // uhoh! renormalization!
+            xret(rownum,1) = COMP_SKEW_TWO(vret,mydf) / sqrt(renorm);
+            // uhoh! renormalization!
+            xret(rownum,0) = (COMP_KURT_TWO(vret,mydf) / renorm) - 3.0;
+        } else {
+            xret(rownum,4) = mydf; 
+            if (mydf >= 1) {
+                xret(rownum,3) = vret[1];
+                if (mydf >= 2) {
+                    xret(rownum,2) = sigma;
+                    if (mydf >= 3) {
+                        // uhoh! renormalization!
+                        xret(rownum,1) = COMP_SKEW_TWO(vret,mydf) / sqrt(renorm);
+                    } else {
+                        xret(rownum,1) = NAN;
+                    }
+                } else {
+                    xret(rownum,2) = NAN;
+                    xret(rownum,1) = NAN;
+                }
+            } else {
+                xret(rownum,3) = NAN;
+                xret(rownum,2) = NAN;
+                xret(rownum,1) = NAN;
+            }
+            xret(rownum,0) = NAN;
+        }
+    } else {
+        xret(rownum,4) = NAN;
+        xret(rownum,3) = NAN;
+        xret(rownum,2) = NAN;
+        xret(rownum,1) = NAN;
+        xret(rownum,0) = NAN;
+    }
+}
+//UNFOLD
+
+
+
 template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
 NumericMatrix runningQMoments(T v,
                               W wts,
@@ -2553,10 +2815,10 @@ NumericMatrix runningQMomentsCurryOne(T v,
                                        const bool check_wts,
                                        const bool normalize_wts) {
 
-    if (ord > 2) {
-        return runningQMomentsCurryZero<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    if (ord==2) {
+        return runningQMomentsCurryZero<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
     }
-    return runningQMomentsCurryZero<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    return runningQMomentsCurryZero<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
 }
 
 template <ReturnWhat retwhat>
