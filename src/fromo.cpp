@@ -2632,26 +2632,24 @@ class moment_converter<ret_exkurt,F,renormalize> {
 
 
 
-template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
-NumericMatrix runningQMoments(T v,
-                              W wts,
-                              const int ord,
-                              const int window,
-                              const int recom_period,
-                              const int lookahead,
-                              const int min_df,
-                              const double used_df,
-                              const bool na_rm,
-                              const bool check_wts,
-                              const bool normalize_wts) {
+template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond,bool renormalize>
+NumericMatrix runQM(T v,
+                    W wts,
+                    const int ord,
+                    const int window,
+                    const int recom_period,
+                    const int lookahead,
+                    const int min_df,
+                    const double used_df,
+                    const bool na_rm,
+                    const bool check_wts,
+                    const bool normalize_wts) {
 
     Welford<oneW,has_wts,ord_beyond> frets = Welford<oneW,has_wts,ord_beyond>(ord);
 
     // 2FIX:
     double nextv, prevv;
     double nextw;
-    const bool renormalize = has_wts && normalize_wts;
-    double renorm,mydf,denom;
 
     if (has_wts) {
         if (wts.size() < v.size()) { stop("size of wts does not match v"); }
@@ -2771,235 +2769,56 @@ NumericMatrix runningQMoments(T v,
         tr_jjj++;
 
         // fill in the value in the output.
-        if (renormalize) {
-            moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,true>::mom_interp(xret,lll,ord,frets,v[lll],used_df,min_df);
-
-        } else {
-            moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,false>::mom_interp(xret,lll,ord,frets,v[lll],used_df,min_df);
-        }
-        //// fill in the value in the output.//FOLDUP
-        //if ((retwhat==ret_centmoments) ||
-            //(retwhat==ret_stdmoments) ||
-            //(retwhat==ret_sd3) ||
-            //(retwhat==ret_skew4) ||
-            //(retwhat==ret_exkurt5)) {
-
-            //vret = frets.asvec();
-            //if (renormalize) { 
-                //mydf = double(frets.nel());
-                //renorm = mydf / vret[0];
-                //vret[0] = mydf;
-                //for (int ppp=2;ppp <= ord;ppp++) {
-                    //vret[ppp] *= renorm;
-                //}
-            //} else {
-                //mydf = vret[0];
-            //}
-            //if (retwhat==ret_centmoments) {//FOLDUP
-                //if (mydf >= min_df) {
-                    //denom = vret[0] - used_df;
-                    //xret(lll,ord) = vret[0];
-                    //xret(lll,ord-1) = vret[1];
-                    //// put them in backwards!
-                    //if (mydf >= ord) {
-                        //for (mmm=2;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm] / denom;
-                        //}
-                    //} else {
-                        //for (mmm=2;mmm <= mydf;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm] / denom;
-                        //}
-                        //for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = NAN;
-                        //}
-                    //}
-                //} else {
-                    //for (mmm=0;mmm <= ord;++mmm) {
-                        //xret(lll,mmm) = NAN;
-                    //}
-                //}
-            //} //UNFOLD
-            //else if (retwhat==ret_stdmoments) {//FOLDUP
-                //if (mydf >= min_df) {
-                    //denom = vret[0] - used_df;
-                    //sigma = COMP_SD_TWO(vret,used_df);
-                    //xret(lll,ord) = vret[0];
-                    //xret(lll,ord-1) = vret[1];
-                    //xret(lll,ord-2) = sigma;
-                    //// put them in backwards!
-                    //if (mydf >= ord) {
-                        //for (mmm=3;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm] / (denom * pow(sigma,mmm));
-                        //}
-                    //} else {
-                        //for (mmm=3;mmm <= mydf;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm] / (denom * pow(sigma,mmm));
-                        //}
-                        //for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = NAN;
-                        //}
-                    //}
-                //} else {
-                    //for (mmm=0;mmm <= ord;++mmm) {
-                        //xret(lll,mmm) = NAN;
-                    //}
-                //}
-            //} //UNFOLD
-            //else if (retwhat==ret_sd3) {//FOLDUP
-                //if (mydf >= min_df) {
-                    //// put them in backwards!
-                    //if (mydf >= ord) {
-                        //for (mmm=0;mmm < ord;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm];
-                        //}
-                        //xret(lll,0) = COMP_SD_TWO(vret,used_df);
-                    //} else {
-                        //for (mmm=0;mmm <= mydf;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm];
-                        //}
-                        //for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = NAN;
-                        //}
-                    //}
-                //} else {
-                    //for (mmm=0;mmm <= ord;++mmm) {
-                        //xret(lll,mmm) = NAN;
-                    //}
-                //}
-            //}//UNFOLD
-            //else if (retwhat==ret_skew4) {//FOLDUP
-                //if (mydf >= min_df) {
-                    //// put them in backwards!
-                    //if (mydf >= ord) {
-                        //for (mmm=0;mmm < (ord-1);++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm];
-                        //}
-                        //xret(lll,0) = COMP_SKEW(vret);
-                        //xret(lll,1) = COMP_SD_TWO(vret,used_df);
-                    //} else {
-                        //for (mmm=0;mmm <= mydf;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm];
-                        //}
-                        //for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = NAN;
-                        //}
-                        //if (mydf >= (ord-1)) {
-                            //xret(lll,1) = COMP_SD_TWO(vret,used_df);
-                        //}
-                    //}
-                //} else {
-                    //for (mmm=0;mmm <= ord;++mmm) {
-                        //xret(lll,mmm) = NAN;
-                    //}
-                //}
-            //}//UNFOLD
-            //else if (retwhat==ret_exkurt5) {//FOLDUP
-                //if (mydf >= min_df) {
-                    //// put them in backwards!
-                    //if (mydf >= ord) {
-                        //for (mmm=0;mmm < (ord-1);++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm];
-                        //}
-                        //xret(lll,0) = COMP_EXKURT(vret);
-                        //xret(lll,1) = COMP_SKEW(vret);
-                        //xret(lll,2) = COMP_SD_TWO(vret,used_df);
-                    //} else {
-                        //for (mmm=0;mmm <= mydf;++mmm) {
-                            //xret(lll,ord-mmm) = vret[mmm];
-                        //}
-                        //for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
-                            //xret(lll,ord-mmm) = NAN;
-                        //}
-                        //if (mydf >= (ord-2)) {
-                            //xret(lll,2) = COMP_SD_TWO(vret,used_df);
-                            //if (mydf >= (ord-1)) {
-                                //xret(lll,1) = COMP_SKEW(vret);
-                            //}
-                        //}
-                    //}
-                //} else {
-                    //for (mmm=0;mmm <= ord;++mmm) {
-                        //xret(lll,mmm) = NAN;
-                    //}
-                //}
-            //}//UNFOLD
-        //} else if (retwhat==ret_centmaxonly) {
-            //vret = frets.asvec();
-            //if (renormalize) { 
-                //mydf = double(frets.nel());
-                //renorm = mydf / vret[0];
-                //vret[0] = mydf;
-                //vret[ord] *= renorm;
-            //} else {
-                //mydf = vret[0];
-            //}
-            //if ((mydf >= min_df) && (mydf >= ord)) {
-                //xret(lll,0) = vret[ord] / (vret[0] - used_df);
-            //} else {
-                //xret(lll,0) = NAN;
-            //}
-        //} else {
-            //if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-                //if (retwhat==ret_centered) { xret(lll,0) = frets.centered(double(v[lll])); }
-                //if (retwhat==ret_scaled) { xret(lll,0) = frets.scaled(double(v[lll]),renormalize,used_df); }
-                //if (retwhat==ret_zscore) { xret(lll,0) = frets.zscored(double(v[lll]),renormalize,used_df); }
-                //if (retwhat==ret_tstat) {
-                    //if (renormalize) {
-                        //xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.nel()));
-                    //} else {
-                        //xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.wsum()));
-                    //}
-                //}
-                //if (retwhat==ret_sharpe) { xret(lll,0) = frets.sharpe(renormalize,used_df); }
-                //if (retwhat==ret_sharpese) {
-                    //skew = frets.skew();
-                    //exkurt = frets.exkurt();
-                    //sr = frets.sharpe(renormalize,used_df);
-                    //xret(lll,0) = sr;
-                    //if (renormalize) {
-                        //xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / double(frets.nel()));
-                    //} else {
-                        //xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / double(frets.wsum()));
-                    //}
-                //}
-                //if (retwhat==ret_stdev) { xret(lll,0) = frets.sd(renormalize,used_df); }
-                //if (retwhat==ret_skew) { xret(lll,0) = frets.skew(); }
-                //if (retwhat==ret_exkurt) { xret(lll,0) = frets.exkurt(); }
-            //} else {
-                //xret(lll,0) = NAN;
-            //}
-        //}
-        ////UNFOLD
+        // 2FIX: give access to v, not v[lll]...
+        moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,renormalize>::mom_interp(xret,lll,ord,frets,v[lll],used_df,min_df);
     }
 
     return xret;
 }
 
+template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
+NumericMatrix runQMCurryZero(T v, 
+                             W wts,
+                             const int ord,
+                             const int window,
+                             const int recom_period,
+                             const int lookahead,
+                             const int min_df,
+                             const double used_df,
+                             const bool na_rm,
+                             const bool check_wts,
+                             const bool normalize_wts) {
+    if (has_wts && normalize_wts) {
+        return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    } 
+    return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+}
+
 template <typename T,ReturnWhat retwhat,bool ord_beyond>
-NumericMatrix runningQMomentsCurryZero(T v, 
-                                       Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                       const int ord,
-                                       const int window,
-                                       const int recom_period,
-                                       const int lookahead,
-                                       const int min_df,
-                                       const double used_df,
-                                       const bool na_rm,
-                                       const bool check_wts,
-                                       const bool normalize_wts) {
+NumericMatrix runQMCurryOne(T v, 
+                            Rcpp::Nullable< Rcpp::NumericVector > wts,
+                            const int ord,
+                            const int window,
+                            const int recom_period,
+                            const int lookahead,
+                            const int min_df,
+                            const double used_df,
+                            const bool na_rm,
+                            const bool check_wts,
+                            const bool normalize_wts) {
 
     //2FIX: typeof wts?
     if (wts.isNotNull()) {
-        return runningQMoments<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+        return runQMCurryZero<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
     }
     NumericVector dummy_wts;
-    return runningQMoments<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    return runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
 }
 
 
 
 template <typename T,ReturnWhat retwhat>
-NumericMatrix runningQMomentsCurryOne(T v, 
+NumericMatrix runQMCurryTwo(T v, 
                                        Rcpp::Nullable< Rcpp::NumericVector > wts,
                                        const int ord,
                                        const int window,
@@ -3012,27 +2831,27 @@ NumericMatrix runningQMomentsCurryOne(T v,
                                        const bool normalize_wts) {
 
     if (ord==2) {
-        return runningQMomentsCurryZero<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+        return runQMCurryOne<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
     }
-    return runningQMomentsCurryZero<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    return runQMCurryOne<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
 }
 
 template <ReturnWhat retwhat>
-NumericMatrix runningQMomentsCurryTwo(SEXP v, 
-                                      Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                      const int ord,
-                                      const int window,
-                                      const int recom_period,
-                                      const int lookahead,
-                                      const int min_df,
-                                      const double used_df,
-                                      const bool na_rm,
-                                      const bool check_wts,
-                                      const bool normalize_wts) {
+NumericMatrix runQMCurryThree(SEXP v, 
+                              Rcpp::Nullable< Rcpp::NumericVector > wts,
+                              const int ord,
+                              const int window,
+                              const int recom_period,
+                              const int lookahead,
+                              const int min_df,
+                              const double used_df,
+                              const bool na_rm,
+                              const bool check_wts,
+                              const bool normalize_wts) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningQMomentsCurryOne<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
-        case REALSXP: { return runningQMomentsCurryOne<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
-        case  LGLSXP: { return runningQMomentsCurryOne<LogicalVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
+        case  INTSXP: { return runQMCurryTwo<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
+        case REALSXP: { return runQMCurryTwo<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
+        case  LGLSXP: { return runQMCurryTwo<LogicalVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
         default: stop("Unsupported weight type"); // nocov
     }
     // have to have fallthrough for CRAN check.
@@ -3124,7 +2943,7 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue,
                           bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                           bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    NumericMatrix preval = runningQMomentsCurryTwo<ret_sd3>(v, wts, 2, wins, restart_period, 0, min_df, used_df, 
+    NumericMatrix preval = runQMCurryThree<ret_sd3>(v, wts, 2, wins, restart_period, 0, min_df, used_df, 
                                                             na_rm, check_wts, normalize_wts);
     return preval;
 }
@@ -3137,7 +2956,7 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue,
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    NumericMatrix preval = runningQMomentsCurryTwo<ret_skew4>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
+    NumericMatrix preval = runQMCurryThree<ret_skew4>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
                                                               na_rm, check_wts, normalize_wts);
     return preval;
 }
@@ -3151,7 +2970,7 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue,
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    NumericMatrix preval = runningQMomentsCurryTwo<ret_exkurt5>(v, wts, 4, wins, restart_period, 0, min_df, used_df, 
+    NumericMatrix preval = runQMCurryThree<ret_exkurt5>(v, wts, 4, wins, restart_period, 0, min_df, used_df, 
                                                                 na_rm, check_wts, normalize_wts);
     return preval;
 }
@@ -3165,7 +2984,7 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue,
                          bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_stdev>(v, wts, 2, wins, restart_period, 0, min_df, used_df,
+    return runQMCurryThree<ret_stdev>(v, wts, 2, wins, restart_period, 0, min_df, used_df,
                                               na_rm, check_wts, normalize_wts);
 }
 // just the skew nothing else.
@@ -3178,7 +2997,7 @@ NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue,
                            bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
+    return runQMCurryThree<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
                                              na_rm, check_wts, normalize_wts);
 }
 // just the kurtosis nothing else.
@@ -3191,7 +3010,7 @@ NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue,
                            bool check_wts=false, bool normalize_wts=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, used_df,
+    return runQMCurryThree<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, used_df,
                                                na_rm, check_wts, normalize_wts);
 }
 
@@ -3208,10 +3027,10 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue,
                                    bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     if (max_order_only) {
-        return runningQMomentsCurryTwo<ret_centmaxonly>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
+        return runQMCurryThree<ret_centmaxonly>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
                                                     na_rm, check_wts, normalize_wts);
     } 
-    return runningQMomentsCurryTwo<ret_centmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
+    return runQMCurryThree<ret_centmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
                                                     na_rm, check_wts, normalize_wts);
 }
 
@@ -3225,7 +3044,7 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue,
                                   int min_df=0, double used_df=0, int restart_period=100, 
                                   bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_stdmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
+    return runQMCurryThree<ret_stdmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
                                                    na_rm, check_wts, normalize_wts);
 }
 
@@ -3521,7 +3340,7 @@ NumericMatrix running_centered(SEXP v,
                                bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                                bool check_wts=false, bool normalize_wts=false) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_centered>(v, wts, 1, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_centered>(v, wts, 1, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // scale the input
 //' @rdname runningadjustments
@@ -3532,7 +3351,7 @@ NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue,
                              bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // zscore the input
 //' @rdname runningadjustments
@@ -3543,7 +3362,7 @@ NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue,
                               bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                               bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // sharpe on the input
 //' @rdname runningadjustments
@@ -3555,9 +3374,9 @@ NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue,
                              bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
     if (compute_se) {
-        return runningQMomentsCurryTwo<ret_sharpese>(v, wts, 4, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
+        return runQMCurryThree<ret_sharpese>(v, wts, 4, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
     } 
-    return runningQMomentsCurryTwo<ret_sharpe>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_sharpe>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // t stat of the input
 //' @rdname runningadjustments
@@ -3568,7 +3387,7 @@ NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue,
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                             bool check_wts=false, bool normalize_wts=true) {
     int wins=get_wins(window);
-    return runningQMomentsCurryTwo<ret_tstat>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_tstat>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 
 
