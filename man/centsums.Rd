@@ -78,9 +78,6 @@ the fromo package.
  stopifnot(max(abs(rs2 - rs2alt)) < 1e-7)
 
 }
-\author{
-Steven E. Pav \email{shabbychef@gmail.com}
-}
 \references{
 Terriberry, T. "Computing Higher-Order Moments Online."
 \url{http://people.xiph.org/~tterribe/notes/homs.html}
@@ -97,4 +94,6 @@ Cook, J. D. "Comparing three methods of computing
 standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
 }
-
+\author{
+Steven E. Pav \email{shabbychef@gmail.com}
+}

@@ -3,9 +3,9 @@
 \name{running_centered}
 \alias{running_centered}
 \alias{running_scaled}
+\alias{running_zscored}
 \alias{running_sharpe}
 \alias{running_tstat}
-\alias{running_zscored}
 \title{Compare data to moments computed over a sliding window.}
 \usage{
 running_centered(v, window = NULL, wts = NULL, na_rm = FALSE,
@@ -148,9 +148,6 @@ if (require(moments)) {
 }
 
 }
-\author{
-Steven E. Pav \email{shabbychef@gmail.com}
-}
 \references{
 Terriberry, T. "Computing Higher-Order Moments Online."
 \url{http://people.xiph.org/~tterribe/notes/homs.html}
@@ -170,4 +167,6 @@ standard deviation."
 \seealso{
 \code{\link{scale}}
 }
-
+\author{
+Steven E. Pav \email{shabbychef@gmail.com}
+}

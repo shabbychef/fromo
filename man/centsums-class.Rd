@@ -2,10 +2,10 @@
 % Please edit documentation in R/zzz_centsums.R
 \docType{class}
 \name{centsums-class}
-\alias{centsums}
 \alias{centsums-class}
-\alias{initialize,centsums-class}
 \alias{initialize,centsums-method}
+\alias{initialize,centsums-class}
+\alias{centsums}
 \title{centsums Class.}
 \usage{
 \S4method{initialize}{centsums}(.Object, sums, order = NA_real_)
@@ -38,6 +38,7 @@ maximum order.
 
 \item{\code{order}}{the maximum order.}
 }}
+
 \note{
 The moment computations provided by fromo are 
 numerically robust, but will often \emph{not} provide the
@@ -49,9 +50,6 @@ the fromo package.
 \examples{
 obj <- new("centsums",sums=c(1000,1.234,0.235),order=2)
 
-}
-\author{
-Steven E. Pav \email{shabbychef@gmail.com}
 }
 \references{
 Terriberry, T. "Computing Higher-Order Moments Online."
@@ -69,5 +67,7 @@ Cook, J. D. "Comparing three methods of computing
 standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
 }
+\author{
+Steven E. Pav \email{shabbychef@gmail.com}
+}
 \keyword{moments}
-
