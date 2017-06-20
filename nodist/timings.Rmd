@@ -210,6 +210,8 @@ resdf <- rbind(resdf,checkit)
 ```
 
 ```{r timing_fin,eval=TRUE,echo=TRUE,cache=FALSE}
+#fake it: 
+# resdf <- readr::read_csv('timings.csv')
 #print(resdf)
 library(readr)
 readr::write_csv(resdf,'timings.csv')
@@ -219,7 +221,7 @@ readr::write_csv(resdf,'timings.csv')
 
 Can we see them here? load all the timing data to check.
 
-```{r all_timing_stats,eval=TRUE,echo=TRUE,cache=FALSE,dpi=200,out.width='600px',out.height='500px'}
+```{r all_timing_stats,eval=TRUE,echo=TRUE,cache=FALSE,dpi=200,out.width='700px',out.height='600px'}
 library(magrittr)
 library(dplyr)
 library(readr)
@@ -249,51 +251,61 @@ allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
 						 last_norm=last(normalized)) %>%
 		ungroup() %>%
 		mutate(relchange=normalized / first_norm,
-					 last_status=last_norm / first_norm)
+					 last_status=last_norm / first_norm) %>%
+		mutate(gtype=case_when(grepl('^(roll|RollingWindow|RcppRoll)::',.$expr) ~ "brand_x",
+													 grepl('^running_',.$expr) ~ "running",
+													 TRUE ~ "summarizing"))
 	
 library(ggplot2)
 ph <- allt %>%
+		filter(!grepl('brand_x',gtype)) %>%
 		ggplot(aes(sernum,normalized,group=expr,color=expr)) +
 		geom_line() + geom_point() +
 		scale_y_log10() + guides(colour=FALSE) + 
 		theme(axis.text.x=element_text(angle = -90, hjust = 0)) + 
+		facet_grid(gtype ~ .,scales='free') +
 		labs(x='release',
 				 y='mean time taken, relative to sum(x)',
 				 title='fromo microbenchmark timings')
 print(ph)
 
 ph <- allt %>%
+		filter(!grepl('brand_x',gtype)) %>%
 		ggplot(aes(sernum,relchange,group=expr,color=expr)) +
 		geom_line() + geom_point() +
 		scale_y_log10() + guides(colour=FALSE) + 
 		theme(axis.text.x=element_text(angle = -90, hjust = 0)) + 
+		facet_grid(gtype ~ .,scales='free') +
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
 				 title='fromo microbenchmark timings')
 print(ph)
 
 ph <- allt %>%
+		filter(!grepl('brand_x',gtype)) %>%
 		ggplot(aes(sernum,relchange)) +
 		geom_boxplot(aes(group=sernum),alpha=0.7) + 
 		stat_summary(aes(group="1",color='mean'),fun.y=mean,geom="line") + 
 		scale_y_log10() + 
 		theme(axis.text.x=element_text(angle = -90, hjust = 0)) + 
+		facet_grid(gtype ~ .,scales='free') +
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
 				 color='stat',
 				 title='fromo microbenchmark timings')
 print(ph)
 
-	
 allt %>% 
+	filter(!grepl('brand_x',gtype)) %>%
 	select(expr,sernum,relchange,last_status) %>%
 	tidyr::spread(key='sernum',value='relchange') %>%
 	arrange(desc(last_status)) %>%
 	select(-last_status) %>%
-	head(n=40) %>%
+	head(n=50) %>%
 	kable()
 
 allt %>% 
+	filter(!grepl('brand_x',gtype)) %>%
 	select(-sernum,-relchange,-meantime,-sumx_time,-normalized) %>%
 	distinct(expr,.keep_all=TRUE) %>%
 	arrange(desc(last_status)) %>%
