@@ -2380,8 +2380,7 @@ class moment_converter<ret_skew4,F,T,renormalize> {
                     xret(rownum,3) = mydf; 
                     xret(rownum,2) = vret[1];
                     xret(rownum,1) = sigma;
-                    // uhoh! renormalization!
-                    xret(rownum,0) = COMP_SKEW_TWO(vret,dwsum) / sqrt(dwsum);
+                    xret(rownum,0) = COMP_SKEW_TWO(vret,dwsum);
                 } else {
                     xret(rownum,3) = mydf; 
                     if (mydf >= 1) {
@@ -2436,9 +2435,9 @@ class moment_converter<ret_exkurt5,F,T,renormalize> {
                     xret(rownum,3) = vret[1];
                     xret(rownum,2) = sigma;
                     // uhoh! renormalization!
-                    xret(rownum,1) = COMP_SKEW_TWO(vret,dwsum) / sqrt(dwsum);
+                    xret(rownum,1) = COMP_SKEW_TWO(vret,dwsum);
                     // uhoh! renormalization!
-                    xret(rownum,0) = (COMP_KURT_TWO(vret,dwsum) / dwsum) - 3.0;
+                    xret(rownum,0) = (COMP_KURT_TWO(vret,dwsum)) - 3.0;
                 } else {
                     xret(rownum,4) = mydf; 
                     if (mydf >= 1) {
@@ -2447,7 +2446,7 @@ class moment_converter<ret_exkurt5,F,T,renormalize> {
                             xret(rownum,2) = sigma;
                             if (mydf >= 3) {
                                 // uhoh! renormalization!
-                                xret(rownum,1) = COMP_SKEW_TWO(vret,dwsum) / sqrt(dwsum);
+                                xret(rownum,1) = COMP_SKEW_TWO(vret,dwsum);
                             } else {
                                 xret(rownum,1) = NAN;
                             }
@@ -3525,7 +3524,6 @@ NumericVector cent2raw(NumericVector input) {
 // for help on dispatch, see:
 // http://stackoverflow.com/a/25254680/164611
 // http://gallery.rcpp.org/articles/rcpp-wrap-and-recurse/
-
-
+     
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
