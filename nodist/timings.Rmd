@@ -252,9 +252,8 @@ allt <- data.frame(fname=dir('.','*.csv'),stringsAsFactors=FALSE) %>%
 		ungroup() %>%
 		mutate(relchange=normalized / first_norm,
 					 last_status=last_norm / first_norm) %>%
-		mutate(gtype=case_when(grepl('^(roll|RollingWindow|RcppRoll)::',.$expr) ~ "brand_x",
-													 grepl('^running_',.$expr) ~ "running",
-													 TRUE ~ "summarizing"))
+		mutate(gtype=ifelse(grepl('^(roll|RollingWindow|RcppRoll)::',expr),"brand_x",
+												ifelse(grepl('^running_',expr),"running","summarizing")))
 	
 library(ggplot2)
 ph <- allt %>%
@@ -266,7 +265,7 @@ ph <- allt %>%
 		facet_grid(gtype ~ .,scales='free') +
 		labs(x='release',
 				 y='mean time taken, relative to sum(x)',
-				 title='fromo microbenchmark timings')
+				 title='fromo microbenchmark timings, lasagna')
 print(ph)
 
 ph <- allt %>%
@@ -278,7 +277,7 @@ ph <- allt %>%
 		facet_grid(gtype ~ .,scales='free') +
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
-				 title='fromo microbenchmark timings')
+				 title='fromo microbenchmark timings, spaghetti')
 print(ph)
 
 ph <- allt %>%
@@ -292,7 +291,7 @@ ph <- allt %>%
 		labs(x='release',
 				 y='normalized time taken, relative to first iteration',
 				 color='stat',
-				 title='fromo microbenchmark timings')
+				 title='fromo microbenchmark timings, boxplots')
 print(ph)
 
 allt %>% 
