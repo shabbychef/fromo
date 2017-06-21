@@ -2211,7 +2211,6 @@ class moment_converter<ret_centmoments,F,T,renormalize> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
-            NumericVector vret = frets.vecpart();
             double mydf,dwsum;
             int mmm;
             dwsum = double(frets.wsum());
@@ -2226,21 +2225,21 @@ class moment_converter<ret_centmoments,F,T,renormalize> {
                 sg_denom = mydf - used_df;
                 if (renormalize) { sg_denom /= renorm; }
                 xret(rownum,ord) = mydf; 
-                xret(rownum,ord-1) = vret[1];
+                xret(rownum,ord-1) = frets.m_xx[1];
 
                 // put them in backwards!
                 if (mydf >= ord) {
                     if (ord >= 2) {
-                        xret(rownum,ord-2) = vret[2] / sg_denom;
+                        xret(rownum,ord-2) = frets.m_xx[2] / sg_denom;
                         for (mmm=3;mmm <= ord;++mmm) {
-                            xret(rownum,ord-mmm) = vret[mmm] / dwsum;
+                            xret(rownum,ord-mmm) = frets.m_xx[mmm] / dwsum;
                         }
                     }
                 } else {
                     if (ord >= 2) {
-                        xret(rownum,ord-2) = vret[2] / sg_denom;
+                        xret(rownum,ord-2) = frets.m_xx[2] / sg_denom;
                         for (mmm=3;mmm <= mydf;++mmm) {
-                            xret(rownum,ord-mmm) = vret[mmm] / dwsum;
+                            xret(rownum,ord-mmm) = frets.m_xx[mmm] / dwsum;
                         }
                     }
                     for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
@@ -2261,7 +2260,6 @@ class moment_converter<ret_stdmoments,F,T,renormalize> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
-            NumericVector vret = frets.vecpart();
             double mydf,dwsum;
             double sigmasq,sigma,sigmapow;
             int mmm;
@@ -2276,22 +2274,22 @@ class moment_converter<ret_stdmoments,F,T,renormalize> {
             if (mydf >= min_df) {
                 sg_denom = mydf - used_df;
                 if (renormalize) { sg_denom /= renorm; }
-                sigmasq = vret[2] / sg_denom;
+                sigmasq = frets.m_xx[2] / sg_denom;
                 sigma = sqrt(sigmasq);
                 xret(rownum,ord) = mydf; 
-                xret(rownum,ord-1) = vret[1];
+                xret(rownum,ord-1) = frets.m_xx[1];
                 xret(rownum,ord-2) = sigma;
 
                 // put them in backwards!
                 if (mydf >= ord) {
                     for (mmm=3;mmm <= ord;++mmm) {
                         sigmasq *= sigma;
-                        xret(rownum,ord-mmm) = vret[mmm] / (dwsum * sigmasq);
+                        xret(rownum,ord-mmm) = frets.m_xx[mmm] / (dwsum * sigmasq);
                     }
                 } else {
                     for (mmm=3;mmm <= mydf;++mmm) {
                         sigmasq *= sigma;
-                        xret(rownum,ord-mmm) = vret[mmm] / (dwsum * sigmasq);
+                        xret(rownum,ord-mmm) = frets.m_xx[mmm] / (dwsum * sigmasq);
                     }
                     for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
                         xret(rownum,ord-mmm) = NAN;
@@ -2311,7 +2309,6 @@ class moment_converter<ret_sd3,F,T,true> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
-            NumericVector vret = frets.vecpart();
             double mydf,dwsum,sigma;
             dwsum = double(frets.wsum());
             mydf = double(frets.nel());
@@ -2380,7 +2377,6 @@ class moment_converter<ret_skew4,F,T,renormalize> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
-            NumericVector vret = frets.vecpart();
             double mydf,dwsum;
             double sigmasq,sigma,sigmapow;
             int mmm;
@@ -2395,19 +2391,19 @@ class moment_converter<ret_skew4,F,T,renormalize> {
             if (mydf >= min_df) {
                 sg_denom = mydf - used_df;
                 if (renormalize) { sg_denom /= renorm; }
-                sigmasq = vret[2] / sg_denom;
+                sigmasq = frets.m_xx[2] / sg_denom;
                 sigma = sqrt(sigmasq);
 
                 // put them in backwards!
                 if (mydf >= ord) {
                     xret(rownum,3) = mydf; 
-                    xret(rownum,2) = vret[1];
+                    xret(rownum,2) = frets.m_xx[1];
                     xret(rownum,1) = sigma;
-                    xret(rownum,0) = COMP_SKEW_TWO(vret,dwsum);
+                    xret(rownum,0) = COMP_SKEW_TWO(frets.m_xx,dwsum);
                 } else {
                     xret(rownum,3) = mydf; 
                     if (mydf >= 1) {
-                        xret(rownum,2) = vret[1];
+                        xret(rownum,2) = frets.m_xx[1];
                         if (mydf >= 2) {
                             xret(rownum,1) = sigma;
                         } else {
@@ -2434,7 +2430,6 @@ class moment_converter<ret_exkurt5,F,T,renormalize> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
-            NumericVector vret = frets.vecpart();
             double mydf,dwsum;
             double sigmasq,sigma,sigmapow;
             int mmm;
@@ -2449,27 +2444,27 @@ class moment_converter<ret_exkurt5,F,T,renormalize> {
             if (mydf >= min_df) {
                 sg_denom = mydf - used_df;
                 if (renormalize) { sg_denom /= renorm; }
-                sigmasq = vret[2] / sg_denom;
+                sigmasq = frets.m_xx[2] / sg_denom;
                 sigma = sqrt(sigmasq);
 
                 // put them in backwards!
                 if (mydf >= ord) {
                     xret(rownum,4) = mydf; 
-                    xret(rownum,3) = vret[1];
+                    xret(rownum,3) = frets.m_xx[1];
                     xret(rownum,2) = sigma;
                     // uhoh! renormalization!
-                    xret(rownum,1) = COMP_SKEW_TWO(vret,dwsum);
+                    xret(rownum,1) = COMP_SKEW_TWO(frets.m_xx,dwsum);
                     // uhoh! renormalization!
-                    xret(rownum,0) = (COMP_KURT_TWO(vret,dwsum)) - 3.0;
+                    xret(rownum,0) = (COMP_KURT_TWO(frets.m_xx,dwsum)) - 3.0;
                 } else {
                     xret(rownum,4) = mydf; 
                     if (mydf >= 1) {
-                        xret(rownum,3) = vret[1];
+                        xret(rownum,3) = frets.m_xx[1];
                         if (mydf >= 2) {
                             xret(rownum,2) = sigma;
                             if (mydf >= 3) {
                                 // uhoh! renormalization!
-                                xret(rownum,1) = COMP_SKEW_TWO(vret,dwsum);
+                                xret(rownum,1) = COMP_SKEW_TWO(frets.m_xx,dwsum);
                             } else {
                                 xret(rownum,1) = NAN;
                             }
@@ -2500,7 +2495,6 @@ class moment_converter<ret_centmaxonly,F,T,renormalize> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double denom,renorm;
-            NumericVector vret = frets.vecpart();
             double mydf,dwsum;
             int mmm;
             dwsum = double(frets.wsum());
@@ -2518,9 +2512,9 @@ class moment_converter<ret_centmaxonly,F,T,renormalize> {
                     denom = dwsum;
                 }
                 if (renormalize) { 
-                    xret(rownum,0) = renorm * vret[ord] / denom;
+                    xret(rownum,0) = renorm * frets.m_xx[ord] / denom;
                 } else {
-                    xret(rownum,0) = vret[ord] / denom;
+                    xret(rownum,0) = frets.m_xx[ord] / denom;
                 }
             } else {
                 xret(rownum,0) = NAN;
@@ -2736,7 +2730,6 @@ NumericMatrix runQM(T v,
     }
         
     NumericMatrix xret(numel,ncols);
-    NumericVector vret;
 
     // as an invariant, we will start the computation
     // with vret, which is initialized as the summed
