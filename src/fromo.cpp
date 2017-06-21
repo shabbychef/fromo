@@ -2306,38 +2306,30 @@ class moment_converter<ret_stdmoments,F,T,renormalize> {
 };
 //UNFOLD
 // ret_sd3//FOLDUP
-template<typename F,typename T,bool renormalize>
-class moment_converter<ret_sd3,F,T,renormalize> {
+template<typename F,typename T>
+class moment_converter<ret_sd3,F,T,true> {
     public:
         static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
             NumericVector vret = frets.vecpart();
-            double mydf,dwsum;
-            double sigmasq,sigma,sigmapow;
-            int mmm;
+            double mydf,dwsum,sigma;
             dwsum = double(frets.wsum());
-            if (renormalize) { 
-                mydf = double(frets.nel());
-                renorm = mydf / dwsum;
-            } else {
-                mydf = dwsum;
-            }
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
 
             if (mydf >= min_df) {
-                sg_denom = mydf - used_df;
-                if (renormalize) { sg_denom /= renorm; }
-                sigmasq = vret[2] / sg_denom;
-                sigma = sqrt(sigmasq);
+                xret(rownum,2) = mydf; 
 
                 // put them in backwards!
                 if (mydf >= ord) {
-                    xret(rownum,2) = mydf; 
-                    xret(rownum,1) = vret[1];
+                    sg_denom = (mydf - used_df) / renorm;
+                    sigma = sqrt(frets.m_xx[2] / sg_denom);
+
+                    xret(rownum,1) = frets.m_xx[1];
                     xret(rownum,0) = sigma;
                 } else {
-                    xret(rownum,2) = mydf; 
                     if (mydf >= 1) { 
-                        xret(rownum,1) = vret[1]; 
+                        xret(rownum,1) = frets.m_xx[1]; 
                     } else  {
                         xret(rownum,1) = NAN;
                     }
