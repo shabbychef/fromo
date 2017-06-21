@@ -2351,6 +2351,37 @@ class moment_converter<ret_sd3,F,T,renormalize> {
         }
 };
 //UNFOLD
+// ret_sd3 specialized to no renormalize?//FOLDUP
+template<typename F,typename T>
+class moment_converter<ret_sd3,F,T,false> {
+    public:
+        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+            double sg_denom,mydf,sigma;
+            mydf = double(frets.wsum());
+
+            if (mydf >= min_df) {
+                // put them in backwards!
+                xret(rownum,2) = mydf;
+                if (mydf >= ord) {
+                    sigma = sqrt(frets.m_xx[2] / (mydf - used_df));
+                    xret(rownum,1) = frets.m_xx[1];
+                    xret(rownum,0) = sigma;
+                } else {
+                    if (mydf >= 1) { 
+                        xret(rownum,1) = frets.m_xx[1]; 
+                    } else  {
+                        xret(rownum,1) = NAN;
+                    }
+                    xret(rownum,0) = NAN;
+                }
+            } else {
+                xret(rownum,2) = NAN;
+                xret(rownum,1) = NAN;
+                xret(rownum,0) = NAN;
+            }
+        }
+};
+//UNFOLD
 // ret_skew4//FOLDUP
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_skew4,F,T,renormalize> {

@@ -307,7 +307,7 @@ allt %>%
 	kable()
 
 allt %>% 
-	filter(!grepl('brand_x',exgrp)) %>%
+	dplyr::filter(!grepl('brand_x',exgrp)) %>%
 	select(-sernum,-relchange,-meantime,-sumx_time,-normalized) %>%
 	distinct(expr,.keep_all=TRUE) %>%
 	arrange(desc(last_status)) %>%
