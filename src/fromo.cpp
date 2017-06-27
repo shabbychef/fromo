@@ -493,6 +493,7 @@ class Welford {
 
 };
 //UNFOLD
+// 2FIX: these  no_wts versions have wts in them?? WTF.
 // no wts//FOLDUP
 // ord_beyond must be used for (ord > 2)
 // when has_wts is true, we accumulate the number of
@@ -522,7 +523,6 @@ class Welford<W,false,ord_beyond> {
             return *this;
         }
         inline double var(const bool normalize,const double used_df) const {
-            double renorm;
             return ((m_xx[2]) / (double(m_nel) - used_df));
         }
         inline double mean() const {
@@ -572,16 +572,16 @@ class Welford<W,false,ord_beyond> {
             nelm = double(m_nel);
             m_nel++;
             nel = double(m_nel);
-            delnel = della * double(wt) / nel;
+            delnel = della  / nel;
             m_xx[1] += delnel;
             if (nelm > 0) {
                 drat = della * nelm / nel;
-                nbyn = -wt / nelm;
+                nbyn = -1.0 / nelm;
                 ac_dn = pow(drat,m_ord);
                 ac_on = pow(nbyn,m_ord-1);
 
                 for (int ppp=m_ord;ppp >= 2;ppp--) {
-                    m_xx[ppp] += ac_dn * wt * (1.0 - ac_on);
+                    m_xx[ppp] += ac_dn * (1.0 - ac_on);
                     if (ord_beyond) {
                         if (ppp > 2) {
                             if (drat != 0) { ac_dn /= drat; }
@@ -608,10 +608,10 @@ class Welford<W,false,ord_beyond> {
             --m_nel;
             nel = double(m_nel);
             if (nel > 0) {
-                delnel = della * double(wt) / nel;
+                delnel = della / nel;
                 m_xx[1] -= delnel;
                 drat = delnel * nel;
-                nbyn = -double(wt) / nel;
+                nbyn = -1.0 / nel;
                 ac_dn = drat*drat;
                 ac_on = nbyn;
 
@@ -965,7 +965,6 @@ class Welford<W,false,false> {
             return *this;
         }
         inline double var(const bool normalize,const double used_df) const {
-            double renorm;
             return ((m_xx[2]) / (double(m_nel) - used_df));
         }
         inline double mean() const {
@@ -1015,13 +1014,10 @@ class Welford<W,false,false> {
             nelm = double(m_nel);
             m_nel++;
             nel = double(m_nel);
-            delnel = della * double(wt) / nel;
+            delnel = della / nel;
             m_xx[1] += delnel;
             if (nelm > 0) {
-                drat = della * nelm / nel;
-                ac_dn = drat * drat;
-                ac_on = -wt / nelm;
-                m_xx[2] += ac_dn * wt * (1.0 - ac_on);
+                m_xx[2] += della * (xval - m_xx[1]);
             }
             return *this;
         }
@@ -1033,12 +1029,9 @@ class Welford<W,false,false> {
             --m_nel;
             nel = double(m_nel);
             if (nel > 0) {
-                delnel = della * double(wt) / nel;
+                delnel = della / nel;
                 m_xx[1] -= delnel;
-                drat = delnel * nel;
-                ac_dn = drat*drat;
-                ac_on = -double(wt) / nel;
-                m_xx[2] -= ac_dn * (1.0 - ac_on);
+                m_xx[2] -= della * (xval - m_xx[1]);
             }
             return *this;
         }
@@ -3529,6 +3522,9 @@ NumericVector cent2raw(NumericVector input) {
 }
 //UNFOLD
 
+
+
+
 // junkyard//FOLDUP
 
 // code that *would* have been used in RcppModules,
@@ -3625,5 +3621,224 @@ NumericVector cent2raw(NumericVector input) {
 // http://stackoverflow.com/a/25254680/164611
 // http://gallery.rcpp.org/articles/rcpp-wrap-and-recurse/
      
+// reference implementations for speed;
+// these should be the fastest possible versions of sd and running_sd
+
+// return the sd
+//' @rdname firstmoments
+//' @export
+// [[Rcpp::export]]
+NumericVector ref_sd(NumericVector v) {
+    double nel,mu,sd,delta;
+    double x;
+    
+    int top=v.size();
+    nel = 1.0;
+    sd = 0.0;
+    mu = v[0];
+    for (int iii=1;iii < top;++iii) {
+        ++nel;
+        x = v[iii];
+        delta = x - mu;
+        mu += delta / nel;
+        sd += delta * (x - mu);
+    }
+    NumericVector vret = NumericVector::create(sqrt(sd / (nel - 1)));
+    return vret;
+}
+
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd(NumericVector v,int window=1000) {
+    double nel,mu,sd,delta;
+    double x;
+    int jjj;
+    
+    int top=v.size();
+    NumericVector vret = NumericVector(top);
+    int firstpart;
+    firstpart = MIN(top,window);
+
+    nel = 0.0;
+    sd = 0.0;
+    mu = 0.0;
+    for (int iii=0;iii < firstpart;++iii) {
+        ++nel;
+        x = v[iii];
+        delta = x - mu;
+        mu += delta / nel;
+        sd += delta * (x - mu);
+        vret[iii] = sqrt(sd / (nel - 1));
+    }
+    if (firstpart < top) {
+        jjj = 0;
+        for (int iii=firstpart;iii < top;++iii) {
+            ++nel;
+            x = v[iii];
+            delta = x - mu;
+            mu += delta / nel;
+            sd += delta * (x - mu);
+
+            --nel;
+            x = v[jjj];
+            delta = x - mu;
+            mu -= delta / nel;
+            sd -= delta * (x - mu);
+            ++jjj;
+            vret[iii] = sqrt(sd / (nel - 1));
+        }
+    }
+    return vret;
+}
+
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_narm(NumericVector v,int window=1000) {
+    // simulate checking for na
+    double nel,mu,sd,delta;
+    double x;
+    int jjj;
+    
+    int top=v.size();
+    NumericVector vret = NumericVector(top);
+    int firstpart;
+    firstpart = MIN(top,window);
+
+    nel = 0.0;
+    sd = 0.0;
+    mu = 0.0;
+    for (int iii=0;iii < firstpart;++iii) {
+        x = v[iii];
+        if (!ISNAN(x)) {
+            ++nel;
+            delta = x - mu;
+            mu += delta / nel;
+            sd += delta * (x - mu);
+        }
+        vret[iii] = sqrt(sd / (nel - 1));
+    }
+    if (firstpart < top) {
+        jjj = 0;
+        for (int iii=firstpart;iii < top;++iii) {
+            x = v[iii];
+            if (!ISNAN(x)) {
+                ++nel;
+                delta = x - mu;
+                mu += delta / nel;
+                sd += delta * (x - mu);
+            }
+            x = v[jjj];
+            if (!ISNAN(x)) {
+                --nel;
+                delta = x - mu;
+                mu -= delta / nel;
+                sd -= delta * (x - mu);
+            }
+            ++jjj;
+            vret[iii] = sqrt(sd / (nel - 1));
+        }
+    }
+    return vret;
+}
+
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_onecheck(NumericVector v,int window=1000,bool na_rm=false) {
+    if (na_rm) {
+        return ref_running_sd_narm(v,window);
+    }
+    return ref_running_sd(v,window);
+}
+
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
+    // integer number of elements and double conversion? no time.
+    double nel,mu,sd,delta;
+    double x;
+    int jjj;
+    int inel;
+    
+    int top=v.size();
+    NumericVector vret = NumericVector(top);
+    int firstpart;
+    firstpart = MIN(top,window);
+
+    inel = 0;
+    nel = 0.0;
+    sd = 0.0;
+    mu = 0.0;
+    for (int iii=0;iii < firstpart;++iii) {
+        ++inel;
+        nel = double(inel);
+        x = v[iii];
+        delta = x - mu;
+        mu += delta / nel;
+        sd += delta * (x - mu);
+        vret[iii] = sqrt(sd / (nel - 1));
+    }
+    if (firstpart < top) {
+        jjj = 0;
+        for (int iii=firstpart;iii < top;++iii) {
+            ++inel;
+            nel = double(inel);
+            x = v[iii];
+            delta = x - mu;
+            mu += delta / nel;
+            sd += delta * (x - mu);
+
+            --inel;
+            nel = double(inel);
+            x = v[jjj];
+            delta = x - mu;
+            mu -= delta / nel;
+            sd -= delta * (x - mu);
+            ++jjj;
+            vret[iii] = sqrt(sd / (nel - 1));
+        }
+    }
+    return vret;
+}
+
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
+    // integer number of elements and double conversion? no time.
+    //
+    Welford<double,false,false> frets = Welford<double,false,false>(2);
+    double x;
+    int jjj;
+    
+    int top=v.size();
+    NumericVector vret = NumericVector(top);
+    int firstpart;
+    firstpart = MIN(top,window);
+
+    for (int iii=0;iii < firstpart;++iii) {
+        x = v[iii];
+        frets.add_one(x,1.0);
+        vret[iii] = frets.sd(false,1.0);
+    }
+    if (firstpart < top) {
+        jjj = 0;
+        for (int iii=firstpart;iii < top;++iii) {
+            x = v[iii];
+            frets.add_one(x,1.0);
+            x = v[jjj];
+            ++jjj;
+            frets.rem_one(x,1.0);
+            vret[iii] = frets.sd(false,1.0);
+        }
+    }
+    return vret;
+}
+
+
+
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

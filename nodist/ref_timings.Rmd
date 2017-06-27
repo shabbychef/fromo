@@ -1,0 +1,84 @@
+```{r setup,include=FALSE}
+# set the knitr options ... for everyone!
+# if you unset this, then vignette build bonks. oh, joy.
+#opts_knit$set(progress=TRUE)
+opts_knit$set(eval.after='fig.cap')
+# for a package vignette, you do want to echo.
+# opts_chunk$set(echo=FALSE,warning=FALSE,message=FALSE)
+opts_chunk$set(warning=FALSE,message=FALSE)
+#opts_chunk$set(results="asis")
+opts_chunk$set(cache=TRUE,cache.path="cache/ref_timings_")
+
+#opts_chunk$set(fig.path="figure/",dev=c("pdf","cairo_ps"))
+opts_chunk$set(fig.path="figure/ref_timings_",dev=c("png"))
+opts_chunk$set(fig.width=7,fig.height=6,dpi=100,out.width='700px',out.height='600px')
+
+# doing this means that png files are made of figures;
+# the savings is small, and it looks like shit:
+#opts_chunk$set(fig.path="figure/",dev=c("png","pdf","cairo_ps"))
+#opts_chunk$set(fig.width=4,fig.height=4)
+# for figures? this is sweave-specific?
+#opts_knit$set(eps=TRUE)
+
+# this would be for figures:
+#opts_chunk$set(out.width='.8\\textwidth')
+# for text wrapping:
+options(width=160,digits=2)
+opts_chunk$set(size="small")
+opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
+library(ggplot2)
+library(fromo)
+library(dplyr)
+library(moments)
+library(microbenchmark)
+```
+
+# fromo timings against reference implementations
+
+Welford standard deviation is easy to compute quickly:
+
+
+
+```{r timing_I,eval=TRUE,echo=TRUE,cache=FALSE}
+library(fromo)
+library(microbenchmark)
+
+print(Sys.info())
+print(sessionInfo())
+
+
+set.seed(12345)
+x    <- rnorm(1e5)
+wins <- 250
+
+# check first
+blah <- running_sd(x,wins) - ref_running_sd(x,wins)
+print(summary(blah[4:length(blah)]))
+
+# timings
+checkit <- microbenchmark(sd(x),
+													sd3(x), 
+													ref_sd(x),
+													running_sd(x,wins),
+													running_sd(x,wins,na_rm=FALSE,restart_period=50000L),
+													ref_running_sd(x,wins),
+													ref_running_sd_narm(x,wins),
+													ref_running_sd_intnel(x,wins),
+													ref_running_sd_objecty(x,wins),
+													ref_running_sd_onecheck(x,wins))
+
+
+print(checkit)
+
+checkit %>%
+	group_by(expr) %>%
+		dplyr::summarize(meant=mean(time,na.rm=TRUE)) %>%
+	ungroup() %>%
+	dplyr::filter(grepl('running_sd',expr)) %>%
+	mutate(timeover=meant / min(meant,na.rm=TRUE)) %>%
+	kable()
+	
+
+```
+
+

@@ -10,7 +10,7 @@
 VMAJOR 						 = 0
 VMINOR 						 = 1
 VPATCH  					 = 3
-VDEV 							 = .6550
+VDEV 							 = .6560
 PKG_NAME 					:= fromo
 
 RPKG_USES_RCPP 		:= 1
@@ -33,6 +33,10 @@ nodist/timings_$(PKG_VERSION).csv : nodist/timings.csv
 .PHONY : timings
 
 timings : nodist/timings_$(PKG_VERSION).csv ## save timings for performance regression checking.
+
+.PHONY : ref_timings
+
+ref_timings : nodist/ref_timings.md  ## timing against reference implementations of Welford sd
 
 # experimenting with building README.md in docker. 
 # not working yet b/c I do not have the requisite packages in my docker image. sigh.

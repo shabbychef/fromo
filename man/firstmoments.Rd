@@ -8,6 +8,7 @@
 \alias{std_moments}
 \alias{cent_cumulants}
 \alias{std_cumulants}
+\alias{ref_sd}
 \title{Compute first K moments}
 \usage{
 sd3(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
@@ -30,6 +31,8 @@ cent_cumulants(v, max_order = 5L, used_df = 0L, na_rm = FALSE,
 
 std_cumulants(v, max_order = 5L, used_df = 0L, na_rm = FALSE,
   wts = NULL, check_wts = FALSE, normalize_wts = TRUE)
+
+ref_sd(v)
 }
 \arguments{
 \item{v}{a vector}

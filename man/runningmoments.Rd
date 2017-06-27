@@ -10,6 +10,11 @@
 \alias{running_cent_moments}
 \alias{running_std_moments}
 \alias{running_cumulants}
+\alias{ref_running_sd}
+\alias{ref_running_sd_narm}
+\alias{ref_running_sd_onecheck}
+\alias{ref_running_sd_intnel}
+\alias{ref_running_sd_objecty}
 \title{Compute first K moments over a sliding window}
 \usage{
 running_sd3(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
@@ -47,6 +52,16 @@ running_std_moments(v, window = NULL, wts = NULL, max_order = 5L,
 running_cumulants(v, window = NULL, wts = NULL, max_order = 5L,
   na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L,
   check_wts = FALSE, normalize_wts = TRUE)
+
+ref_running_sd(v, window = 1000L)
+
+ref_running_sd_narm(v, window = 1000L)
+
+ref_running_sd_onecheck(v, window = 1000L, na_rm = FALSE)
+
+ref_running_sd_intnel(v, window = 1000L)
+
+ref_running_sd_objecty(v, window = 1000L)
 }
 \arguments{
 \item{v}{a vector}
