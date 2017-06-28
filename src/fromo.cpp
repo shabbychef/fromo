@@ -382,6 +382,12 @@ class Welford {
             }
             return *this;
         }
+        inline Welford& swap_one (const double addxval, const W addwt,
+                                  const double remxval, const W remwt) {
+            add_one(addxval,addwt);
+            rem_one(remxval,remwt);
+            return *this;
+        }
         // join two Welford objects together
         inline Welford& join(const Welford& rhs) {
             double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
@@ -634,6 +640,12 @@ class Welford<W,false,ord_beyond> {
             }
             return *this;
         }
+        inline Welford& swap_one (const double addxval, const W addwt,
+                                  const double remxval, const W remwt) {
+            add_one(addxval,addwt);
+            rem_one(remxval,remwt);
+            return *this;
+        }
         // join two Welford objects together
         inline Welford& join(const Welford& rhs) {
             double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
@@ -861,6 +873,12 @@ class Welford<W,has_wts,false> {
             }
             return *this;
         }
+        inline Welford& swap_one (const double addxval, const W addwt,
+                                  const double remxval, const W remwt) {
+            add_one(addxval,addwt);
+            rem_one(remxval,remwt);
+            return *this;
+       }
         // join two Welford objects together
         inline Welford& join(const Welford& rhs) {
             double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
@@ -1016,9 +1034,7 @@ class Welford<W,false,false> {
             nel = double(m_nel);
             delnel = della / nel;
             m_xx[1] += delnel;
-            if (nelm > 0) {
-                m_xx[2] += della * (xval - m_xx[1]);
-            }
+            m_xx[2] += della * (xval - m_xx[1]);
             return *this;
         }
         // remove one (weighted) observation from our set of x
@@ -1033,6 +1049,17 @@ class Welford<W,false,false> {
                 m_xx[1] -= delnel;
                 m_xx[2] -= della * (xval - m_xx[1]);
             }
+            return *this;
+        }
+        // remove one (weighted) observation from our set of x
+        inline Welford& swap_one (const double addxval, const W addwt,
+                                  const double remxval, const W remwt) {
+            double diffmu,prevmu,nel;
+            nel = double(m_nel);
+            diffmu = addxval - remxval;
+            prevmu = m_xx[1];
+            m_xx[1] += (diffmu/nel);
+            m_xx[2] += diffmu*(addxval + remxval - prevmu - m_xx[1]);
             return *this;
         }
         // join two Welford objects together
@@ -3652,6 +3679,8 @@ NumericVector ref_sd(NumericVector v) {
 // [[Rcpp::export]]
 NumericVector ref_running_sd(NumericVector v,int window=1000) {
     double nel,mu,sd,delta;
+    double diffmu,sumx,summu,prevmu;
+    double prevx,nextx;
     double x;
     int jjj;
     
@@ -3674,17 +3703,23 @@ NumericVector ref_running_sd(NumericVector v,int window=1000) {
     if (firstpart < top) {
         jjj = 0;
         for (int iii=firstpart;iii < top;++iii) {
-            ++nel;
-            x = v[iii];
-            delta = x - mu;
-            mu += delta / nel;
-            sd += delta * (x - mu);
+            //++nel;
+            //x = v[iii];
+            //delta = x - mu;
+            //mu += delta / nel;
+            //sd += delta * (x - mu);
 
-            --nel;
-            x = v[jjj];
-            delta = x - mu;
-            mu -= delta / nel;
-            sd -= delta * (x - mu);
+            //--nel;
+            //x = v[jjj];
+            //delta = x - mu;
+            //mu -= delta / nel;
+            //sd -= delta * (x - mu);
+            nextx = v[iii];
+            prevx = v[jjj];
+            diffmu = nextx - prevx;
+            prevmu = mu;
+            mu += (diffmu / nel);
+            sd += diffmu*(nextx + prevx - (prevmu + mu));
             ++jjj;
             vret[iii] = sqrt(sd / (nel - 1));
         }
@@ -3700,6 +3735,7 @@ NumericVector ref_running_sd_narm(NumericVector v,int window=1000) {
     double nel,mu,sd,delta;
     double x;
     int jjj;
+    double addx,remx,diffmu,prevmu;
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
@@ -3722,21 +3758,27 @@ NumericVector ref_running_sd_narm(NumericVector v,int window=1000) {
     if (firstpart < top) {
         jjj = 0;
         for (int iii=firstpart;iii < top;++iii) {
-            x = v[iii];
-            if (!ISNAN(x)) {
-                ++nel;
-                delta = x - mu;
-                mu += delta / nel;
-                sd += delta * (x - mu);
-            }
-            x = v[jjj];
-            if (!ISNAN(x)) {
+            addx = v[iii];
+            remx = v[jjj];
+            ++jjj;
+            if (!ISNAN(addx)) {
+                if (!ISNAN(remx)) {
+                    diffmu = addx - remx;
+                    prevmu = mu;
+                    mu += (diffmu / nel);
+                    sd += diffmu*(addx + remx - (prevmu + mu));
+                } else {
+                    ++nel;
+                    delta = x - mu;
+                    mu += delta / nel;
+                    sd += delta * (x - mu);
+                }
+            } else if (!ISNAN(remx)) {
                 --nel;
                 delta = x - mu;
                 mu -= delta / nel;
                 sd -= delta * (x - mu);
             }
-            ++jjj;
             vret[iii] = sqrt(sd / (nel - 1));
         }
     }
@@ -3762,6 +3804,7 @@ NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
     double x;
     int jjj;
     int inel;
+    double nextx,prevx,diffmu,prevmu;
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
@@ -3784,20 +3827,13 @@ NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
     if (firstpart < top) {
         jjj = 0;
         for (int iii=firstpart;iii < top;++iii) {
-            ++inel;
-            nel = double(inel);
-            x = v[iii];
-            delta = x - mu;
-            mu += delta / nel;
-            sd += delta * (x - mu);
-
-            --inel;
-            nel = double(inel);
-            x = v[jjj];
-            delta = x - mu;
-            mu -= delta / nel;
-            sd -= delta * (x - mu);
-            ++jjj;
+            nextx = v[iii];
+            prevx = v[jjj];
+            jjj++;
+            diffmu = nextx - prevx;
+            prevmu = mu;
+            mu += (diffmu / nel);
+            sd += diffmu*(nextx + prevx - (prevmu + mu));
             vret[iii] = sqrt(sd / (nel - 1));
         }
     }
@@ -3812,6 +3848,7 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     //
     Welford<double,false,false> frets = Welford<double,false,false>(2);
     double x;
+    double nextx,prevx;
     int jjj;
     
     int top=v.size();
@@ -3827,11 +3864,10 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     if (firstpart < top) {
         jjj = 0;
         for (int iii=firstpart;iii < top;++iii) {
-            x = v[iii];
-            frets.add_one(x,1.0);
-            x = v[jjj];
+            nextx = v[iii];
+            prevx = v[jjj];
             ++jjj;
-            frets.rem_one(x,1.0);
+            frets.swap_one(nextx,1.0,prevx,1.0);
             vret[iii] = frets.sd(false,1.0);
         }
     }
