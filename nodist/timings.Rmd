@@ -73,7 +73,7 @@ checkit <- microbenchmark(sum(x),
                dumbk(x))
 print(checkit)
 resdf <- checkit
-
+gc()
 ```
 
 ```{r timing_II,eval=TRUE,echo=TRUE,cache=FALSE}
@@ -89,6 +89,7 @@ checkit <- microbenchmark(cent_moments(x,max_order=4,wts=w,na_rm=TRUE,normalize_
 							 slow_sd(x,w))
 print(checkit)
 resdf <- rbind(resdf,checkit)
+gc()
 ```
 
 ```{r timing_III,eval=TRUE,echo=TRUE,cache=FALSE}
@@ -102,6 +103,7 @@ checkit <- microbenchmark(as.centsums(x1,1),
 							 as.centsums(x1,4))
 print(checkit)
 resdf <- rbind(resdf,checkit)
+gc()
 
 # join them together
 max_ord <- 6L
@@ -113,6 +115,7 @@ checkit <- microbenchmark(c(obj1,obj2),
 							 obj3 %-% obj1)
 print(checkit)
 resdf <- rbind(resdf,checkit)
+gc()
 
 max_ord <- 6L
 rs1 <- cent_sums(x1,max_ord)
@@ -124,7 +127,7 @@ checkit <- microbenchmark(join_cent_sums(rs1,rs2),
 							 unjoin_cent_sums(rs3,rs1))
 print(checkit)
 resdf <- rbind(resdf,checkit)
-
+gc()
 ```
 
 ```{r timing_IV,eval=TRUE,echo=TRUE,cache=FALSE}
@@ -147,7 +150,7 @@ checkit <- microbenchmark(as.centcosums(x1,max_ord),
 							 mobj3 %-% mobj1)
 print(checkit)
 resdf <- rbind(resdf,checkit)
-
+gc()
 ```
 
 ```{r timing_V,eval=TRUE,echo=TRUE,cache=FALSE}
@@ -207,6 +210,7 @@ checkit <- microbenchmark(silly_fun(x,wins,sum,na.rm=FALSE),
 							 )
 print(checkit)
 resdf <- rbind(resdf,checkit)
+gc()
 ```
 
 ```{r timing_fin,eval=TRUE,echo=TRUE,cache=FALSE}

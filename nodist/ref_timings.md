@@ -18,7 +18,7 @@ print(Sys.info())
 ##                                       sysname                                       release                                       version 
 ##                                       "Linux"                            "4.4.0-77-generic" "#98-Ubuntu SMP Wed Apr 26 08:34:02 UTC 2017" 
 ##                                      nodename                                       machine                                         login 
-##                                "aa8d2266bc72"                                      "x86_64"                                     "unknown" 
+##                                "c8791dfd0b62"                                      "x86_64"                                     "unknown" 
 ##                                          user                                effective_user 
 ##                                        "spav"                                        "spav"
 ```
@@ -41,7 +41,7 @@ print(sessionInfo())
 ## [1] utils   methods base   
 ## 
 ## other attached packages:
-## [1] microbenchmark_1.4-2.1 moments_0.14           dplyr_0.5.0            ggplot2_2.2.1          knitr_1.15.1           fromo_0.1.3.6560      
+## [1] microbenchmark_1.4-2.1 moments_0.14           dplyr_0.5.0            ggplot2_2.2.1          knitr_1.15.1           fromo_0.1.3.6600      
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_0.12.11     grDevices_3.3.0  assertthat_0.1   R6_2.1.2         grid_3.3.0       plyr_1.8.4       DBI_0.6-1        gtable_0.2.0     formatR_1.4     
@@ -79,18 +79,18 @@ print(checkit)
 
 ```
 ## Unit: microseconds
-##                                                         expr   min    lq  mean median    uq   max neval    cld
-##                                                        sd(x)   465   492   519    504   535   888   100 a     
-##                                                       sd3(x)   850   856   899    874   910  1428   100 ab    
-##                                                    ref_sd(x)   715   720   760    739   789  1048   100 ab    
-##                                          running_sd(x, wins)  9248 10004 10931  10567 11051 48333   100     e 
-##  running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)  7134  7907  8304   8365  8724 10514   100    d  
-##                                                         gc() 36000 36983 38062  38343 38855 42031   100      f
-##                                      ref_running_sd(x, wins)  1186  1206  1259   1240  1297  1458   100  bc   
-##                                 ref_running_sd_narm(x, wins)  1421  1444  1505   1475  1548  1870   100   c   
-##                               ref_running_sd_intnel(x, wins)  1184  1196  1258   1218  1298  1765   100  bc   
-##                              ref_running_sd_objecty(x, wins)  1182  1202  1254   1222  1277  1732   100  bc   
-##                             ref_running_sd_onecheck(x, wins)  1186  1203  1257   1223  1294  1536   100  bc
+##                                                         expr   min    lq  mean median    uq   max neval   cld
+##                                                        sd(x)   465   509   586    551   617   917   100 a    
+##                                                       sd3(x)   849   884   972    951  1030  1383   100 ab   
+##                                                    ref_sd(x)   717   749   828    804   875  1042   100 ab   
+##                                          running_sd(x, wins)  9222 10349 11758  10994 11927 60733   100    d 
+##  running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)  7122  8256  9157   8842  9725 13423   100   c  
+##                                                         gc() 34750 37366 40120  39429 42161 49928   100     e
+##                                      ref_running_sd(x, wins)  1178  1220  1358   1322  1438  1974   100 ab   
+##                                 ref_running_sd_narm(x, wins)  1413  1475  1698   1586  1779  3177   100  b   
+##                               ref_running_sd_intnel(x, wins)  1181  1261  1397   1336  1507  1914   100 ab   
+##                              ref_running_sd_objecty(x, wins)  1179  1231  1401   1340  1541  2123   100 ab   
+##                             ref_running_sd_onecheck(x, wins)  1180  1260  1392   1340  1522  1774   100 ab
 ```
 
 ```r
@@ -104,12 +104,12 @@ checkit %>% group_by(expr) %>% dplyr::summarize(meant = mean(time,
 
 |expr                                                        |   meant| timeover|
 |:-----------------------------------------------------------|-------:|--------:|
-|running_sd(x, wins)                                         | 1.1e+07|      8.7|
-|running_sd(x, wins, na_rm = FALSE, restart_period = 50000L) | 8.3e+06|      6.6|
-|ref_running_sd(x, wins)                                     | 1.3e+06|      1.0|
-|ref_running_sd_narm(x, wins)                                | 1.5e+06|      1.2|
-|ref_running_sd_intnel(x, wins)                              | 1.3e+06|      1.0|
-|ref_running_sd_objecty(x, wins)                             | 1.3e+06|      1.0|
-|ref_running_sd_onecheck(x, wins)                            | 1.3e+06|      1.0|
+|running_sd(x, wins)                                         | 1.2e+07|      8.7|
+|running_sd(x, wins, na_rm = FALSE, restart_period = 50000L) | 9.2e+06|      6.7|
+|ref_running_sd(x, wins)                                     | 1.4e+06|      1.0|
+|ref_running_sd_narm(x, wins)                                | 1.7e+06|      1.2|
+|ref_running_sd_intnel(x, wins)                              | 1.4e+06|      1.0|
+|ref_running_sd_objecty(x, wins)                             | 1.4e+06|      1.0|
+|ref_running_sd_onecheck(x, wins)                            | 1.4e+06|      1.0|
 
 

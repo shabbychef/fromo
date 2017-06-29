@@ -847,12 +847,7 @@ class Welford<W,has_wts,false> {
             nel = double(m_wsum.as());
             delnel = della * double(wt) / nel;
             m_xx[1] += delnel;
-            if (nelm > 0) {
-                drat = della * nelm / nel;
-                ac_dn = drat * drat;
-                ac_on = -wt / nelm;
-                m_xx[2] += ac_dn * wt * (1.0 - ac_on);
-            }
+            m_xx[2] += della * wt * (xval - m_xx[1]);
             return *this;
         }
         // remove one (weighted) observation from our set of x
@@ -866,10 +861,11 @@ class Welford<W,has_wts,false> {
             if (nel > 0) {
                 delnel = della * double(wt) / nel;
                 m_xx[1] -= delnel;
-                drat = delnel * nel;
-                ac_dn = drat*drat;
-                ac_on = -double(wt) / nel;
-                m_xx[2] -= ac_dn * (1.0 - ac_on);
+                m_xx[2] -= della * wt * (xval - m_xx[1]);
+                //drat = delnel * nel;
+                //ac_dn = drat*drat;
+                //ac_on = -double(wt) / nel;
+                //m_xx[2] -= ac_dn * (1.0 - ac_on);
             }
             return *this;
         }
@@ -3655,7 +3651,7 @@ NumericVector cent2raw(NumericVector input) {
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
-NumericVector ref_sd(NumericVector v) {
+double ref_sd(NumericVector v) {
     double nel,mu,sd,delta;
     double x;
     
@@ -3670,8 +3666,9 @@ NumericVector ref_sd(NumericVector v) {
         mu += delta / nel;
         sd += delta * (x - mu);
     }
-    NumericVector vret = NumericVector::create(sqrt(sd / (nel - 1)));
-    return vret;
+    //NumericVector vret = NumericVector::create(sqrt(sd / (nel - 1)));
+    //return vret;
+    return sqrt(sd / (nel - 1));
 }
 
 //' @export

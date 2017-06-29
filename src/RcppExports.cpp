@@ -572,7 +572,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ref_sd
-NumericVector ref_sd(NumericVector v);
+double ref_sd(NumericVector v);
 RcppExport SEXP fromo_ref_sd(SEXP vSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
