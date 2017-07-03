@@ -172,6 +172,10 @@ Then go on to define the \kth{k} centered weighted sum via
 $$
 \mom{\sta}{k} = \sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta}}^k.
 $$
+Note that we have
+$$
+\mom{\sta}{0} = \twt{\sta},\qquad\mbox{and}\qquad\mom{\sta}{1} = 0.
+$$
 
 Now we consider the question of how to comptue \wmu{\std} and \mom{\std}{k}
 from the other quantities. We have:
@@ -183,12 +187,20 @@ from the other quantities. We have:
 	&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta} + \wmu{\sta} - \wmu{\std}}^k +
 	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\stb} + \wmu{\stb} - \wmu{\std}}^k -
 	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\stc} + \wmu{\stc} - \wmu{\std}}^k,\\
-	&=\sum{0 \le j \le k}{k \choose j}\wrapBraces{
+	&=\sum_{0 \le j \le k}{k \choose j}\wrapBraces{
 		\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta}}^j \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
 	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\stb}}^j \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
 	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\stc}}^j \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}
 	},\\
-	&=\sum{0 \le j \le k}{k \choose j}\wrapBraces{
+	&=\sum_{0 \le j \le k}{k \choose j}\wrapBraces{
+		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
+		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
+		\mom{\stc}{j} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}},\\
+	&= \mom{\sta}{k} + \mom{\stb}{k} - \mom{\stc}{k} +
+		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k} +
+		\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k} -
+		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k}} 
+		+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
 		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
 		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
 		\mom{\stc}{j} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}}.
