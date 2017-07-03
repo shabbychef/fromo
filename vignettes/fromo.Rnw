@@ -1,0 +1,209 @@
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Using the fromo package}
+\documentclass[10pt,a4paper,english]{article}
+
+% front matter%FOLDUP
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[square,numbers]{natbib}
+%\usepackage[authoryear]{natbib}
+%\usepackage[iso]{datetime}
+%\usepackage{datetime}
+
+% packages%FOLDUP
+\RequirePackage{url}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{hyperref}
+
+%\usepackage[environments,commands,meshstuff,shortcuts]{sepmath}
+%\usepackage[environments,commands,shortcuts]{sepmath}
+
+\RequirePackage{ifthen}
+\RequirePackage{xspace}
+%UNFOLD
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% meta meta commands
+% emptyP if 1 is empty give 2 else give 3
+%\providecommand{\mtP}[3]{\ifx\@empty#1\@empty#2\else#3\fi}
+%\def\mtP#1#2#3{\ifx\@empty#1\@empty#2\else#3\fi}
+%\def\mtP#1#2#3{\ifx\@empty\detokenize{#1}\@empty#2\else#3\fi}
+\def\mtP#1#2#3{\if\relax\detokenize{#1}\relax#2\else#3\fi}
+% listmore if 1 is empty give 1 else give `,1'
+%\def\lMr#1{\ifx\@empty#1\@empty\relax\else{,#1}\fi}
+\def\lMr#1{\ifx\@empty\detokenize{#1}\@empty\relax\else{,#1}\fi}
+\providecommand{\MATHIT}[1]{\ensuremath{#1}\xspace}
+\providecommand{\neUL}[3]{\mtP{#2}{\mtP{#3}{#1}{{#1}_{#3}}}{\mtP{#3}{{#1}^{#2}}{{#1}^{#2}_{#3}}}}
+\providecommand{\neSUP}[2]{\mtP{#2}{#1}{{{#1}^{#2}}}}
+\providecommand{\mathSUB}[2]{\MATHIT{\neSUB{#1}{#2}}}
+
+\providecommand{\wrapParens}[1]{\left(#1\right)}
+\providecommand{\wrapBraces}[1]{\left\{#1\right\}}
+\providecommand{\wrapBracks}[1]{\left[#1\right]}
+
+%\providecommand{\wrapNeParens}[1]{\if\relax\detokenize{#1}\relax\else\wrapParens{#1}\fi}
+
+\providecommand{\wrapNeParens}[1]{\mtP{#1}{}{\wrapParens{#1}}}
+\providecommand{\wrapNeBraces}[1]{\mtP{#1}{}{\wrapBraces{#1}}}
+\providecommand{\wrapNeBracks}[1]{\mtP{#1}{}{\wrapBracks{#1}}}
+\providecommand{\neSUB}[2]{\mtP{#2}{#1}{{{#1}_{#2}}}}
+
+\providecommand{\abs}[1]{\MATHIT{\left| #1 \right|}}
+\providecommand{\mathSUB}[2]{\MATHIT{\neSUB{#1}{#2}}}
+
+%\providecommand{\rcode}[1]{\texttt{\verb{#1}}}
+\providecommand{\Rcode}[1]{{\texttt{#1}}}
+% stolen from synapter vignette:
+\providecommand{\Rfunction}[1]{{\texttt{#1}}}
+\providecommand{\Robject}[1]{{\texttt{#1}}}
+\providecommand{\Rpackage}[1]{{\mbox{\normalfont\textsf{#1}}}}
+\providecommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
+
+\providecommand{\ndf}[1]{\mathSUB{n}{#1}}
+\providecommand{\twt}[1]{\mathSUB{W}{#1}}
+\providecommand{\wmu}[1]{\mathSUB{\mu}{#1}}
+\providecommand{\mom}[2]{\mathSUB{\mathcal{M}}{#1,#2}}
+
+\providecommand{\aset}[1]{\MATHIT{\mathcal{#1}}}
+\providecommand{\sta}{\aset{A}}
+\providecommand{\stb}{\aset{B}}
+\providecommand{\stc}{\aset{C}}
+\providecommand{\std}{\aset{D}}
+\providecommand{\data}[1]{\mathSUB{x}{#1}}
+\providecommand{\wt}[1]{\mathSUB{w}{#1}}
+\providecommand{\kth}[1]{\MATHIT{#1^{\text{th}}}}
+
+
+\makeatletter
+\makeatother
+
+%\input{sr_defs.tex}
+%\usepackage{SharpeR}
+
+% knitr setup%FOLDUP
+
+<<'preamble', include=FALSE, warning=FALSE, message=FALSE>>=
+library(knitr)
+
+# set the knitr options ... for everyone!
+# if you unset this, then vignette build bonks. oh, joy.
+#opts_knit$set(progress=TRUE)
+opts_knit$set(eval.after='fig.cap')
+# for a package vignette, you do want to echo.
+# opts_chunk$set(echo=FALSE,warning=FALSE,message=FALSE)
+opts_chunk$set(warning=FALSE,message=FALSE)
+#opts_chunk$set(results="asis")
+opts_chunk$set(cache=TRUE,cache.path="cache/fromo_")
+
+#opts_chunk$set(fig.path="figure/",dev=c("pdf","cairo_ps"))
+opts_chunk$set(fig.path="figure/fromo_",dev=c("pdf"))
+opts_chunk$set(fig.width=5,fig.height=4,dpi=64)
+
+# doing this means that png files are made of figures;
+# the savings is small, and it looks like shit:
+#opts_chunk$set(fig.path="figure/",dev=c("png","pdf","cairo_ps"))
+#opts_chunk$set(fig.width=4,fig.height=4)
+# for figures? this is sweave-specific?
+#opts_knit$set(eps=TRUE)
+
+# this would be for figures:
+#opts_chunk$set(out.width='.8\\textwidth')
+# for text wrapping:
+options(width=64,digits=2)
+opts_chunk$set(size="small")
+opts_chunk$set(tidy=TRUE,tidy.opts=list(width.cutoff=50,keep.blank.line=TRUE))
+
+compile.time <- Sys.time()
+
+# from the environment
+
+# only recompute if FORCE_RECOMPUTE=True w/out case match.
+FORCE_RECOMPUTE <- 
+	(toupper(Sys.getenv('FORCE_RECOMPUTE',unset='False')) == "TRUE")
+
+# compiler flags!
+
+# not used yet
+LONG.FORM <- FALSE
+@
+%UNFOLD
+%UNFOLD
+
+% document incantations%FOLDUP
+\begin{document}
+
+\title{Using fromo}
+\author{Steven E. Pav %
+\thanks{\email{shabbychef@gmail.com}}}
+%\date{\today, \currenttime}
+
+\maketitle
+%UNFOLD
+
+\begin{abstract}%FOLDUP
+The fromo package provides fast robust summation using the Welford-Terriberry method.
+\end{abstract}%UNFOLD
+
+\section{The update formula}
+
+Let \sta be a set of indices over the data \data{i} and corresponding weights
+$\wt{i} > 0$. Similarly, let \stb, and \stc be sets of indices, with the
+restriction that 
+$\sta \cap \stb = \emptyset$, 
+$\stc \subseteq \sta$, and define
+$$
+\std = \sta \cup \stb \setminus \stc.
+$$
+
+Define the total elements, sum of weights, and mean over sets via
+$$
+\ndf{\sta} = \abs{\sta},
+$$
+$$
+\twt{\sta} = \sum_{i \in \sta} \wt{i},
+$$
+$$
+\wmu{\sta} = \frac{\sum_{i \in \sta} \wt{i} \data{i}}{\twt{\sta}}.
+$$
+Then go on to define the \kth{k} centered weighted sum via
+$$
+\mom{\sta}{k} = \sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta}}^k.
+$$
+
+Now we consider the question of how to comptue \wmu{\std} and \mom{\std}{k}
+from the other quantities. We have:
+\begin{align*}
+	\mom{\std}{k}&=\sum_{i \in \std} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k,\\
+	&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k +
+	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k -
+	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k,\\
+	&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta} + \wmu{\sta} - \wmu{\std}}^k +
+	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\stb} + \wmu{\stb} - \wmu{\std}}^k -
+	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\stc} + \wmu{\stc} - \wmu{\std}}^k,\\
+	&=\sum{0 \le j \le k}{k \choose j}\wrapBraces{
+		\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta}}^j \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
+	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\stb}}^j \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
+	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\stc}}^j \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}
+	},\\
+	&=\sum{0 \le j \le k}{k \choose j}\wrapBraces{
+		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
+		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
+		\mom{\stc}{j} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}}.
+\end{align*}
+
+
+
+% bibliography%FOLDUP
+%\bibliographystyle{jss}
+%\bibliographystyle{ieeetr}
+\bibliographystyle{plainnat}
+%\bibliographystyle{acm}
+%\bibliography{SharpeR}
+%UNFOLD
+
+\end{document}
+%for vim modeline: (do not edit)
+% vim:fdm=marker:fmr=FOLDUP,UNFOLD:cms=%%s:syn=rnoweb:ft=rnoweb:tw=180
