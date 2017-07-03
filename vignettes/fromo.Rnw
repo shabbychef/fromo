@@ -199,13 +199,12 @@ from the other quantities. We have:
 	&= \mom{\sta}{k} + \mom{\stb}{k} - \mom{\stc}{k} +
 		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k} +
 		\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k} -
-		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k}} 
+		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k}
 		+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
 		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
 		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
 		\mom{\stc}{j} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}}.
 \end{align*}
-
 
 
 % bibliography%FOLDUP
