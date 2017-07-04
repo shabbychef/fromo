@@ -573,7 +573,7 @@ class Welford<W,false,ord_beyond> {
     public:
         // add another (weighted) observation to our set of x
         inline Welford& add_one (const double xval, const W wt) {
-            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            double della,nel,delnel,nelm,drat,upnn,ac_dn,ac_on,ac_de;
             della = xval - m_xx[1];
             nelm = double(m_nel);
             m_nel++;
@@ -581,17 +581,17 @@ class Welford<W,false,ord_beyond> {
             delnel = della  / nel;
             m_xx[1] += delnel;
             if (nelm > 0) {
-                drat = della * nelm / nel;
-                nbyn = -1.0 / nelm;
+                drat = delnel * nelm;
+                upnn = -nelm;
                 ac_dn = pow(drat,m_ord);
-                ac_on = pow(nbyn,m_ord-1);
+                ac_on = pow(upnn,1-m_ord);
 
                 for (int ppp=m_ord;ppp >= 2;ppp--) {
                     m_xx[ppp] += ac_dn * (1.0 - ac_on);
                     if (ord_beyond) {
                         if (ppp > 2) {
                             if (drat != 0) { ac_dn /= drat; }
-                            ac_on /= nbyn;
+                            ac_on *= upnn;
                             ac_de = -delnel;
 
                             for (int qqq=1;qqq <= ppp-2;qqq++) {
@@ -3652,23 +3652,21 @@ NumericVector cent2raw(NumericVector input) {
 //' @export
 // [[Rcpp::export]]
 double ref_sd(NumericVector v) {
-    double nel,mu,sd,delta;
+    double mu,sd,delta;
     double x;
     
     int top=v.size();
-    nel = 1.0;
     sd = 0.0;
     mu = v[0];
-    for (int iii=1;iii < top;++iii) {
-        ++nel;
-        x = v[iii];
+    for (int iii=2;iii <= top;++iii) {
+        x = v[iii-1];
         delta = x - mu;
-        mu += delta / nel;
+        mu += delta / double(iii);
         sd += delta * (x - mu);
     }
     //NumericVector vret = NumericVector::create(sqrt(sd / (nel - 1)));
     //return vret;
-    return sqrt(sd / (nel - 1));
+    return sqrt(sd / (top - 1));
 }
 
 //' @export
