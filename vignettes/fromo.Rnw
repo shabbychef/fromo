@@ -39,6 +39,7 @@
 \providecommand{\neUL}[3]{\mtP{#2}{\mtP{#3}{#1}{{#1}_{#3}}}{\mtP{#3}{{#1}^{#2}}{{#1}^{#2}_{#3}}}}
 \providecommand{\neSUP}[2]{\mtP{#2}{#1}{{{#1}^{#2}}}}
 \providecommand{\mathSUB}[2]{\MATHIT{\neSUB{#1}{#2}}}
+\providecommand{\mathUL}[3]{\MATHIT{\neUL{#1}{#2}{#3}}}
 
 \providecommand{\wrapParens}[1]{\left(#1\right)}
 \providecommand{\wrapBraces}[1]{\left\{#1\right\}}
@@ -64,8 +65,12 @@
 
 \providecommand{\ndf}[1]{\mathSUB{n}{#1}}
 \providecommand{\twt}[1]{\mathSUB{W}{#1}}
-\providecommand{\wmu}[1]{\mathSUB{\mu}{#1}}
-\providecommand{\mom}[2]{\mathSUB{\mathcal{M}}{#1,#2}}
+\providecommand{\wmupow}[2]{\mathUL{\mu}{#2}{#1}}
+%\providecommand{\wmu}[1]{\mathSUB{\mu}{#1}}
+\providecommand{\wmu}[1]{\wmupow{#1}{}}
+\providecommand{\mom}[2]{\mathSUB{\mathcal{S}}{#1,#2}}
+\providecommand{\cmom}[2]{\mathSUB{\mathcal{M}}{#1,#2}}
+\providecommand{\scmom}[2]{\mathSUB{\mathcal{Y}}{#1,#2}}
 
 \providecommand{\aset}[1]{\MATHIT{\mathcal{#1}}}
 \providecommand{\sta}{\aset{A}}
@@ -75,7 +80,10 @@
 \providecommand{\data}[1]{\mathSUB{x}{#1}}
 \providecommand{\wt}[1]{\mathSUB{w}{#1}}
 \providecommand{\kth}[1]{\MATHIT{#1^{\text{th}}}}
+\providecommand{\sdevpow}[2]{\mathUL{\sigma}{#2}{#1}}
+\providecommand{\sdev}[1]{\sdevpow{#1}{}}
 
+\providecommand{\fromo}{\Rpackage{fromo}}
 
 \makeatletter
 \makeatother
@@ -150,13 +158,18 @@ The fromo package provides fast robust summation using the Welford-Terriberry me
 \section{The update formula}
 
 Let \sta be a set of indices over the data \data{i} and corresponding weights
-$\wt{i} > 0$. Similarly, let \stb, and \stc be sets of indices, with the
+$\wt{i} > 0$. The weights are \emph{replication weights}, and are intended
+to simulate having observed multiple identical, though independent, values of
+\data{i}. In the standard setting the weights are identically 1.
+Furthermore, 
+let \stb and \stc be sets of indices with the
 restriction that 
 $\sta \cap \stb = \emptyset$, 
 $\stc \subseteq \sta$, and define
 $$
 \std = \sta \cup \stb \setminus \stc.
 $$
+Thus \std is \sta `plus' \stb `minus' \stc.
 
 Define the total elements, sum of weights, and mean over sets via
 $$
@@ -177,7 +190,11 @@ $$
 \mom{\sta}{0} = \twt{\sta},\qquad\mbox{and}\qquad\mom{\sta}{1} = 0.
 $$
 
-Now we consider the question of how to comptue \wmu{\std} and \mom{\std}{k}
+When \sta consists of a single observation, that is when $\ndf{\sta}=1$, we have
+$\wmu{\sta} = \data{i}$ for the unique $i \in \sta$, and 
+$\mom{\sta}{k} = 0$ for all $k\ge 1$.
+
+Now we consider the question of how to compute \wmu{\std} and \mom{\std}{k}
 from the other quantities. We have:
 \begin{align*}
 	\mom{\std}{k}&=\sum_{i \in \std} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k,\\
@@ -187,11 +204,14 @@ from the other quantities. We have:
 	&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta} + \wmu{\sta} - \wmu{\std}}^k +
 	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\stb} + \wmu{\stb} - \wmu{\std}}^k -
 	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\stc} + \wmu{\stc} - \wmu{\std}}^k,\\
-	&=\sum_{0 \le j \le k}{k \choose j}\wrapBraces{
-		\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta}}^j \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
-	\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \wmu{\stb}}^j \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
-	\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \wmu{\stc}}^j \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}
-	},\\
+	&= \sum_{i \in \sta} \sum_{0 \le j \le k}{k \choose j}
+		\wt{i} \wrapParens{\data{i} - \wmu{\sta}}^j \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j}\\
+	&\phantom{=}\,+
+	\sum_{i \in \stb} \sum_{0 \le j \le k}{k \choose j}
+		\wt{i} \wrapParens{\data{i} - \wmu{\stb}}^j \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j}\\
+	&\phantom{=}\,-
+	\sum_{i \in \stc} \sum_{0 \le j \le k}{k \choose j}
+		\wt{i} \wrapParens{\data{i} - \wmu{\stc}}^j \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j},\\
 	&=\sum_{0 \le j \le k}{k \choose j}\wrapBraces{
 		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
 		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
@@ -199,12 +219,102 @@ from the other quantities. We have:
 	&= \mom{\sta}{k} + \mom{\stb}{k} - \mom{\stc}{k} +
 		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k} +
 		\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k} -
-		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k}
-		+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
+		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k}\\
+  &\phantom{=}\,+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
 		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
 		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} -
 		\mom{\stc}{j} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}}.
 \end{align*}
+
+%Now consider the difference in means. We have
+%\begin{align*}
+	%\wmu{\sta} - \wmu{\std} &= 
+		%\frac{\sum_{i \in \sta} \wt{i} \data{i}}{\twt{\sta}} -
+		%\frac{\sum_{i \in \sta} \wt{i} \data{i} +
+		%\sum_{i \in \stb} \wt{i} \data{i} -
+		%\sum_{i \in \stc} \wt{i} \data{i}}{\twt{\std}},\\
+		%&= \frac{\twt{\std} - \twt{\sta}}{\twt{\std}\twt{\sta}}
+		%\sum_{i \in \sta} \wt{i} \data{i}
+		%- \frac{\sum_{i \in \stb} \wt{i} \data{i} - \sum_{i \in \stc} \wt{i} \data{i}}{\twt{\std}}.
+%\end{align*}
+%Similar formul{\ae} 
+%exist for 
+%$\wmu{\stb} - \wmu{\std}$ and
+%$\wmu{\stc} - \wmu{\std}$, though these are only useful for simple cases.
+
+We recover Welford's method in the special case of $k=2$, with
+\begin{align*}
+	\mom{\std}{2}&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} +
+		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{2} +
+		\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{2} -
+		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{2},\\
+	&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} 
+		+ \wrapParens{\twt{\sta} + \twt{\stb} - \twt{\stc}} \wmupow{\std}{2}\\
+	&\phantom{=}\,\, 
+		+ \twt{\sta} \wmupow{\sta}{2}
+		+ \twt{\stb} \wmupow{\stb}{2}
+		- \twt{\stc} \wmupow{\stc}{2}
+		- 2 \wmu{\std} \wrapParens{
+			\twt{\sta} \wmu{\sta}
+			+ \twt{\stb} \wmu{\stb}
+			- \twt{\stc} \wmu{\stc}},\\
+	&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} 
+		- \twt{\std} \wmupow{\std}{2}
+		+ \twt{\sta} \wmupow{\sta}{2}
+		+ \twt{\stb} \wmupow{\stb}{2}
+		- \twt{\stc} \wmupow{\stc}{2}.
+\end{align*}
+Again, further simplifications are possible when \stb or \stc consist of a single index.
+
+There is temptation to store the uncentered second sums, as one notices they are additive:
+$$
+\mom{\std}{2} + \twt{\std}\wmupow{\std}{2} = 
+\mom{\sta}{2} + \twt{\sta}\wmupow{\sta}{2} 
++ \mom{\stb}{2} + \twt{\stb}\wmupow{\stb}{2} 
+- \mom{\stc}{2} + \twt{\stc}\wmupow{\stc}{2}.
+$$
+However, recovering the centered sums from the uncentered sums is not numerically robust, and
+can result in significant roundoff errors.
+
+\section{The output}
+
+Several kinds of output are produced by the \fromo package. We describe them in more detail here.
+
+\begin{itemize}
+	\item[mean] The (weighted) mean over the index set \sta is simply \wmu{\sta}.
+	\item[standard deviation] The standard deviation over the index set \sta is 
+$$
+		\sdev{\sta} = \sqrt{\frac{\mom{\sta}{2}}{\twt{\sta} - \nu}},
+$$
+where $\nu$ are the `consumed degrees of freedom', and is typically set to $1$. 
+When the normalization flag is set to true, however, it is intended that the weights
+be normalized to have mean value $1$. In this case the standard deviation over 
+\sta is defined as
+$$
+		\sdev{\sta} = \sqrt{\frac{\mom{\sta}{2}}{\twt{\sta}}\frac{\ndf{\sta}}{\ndf{\sta} - \nu}}.
+$$
+When $\nu=0$, these are identical.
+	\item[centered moment] The \kth{k} centered moment is defined as
+$$
+\cmom{\sta}{k} = \frac{\mom{\sta}{k}}{\twt{\sta}}.
+$$
+Note that for $k>2$ we do not support consumed degrees of freedom, and so
+normalization of weights has no effect.
+	\item[standardized moment] The \kth{k} standardized (and centered) moment is defined as
+$$
+\scmom{\sta}{k} = \frac{\cmom{\sta}{k}}{\sdevpow{\sta}{k}}.
+$$
+Normalization and consumed degrees of freedom affect the computation of \sdevpow{\sta}{k},
+		and so affect the standardized moments.
+	\item[centered value] For a given index $i$ and some fixed set \sta, the centered version of
+		\data{i} is merely $\data{i} - \wmu{\sta}$.
+	\item[standardized value] For a given index $i$ and some fixed set \sta, the standardized version of
+		\data{i} is merely $\data{i}/\sdev{\sta}$. 
+		It is affected by normalization and consumed degrees of freedom.
+	\item[z-scored value] For a given index $i$ and some fixed set \sta, the z-scored version of
+		\data{i} is $\wrapParens{\data{i} - \wmu{\sta}}/\sdev{\sta}$. 
+		It is affected by normalization and consumed degrees of freedom.
+\end{itemize}
 
 
 % bibliography%FOLDUP
