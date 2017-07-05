@@ -60,7 +60,7 @@
 % stolen from synapter vignette:
 \providecommand{\Rfunction}[1]{{\texttt{#1}}}
 \providecommand{\Robject}[1]{{\texttt{#1}}}
-\providecommand{\Rpackage}[1]{{\mbox{\normalfont\textsf{#1}}}}
+\providecommand{\Rpackage}[1]{{\mbox{\normalfont\textsf{#1}}}\xspace}
 \providecommand{\email}[1]{\href{mailto:#1}{\normalfont\texttt{#1}}}
 
 \providecommand{\ndf}[1]{\mathSUB{n}{#1}}
@@ -152,7 +152,7 @@ LONG.FORM <- FALSE
 %UNFOLD
 
 \begin{abstract}%FOLDUP
-The fromo package provides fast robust summation using the Welford-Terriberry method.
+The \fromo  package provides fast robust summation using the Welford-Terriberry method.
 \end{abstract}%UNFOLD
 
 \section{The update formula}
@@ -172,15 +172,11 @@ $$
 Thus \std is \sta `plus' \stb `minus' \stc.
 
 Define the total elements, sum of weights, and mean over sets via
-$$
-\ndf{\sta} = \abs{\sta},
-$$
-$$
-\twt{\sta} = \sum_{i \in \sta} \wt{i},
-$$
-$$
-\wmu{\sta} = \frac{\sum_{i \in \sta} \wt{i} \data{i}}{\twt{\sta}}.
-$$
+\begin{align*}
+\ndf{\sta} &= \abs{\sta},\\
+\twt{\sta} &= \sum_{i \in \sta} \wt{i},\\
+\wmu{\sta} &= \frac{\sum_{i \in \sta} \wt{i} \data{i}}{\twt{\sta}}.
+\end{align*}
 Then go on to define the \kth{k} centered weighted sum via
 $$
 \mom{\sta}{k} = \sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\sta}}^k.
@@ -276,9 +272,63 @@ $$
 However, recovering the centered sums from the uncentered sums is not numerically robust, and
 can result in significant roundoff errors.
 
+\subsection{Adding a single observation}%FOLDUP
+
+We now consider the special case where \stc is empty, and \stb consists of the single index
+$b$. We then have $\twt{\std} = \twt{\sta} + \wt{b},$
+\begin{align*}
+\wmu{\std} &= \frac{\twt{\sta}\wmu{\sta} + \wt{b}\data{b}}{\twt{\sta} + \wt{b}},\\
+	&= \wmu{\sta} + \wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\sta} + \wt{b}},\\
+	&= \wmu{\sta} + \twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}.
+\end{align*}
+So then
+$$
+\wmu{\sta} - \wmu{\std} = -\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}.
+$$
+Also
+\begin{align*}
+\wmu{\stb} - \wmu{\std} &= \wmu{\stb} - \wmu{\sta} + \wmu{\sta} - \wmu{\std},\\
+	&= \wmu{\stb} - \wmu{\sta} -\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}},\\
+	&= \twt{\sta}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}.
+\end{align*}
+Since \stb is a single index, $\mom{\stb}{k} = 0$ for $k > 0$, then we have
+\begin{align}
+	\mom{\std}{k} &= \mom{\sta}{k} 
+	+	\twt{\sta} \wrapParens{-\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}}^{k} 
+	+ \twt{\stb} \wrapParens{\twt{\sta}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}}^{k}\\
+	&\phantom{=}\,
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{-\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
+\end{align}
+For the $k=2$ case this further simplifies to
+\begin{align*}
+	\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \twt{\stb}}{\twt{\std}} \wrapParens{\wmu{\stb} - \wmu{\sta}}^{2},\\
+	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\wmu{\stb} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
+\end{align*}
+%UNFOLD
+\subsection{Removing a single observation}%FOLDUP
+
+We now consider the special case where \stb is empty, and \stc consists of the single index
+$c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$
+\begin{align*}
+	\wmu{\sta} - \wmu{\std} &= - \twt{\stc}\frac{\wmu{\sta} - \wmu{\stc}}{\twt{\std}},\\
+	\wmu{\stc} - \wmu{\std} &= - \frac{\twt{\sta}}{\twt{\std}} \wrapParens{\wmu{\sta} - \wmu{\stc}},\\
+	\mom{\std}{k} &= \mom{\sta}{k} 
+	+	\twt{\sta} \wrapParens{- \twt{\stc}\frac{\wmu{\sta} - \wmu{\stc}}{\twt{\std}}}^{k}
+	-	\twt{\stc} \wrapParens{- \frac{\twt{\sta}}{\twt{\std}} \wrapParens{\wmu{\sta} - \wmu{\stc}}}^{k}\\
+	&\phantom{=}\,
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{- \twt{\stc}\frac{\wmu{\sta} - \wmu{\stc}}{\twt{\std}}}^{k-j}}.
+\end{align*}
+%For the $k=2$ case this further simplifies to
+%\begin{align*}
+	%\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \twt{\stb}}{\twt{\std}} \wrapParens{\wmu{\stb} - \wmu{\sta}}^{2},\\
+	%&= \mom{\sta}{2} + \twt{\std} \wrapParens{\wmu{\stb} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
+%\end{align*}
+%UNFOLD
+\subsection{Adding and removing a single observation}
+
 \section{The output}
 
-Several kinds of output are produced by the \fromo package. We describe them in more detail here.
+Several kinds of output are produced by the \fromo  package. We describe them in more detail here.
 
 \begin{itemize}
 	\item[mean] The (weighted) mean over the index set \sta is simply \wmu{\sta}.
