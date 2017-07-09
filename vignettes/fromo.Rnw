@@ -72,6 +72,10 @@
 \providecommand{\cmom}[2]{\mathSUB{\mathcal{M}}{#1,#2}}
 \providecommand{\scmom}[2]{\mathSUB{\mathcal{Y}}{#1,#2}}
 
+\providecommand{\tiltwt}[1]{\mathSUB{\tilde{W}}{#1}}
+\providecommand{\tilwmu}[1]{\mathSUB{\tilde{\mu}}{#1}}
+\providecommand{\tilmom}[2]{\mathSUB{\tilde{\mathcal{S}}}{#1,#2}}
+
 \providecommand{\aset}[1]{\MATHIT{\mathcal{#1}}}
 \providecommand{\sta}{\aset{A}}
 \providecommand{\stb}{\aset{B}}
@@ -161,17 +165,8 @@ Let \sta be a set of indices over the data \data{i} and corresponding weights
 $\wt{i} > 0$. The weights are \emph{replication weights}, and are intended
 to simulate having observed multiple identical, though independent, values of
 \data{i}. In the standard setting the weights are identically 1.
-Furthermore, 
-let \stb and \stc be sets of indices with the
-restriction that 
-$\sta \cap \stb = \emptyset$, 
-$\stc \subseteq \sta$, and define
-$$
-\std = \sta \cup \stb \setminus \stc.
-$$
-Thus \std is \sta `plus' \stb `minus' \stc.
 
-Define the total elements, sum of weights, and mean over sets via
+Define the total elements, sum of weights, and (weighted) mean over \sta via
 \begin{align*}
 \ndf{\sta} &= \abs{\sta},\\
 \twt{\sta} &= \sum_{i \in \sta} \wt{i},\\
@@ -185,13 +180,28 @@ Note that we have
 $$
 \mom{\sta}{0} = \twt{\sta},\qquad\mbox{and}\qquad\mom{\sta}{1} = 0.
 $$
-
 When \sta consists of a single observation, that is when $\ndf{\sta}=1$, we have
-$\wmu{\sta} = \data{i}$ for the unique $i \in \sta$, and 
+$\wmu{\sta} = \data{a}$ for the unique $a \in \sta$, and 
 $\mom{\sta}{k} = 0$ for all $k\ge 1$.
 
-Now we consider the question of how to compute \wmu{\std} and \mom{\std}{k}
-from the other quantities. We have:
+Let \stb and \stc be sets of indices with the
+restriction that 
+$\sta \cap \stb = \emptyset$, 
+$\stc \subseteq \sta$, and define
+$$
+\std = \sta \cup \stb \setminus \stc.
+$$
+Thus \std is \sta `plus' \stb `minus' \stc. 
+Consider how to compute \twt{\std}, \wmu{\std}, and \mom{\std}{k} from
+the sums of weights, weighted means, and centered sums over the
+sets \sta, \stb, and \stc. We have:
+\begin{align*}
+	\ndf{\std} &= \ndf{\sta} + \ndf{\stb} - \ndf{\stc},\\
+	\twt{\std} &= \twt{\sta} + \twt{\stb} - \twt{\stc},\\
+	\wmu{\std} &= \frac{\twt{\sta}\wmu{\sta} + \twt{\stb}\wmu{\stb} - \twt{\stc}\wmu{\stc}}{\twt{\std}},\\
+	&= \wmu{\sta} + \frac{\twt{\stb}\wrapParens{\wmu{\stb} - \wmu{\sta}} - \twt{\stc}\wrapParens{\wmu{\stc}-\wmu{\sta}}}{\twt{\std}},
+\end{align*}
+and
 \begin{align*}
 	\mom{\std}{k}&=\sum_{i \in \std} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k,\\
 	&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \wmu{\std}}^k +
@@ -222,6 +232,38 @@ from the other quantities. We have:
 		\mom{\stc}{j} \wrapParens{\wmu{\stc} - \wmu{\std}}^{k-j}}.
 \end{align*}
 
+Note that if the centered sums are to be computed \emph{in place}, that is,
+overwriting the vector of \mom{\sta}{j} with values of \mom{\std}{j}, then
+they should be computed in decreasing order, as updates to higher order
+sums require the old values of lower order sums.
+
+It should also be noted that we did not use the restriction that
+$\wt{i} > 0$. True, negative values of $\wt{i}$ can cause 
+\twt{\std} to be zero, and therefore \wmu{\std} is not defined, nor
+is \mom{\std}{k}. Negative weights also make no sense for most 
+statistical uses. However, notice what happens when we subsitute
+every $\wt{c}$ with $-\wt{c}$ for $c \in \stc$. If we compute 
+the total weight, \twt{\stc}, it's sign has flipped, as has that
+of \mom{\stc}{k}, but not of \wmu{\stc}. In this case, using the
+negative weights we have
+\begin{align*}
+	\mom{\std}{k} 
+	&= \mom{\sta}{k} + \mom{\stb}{k} + \tilmom{\stc}{k} +
+		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k} +
+		\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k} +
+		\tiltwt{\stc} \wrapParens{\tilwmu{\stc} - \wmu{\std}}^{k}\\
+  &\phantom{=}\,+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
+		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
+		\mom{\stb}{j} \wrapParens{\wmu{\stb} - \wmu{\std}}^{k-j} +
+		\tilmom{\stc}{j} \wrapParens{\tilwmu{\stc} - \wmu{\std}}^{k-j}},
+\end{align*}
+where the \tiltwt{\stc}, \tilwmu{\stc}, and \tilmom{\stc}{j} denote that
+they are computed with negative weights.
+Now the update formula for removing \stc from \sta looks just like that
+for adding \stb, except negative weights are used.
+
+
+
 %Now consider the difference in means. We have
 %\begin{align*}
 	%\wmu{\sta} - \wmu{\std} &= 
@@ -238,39 +280,39 @@ from the other quantities. We have:
 %$\wmu{\stb} - \wmu{\std}$ and
 %$\wmu{\stc} - \wmu{\std}$, though these are only useful for simple cases.
 
-We recover Welford's method in the special case of $k=2$, with
-\begin{align*}
-	\mom{\std}{2}&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} +
-		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{2} +
-		\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{2} -
-		\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{2},\\
-	&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} 
-		+ \wrapParens{\twt{\sta} + \twt{\stb} - \twt{\stc}} \wmupow{\std}{2}\\
-	&\phantom{=}\,\, 
-		+ \twt{\sta} \wmupow{\sta}{2}
-		+ \twt{\stb} \wmupow{\stb}{2}
-		- \twt{\stc} \wmupow{\stc}{2}
-		- 2 \wmu{\std} \wrapParens{
-			\twt{\sta} \wmu{\sta}
-			+ \twt{\stb} \wmu{\stb}
-			- \twt{\stc} \wmu{\stc}},\\
-	&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} 
-		- \twt{\std} \wmupow{\std}{2}
-		+ \twt{\sta} \wmupow{\sta}{2}
-		+ \twt{\stb} \wmupow{\stb}{2}
-		- \twt{\stc} \wmupow{\stc}{2}.
-\end{align*}
-Again, further simplifications are possible when \stb or \stc consist of a single index.
+%We recover Welford's method in the special case of $k=2$, with
+%\begin{align*}
+	%\mom{\std}{2}&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} +
+		%\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{2} +
+		%\twt{\stb} \wrapParens{\wmu{\stb} - \wmu{\std}}^{2} -
+		%\twt{\stc} \wrapParens{\wmu{\stc} - \wmu{\std}}^{2},\\
+	%&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} 
+		%+ \wrapParens{\twt{\sta} + \twt{\stb} - \twt{\stc}} \wmupow{\std}{2}\\
+	%&\phantom{=}\,\, 
+		%+ \twt{\sta} \wmupow{\sta}{2}
+		%+ \twt{\stb} \wmupow{\stb}{2}
+		%- \twt{\stc} \wmupow{\stc}{2}
+		%- 2 \wmu{\std} \wrapParens{
+			%\twt{\sta} \wmu{\sta}
+			%+ \twt{\stb} \wmu{\stb}
+			%- \twt{\stc} \wmu{\stc}},\\
+	%&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2} 
+		%- \twt{\std} \wmupow{\std}{2}
+		%+ \twt{\sta} \wmupow{\sta}{2}
+		%+ \twt{\stb} \wmupow{\stb}{2}
+		%- \twt{\stc} \wmupow{\stc}{2}.
+%\end{align*}
+%Again, further simplifications are possible when \stb or \stc consist of a single index.
 
-There is temptation to store the uncentered second sums, as one notices they are additive:
-$$
-\mom{\std}{2} + \twt{\std}\wmupow{\std}{2} = 
-\mom{\sta}{2} + \twt{\sta}\wmupow{\sta}{2} 
-+ \mom{\stb}{2} + \twt{\stb}\wmupow{\stb}{2} 
-- \mom{\stc}{2} + \twt{\stc}\wmupow{\stc}{2}.
-$$
-However, recovering the centered sums from the uncentered sums is not numerically robust, and
-can result in significant roundoff errors.
+%There is temptation to store the uncentered second sums, as one notices they are additive:
+%$$
+%\mom{\std}{2} + \twt{\std}\wmupow{\std}{2} = 
+%\mom{\sta}{2} + \twt{\sta}\wmupow{\sta}{2} 
+%+ \mom{\stb}{2} + \twt{\stb}\wmupow{\stb}{2} 
+%- \mom{\stc}{2} + \twt{\stc}\wmupow{\stc}{2}.
+%$$
+%However, recovering the centered sums from the uncentered sums is not numerically robust, and
+%can result in significant roundoff errors.
 
 \subsection{Adding a single observation}%FOLDUP
 
@@ -279,52 +321,88 @@ $b$. We then have $\twt{\std} = \twt{\sta} + \wt{b},$
 \begin{align*}
 \wmu{\std} &= \frac{\twt{\sta}\wmu{\sta} + \wt{b}\data{b}}{\twt{\sta} + \wt{b}},\\
 	&= \wmu{\sta} + \wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\sta} + \wt{b}},\\
-	&= \wmu{\sta} + \twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}.
+	&= \wmu{\sta} + \wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}.
 \end{align*}
 So then
 $$
-\wmu{\sta} - \wmu{\std} = -\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}.
+\wmu{\sta} - \wmu{\std} = -\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}.
 $$
 Also
 \begin{align*}
-\wmu{\stb} - \wmu{\std} &= \wmu{\stb} - \wmu{\sta} + \wmu{\sta} - \wmu{\std},\\
-	&= \wmu{\stb} - \wmu{\sta} -\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}},\\
-	&= \twt{\sta}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}.
+\data{b} - \wmu{\std} &= \data{b} - \wmu{\sta} + \wmu{\sta} - \wmu{\std},\\
+	&= \data{b} - \wmu{\sta} -\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}},\\
+	&= \twt{\sta}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}.
 \end{align*}
 Since \stb is a single index, $\mom{\stb}{k} = 0$ for $k > 0$, then we have
 \begin{align}
 	\mom{\std}{k} &= \mom{\sta}{k} 
-	+	\twt{\sta} \wrapParens{-\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}}^{k} 
-	+ \twt{\stb} \wrapParens{\twt{\sta}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}}^{k}\\
+	+	\twt{\sta} \wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k} 
+	+ \wt{b} \wrapParens{\twt{\sta}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k}\\
 	&\phantom{=}\,
-	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{-\twt{\stb}\frac{\wmu{\stb} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
 \end{align}
 For the $k=2$ case this further simplifies to
 \begin{align*}
-	\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \twt{\stb}}{\twt{\std}} \wrapParens{\wmu{\stb} - \wmu{\sta}}^{2},\\
-	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\wmu{\stb} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
+	\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \wt{b}}{\twt{\std}} \wrapParens{\data{b} - \wmu{\sta}}^{2},\\
+	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\data{b} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
 \end{align*}
 %UNFOLD
-\subsection{Removing a single observation}%FOLDUP
+\subsubsection{Removing a single observation}%FOLDUP
 
-We now consider the special case where \stb is empty, and \stc consists of the single index
-$c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$
-\begin{align*}
-	\wmu{\sta} - \wmu{\std} &= - \twt{\stc}\frac{\wmu{\sta} - \wmu{\stc}}{\twt{\std}},\\
-	\wmu{\stc} - \wmu{\std} &= - \frac{\twt{\sta}}{\twt{\std}} \wrapParens{\wmu{\sta} - \wmu{\stc}},\\
+As noted above, removing a single observation should look just like adding a single
+observation, except signs on the weights and weighted sums are flipped. Let $c$ be the
+single index in \stc. Then
+$c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
+\begin{align}
 	\mom{\std}{k} &= \mom{\sta}{k} 
-	+	\twt{\sta} \wrapParens{- \twt{\stc}\frac{\wmu{\sta} - \wmu{\stc}}{\twt{\std}}}^{k}
-	-	\twt{\stc} \wrapParens{- \frac{\twt{\sta}}{\twt{\std}} \wrapParens{\wmu{\sta} - \wmu{\stc}}}^{k}\\
+	+	\twt{\sta} \wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k} 
+	- \wt{c} \wrapParens{\twt{\sta}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k}\\
 	&\phantom{=}\,
-	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{- \twt{\stc}\frac{\wmu{\sta} - \wmu{\stc}}{\twt{\std}}}^{k-j}}.
-\end{align*}
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
+\end{align}
 %For the $k=2$ case this further simplifies to
 %\begin{align*}
 	%\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \twt{\stb}}{\twt{\std}} \wrapParens{\wmu{\stb} - \wmu{\sta}}^{2},\\
 	%&= \mom{\sta}{2} + \twt{\std} \wrapParens{\wmu{\stb} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
 %\end{align*}
+For the $k=2$ case this further simplifies to
+\begin{align*}
+	\mom{\std}{2} 
+	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\data{c} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
+\end{align*}
 %UNFOLD
 \subsection{Adding and removing a single observation}
+
+Consider the case of adding a single $b \in\stb$ and removing a single
+$c\in\stc$.  The total elements is unchanged, of course. We have
+\begin{align*}
+\twt{\std}&=\twt{\sta} + \wt{b} - \wt{c},\\
+	\wmu{\std}&=\wmu{\sta} + \frac{\wt{b}\wrapParens{\data{b} - \wmu{\sta}} - \wt{c}\wrapParens{\data{c}-\wmu{\sta}}}{\twt{\std}}.
+\end{align*}
+The update formula for \mom{\std}{k} is
+\begin{align*}
+	\mom{\std}{k}
+	&= \mom{\sta}{k} + \mom{\stb}{k} - \mom{\stc}{k} +
+		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k} +
+		\wt{b} \wrapParens{\data{b} - \wmu{\std}}^{k} -
+		\wt{c} \wrapParens{\data{c} - \wmu{\std}}^{k}\\
+  &\phantom{=}\,+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
+		\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
+		\mom{\stb}{j} \wrapParens{\data{b} - \wmu{\std}}^{k-j} -
+		\mom{\stc}{j} \wrapParens{\data{c} - \wmu{\std}}^{k-j}}.
+\end{align*}
+In the $k=2$ case this simplifies to 
+\begin{align*}
+	\mom{\std}{2}
+	&= \mom{\sta}{2} + 
+		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{2} +
+		\wt{b} \wrapParens{\data{b} - \wmu{\std}}^{2} -
+		\wt{c} \wrapParens{\data{c} - \wmu{\std}}^{2},
+\end{align*}
+%2FIX: continue from here...
+	%&= \mom{\sta}{2} 
+	%+ \wt{b}\wrapParens{\data{b}-\wmu{\sta}}\wrapParens{\data{b}-\wmu{\std}}
+	%- \wt{c}\wrapParens{\data{c}-\wmu{\sta}}\wrapParens{\data{c}-\wmu{\std}},
 
 \section{The output}
 
