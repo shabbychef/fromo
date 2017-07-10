@@ -82,10 +82,13 @@
 \providecommand{\stc}{\aset{C}}
 \providecommand{\std}{\aset{D}}
 \providecommand{\data}[1]{\mathSUB{x}{#1}}
+\providecommand{\outp}[1]{\mathSUB{y}{#1}}
 \providecommand{\wt}[1]{\mathSUB{w}{#1}}
 \providecommand{\kth}[1]{\MATHIT{#1^{\text{th}}}}
 \providecommand{\sdevpow}[2]{\mathUL{\sigma}{#2}{#1}}
 \providecommand{\sdev}[1]{\sdevpow{#1}{}}
+\providecommand{\tim}[1]{\mathSUB{t}{#1}}
+\providecommand{\dltim}[1]{\mathSUB{d}{#1}}
 
 \providecommand{\fromo}{\Rpackage{fromo}}
 
@@ -344,8 +347,12 @@ Since \stb is a single index, $\mom{\stb}{k} = 0$ for $k > 0$, then we have
 For the $k=2$ case this further simplifies to
 \begin{align*}
 	\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \wt{b}}{\twt{\std}} \wrapParens{\data{b} - \wmu{\sta}}^{2},\\
+	&= \mom{\sta}{2} +	\frac{\twt{\std} \wt{b}}{\twt{\sta}} \wrapParens{\data{b} - \wmu{\std}}^{2},\\
 	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\data{b} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
 \end{align*}
+Note that the quantity $\twt{\std}\wrapParens{\wmu{\std} - \wmu{\sta}} = 
+\wt{b}\wrapParens{\data{b} - \wmu{\sta}}$ is computed as an intermediary in updating
+the weighted mean, resulting in some computational savings.
 %UNFOLD
 \subsubsection{Removing a single observation}%FOLDUP
 
@@ -353,13 +360,17 @@ As noted above, removing a single observation should look just like adding a sin
 observation, except signs on the weights and weighted sums are flipped. Let $c$ be the
 single index in \stc. Then
 $c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
-\begin{align}
+\begin{align*}
+\wmu{\std} &= \wmu{\sta} - \wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}.
+\end{align*}
+The centered sum update formula is
+\begin{align*}
 	\mom{\std}{k} &= \mom{\sta}{k} 
 	+	\twt{\sta} \wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k} 
 	- \wt{c} \wrapParens{\twt{\sta}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k}\\
 	&\phantom{=}\,
 	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
-\end{align}
+\end{align*}
 %For the $k=2$ case this further simplifies to
 %\begin{align*}
 	%\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \twt{\stb}}{\twt{\std}} \wrapParens{\wmu{\stb} - \wmu{\sta}}^{2},\\
@@ -368,13 +379,16 @@ $c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
 For the $k=2$ case this further simplifies to
 \begin{align*}
 	\mom{\std}{2} 
+	&= \mom{\sta}{2} -\frac{\twt{\sta} \wt{c}}{\twt{\std}} \wrapParens{\data{c} - \wmu{\sta}}^{2},\\
+	&= \mom{\sta}{2} -\frac{\twt{\std} \wt{c}}{\twt{\sta}} \wrapParens{\data{c} - \wmu{\std}}^{2},\\
 	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\data{c} - \wmu{\std}} \wrapParens{\wmu{\std} - \wmu{\sta}}.
 \end{align*}
 %UNFOLD
-\subsection{Adding and removing a single observation}
+\subsection{Adding and removing a single observation}%FOLDUP
 
 Consider the case of adding a single $b \in\stb$ and removing a single
-$c\in\stc$.  The total elements is unchanged, of course. We have
+$c\in\stc$.  The total number elements, \ndf{\sta}, is unchanged, of course. 
+We have
 \begin{align*}
 \twt{\std}&=\twt{\sta} + \wt{b} - \wt{c},\\
 	\wmu{\std}&=\wmu{\sta} + \frac{\wt{b}\wrapParens{\data{b} - \wmu{\sta}} - \wt{c}\wrapParens{\data{c}-\wmu{\sta}}}{\twt{\std}}.
@@ -397,12 +411,20 @@ In the $k=2$ case this simplifies to
 	&= \mom{\sta}{2} + 
 		\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{2} +
 		\wt{b} \wrapParens{\data{b} - \wmu{\std}}^{2} -
-		\wt{c} \wrapParens{\data{c} - \wmu{\std}}^{2},
+		\wt{c} \wrapParens{\data{c} - \wmu{\std}}^{2},\\
+	&= \mom{\sta}{2} 
+	+ \wrapParens{\wmu{\sta}-\wmu{\std}}^2 \wrapParens{\twt{\sta} - \twt{\std}}
+	+ \wt{b} \wrapParens{\data{b} - \wmu{\std}}\wrapParens{\data{b} - \wmu{\sta}}
+	- \wt{c} \wrapParens{\data{c} - \wmu{\std}}\wrapParens{\data{c} - \wmu{\sta}},\\
+	&= \mom{\sta}{2} 
+	+ \frac{\twt{\sta}\wt{b} \wrapParens{\data{b}-\wmu{\sta}}^2 - \twt{\std}\wt{c}\wrapParens{\data{c}-\wmu{\std}}^2}{\twt{\sta} + \wt{b}},
 \end{align*}
+% 2FIX: almost done. start from here...
 %2FIX: continue from here...
 	%&= \mom{\sta}{2} 
 	%+ \wt{b}\wrapParens{\data{b}-\wmu{\sta}}\wrapParens{\data{b}-\wmu{\std}}
 	%- \wt{c}\wrapParens{\data{c}-\wmu{\sta}}\wrapParens{\data{c}-\wmu{\std}},
+%UNFOLD
 
 \section{The output}
 
@@ -444,7 +466,32 @@ Normalization and consumed degrees of freedom affect the computation of \sdevpow
 		It is affected by normalization and consumed degrees of freedom.
 \end{itemize}
 
+\section{Running Moments}%FOLDUP
 
+The \fromo  package can also perform 
+running\footnote{Variously known also as \emph{rolling}, \emph{boxcar}, or \emph{finite impulse response} computations.} computations
+of moments, centered moments, centered values, standardized values, z-scored values and so on. Given an integral window, $W$,
+and data and weights vectors $\data{i},$ $\wt{i}$, we compute output \outp{i} as follows: let \std be the set of $j$ with
+$i - W < j \le i$. Then compute the desired moment over \std, and return it as \outp{i}.  The `comparison' operations 
+(computed centered, standardized, or z-scored versions of a variable) admit a \emph{lookahead} parameter, $l$. In this case,
+we let \std be the set of $j$ with $i - W + l < j \le i + l$, then compute the moments over \std and normalize \data{i} with
+respect to those moments. When $l > 0$, we are using future information to compute \outp{i}. That is, \outp{i} will depend
+on \data{j} with $j > i$. This is not the case for the typical moments computations or for the case where the lookahead is
+non-positive.
+
+We also support a time (or other counter) based running computation. Here the input are the data, and weights vectors, \data{i}, \wt{i},
+but also a vector of time indices, say \tim{i} which are non-decreasing: $\tim{1} \le \tim{2} \le \ldots$. It is assumed that
+$\tim{0}$ is essentially $-\infty$. The window, $W$ is now a time-based window. The output \outp{i} is defined in terms of the
+moments computations over the set \std which are all $j$ such that $\tim{i} - W < \tim{j} \le \tim{i}$. For comparison functions,
+we again admit a lookahead so that \std are all $j$ such that $\tim{i} - W + l < \tim{j} \le \tim{i} + l$. Obviously if we 
+let $\tim{i} = i$, we recover the `vanilla' running moments computations. We also support supplying the \tim{i} implicitly as the
+sum of positive deltas: let vector \dltim{i} of strictly positive elements be given. Then we assume
+$$
+\tim{i} = \sum_{1 \le j \le i} \dltim{j},
+$$
+and then perform the time-based running computation. We also support the case where the \dltim{i} are actually just the \wt{i}.
+
+%UNFOLD
 % bibliography%FOLDUP
 %\bibliographystyle{jss}
 %\bibliographystyle{ieeetr}
