@@ -7,6 +7,17 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks = true,
+		pdfborder = {0 0 0},
+		urlcolor = blue,
+		linkcolor = blue,
+		citecolor = red
+}
+    %linkcolor={red!50!black},
+    %citecolor={blue!50!black},
+    %urlcolor={blue!80!black}
 \usepackage[square,numbers]{natbib}
 %\usepackage[authoryear]{natbib}
 %\usepackage[iso]{datetime}
@@ -417,14 +428,24 @@ In the $k=2$ case this simplifies to
 	+ \wt{b} \wrapParens{\data{b} - \wmu{\std}}\wrapParens{\data{b} - \wmu{\sta}}
 	- \wt{c} \wrapParens{\data{c} - \wmu{\std}}\wrapParens{\data{c} - \wmu{\sta}},\\
 	&= \mom{\sta}{2} 
-	+ \frac{\twt{\sta}\wt{b} \wrapParens{\data{b}-\wmu{\sta}}^2 - \twt{\std}\wt{c}\wrapParens{\data{c}-\wmu{\std}}^2}{\twt{\sta} + \wt{b}},
+	+ \frac{\twt{\sta}\wt{b} \wrapParens{\data{b}-\wmu{\sta}}^2 - \twt{\std}\wt{c}\wrapParens{\data{c}-\wmu{\std}}^2}{\twt{\sta} + \wt{b}}.
 \end{align*}
+Further simplifications are possible when $\wt{b}=\wt{c}$ (as occurs in the vanilla
+case of equal weighted moments), and we arrive at
+\begin{align*}
+\wmu{\std}&=\wmu{\sta} + \frac{\wt{b}\wrapParens{\data{b} - \data{c}}}{\twt{\std}},\\
+\mom{\std}{2} &= \mom{\sta}{2} 
+	+ \wt{b} \wrapParens{\data{b}+\data{c}-\wmu{\sta}-\wmu{\std}} \wrapParens{\data{b}-\data{c}}.
+\end{align*}
+
 % 2FIX: almost done. start from here...
 %2FIX: continue from here...
 	%&= \mom{\sta}{2} 
 	%+ \wt{b}\wrapParens{\data{b}-\wmu{\sta}}\wrapParens{\data{b}-\wmu{\std}}
 	%- \wt{c}\wrapParens{\data{c}-\wmu{\sta}}\wrapParens{\data{c}-\wmu{\std}},
 %UNFOLD
+
+
 
 \section{The output}
 
