@@ -643,3 +643,51 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"fromo_sd3", (DL_FUNC) &fromo_sd3, 6},
+    {"fromo_skew4", (DL_FUNC) &fromo_skew4, 6},
+    {"fromo_kurt5", (DL_FUNC) &fromo_kurt5, 6},
+    {"fromo_cent_moments", (DL_FUNC) &fromo_cent_moments, 7},
+    {"fromo_std_moments", (DL_FUNC) &fromo_std_moments, 7},
+    {"fromo_cent_cumulants", (DL_FUNC) &fromo_cent_cumulants, 7},
+    {"fromo_std_cumulants", (DL_FUNC) &fromo_std_cumulants, 7},
+    {"fromo_cent_sums", (DL_FUNC) &fromo_cent_sums, 6},
+    {"fromo_join_cent_sums", (DL_FUNC) &fromo_join_cent_sums, 2},
+    {"fromo_unjoin_cent_sums", (DL_FUNC) &fromo_unjoin_cent_sums, 2},
+    {"fromo_cent_cosums", (DL_FUNC) &fromo_cent_cosums, 3},
+    {"fromo_cent_comoments", (DL_FUNC) &fromo_cent_comoments, 4},
+    {"fromo_join_cent_cosums", (DL_FUNC) &fromo_join_cent_cosums, 2},
+    {"fromo_unjoin_cent_cosums", (DL_FUNC) &fromo_unjoin_cent_cosums, 2},
+    {"fromo_running_sum", (DL_FUNC) &fromo_running_sum, 6},
+    {"fromo_running_mean", (DL_FUNC) &fromo_running_mean, 7},
+    {"fromo_running_sd3", (DL_FUNC) &fromo_running_sd3, 9},
+    {"fromo_running_skew4", (DL_FUNC) &fromo_running_skew4, 9},
+    {"fromo_running_kurt5", (DL_FUNC) &fromo_running_kurt5, 9},
+    {"fromo_running_sd", (DL_FUNC) &fromo_running_sd, 9},
+    {"fromo_running_skew", (DL_FUNC) &fromo_running_skew, 9},
+    {"fromo_running_kurt", (DL_FUNC) &fromo_running_kurt, 9},
+    {"fromo_running_cent_moments", (DL_FUNC) &fromo_running_cent_moments, 11},
+    {"fromo_running_std_moments", (DL_FUNC) &fromo_running_std_moments, 10},
+    {"fromo_running_cumulants", (DL_FUNC) &fromo_running_cumulants, 10},
+    {"fromo_running_apx_quantiles", (DL_FUNC) &fromo_running_apx_quantiles, 11},
+    {"fromo_running_apx_median", (DL_FUNC) &fromo_running_apx_median, 10},
+    {"fromo_running_centered", (DL_FUNC) &fromo_running_centered, 10},
+    {"fromo_running_scaled", (DL_FUNC) &fromo_running_scaled, 10},
+    {"fromo_running_zscored", (DL_FUNC) &fromo_running_zscored, 10},
+    {"fromo_running_sharpe", (DL_FUNC) &fromo_running_sharpe, 10},
+    {"fromo_running_tstat", (DL_FUNC) &fromo_running_tstat, 9},
+    {"fromo_cent2raw", (DL_FUNC) &fromo_cent2raw, 1},
+    {"fromo_ref_sd", (DL_FUNC) &fromo_ref_sd, 1},
+    {"fromo_ref_running_sd", (DL_FUNC) &fromo_ref_running_sd, 2},
+    {"fromo_ref_running_sd_narm", (DL_FUNC) &fromo_ref_running_sd_narm, 2},
+    {"fromo_ref_running_sd_onecheck", (DL_FUNC) &fromo_ref_running_sd_onecheck, 3},
+    {"fromo_ref_running_sd_intnel", (DL_FUNC) &fromo_ref_running_sd_intnel, 2},
+    {"fromo_ref_running_sd_objecty", (DL_FUNC) &fromo_ref_running_sd_objecty, 2},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_fromo(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

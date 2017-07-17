@@ -108,6 +108,19 @@ using namespace Rcpp;
 
 #define COMP_CENTERED(x,preval) (x - preval[1])
 
+#define KAHAN_ADD(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
+    _tmpv_    = _newx_ - _err_;                      \
+    _nxtv_    = _sumx_ + _tmpv_;                     \
+    _err_     = (_nxtv_ - _sumx_) - _tmpv_;          \
+    _sumx_    = _nxtv_;
+
+#define KAHAN_SUB(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
+    _tmpv_    = -_newx_ - _err_;                     \
+    _nxtv_    = _sumx_ + _tmpv_;                     \
+    _err_     = (_nxtv_ - _sumx_) - _tmpv_;          \
+    _sumx_    = _nxtv_;
+
+
 // Kahan compensated summation object.//FOLDUP
 template<class T>
 class Kahan {
@@ -148,10 +161,7 @@ class Kahan {
         T m_errs;
         inline Kahan& add(const T& rhs) {
             T tmpv, nxtv;
-            tmpv = rhs - m_errs;
-            nxtv = m_val + tmpv;
-            m_errs = (nxtv - m_val) - tmpv;
-            m_val = nxtv;
+            KAHAN_ADD(m_val,m_errs,rhs,nxtv,tmpv)
             return *this;
         }
         inline Kahan& join(const Kahan<T>& rhs) {

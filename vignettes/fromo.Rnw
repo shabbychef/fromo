@@ -348,13 +348,13 @@ Also
 	&= \twt{\sta}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}.
 \end{align*}
 Since \stb is a single index, $\mom{\stb}{k} = 0$ for $k > 0$, then we have
-\begin{align}
+\begin{align*}
 	\mom{\std}{k} &= \mom{\sta}{k} 
 	+	\twt{\sta} \wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k} 
 	+ \wt{b} \wrapParens{\twt{\sta}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k}\\
 	&\phantom{=}\,
 	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
-\end{align}
+\end{align*}
 For the $k=2$ case this further simplifies to
 \begin{align*}
 	\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \wt{b}}{\twt{\std}} \wrapParens{\data{b} - \wmu{\sta}}^{2},\\
