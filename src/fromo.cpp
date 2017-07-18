@@ -96,17 +96,17 @@ const int bincoef[30][30] = {
 #include <Rcpp.h>
 using namespace Rcpp;
 
-#define COMP_VAR(sumwxsq,sumw,used_df) (sumwxsq / (sumw - used_df))
-#define COMP_SD_TWO(preval,used_df) (sqrt(preval[2]/(preval[0]-used_df)))
-#define COMP_SD(preval) COMP_SD_TWO(preval,1.0)
-#define COMP_SKEW_TWO(preval,wsum) (sqrt(wsum) * preval[3] / pow(preval[2],1.5))
-#define COMP_SKEW(preval) COMP_SKEW_TWO(preval,preval[0])
-#define COMP_KURT_TWO(preval,wsum) ((wsum * preval[4] / (pow(preval[2],2.0))))
-#define COMP_EXKURT_TWO(preval,wsum) ((COMP_KURT_TWO(preval,wsum)) - 3.0)
-#define COMP_EXKURT(preval) COMP_EXKURT_TWO(preval,preval[0])
-#define COMP_SHARPE(preval) ((preval[1]) / (sqrt(preval[2] / (preval[0]-1.0))))
+#define COMP_VAR(_sumwxsq_,_sumw_,_used_df_) (_sumwxsq_ / (_sumw_ - _used_df_))
+#define COMP_SD_TWO(_preval_,_used_df_) (sqrt(_preval_[2]/(_preval_[0]-_used_df_)))
+#define COMP_SD(_preval_) COMP_SD_TWO(_preval_,1.0)
+#define COMP_SKEW_TWO(_preval_,_wsum_) (sqrt(_wsum_) * _preval_[3] / pow(_preval_[2],1.5))
+#define COMP_SKEW(_preval_) COMP_SKEW_TWO(_preval_,_preval_[0])
+#define COMP_KURT_TWO(_preval_,_wsum_) ((_wsum_ * _preval_[4] / (pow(_preval_[2],2.0))))
+#define COMP_EXKURT_TWO(_preval_,_wsum_) ((COMP_KURT_TWO(_preval_,_wsum_)) - 3.0)
+#define COMP_EXKURT(_preval_) COMP_EXKURT_TWO(_preval_,_preval_[0])
+#define COMP_SHARPE(_preval_) ((_preval_[1]) / (sqrt(_preval_[2] / (_preval_[0]-1.0))))
 
-#define COMP_CENTERED(x,preval) (x - preval[1])
+#define COMP_CENTERED(_x_,_preval_) (_x_ - _preval_[1])
 
 #define KAHAN_ADD(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
     _tmpv_    = _newx_ - _err_;                      \
@@ -120,6 +120,15 @@ using namespace Rcpp;
     _err_     = (_nxtv_ - _sumx_) - _tmpv_;          \
     _sumx_    = _nxtv_;
 
+
+template<class W>
+bool inline bad_weights(W wts) {
+    int top=wts.size();
+    for (int iii=0;iii<top;++iii) {
+        if (ISNAN(wts[iii]) || (wts[iii] < 0)) { return true; }
+    }
+    return false;
+}
 
 // Kahan compensated summation object.//FOLDUP
 template<class T>
@@ -1163,14 +1172,15 @@ NumericVector quasiSumThing(T v,
     Kahan<oneW> fwsum;
     double totwt;
 
+
+
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
         if (wts.size() < top) { stop("size of wts does not match v"); }
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
         for (int iii=bottom;iii < top;++iii) {
             nextv = v[iii];
             nextw = double(wts[iii]); 
-            if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
-
             if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
                 // 2FIX: check for zero weight??
                 fwvsum += nextv * nextw;
@@ -1204,12 +1214,11 @@ Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
 
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
         if (wts.size() < top) { stop("size of wts does not match v"); }
         for (int iii=bottom;iii < top;++iii) {
             nextv = v[iii];
             nextw = double(wts[iii]); 
-            if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
-
             if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
                 // 2FIX: check for zero weight??
                 frets.add_one(nextv,nextw);
@@ -1954,6 +1963,8 @@ RET runningSumish(T v,
 
     RET xret(numel);
 
+    if (has_wts && check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
+
     jjj = 0;
     // now run through iii
     for (iii=0;iii < numel;++iii) {
@@ -1961,7 +1972,6 @@ RET runningSumish(T v,
             // add one
             if (has_wts) { //FOLDUP
                 nextw = wts[iii];
-                if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
             } 
             nextv = v[iii];
             if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
@@ -1977,7 +1987,6 @@ RET runningSumish(T v,
             if (!infwin && (iii >= window)) {
                 if (has_wts) { //FOLDUP
                     prevw = wts[jjj];
-                    if (check_wts && (prevw < 0)) { stop("negative weight detected"); }
                 } 
                 prevv = v[jjj];
                 if (! (na_rm && (ISNAN(prevv) || (has_wts && (ISNAN(prevw) || (prevw <= 0)))))) { 
@@ -2003,7 +2012,6 @@ RET runningSumish(T v,
                 // add one
                 if (has_wts) { //FOLDUP
                     nextw = wts[lll];
-                    if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
                 } 
                 nextv = v[lll];
                 if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
@@ -2767,6 +2775,7 @@ NumericMatrix runQM(T v,
     subcount = recom_period;
 
     if (has_wts) {
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
             tr_iii++;
@@ -2787,7 +2796,6 @@ NumericMatrix runQM(T v,
                     // add on nextv:
                     nextv = double(v[tr_iii]);
                     nextw = double(wts[tr_iii]); 
-                    if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
                     if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0)))) {
                         frets.add_one(nextv,nextw);
                     }
@@ -2796,8 +2804,6 @@ NumericMatrix runQM(T v,
                 if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     prevv = double(v[tr_jjj]);
                     nextw = double(wts[tr_jjj]); 
-                    // unnecessary as we would have caught it prior?
-                    //if (check_wts && (nextw < 0)) { stop("negative weight detected"); }
                     if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0)))) {
                         frets.rem_one(prevv,nextw);
                         subcount++;
