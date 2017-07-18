@@ -353,7 +353,17 @@ Since \stb is a single index, $\mom{\stb}{k} = 0$ for $k > 0$, then we have
 	+	\twt{\sta} \wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k} 
 	+ \wt{b} \wrapParens{\twt{\sta}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k}\\
 	&\phantom{=}\,
-	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{-\wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\std}}}^{k-j}},\\
+	&= \mom{\sta}{k} 
+	+ \wt{b}\wrapParens{\data{b} - \wmu{\std}}^{k} 
+	\wrapBracks{1 + \wrapParens{\frac{-\wt{b}}{\twt{\sta}}}^{k-1}}\\
+	&\phantom{=}\,
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j}},\\
+	&= \mom{\sta}{k} 
+	+ \twt{\sta}\wrapParens{\wmu{\sta} - \wmu{\std}}^{k}
+	\wrapBracks{1 - \wrapParens{\frac{\twt{\sta}}{-\wt{b}}}^{k-1}}\\
+	&\phantom{=}\,
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j}}.
 \end{align*}
 For the $k=2$ case this further simplifies to
 \begin{align*}
@@ -375,12 +385,23 @@ $c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
 \wmu{\std} &= \wmu{\sta} - \wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}.
 \end{align*}
 The centered sum update formula is
+%&= \mom{\sta}{k} 
+%+	\twt{\sta} \wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k} 
+%- \wt{c} \wrapParens{\twt{\sta}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k}\\
+%&\phantom{=}\,
+%+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k-j}},\\
 \begin{align*}
-	\mom{\std}{k} &= \mom{\sta}{k} 
-	+	\twt{\sta} \wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k} 
-	- \wt{c} \wrapParens{\twt{\sta}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k}\\
+	\mom{\std}{k} 
+	&= \mom{\sta}{k} 
+	- \wt{c}\wrapParens{\data{c} - \wmu{\std}}^{k} 
+	\wrapBracks{1 + \wrapParens{\frac{\wt{c}}{\twt{\sta}}}^{k-1}}\\
 	&\phantom{=}\,
-	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}}^{k-j}}.
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j}},\\
+	&= \mom{\sta}{k} 
+	+ \twt{\sta}\wrapParens{\wmu{\sta} - \wmu{\std}}^{k}
+	\wrapBracks{1 - \wrapParens{\frac{\twt{\sta}}{\wt{c}}}^{k-1}}\\
+	&\phantom{=}\,
+	+ \sum_{2 \le j < k}{k \choose j}{\mom{\sta}{j}\wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j}}.
 \end{align*}
 %For the $k=2$ case this further simplifies to
 %\begin{align*}
