@@ -45,8 +45,9 @@
 #include <Rcpp.h>
 #include "common.h"
 #include "kahan.cpp"
+using namespace Rcpp;
 
-template<class W,bool has_wts,bool na_rm,bool normalize,MaxOrder maxord>
+template<class W,bool has_wts,bool na_rm,bool check_wts,bool normalize,MaxOrder maxord>
 class Welford {
     public:
         int m_ord;
@@ -76,7 +77,7 @@ class Welford {
         inline double sharpe(const double used_df) const { return double(m_xx[1]) / sd(used_df); }
         inline double centered(const double xval) const { return (xval - m_xx[1]); }
         inline double scaled(const double xval,const double used_df) const { return (xval/sd(used_df)); }
-        inline double zscored(const double xval,const bool normalize,const double used_df) const { return ((xval - m_xx[1])/sd(used_df)); }
+        inline double zscored(const double xval,const double used_df) const { return ((xval - m_xx[1])/sd(used_df)); }
     public:
         // add another (weighted) observation to our set of x
         inline Welford& add_one (const double xval, const W wt);
@@ -241,6 +242,7 @@ class Welford<W,
 #else
             if (! (ISNAN(xval))) {
 #endif
+#endif
 #ifdef HAS_WTS
                 m_nel++; 
                 wtA = double(m_wsum.as());
@@ -316,6 +318,7 @@ class Welford<W,
             if (! (ISNAN(xval) || ISNAN(wt))) {
 #else
             if (! (ISNAN(xval))) {
+#endif
 #endif
 #ifdef HAS_WTS
                 m_nel--; 
@@ -547,6 +550,7 @@ class Welford<W,
             return *this;
         }
 
+};
 
 // initialize.
 
@@ -572,28 +576,7 @@ Welford<W,
 #else
       false,
 #endif
-      MAX_ORDER > init <T,W,
-#ifdef HAS_WTS
-      true,
-#else
-      false,
-#endif
-#ifdef NA_RM
-      true,
-#else
-      false,
-#endif
-#ifdef CHECK_WT
-      true,
-#else
-      false,
-#endif
-#ifdef NORMALIZE
-      true,
-#else
-      false,
-#endif
-      MAX_ORDER > (T x,Wvec wt,int ord) {
+      MAX_ORDER > init(T x,Wvec wt,int ord) {
          // first compute the mean robustly;
          int top;
          int nel;
