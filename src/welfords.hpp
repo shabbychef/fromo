@@ -44,6 +44,7 @@
 #include <math.h>
 #include <Rcpp.h>
 #include "common.h"
+#include "kahan.cpp"
 
 template<class W,bool has_wts,bool na_rm,bool normalize,MaxOrder maxord>
 class Welford {
@@ -152,6 +153,9 @@ class Welford<W,
         inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {}
         inline Welford(const int &ord, 
                        const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {}
+        inline Welford(const int &ord, 
+                       const int &nel,
+                       const NumericVector &xx) : m_ord(ord), m_nel(nel), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {}
 #else
         inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_xx(NumericVector(ord+1)) {}
         inline Welford(const int &ord, 
@@ -546,6 +550,178 @@ class Welford<W,
 
 // initialize.
 
+template<class T,class Wvec,class W>
+Welford<W, 
+#ifdef HAS_WTS
+      true,
+#else
+      false,
+#endif
+#ifdef NA_RM
+      true,
+#else
+      false,
+#endif
+#ifdef CHECK_WT
+      true,
+#else
+      false,
+#endif
+#ifdef NORMALIZE
+      true,
+#else
+      false,
+#endif
+      MAX_ORDER > init <T,W,
+#ifdef HAS_WTS
+      true,
+#else
+      false,
+#endif
+#ifdef NA_RM
+      true,
+#else
+      false,
+#endif
+#ifdef CHECK_WT
+      true,
+#else
+      false,
+#endif
+#ifdef NORMALIZE
+      true,
+#else
+      false,
+#endif
+      MAX_ORDER > (T x,Wvec wt,int ord) {
+         // first compute the mean robustly;
+         int top;
+         int nel;
+         int iii, jjj;
+         double nextv,nextdiff,powdiff;
+         double mu;
+         Kahan<double> wtsum;
+         NumericVector xx = NumericVector(ord+1);
+         NumericVector errs = NumericVector(ord+1);
+         double tmp1, tmp2;
+#ifdef HAS_WTS
+         Kahan<W> totwt;
+#endif
+
+
+#ifdef HAS_WTS
+         W nextwt;
+#endif
+         top = x.size();
+#ifdef NA_RM
+         LogicalVector isok=LogicalVector(top);
+#endif
+         nel = 0;
+         for (int iii=0;iii<top;++iii) {
+             nextv = double(x[iii]);
+#ifdef HAS_WTS
+             nextw = W(wt[iii]);
+#endif
+#ifdef NA_RM
+#ifdef HAS_WTS
+             isok[iii] = !ISNAN(nextv) && !ISNAN(nextw) && !(nextw < 0);
+#else
+             isok[iii] = !ISNAN(nextv);
+#endif
+             if (isok[iii]) {
+#endif
+#ifdef HAS_WTS
+                 wtsum += nextw * nextv;
+                 totwt += nextw;
+#else
+                 wtsum += nextv;
+#endif
+                 nel++;
+#ifdef NA_RM
+             }
+#endif
+         }
+
+#if MAX_ORDER != ORDER_ONE
+         if (nel > 0) {
+#ifdef HAS_WTS
+             mu = double(wtsum.as()) / double(totwt.as());
+#else
+             mu = double(wtsum.as()) / double(nel);
+#endif
+
+             for (int iii=0;iii<top;++iii) {
+#ifdef NA_RM
+                 if (isok[iii]) {
+#endif
+                     nextdiff = double(x[iii]) - mu;
+#ifdef HAS_WTS
+                     powdiff = double(wt[iii]) * nextdiff * nextdiff;
+#else
+                     powdiff = nextdiff * nextdiff;
+#endif
+                     for (int jjj=2;jjj < ord;++jjj) {
+                         KAHAN_ADD(xx[jjj],errs[jjj],powdiff,tmp1,tmp2);
+                         powdiff *= nextdiff;
+                     }
+                     KAHAN_ADD(xx[jjj],errs[jjj],powdiff,tmp1,tmp2);
+
+#ifdef NA_RM
+                 }
+#endif
+             }
+         }
+#endif
+
+         xx[0] = double(nel);
+         xx[1] = mu;
+         
+         Welford<W,
+#ifdef HAS_WTS
+      true,
+#else
+      false,
+#endif
+#ifdef NA_RM
+      true,
+#else
+      false,
+#endif
+#ifdef CHECK_WT
+      true,
+#else
+      false,
+#endif
+#ifdef NORMALIZE
+      true,
+#else
+      false,
+#endif
+      MAX_ORDER > retv = 
+         Welford<W,
+#ifdef HAS_WTS
+      true,
+#else
+      false,
+#endif
+#ifdef NA_RM
+      true,
+#else
+      false,
+#endif
+#ifdef CHECK_WT
+      true,
+#else
+      false,
+#endif
+#ifdef NORMALIZE
+      true,
+#else
+      false,
+#endif
+      MAX_ORDER >(ord,nel,xx);
+         return retv;
+}
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

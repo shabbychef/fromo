@@ -45,6 +45,9 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+// yeah yeah, I know.
+#include "kahan.cpp"
+
 // check weights with this guy:
 template<class W>
 bool inline bad_weights(W wts) {
@@ -55,110 +58,6 @@ bool inline bad_weights(W wts) {
     return false;
 }
 
-// Kahan compensated summation object.//FOLDUP
-template<class T>
-class Kahan {
-    public:
-        inline Kahan() : m_val(0), m_errs(0) {}
-
-        inline Kahan(const T &t): m_val(t), m_errs(0) {}
-
-        inline T as() const { return m_val; }
-
-        inline Kahan& operator += (const T& rhs) {
-            return add(rhs);
-        }
-        inline Kahan& operator -= (const T& rhs) {
-            return add(-rhs);
-        }
-        inline Kahan& operator += (const Kahan<T>& rhs) {
-            return join(rhs);
-        }
-        inline Kahan& operator -= (const Kahan<T>& rhs) {
-            return unjoin(rhs);
-        }
-        inline Kahan& operator= (T rhs) {
-            m_val = rhs;
-            m_errs = 0;
-            return *this;
-        }
-        // these are prefix;
-        inline Kahan& operator++ () {
-            return add(T(1));
-        }
-        inline Kahan& operator-- () {
-            return add(T(-1));
-        }
-    public:
-        T m_val;
-    private:
-        T m_errs;
-        inline Kahan& add(const T& rhs) {
-            T tmpv, nxtv;
-            KAHAN_ADD(m_val,m_errs,rhs,nxtv,tmpv)
-            return *this;
-        }
-        inline Kahan& join(const Kahan<T>& rhs) {
-            T tmpv, nxtv;
-            tmpv = rhs.m_val - m_errs - rhs.m_errs;
-            nxtv = m_val + tmpv;
-            m_errs = (nxtv - m_val) - tmpv;
-            m_val = nxtv;
-            return *this;
-        }
-        inline Kahan& unjoin(const Kahan<T>& rhs) {
-            T tmpv, nxtv;
-            tmpv = -rhs.m_val - m_errs + rhs.m_errs;
-            nxtv = m_val + tmpv;
-            m_errs = (nxtv - m_val) - tmpv;
-            m_val = nxtv;
-            return *this;
-        }
-};
-// specialization to int which do not require special treatment
-template<>
-class Kahan<int> {
-    public:
-        inline Kahan() : m_val(0) {}
-
-        inline Kahan(const int &t): m_val(t) {}
-
-        inline int as() const { return m_val; }
-
-        inline Kahan& operator += (const int& rhs) {
-            return add(rhs);
-        }
-        inline Kahan& operator -= (const int& rhs) {
-            return add(-rhs);
-        }
-        inline Kahan& operator += (const Kahan<int>& rhs) {
-            return add(rhs.m_val);
-        }
-        inline Kahan& operator -= (const Kahan<int>& rhs) {
-            return add(-rhs.m_val);
-        }
-        inline Kahan& operator= (int rhs) {
-            m_val = rhs;
-            return *this;
-        }
-        // these are prefix;
-        inline Kahan& operator ++ () {
-            m_val ++;
-            return *this;
-        }
-        inline Kahan& operator -- () {
-            m_val --;
-            return *this;
-        }
-    public:
-        int m_val;
-    private:
-        inline Kahan& add(const int& rhs) {
-            m_val += rhs;
-            return *this;
-        }
-};
-//UNFOLD
 
 // Welford-Terriberry object.
 // holds the following:
@@ -3489,76 +3388,11 @@ NumericVector cent2raw(NumericVector input) {
 
 
 
-// junkyard//FOLDUP
-
-// code that *would* have been used in RcppModules,
-// but the latter cannot deal properly with generics.
-
-
-//typedef std::vector<double> dubvec;  // convenience typedef
-
-//class Moments {
-    //public:
-        //// truly empty
-        //Moments() : order(3), na_rm(false) {
-            //moments = Rcpp::NumericVector(1+order);
-        //}
-        //// empty
-        //Moments(int order) : order(order), na_rm(false) {
-            //moments = Rcpp::NumericVector(1+order);
-        //}
-        //Moments(int order, bool na_rm) : order(order), na_rm(na_rm) {
-            //moments = Rcpp::NumericVector(1+order);
-        //}
-        //// 'pure'
-        //Moments(dubvec input, int order, bool na_rm) : order(order), na_rm(na_rm) {
-            //moments = quasiMoments<dubvec>(input, order, 0, -1, na_rm);
-        //}
-        //// access the normalized moments
-        //NumericVector cent_moments(int used_df=1) {
-            //NumericVector vret = NumericVector(1+order);
-            //vret[order] = moments[0];
-            //vret[order-1] = moments[1];
-            //for (int mmm=2;mmm <= order;mmm++) {
-                //vret[order-mmm] = moments[mmm] / (moments[0] - used_df);
-            //}
-            //return vret;
-        //}
-        //// append operation; this is the guy that shits the bed.
-        //// much fun. do break. amaze.
-        //void join(const Moments& rhs) {
-            //moments = joinMoments(moments,rhs.moments);
-        //}
-        
-        //const int order;
-        //const bool na_rm;
-    //private:
-        //NumericVector moments;
-//};
-
-//RCPP_MODULE(moment_module) {
-    //class_<Moments>( "Moments" )
-
-    //.constructor()
-    //.constructor<int>()
-    //.constructor<int,bool>()
-    //.constructor<dubvec,int,bool>()
-
-    //.field_readonly("order", &Moments::order)
-    //.field_readonly("na_rm", &Moments::na_rm)
-
-    //.method("cent_moments", &Moments::cent_moments)
-    //.method("%:%", &Moments::join)
-    //;
-//}
-//UNFOLD
-//
 
 
 //
 // 2FIX:
 //
-// running means need weights !!! 
 // compensated summation for weights where necessary
 // no Kahans for running sum of integers or logicals
 //
