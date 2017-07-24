@@ -30,16 +30,16 @@
 #include <math.h>
 
 #define KAHAN_ADD(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
-    _tmpv_    = (_newx_) - _err_;                    \
-    _nxtv_    = _sumx_ + _tmpv_;                     \
-    _err_     = (_nxtv_ - _sumx_) - _tmpv_;          \
-    _sumx_    = _nxtv_;
+    _tmpv_    = (_newx_) - (_err_);                    \
+    _nxtv_    = (_sumx_) + _tmpv_;                     \
+    (_err_)   = (_nxtv_ - (_sumx_)) - _tmpv_;          \
+    (_sumx_)  = _nxtv_;
 
 #define KAHAN_SUB(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
-    _tmpv_    = -(_newx_) - _err_;                   \
-    _nxtv_    = _sumx_ + _tmpv_;                     \
-    _err_     = (_nxtv_ - _sumx_) - _tmpv_;          \
-    _sumx_    = _nxtv_;
+    _tmpv_    = -(_newx_) - (_err_);                   \
+    _nxtv_    = (_sumx_) + _tmpv_;                     \
+    (_err_)   = (_nxtv_ - (_sumx_)) - _tmpv_;          \
+    (_sumx_)  = _nxtv_;
 
 
 #endif /* __DEF_KAHAN__ */
