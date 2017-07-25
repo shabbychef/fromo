@@ -140,7 +140,16 @@ class Welford<W,
 #else
       false,
 #endif
-      MAX_ORDER > {
+#if MAX_ORDER == ORDER_ONE
+    just_one
+#endif
+#if MAX_ORDER == ORDER_TWO 
+    just_two
+#endif
+#if MAX_ORDER == ORDER_BEYOND
+    beyond
+#endif
+      > {
     public:
         int m_ord;
         NumericVector m_xx;
@@ -232,7 +241,7 @@ class Welford<W,
             // xval = x_b
             // wt = w_b
             // xb_les_muA = x_b - mu_A
-#if(defined(HAS_WTS) && defined(CHECK_WT))
+#if defined HAS_WTS && defined CHECK_WT
             if (wt < 0) { stop("negative weight detected"); }
 #endif
 
@@ -281,18 +290,17 @@ class Welford<W,
 #endif
                 rem_right = pow(div_right,m_ord - 1);
 
-                for (int ppp=m_ord;ppp >= 2;ppp--) {
+                for (int ppp=m_ord;ppp > 2;ppp--) {
                     m_xx[ppp] += term_left * (1.0 - rem_right);
-                    if (ppp > 2) {
-                        term_left /= div_left;
-                        rem_right /= div_right;
-                        inner_term = div_left;
-                        for (int qqq=1;qqq <= ppp-2;qqq++) {
-                            m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
-                            if (qqq < ppp - 2) { inner_term *= div_left; }
-                        }
+                    term_left /= div_left;
+                    rem_right /= div_right;
+                    inner_term = div_left;
+                    for (int qqq=1;qqq <= ppp-2;qqq++) {
+                        m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
+                        if (qqq < ppp - 2) { inner_term *= div_left; }
                     }
                 }
+                m_xx[2] += term_left * (1.0 - rem_right);
 #endif
 
 #ifdef NA_RM
@@ -309,7 +317,7 @@ class Welford<W,
             // xval = x_c
             // wt = w_c
             // xc_les_muA = x_c - mu_A
-#if(defined(HAS_WTS) && defined(CHECK_WT))
+#if defined HAS_WTS && defined CHECK_WT
             if (wt < 0) { stop("negative weight detected"); }
 #endif
 
@@ -387,7 +395,7 @@ class Welford<W,
             // no weights (or rather equal weights, which we do not want to check), and
             // order == 2, and
             // neither is NA.
-#if(DEFINED(HAS_WTS) || (MAX_ORDER != ORDER_TWO))
+#if defined HAS_WTS || (MAX_ORDER != ORDER_TWO)
                 add_one(addxval,addwt);
                 rem_one(remxval,remwt);
 #else
@@ -576,7 +584,16 @@ Welford<W,
 #else
       false,
 #endif
-      MAX_ORDER > init(T x,Wvec wt,int ord) {
+#if MAX_ORDER == ORDER_ONE
+    just_one
+#endif
+#if MAX_ORDER == ORDER_TWO 
+    just_two
+#endif
+#if MAX_ORDER == ORDER_BEYOND
+    beyond
+#endif
+      > init(T x,Wvec wt,int ord) {
          // first compute the mean robustly;
          int top;
          int nel;
@@ -589,10 +606,6 @@ Welford<W,
          double tmp1, tmp2;
 #ifdef HAS_WTS
          Kahan<W> totwt;
-#endif
-
-
-#ifdef HAS_WTS
          W nextwt;
 #endif
          top = x.size();
@@ -680,7 +693,16 @@ Welford<W,
 #else
       false,
 #endif
-      MAX_ORDER > retv = 
+#if MAX_ORDER == ORDER_ONE
+    just_one
+#endif
+#if MAX_ORDER == ORDER_TWO 
+    just_two
+#endif
+#if MAX_ORDER == ORDER_BEYOND
+    beyond
+#endif
+      > retv = 
          Welford<W,
 #ifdef HAS_WTS
       true,
@@ -702,9 +724,21 @@ Welford<W,
 #else
       false,
 #endif
-      MAX_ORDER >(ord,nel,xx);
-         return retv;
+#if MAX_ORDER == ORDER_ONE
+    just_one
+#endif
+#if MAX_ORDER == ORDER_TWO 
+    just_two
+#endif
+#if MAX_ORDER == ORDER_BEYOND
+    beyond
+#endif
+      >(ord,nel,xx);
+     return retv;
 }
+
+
+
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

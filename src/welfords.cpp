@@ -36,19 +36,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -58,19 +64,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -84,19 +96,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -106,19 +124,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -136,19 +160,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -158,19 +188,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -184,19 +220,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
@@ -206,19 +248,25 @@
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #define NORMALIZE
 
 #define MAX_ORDER ORDER_ONE
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_TWO
 #include "welfords.hpp"
+#undef MAX_ORDER
 #define MAX_ORDER ORDER_BEYOND
 #include "welfords.hpp"
+#undef MAX_ORDER
 
 #undef NORMALIZE
 //UNFOLD
