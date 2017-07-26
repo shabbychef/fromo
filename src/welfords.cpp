@@ -88,193 +88,193 @@
 //UNFOLD
 #undef CHECK_WT
 //UNFOLD
-#define NA_RM
-// check weight block//FOLDUP
-#undef CHECK_WT
-// normalize block//FOLDUP
-#undef NORMALIZE
+//#define NA_RM
+//// check weight block//FOLDUP
+//#undef CHECK_WT
+//// normalize block//FOLDUP
+//#undef NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#define NORMALIZE
+//#define NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#undef NORMALIZE
-//UNFOLD
-#define CHECK_WT
-// normalize block//FOLDUP
-#undef NORMALIZE
+//#undef NORMALIZE
+////UNFOLD
+//#define CHECK_WT
+//// normalize block//FOLDUP
+//#undef NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#define NORMALIZE
+//#define NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#undef NORMALIZE
-//UNFOLD
-#undef CHECK_WT
-//UNFOLD
-#undef NA_RM
-//UNFOLD
-#define HAS_WTS
-// na rm block//FOLDUP
-#undef NA_RM
-// check weight block//FOLDUP
-#undef CHECK_WT
-// normalize block//FOLDUP
-#undef NORMALIZE
+//#undef NORMALIZE
+////UNFOLD
+//#undef CHECK_WT
+////UNFOLD
+//#undef NA_RM
+////UNFOLD
+//#define HAS_WTS
+//// na rm block//FOLDUP
+//#undef NA_RM
+//// check weight block//FOLDUP
+//#undef CHECK_WT
+//// normalize block//FOLDUP
+//#undef NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#define NORMALIZE
+//#define NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#undef NORMALIZE
-//UNFOLD
-#define CHECK_WT
-// normalize block//FOLDUP
-#undef NORMALIZE
+//#undef NORMALIZE
+////UNFOLD
+//#define CHECK_WT
+//// normalize block//FOLDUP
+//#undef NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#define NORMALIZE
+//#define NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#undef NORMALIZE
-//UNFOLD
-#undef CHECK_WT
-//UNFOLD
-#define NA_RM
-// check weight block//FOLDUP
-#undef CHECK_WT
-// normalize block//FOLDUP
-#undef NORMALIZE
+//#undef NORMALIZE
+////UNFOLD
+//#undef CHECK_WT
+////UNFOLD
+//#define NA_RM
+//// check weight block//FOLDUP
+//#undef CHECK_WT
+//// normalize block//FOLDUP
+//#undef NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#define NORMALIZE
+//#define NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#undef NORMALIZE
-//UNFOLD
-#define CHECK_WT
-// normalize block//FOLDUP
-#undef NORMALIZE
+//#undef NORMALIZE
+////UNFOLD
+//#define CHECK_WT
+//// normalize block//FOLDUP
+//#undef NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#define NORMALIZE
+//#define NORMALIZE
 
-#define MAX_ORDER ORDER_ONE
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_TWO
-#include "welfords.hpp"
-#undef MAX_ORDER
-#define MAX_ORDER ORDER_BEYOND
-#include "welfords.hpp"
-#undef MAX_ORDER
+//#define MAX_ORDER ORDER_ONE
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_TWO
+//#include "welfords.hpp"
+//#undef MAX_ORDER
+//#define MAX_ORDER ORDER_BEYOND
+//#include "welfords.hpp"
+//#undef MAX_ORDER
 
-#undef NORMALIZE
-//UNFOLD
-#undef CHECK_WT
-//UNFOLD
-#undef NA_RM
-//UNFOLD
-#undef HAS_WTS
+//#undef NORMALIZE
+////UNFOLD
+//#undef CHECK_WT
+////UNFOLD
+//#undef NA_RM
+////UNFOLD
+//#undef HAS_WTS
 
 //for vim modeline: (do not edit)
 // vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
