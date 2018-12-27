@@ -16,7 +16,7 @@ FROM shabbychef/crancheck
 MAINTAINER Steven E. Pav, shabbychef@gmail.com
 # UNFOLD
 
-ENV DOCKERFILE_REFRESHED_AT 2017.03.14
+ENV DOCKERFILE_REFRESHED_AT 2018-06-15
 # see http://crosbymichael.com/dockerfile-best-practices.html
 #RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 
@@ -30,7 +30,8 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
   libgs9 texlive-base texlive-binaries \
 	libcupsimage2 libcups2 curl wget \
 	qpdf pandoc ghostscript \
-	texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra ; \
+	texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra \
+	liblapack-dev libblas-dev ; \
 	sync ; \
 	mkdir -p /usr/local/lib/R/site-library ; \
 	chmod -R 777 /usr/local/lib/R/site-library ; \
@@ -41,17 +42,19 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
 RUN /usr/local/bin/install2.r moments microbenchmark PDQutils;
 
 # needed for readme
-RUN (/usr/local/bin/install2.r dplyr ggplot2 roll RcppRoll multcomp readr tidyr; \
-	/usr/local/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
+RUN /usr/local/bin/install2.r dplyr ggplot2 roll RcppRoll multcomp readr tidyr;
+RUN /usr/local/bin/install2.r curl;
+RUN /usr/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' 
 
-RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
+# already in there, I think. weird.
+#RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
 USER spav
 
 #####################################################
 # entry and cmd# FOLDUP
 # these are the default, but remind you that you might want to use /usr/bin/R instead?
 # always use array syntax:
-ENTRYPOINT ["/usr/local/bin/R","CMD","check","--as-cran","--output=/tmp"]
+ENTRYPOINT ["/usr/bin/R","CMD","check","--as-cran","--output=/tmp"]
 
 # ENTRYPOINT and CMD are better together:
 CMD ["/srv/*.tar.gz"]
