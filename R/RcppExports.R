@@ -95,43 +95,43 @@
 #' @rdname firstmoments
 #' @export
 sd3 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_sd3', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
+    .Call('_fromo_sd3', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
 skew4 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_skew4', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
+    .Call('_fromo_skew4', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
 kurt5 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_kurt5', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
+    .Call('_fromo_kurt5', PACKAGE = 'fromo', v, na_rm, wts, sg_df, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
 cent_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
+    .Call('_fromo_cent_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
 std_moments <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
+    .Call('_fromo_std_moments', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
 cent_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
+    .Call('_fromo_cent_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname firstmoments
 #' @export
 std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
+    .Call('_fromo_std_cumulants', PACKAGE = 'fromo', v, max_order, used_df, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @title
@@ -174,19 +174,19 @@ std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = 
 #' @rdname centsums 
 #' @export
 cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts, normalize_wts)
+    .Call('_fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts, normalize_wts)
 }
 
 #' @rdname centsums 
 #' @export
 join_cent_sums <- function(ret1, ret2) {
-    .Call('fromo_join_cent_sums', PACKAGE = 'fromo', ret1, ret2)
+    .Call('_fromo_join_cent_sums', PACKAGE = 'fromo', ret1, ret2)
 }
 
 #' @rdname centsums 
 #' @export
 unjoin_cent_sums <- function(ret3, ret2) {
-    .Call('fromo_unjoin_cent_sums', PACKAGE = 'fromo', ret3, ret2)
+    .Call('_fromo_unjoin_cent_sums', PACKAGE = 'fromo', ret3, ret2)
 }
 
 #' @title
@@ -239,25 +239,25 @@ unjoin_cent_sums <- function(ret3, ret2) {
 #' @rdname centcosums 
 #' @export
 cent_cosums <- function(v, max_order = 2L, na_omit = FALSE) {
-    .Call('fromo_cent_cosums', PACKAGE = 'fromo', v, max_order, na_omit)
+    .Call('_fromo_cent_cosums', PACKAGE = 'fromo', v, max_order, na_omit)
 }
 
 #' @rdname centcosums 
 #' @export
 cent_comoments <- function(v, max_order = 2L, used_df = 0L, na_omit = FALSE) {
-    .Call('fromo_cent_comoments', PACKAGE = 'fromo', v, max_order, used_df, na_omit)
+    .Call('_fromo_cent_comoments', PACKAGE = 'fromo', v, max_order, used_df, na_omit)
 }
 
 #' @rdname centcosums 
 #' @export
 join_cent_cosums <- function(ret1, ret2) {
-    .Call('fromo_join_cent_cosums', PACKAGE = 'fromo', ret1, ret2)
+    .Call('_fromo_join_cent_cosums', PACKAGE = 'fromo', ret1, ret2)
 }
 
 #' @rdname centcosums 
 #' @export
 unjoin_cent_cosums <- function(ret3, ret2) {
-    .Call('fromo_unjoin_cent_cosums', PACKAGE = 'fromo', ret3, ret2)
+    .Call('_fromo_unjoin_cent_cosums', PACKAGE = 'fromo', ret3, ret2)
 }
 
 #' @title
@@ -307,13 +307,13 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 #' @rdname runningmean 
 #' @export
 running_sum <- function(v, window = NULL, wts = NULL, na_rm = FALSE, restart_period = 10000L, check_wts = FALSE) {
-    .Call('fromo_running_sum', PACKAGE = 'fromo', v, window, wts, na_rm, restart_period, check_wts)
+    .Call('_fromo_running_sum', PACKAGE = 'fromo', v, window, wts, na_rm, restart_period, check_wts)
 }
 
 #' @rdname runningmean
 #' @export
 running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L, check_wts = FALSE) {
-    .Call('fromo_running_mean', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, restart_period, check_wts)
+    .Call('_fromo_running_mean', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, restart_period, check_wts)
 }
 
 #' @title
@@ -395,37 +395,37 @@ running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
 #' @rdname runningmoments
 #' @export
 running_sd3 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_sd3', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_sd3', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_skew4 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_skew4', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_skew4', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_kurt5 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_kurt5', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_kurt5', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_sd <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_sd', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_sd', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_skew <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_skew', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_skew', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_kurt <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_kurt', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_kurt', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
@@ -433,19 +433,19 @@ running_kurt <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
 #' @rdname runningmoments
 #' @export
 running_cent_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_cent_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, max_order_only, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_cent_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, max_order_only, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_std_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_std_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_std_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningmoments
 #' @export
 running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_cumulants', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_cumulants', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @title
@@ -499,13 +499,13 @@ running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_r
 #' @rdname runningquantiles
 #' @export
 running_apx_quantiles <- function(v, p, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningquantiles
 #' @export
 running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_apx_median', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_apx_median', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @title
@@ -590,31 +590,31 @@ running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_
 #' @rdname runningadjustments
 #' @export
 running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = FALSE) {
-    .Call('fromo_running_centered', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_centered', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningadjustments
 #' @export
 running_scaled <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_scaled', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_scaled', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningadjustments
 #' @export
 running_zscored <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_zscored', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_zscored', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningadjustments
 #' @export
 running_sharpe <- function(v, window = NULL, wts = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_sharpe', PACKAGE = 'fromo', v, window, wts, na_rm, compute_se, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_sharpe', PACKAGE = 'fromo', v, window, wts, na_rm, compute_se, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @rdname runningadjustments
 #' @export
 running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('fromo_running_tstat', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+    .Call('_fromo_running_tstat', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
 }
 
 #' @title
@@ -629,42 +629,42 @@ running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 
 #' @rdname moment_conversions
 #' @export
 cent2raw <- function(input) {
-    .Call('fromo_cent2raw', PACKAGE = 'fromo', input)
+    .Call('_fromo_cent2raw', PACKAGE = 'fromo', input)
 }
 
 #' @rdname firstmoments
 #' @export
 ref_sd <- function(v) {
-    .Call('fromo_ref_sd', PACKAGE = 'fromo', v)
+    .Call('_fromo_ref_sd', PACKAGE = 'fromo', v)
 }
 
 #' @export
 #' @rdname runningmoments
 ref_running_sd <- function(v, window = 1000L) {
-    .Call('fromo_ref_running_sd', PACKAGE = 'fromo', v, window)
+    .Call('_fromo_ref_running_sd', PACKAGE = 'fromo', v, window)
 }
 
 #' @export
 #' @rdname runningmoments
 ref_running_sd_narm <- function(v, window = 1000L) {
-    .Call('fromo_ref_running_sd_narm', PACKAGE = 'fromo', v, window)
+    .Call('_fromo_ref_running_sd_narm', PACKAGE = 'fromo', v, window)
 }
 
 #' @export
 #' @rdname runningmoments
 ref_running_sd_onecheck <- function(v, window = 1000L, na_rm = FALSE) {
-    .Call('fromo_ref_running_sd_onecheck', PACKAGE = 'fromo', v, window, na_rm)
+    .Call('_fromo_ref_running_sd_onecheck', PACKAGE = 'fromo', v, window, na_rm)
 }
 
 #' @export
 #' @rdname runningmoments
 ref_running_sd_intnel <- function(v, window = 1000L) {
-    .Call('fromo_ref_running_sd_intnel', PACKAGE = 'fromo', v, window)
+    .Call('_fromo_ref_running_sd_intnel', PACKAGE = 'fromo', v, window)
 }
 
 #' @export
 #' @rdname runningmoments
 ref_running_sd_objecty <- function(v, window = 1000L) {
-    .Call('fromo_ref_running_sd_objecty', PACKAGE = 'fromo', v, window)
+    .Call('_fromo_ref_running_sd_objecty', PACKAGE = 'fromo', v, window)
 }
 

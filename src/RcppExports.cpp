@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // sd3
 NumericVector sd3(SEXP v, bool na_rm, SEXP wts, double sg_df, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_sd3(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_sd3(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 // skew4
 NumericVector skew4(SEXP v, bool na_rm, SEXP wts, double sg_df, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_skew4(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_skew4(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -39,7 +39,7 @@ END_RCPP
 }
 // kurt5
 NumericVector kurt5(SEXP v, bool na_rm, SEXP wts, double sg_df, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_kurt5(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_kurt5(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,7 +55,7 @@ END_RCPP
 }
 // cent_moments
 NumericVector cent_moments(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_cent_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_cent_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -72,7 +72,7 @@ END_RCPP
 }
 // std_moments
 NumericVector std_moments(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_std_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_std_moments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -89,7 +89,7 @@ END_RCPP
 }
 // cent_cumulants
 NumericVector cent_cumulants(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_cent_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_cent_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -106,7 +106,7 @@ END_RCPP
 }
 // std_cumulants
 NumericVector std_cumulants(SEXP v, int max_order, int used_df, bool na_rm, SEXP wts, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_std_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_std_cumulants(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -123,7 +123,7 @@ END_RCPP
 }
 // cent_sums
 NumericVector cent_sums(SEXP v, int max_order, bool na_rm, SEXP wts, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_cent_sums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_cent_sums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -139,7 +139,7 @@ END_RCPP
 }
 // join_cent_sums
 NumericVector join_cent_sums(NumericVector ret1, NumericVector ret2);
-RcppExport SEXP fromo_join_cent_sums(SEXP ret1SEXP, SEXP ret2SEXP) {
+RcppExport SEXP _fromo_join_cent_sums(SEXP ret1SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -151,7 +151,7 @@ END_RCPP
 }
 // unjoin_cent_sums
 NumericVector unjoin_cent_sums(NumericVector ret3, NumericVector ret2);
-RcppExport SEXP fromo_unjoin_cent_sums(SEXP ret3SEXP, SEXP ret2SEXP) {
+RcppExport SEXP _fromo_unjoin_cent_sums(SEXP ret3SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -163,7 +163,7 @@ END_RCPP
 }
 // cent_cosums
 NumericMatrix cent_cosums(SEXP v, int max_order, bool na_omit);
-RcppExport SEXP fromo_cent_cosums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_omitSEXP) {
+RcppExport SEXP _fromo_cent_cosums(SEXP vSEXP, SEXP max_orderSEXP, SEXP na_omitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -176,7 +176,7 @@ END_RCPP
 }
 // cent_comoments
 NumericMatrix cent_comoments(SEXP v, int max_order, int used_df, bool na_omit);
-RcppExport SEXP fromo_cent_comoments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_omitSEXP) {
+RcppExport SEXP _fromo_cent_comoments(SEXP vSEXP, SEXP max_orderSEXP, SEXP used_dfSEXP, SEXP na_omitSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -190,7 +190,7 @@ END_RCPP
 }
 // join_cent_cosums
 NumericMatrix join_cent_cosums(NumericMatrix ret1, NumericMatrix ret2);
-RcppExport SEXP fromo_join_cent_cosums(SEXP ret1SEXP, SEXP ret2SEXP) {
+RcppExport SEXP _fromo_join_cent_cosums(SEXP ret1SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -202,7 +202,7 @@ END_RCPP
 }
 // unjoin_cent_cosums
 NumericMatrix unjoin_cent_cosums(NumericMatrix ret3, NumericMatrix ret2);
-RcppExport SEXP fromo_unjoin_cent_cosums(SEXP ret3SEXP, SEXP ret2SEXP) {
+RcppExport SEXP _fromo_unjoin_cent_cosums(SEXP ret3SEXP, SEXP ret2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -214,7 +214,7 @@ END_RCPP
 }
 // running_sum
 SEXP running_sum(SEXP v, SEXP window, SEXP wts, bool na_rm, int restart_period, bool check_wts);
-RcppExport SEXP fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
+RcppExport SEXP _fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -230,7 +230,7 @@ END_RCPP
 }
 // running_mean
 SEXP running_mean(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts);
-RcppExport SEXP fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
+RcppExport SEXP _fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -247,7 +247,7 @@ END_RCPP
 }
 // running_sd3
 NumericMatrix running_sd3(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -266,7 +266,7 @@ END_RCPP
 }
 // running_skew4
 NumericMatrix running_skew4(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_skew4(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_skew4(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -285,7 +285,7 @@ END_RCPP
 }
 // running_kurt5
 NumericMatrix running_kurt5(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_kurt5(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_kurt5(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -304,7 +304,7 @@ END_RCPP
 }
 // running_sd
 NumericMatrix running_sd(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_sd(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_sd(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -323,7 +323,7 @@ END_RCPP
 }
 // running_skew
 NumericMatrix running_skew(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_skew(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_skew(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -342,7 +342,7 @@ END_RCPP
 }
 // running_kurt
 NumericMatrix running_kurt(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_kurt(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_kurt(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -361,7 +361,7 @@ END_RCPP
 }
 // running_cent_moments
 NumericMatrix running_cent_moments(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, int max_order, bool na_rm, bool max_order_only, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_cent_moments(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP max_order_onlySEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_cent_moments(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP max_order_onlySEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -382,7 +382,7 @@ END_RCPP
 }
 // running_std_moments
 NumericMatrix running_std_moments(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, int max_order, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_std_moments(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_std_moments(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -402,7 +402,7 @@ END_RCPP
 }
 // running_cumulants
 NumericMatrix running_cumulants(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, int max_order, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_cumulants(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_cumulants(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -422,7 +422,7 @@ END_RCPP
 }
 // running_apx_quantiles
 NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, int max_order, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_apx_quantiles(SEXP vSEXP, SEXP pSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_apx_quantiles(SEXP vSEXP, SEXP pSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -443,7 +443,7 @@ END_RCPP
 }
 // running_apx_median
 NumericMatrix running_apx_median(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, int max_order, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_apx_median(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_apx_median(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP max_orderSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -463,7 +463,7 @@ END_RCPP
 }
 // running_centered
 NumericMatrix running_centered(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int lookahead, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_centered(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_centered(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -483,7 +483,7 @@ END_RCPP
 }
 // running_scaled
 NumericMatrix running_scaled(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int lookahead, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_scaled(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_scaled(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -503,7 +503,7 @@ END_RCPP
 }
 // running_zscored
 NumericMatrix running_zscored(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int lookahead, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_zscored(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_zscored(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP lookaheadSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -523,7 +523,7 @@ END_RCPP
 }
 // running_sharpe
 NumericMatrix running_sharpe(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, bool compute_se, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_sharpe(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP compute_seSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_sharpe(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP compute_seSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -543,7 +543,7 @@ END_RCPP
 }
 // running_tstat
 NumericMatrix running_tstat(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
-RcppExport SEXP fromo_running_tstat(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
+RcppExport SEXP _fromo_running_tstat(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -562,7 +562,7 @@ END_RCPP
 }
 // cent2raw
 NumericVector cent2raw(NumericVector input);
-RcppExport SEXP fromo_cent2raw(SEXP inputSEXP) {
+RcppExport SEXP _fromo_cent2raw(SEXP inputSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -573,7 +573,7 @@ END_RCPP
 }
 // ref_sd
 double ref_sd(NumericVector v);
-RcppExport SEXP fromo_ref_sd(SEXP vSEXP) {
+RcppExport SEXP _fromo_ref_sd(SEXP vSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -584,7 +584,7 @@ END_RCPP
 }
 // ref_running_sd
 NumericVector ref_running_sd(NumericVector v, int window);
-RcppExport SEXP fromo_ref_running_sd(SEXP vSEXP, SEXP windowSEXP) {
+RcppExport SEXP _fromo_ref_running_sd(SEXP vSEXP, SEXP windowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -596,7 +596,7 @@ END_RCPP
 }
 // ref_running_sd_narm
 NumericVector ref_running_sd_narm(NumericVector v, int window);
-RcppExport SEXP fromo_ref_running_sd_narm(SEXP vSEXP, SEXP windowSEXP) {
+RcppExport SEXP _fromo_ref_running_sd_narm(SEXP vSEXP, SEXP windowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -608,7 +608,7 @@ END_RCPP
 }
 // ref_running_sd_onecheck
 NumericVector ref_running_sd_onecheck(NumericVector v, int window, bool na_rm);
-RcppExport SEXP fromo_ref_running_sd_onecheck(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP) {
+RcppExport SEXP _fromo_ref_running_sd_onecheck(SEXP vSEXP, SEXP windowSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -621,7 +621,7 @@ END_RCPP
 }
 // ref_running_sd_intnel
 NumericVector ref_running_sd_intnel(NumericVector v, int window);
-RcppExport SEXP fromo_ref_running_sd_intnel(SEXP vSEXP, SEXP windowSEXP) {
+RcppExport SEXP _fromo_ref_running_sd_intnel(SEXP vSEXP, SEXP windowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -633,7 +633,7 @@ END_RCPP
 }
 // ref_running_sd_objecty
 NumericVector ref_running_sd_objecty(NumericVector v, int window);
-RcppExport SEXP fromo_ref_running_sd_objecty(SEXP vSEXP, SEXP windowSEXP) {
+RcppExport SEXP _fromo_ref_running_sd_objecty(SEXP vSEXP, SEXP windowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -645,45 +645,45 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"fromo_sd3", (DL_FUNC) &fromo_sd3, 6},
-    {"fromo_skew4", (DL_FUNC) &fromo_skew4, 6},
-    {"fromo_kurt5", (DL_FUNC) &fromo_kurt5, 6},
-    {"fromo_cent_moments", (DL_FUNC) &fromo_cent_moments, 7},
-    {"fromo_std_moments", (DL_FUNC) &fromo_std_moments, 7},
-    {"fromo_cent_cumulants", (DL_FUNC) &fromo_cent_cumulants, 7},
-    {"fromo_std_cumulants", (DL_FUNC) &fromo_std_cumulants, 7},
-    {"fromo_cent_sums", (DL_FUNC) &fromo_cent_sums, 6},
-    {"fromo_join_cent_sums", (DL_FUNC) &fromo_join_cent_sums, 2},
-    {"fromo_unjoin_cent_sums", (DL_FUNC) &fromo_unjoin_cent_sums, 2},
-    {"fromo_cent_cosums", (DL_FUNC) &fromo_cent_cosums, 3},
-    {"fromo_cent_comoments", (DL_FUNC) &fromo_cent_comoments, 4},
-    {"fromo_join_cent_cosums", (DL_FUNC) &fromo_join_cent_cosums, 2},
-    {"fromo_unjoin_cent_cosums", (DL_FUNC) &fromo_unjoin_cent_cosums, 2},
-    {"fromo_running_sum", (DL_FUNC) &fromo_running_sum, 6},
-    {"fromo_running_mean", (DL_FUNC) &fromo_running_mean, 7},
-    {"fromo_running_sd3", (DL_FUNC) &fromo_running_sd3, 9},
-    {"fromo_running_skew4", (DL_FUNC) &fromo_running_skew4, 9},
-    {"fromo_running_kurt5", (DL_FUNC) &fromo_running_kurt5, 9},
-    {"fromo_running_sd", (DL_FUNC) &fromo_running_sd, 9},
-    {"fromo_running_skew", (DL_FUNC) &fromo_running_skew, 9},
-    {"fromo_running_kurt", (DL_FUNC) &fromo_running_kurt, 9},
-    {"fromo_running_cent_moments", (DL_FUNC) &fromo_running_cent_moments, 11},
-    {"fromo_running_std_moments", (DL_FUNC) &fromo_running_std_moments, 10},
-    {"fromo_running_cumulants", (DL_FUNC) &fromo_running_cumulants, 10},
-    {"fromo_running_apx_quantiles", (DL_FUNC) &fromo_running_apx_quantiles, 11},
-    {"fromo_running_apx_median", (DL_FUNC) &fromo_running_apx_median, 10},
-    {"fromo_running_centered", (DL_FUNC) &fromo_running_centered, 10},
-    {"fromo_running_scaled", (DL_FUNC) &fromo_running_scaled, 10},
-    {"fromo_running_zscored", (DL_FUNC) &fromo_running_zscored, 10},
-    {"fromo_running_sharpe", (DL_FUNC) &fromo_running_sharpe, 10},
-    {"fromo_running_tstat", (DL_FUNC) &fromo_running_tstat, 9},
-    {"fromo_cent2raw", (DL_FUNC) &fromo_cent2raw, 1},
-    {"fromo_ref_sd", (DL_FUNC) &fromo_ref_sd, 1},
-    {"fromo_ref_running_sd", (DL_FUNC) &fromo_ref_running_sd, 2},
-    {"fromo_ref_running_sd_narm", (DL_FUNC) &fromo_ref_running_sd_narm, 2},
-    {"fromo_ref_running_sd_onecheck", (DL_FUNC) &fromo_ref_running_sd_onecheck, 3},
-    {"fromo_ref_running_sd_intnel", (DL_FUNC) &fromo_ref_running_sd_intnel, 2},
-    {"fromo_ref_running_sd_objecty", (DL_FUNC) &fromo_ref_running_sd_objecty, 2},
+    {"_fromo_sd3", (DL_FUNC) &_fromo_sd3, 6},
+    {"_fromo_skew4", (DL_FUNC) &_fromo_skew4, 6},
+    {"_fromo_kurt5", (DL_FUNC) &_fromo_kurt5, 6},
+    {"_fromo_cent_moments", (DL_FUNC) &_fromo_cent_moments, 7},
+    {"_fromo_std_moments", (DL_FUNC) &_fromo_std_moments, 7},
+    {"_fromo_cent_cumulants", (DL_FUNC) &_fromo_cent_cumulants, 7},
+    {"_fromo_std_cumulants", (DL_FUNC) &_fromo_std_cumulants, 7},
+    {"_fromo_cent_sums", (DL_FUNC) &_fromo_cent_sums, 6},
+    {"_fromo_join_cent_sums", (DL_FUNC) &_fromo_join_cent_sums, 2},
+    {"_fromo_unjoin_cent_sums", (DL_FUNC) &_fromo_unjoin_cent_sums, 2},
+    {"_fromo_cent_cosums", (DL_FUNC) &_fromo_cent_cosums, 3},
+    {"_fromo_cent_comoments", (DL_FUNC) &_fromo_cent_comoments, 4},
+    {"_fromo_join_cent_cosums", (DL_FUNC) &_fromo_join_cent_cosums, 2},
+    {"_fromo_unjoin_cent_cosums", (DL_FUNC) &_fromo_unjoin_cent_cosums, 2},
+    {"_fromo_running_sum", (DL_FUNC) &_fromo_running_sum, 6},
+    {"_fromo_running_mean", (DL_FUNC) &_fromo_running_mean, 7},
+    {"_fromo_running_sd3", (DL_FUNC) &_fromo_running_sd3, 9},
+    {"_fromo_running_skew4", (DL_FUNC) &_fromo_running_skew4, 9},
+    {"_fromo_running_kurt5", (DL_FUNC) &_fromo_running_kurt5, 9},
+    {"_fromo_running_sd", (DL_FUNC) &_fromo_running_sd, 9},
+    {"_fromo_running_skew", (DL_FUNC) &_fromo_running_skew, 9},
+    {"_fromo_running_kurt", (DL_FUNC) &_fromo_running_kurt, 9},
+    {"_fromo_running_cent_moments", (DL_FUNC) &_fromo_running_cent_moments, 11},
+    {"_fromo_running_std_moments", (DL_FUNC) &_fromo_running_std_moments, 10},
+    {"_fromo_running_cumulants", (DL_FUNC) &_fromo_running_cumulants, 10},
+    {"_fromo_running_apx_quantiles", (DL_FUNC) &_fromo_running_apx_quantiles, 11},
+    {"_fromo_running_apx_median", (DL_FUNC) &_fromo_running_apx_median, 10},
+    {"_fromo_running_centered", (DL_FUNC) &_fromo_running_centered, 10},
+    {"_fromo_running_scaled", (DL_FUNC) &_fromo_running_scaled, 10},
+    {"_fromo_running_zscored", (DL_FUNC) &_fromo_running_zscored, 10},
+    {"_fromo_running_sharpe", (DL_FUNC) &_fromo_running_sharpe, 10},
+    {"_fromo_running_tstat", (DL_FUNC) &_fromo_running_tstat, 9},
+    {"_fromo_cent2raw", (DL_FUNC) &_fromo_cent2raw, 1},
+    {"_fromo_ref_sd", (DL_FUNC) &_fromo_ref_sd, 1},
+    {"_fromo_ref_running_sd", (DL_FUNC) &_fromo_ref_running_sd, 2},
+    {"_fromo_ref_running_sd_narm", (DL_FUNC) &_fromo_ref_running_sd_narm, 2},
+    {"_fromo_ref_running_sd_onecheck", (DL_FUNC) &_fromo_ref_running_sd_onecheck, 3},
+    {"_fromo_ref_running_sd_intnel", (DL_FUNC) &_fromo_ref_running_sd_intnel, 2},
+    {"_fromo_ref_running_sd_objecty", (DL_FUNC) &_fromo_ref_running_sd_objecty, 2},
     {NULL, NULL, 0}
 };
 
