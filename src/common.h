@@ -112,6 +112,36 @@ enum MaxOrder {
     just_two = ORDER_TWO,
     beyond = ORDER_BEYOND};
 
+enum ReturnWhat { ret_centmaxonly, // maxonly is a *centered* moment
+    ret_centmoments, 
+    ret_stdmoments, 
+    ret_sd3, ret_skew4, ret_exkurt5,
+    ret_centered, ret_scaled, ret_zscore, ret_sharpe, ret_tstat, ret_sharpese, 
+    ret_stdev, ret_skew, ret_exkurt, 
+    ret_sum, ret_mean };
+
+#include <Rcpp.h>
+using namespace Rcpp;
+
+// check weights with this guy:
+template<class w>
+bool inline bad_weights(w wts) {
+    int top=wts.size();
+    for (int iii=0;iii<top;++iii) {
+        if (isnan(wts[iii]) || (wts[iii] < 0)) { return true; }
+    }
+    return false;
+}
+
+// helper function; takes a double or integer windowsize and interprets w/out warning or vomit.
+// if NULL, return NA_INTEGER;
+// if integer, pass through as i ;
+// if double, then 
+//   if Inf or NA, return NA_INTEGER;
+//   else convert to integer via as<int>( )
+int get_wins(SEXP window);
+
+
 #endif /* __DEF_FROMO_COMMON__ */
 
 

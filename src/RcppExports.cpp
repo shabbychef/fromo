@@ -212,39 +212,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// running_sum
-SEXP running_sum(SEXP v, SEXP window, SEXP wts, bool na_rm, int restart_period, bool check_wts);
-RcppExport SEXP _fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
-    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, wts, na_rm, restart_period, check_wts));
-    return rcpp_result_gen;
-END_RCPP
-}
-// running_mean
-SEXP running_mean(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts);
-RcppExport SEXP _fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
-    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
-    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
-    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
-    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
-    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
-    rcpp_result_gen = Rcpp::wrap(running_mean(v, window, wts, na_rm, min_df, restart_period, check_wts));
-    return rcpp_result_gen;
-END_RCPP
-}
 // running_sd3
 NumericMatrix running_sd3(SEXP v, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts);
 RcppExport SEXP _fromo_running_sd3(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
@@ -643,6 +610,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// running_sum
+SEXP running_sum(SEXP v, SEXP window, SEXP wts, bool na_rm, int restart_period, bool check_wts);
+RcppExport SEXP _fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_sum(v, window, wts, na_rm, restart_period, check_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_mean
+SEXP running_mean(SEXP v, SEXP window, SEXP wts, bool na_rm, int min_df, int restart_period, bool check_wts);
+RcppExport SEXP _fromo_running_mean(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_mean(v, window, wts, na_rm, min_df, restart_period, check_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fromo_sd3", (DL_FUNC) &_fromo_sd3, 6},
@@ -659,8 +659,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_cent_comoments", (DL_FUNC) &_fromo_cent_comoments, 4},
     {"_fromo_join_cent_cosums", (DL_FUNC) &_fromo_join_cent_cosums, 2},
     {"_fromo_unjoin_cent_cosums", (DL_FUNC) &_fromo_unjoin_cent_cosums, 2},
-    {"_fromo_running_sum", (DL_FUNC) &_fromo_running_sum, 6},
-    {"_fromo_running_mean", (DL_FUNC) &_fromo_running_mean, 7},
     {"_fromo_running_sd3", (DL_FUNC) &_fromo_running_sd3, 9},
     {"_fromo_running_skew4", (DL_FUNC) &_fromo_running_skew4, 9},
     {"_fromo_running_kurt5", (DL_FUNC) &_fromo_running_kurt5, 9},
@@ -684,6 +682,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_ref_running_sd_onecheck", (DL_FUNC) &_fromo_ref_running_sd_onecheck, 3},
     {"_fromo_ref_running_sd_intnel", (DL_FUNC) &_fromo_ref_running_sd_intnel, 2},
     {"_fromo_ref_running_sd_objecty", (DL_FUNC) &_fromo_ref_running_sd_objecty, 2},
+    {"_fromo_running_sum", (DL_FUNC) &_fromo_running_sum, 6},
+    {"_fromo_running_mean", (DL_FUNC) &_fromo_running_mean, 7},
     {NULL, NULL, 0}
 };
 
