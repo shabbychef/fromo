@@ -90,16 +90,16 @@ print(checkit)
 
 ```
 ## Unit: microseconds
-##                                                          expr   min    lq  mean median    uq   max neval   cld
-##                                                        sum(x)    82    86   103     95   107   420   100 a    
-##                                                       mean(x)   167   193   223    204   224   563   100 a    
-##                                                          gc() 40818 42340 44148  43131 45198 58011   100     e
-##                                          running_sum(x, wins)  1080  1198  1362   1280  1415  2779   100  bc  
-##  running_sum(x, wins, na_rm = FALSE, restart_period = 50000L)  1071  1163  1800   1244  1354 48389   100   c  
-##                                         running_mean(x, wins)  1066  1151  1366   1258  1411  2681   100  bc  
-##                                      ref_running_sum(x, wins)  1136  1263  1876   1730  2371  4207   100   c  
-##                                     ref_running_sum2(x, wins)  1557  2270  3318   2846  3451 45283   100    d 
-##                                                     cumsum(x)   470   496   720    594   706  2110   100 ab
+##                                                          expr   min    lq  mean median    uq   max neval cld
+##                                                        sum(x)    80    83   104     92   102   420   100 a  
+##                                                       mean(x)   163   183   220    191   214   512   100 a  
+##                                                          gc() 36965 37495 47218  37770 38929 90221   100   c
+##                                          running_sum(x, wins)  1040  1098  1346   1224  1377  4803   100 ab 
+##  running_sum(x, wins, na_rm = FALSE, restart_period = 50000L)  1017  1083  1715   1213  1439 39899   100 ab 
+##                                         running_mean(x, wins)  1037  1097  1356   1227  1431  3711   100 ab 
+##                                      ref_running_sum(x, wins)  1112  1206  1898   1833  2378  5488   100 ab 
+##                                     ref_running_sum2(x, wins)  1528  2067  3334   2800  3512 40351   100  b 
+##                                                     cumsum(x)   456   488   762    610   703  3949   100 ab
 ```
 
 ```r
@@ -113,10 +113,10 @@ checkit %>% group_by(expr) %>% dplyr::summarize(meant = mean(time,
 
 |expr                                                         |   meant| timeover|
 |:------------------------------------------------------------|-------:|--------:|
-|running_sum(x, wins)                                         | 1362476|      1.0|
-|running_sum(x, wins, na_rm = FALSE, restart_period = 50000L) | 1799933|      1.3|
-|ref_running_sum(x, wins)                                     | 1875844|      1.4|
-|ref_running_sum2(x, wins)                                    | 3317949|      2.4|
+|running_sum(x, wins)                                         | 1345524|      1.0|
+|running_sum(x, wins, na_rm = FALSE, restart_period = 50000L) | 1714902|      1.3|
+|ref_running_sum(x, wins)                                     | 1898221|      1.4|
+|ref_running_sum2(x, wins)                                    | 3333847|      2.5|
 
 Welford standard deviation is easy to compute quickly:
 
@@ -193,7 +193,7 @@ checkit <- microbenchmark(sd(x), sd3(x), ref_sd(x),
     gc(), ref_running_sd(x, wins), ref_running_sd_narm(x, 
         wins), ref_running_sd_intnel(x, wins), ref_running_sd_objecty(x, 
         wins), ref_running_sd_onecheck(x, wins), ref_running_sd_fooz(x, 
-        wins))
+        wins), ref_running_sd_barz(x, wins))
 
 
 print(checkit)
@@ -201,20 +201,21 @@ print(checkit)
 
 ```
 ## Unit: microseconds
-##                                                         expr   min    lq   mean median     uq    max neval cld
-##                                                        sd(x)   498   535    617    571    627   1530   100 a  
-##                                                       sd3(x)   874   914    977    963   1016   1278   100 a  
-##                                                    ref_sd(x)   736   774    844    822    880   1260   100 a  
-##                                            ref_sd_objecty(x)   738   776    842    820    887   1151   100 a  
-##                                          running_sd(x, wins) 10917 11950  14115  13096  14700  34050   100  b 
-##  running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)  8455  9811  11356  10625  11914  28427   100  b 
-##                                                         gc() 83036 93396 106150  97198 103039 244876   100   c
-##                                      ref_running_sd(x, wins)  1219  1306   1557   1404   1517   6220   100 a  
-##                                 ref_running_sd_narm(x, wins)  1483  1616   1872   1712   1940   4476   100 a  
-##                               ref_running_sd_intnel(x, wins)  1230  1325   1511   1437   1555   3047   100 a  
-##                              ref_running_sd_objecty(x, wins)  1221  1308   1413   1400   1481   1993   100 a  
-##                             ref_running_sd_onecheck(x, wins)  1227  1308   1443   1394   1496   3139   100 a  
-##                                 ref_running_sd_fooz(x, wins)  8640  9838  12682  10522  11848 113170   100  b
+##                                                         expr   min    lq  mean median    uq   max neval   cld
+##                                                        sd(x)   465   497   530    511   539   805   100 a    
+##                                                       sd3(x)   848   878   920    900   934  1217   100 a    
+##                                                    ref_sd(x)   714   737   773    756   777   984   100 a    
+##                                            ref_sd_objecty(x)   718   741   785    764   795  1031   100 a    
+##                                          running_sd(x, wins)  9459  9738 10554  10176 10990 18550   100    d 
+##  running_sd(x, wins, na_rm = FALSE, restart_period = 50000L)  7257  7591  8329   7907  8604 12483   100   c  
+##                                                         gc() 78225 79341 81172  81235 82736 87293   100     e
+##                                      ref_running_sd(x, wins)  1194  1229  1314   1255  1310  2611   100 a    
+##                                 ref_running_sd_narm(x, wins)  1425  1484  1572   1517  1612  2865   100 a    
+##                               ref_running_sd_intnel(x, wins)  1186  1237  1350   1276  1362  2832   100 a    
+##                              ref_running_sd_objecty(x, wins)  1182  1228  1342   1262  1338  6269   100 a    
+##                             ref_running_sd_onecheck(x, wins)  1182  1225  1315   1255  1297  2713   100 a    
+##                                 ref_running_sd_fooz(x, wins)  7455  7702  8608   8024  9140 12983   100   c  
+##                                 ref_running_sd_barz(x, wins)  1845  1963  2972   2014  2145 85627   100  b
 ```
 
 ```r
@@ -228,13 +229,14 @@ checkit %>% group_by(expr) %>% dplyr::summarize(meant = mean(time,
 
 |expr                                                        |   meant| timeover|
 |:-----------------------------------------------------------|-------:|--------:|
-|running_sd(x, wins)                                         | 1.4e+07|     10.0|
-|running_sd(x, wins, na_rm = FALSE, restart_period = 50000L) | 1.1e+07|      8.0|
-|ref_running_sd(x, wins)                                     | 1.6e+06|      1.1|
-|ref_running_sd_narm(x, wins)                                | 1.9e+06|      1.3|
-|ref_running_sd_intnel(x, wins)                              | 1.5e+06|      1.1|
-|ref_running_sd_objecty(x, wins)                             | 1.4e+06|      1.0|
-|ref_running_sd_onecheck(x, wins)                            | 1.4e+06|      1.0|
-|ref_running_sd_fooz(x, wins)                                | 1.3e+07|      9.0|
+|running_sd(x, wins)                                         | 1.1e+07|      8.0|
+|running_sd(x, wins, na_rm = FALSE, restart_period = 50000L) | 8.3e+06|      6.3|
+|ref_running_sd(x, wins)                                     | 1.3e+06|      1.0|
+|ref_running_sd_narm(x, wins)                                | 1.6e+06|      1.2|
+|ref_running_sd_intnel(x, wins)                              | 1.4e+06|      1.0|
+|ref_running_sd_objecty(x, wins)                             | 1.3e+06|      1.0|
+|ref_running_sd_onecheck(x, wins)                            | 1.3e+06|      1.0|
+|ref_running_sd_fooz(x, wins)                                | 8.6e+06|      6.5|
+|ref_running_sd_barz(x, wins)                                | 3.0e+06|      2.3|
 
 

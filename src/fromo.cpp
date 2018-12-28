@@ -3337,13 +3337,75 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     return vret;
 }
 
+// check if the currying layers are a problem; apparently not, the slowness is in runQMCurryZero, right?
 //' @export
 //' @rdname runningmoments
 // [[Rcpp::export]]
 NumericVector ref_running_sd_fooz(NumericVector v,int window=1000) {
     NumericVector dummy_wts;
-    return runQMCurryZero<NumericVector,ret_stdev,NumericVector,double,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE,FALSE);
+    return runQM<NumericVector,ret_stdev,NumericVector,double,false,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE,FALSE);
 }
+
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
+    Welford<double,false,false> frets = Welford<double,false,false>(2);
+    double nextv, prevv;
+    double nextw;
+    NumericVector dummy_wts;
+    int ord=2;
+    bool na_rm=false;
+    bool check_wts=false;
+
+    // only for retwhat==ret_sharpese, but cannot define outside its scope.
+    // no bigs.
+    double sigma,skew,exkurt,sr;
+
+    int iii,jjj,lll,mmm,ppp,qqq,tr_iii,tr_jjj;
+    int numel = v.size();
+
+    // preallocated with zeros; should
+    // probably be NA?
+    int ncols=1;
+    NumericVector xret(numel);
+
+    // as an invariant, we will start the computation
+    // with vret, which is initialized as the summed
+    // means on [jjj,iii]
+    tr_iii = - 1;
+    tr_jjj = - window;
+
+    // now run through lll index//FOLDUP
+    frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false>(v,dummy_wts,ord,
+                                                                               0,       //bottom
+                                                                               0,     //top
+                                                                               na_rm, check_wts);
+    for (lll=0;lll < numel;++lll) {
+        tr_iii++;
+        if ((tr_iii < numel) && (tr_iii >= 0)) {
+            // add on nextv:
+            nextv = double(v[tr_iii]);
+            if (! (na_rm && (ISNAN(nextv)))) {
+                frets.add_one(nextv,1);
+            }
+        }
+        // remove prevv:
+        if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+            prevv = double(v[tr_jjj]);
+            if (! (na_rm && (ISNAN(prevv)))) {
+                frets.rem_one(prevv,1);
+            }
+        }
+        tr_jjj++;
+
+        // fill in the value in the output.
+        // 2FIX: give access to v, not v[lll]...
+        xret[lll] = frets.sd(false,1.0);
+    }//UNFOLD
+    return xret;
+}
+
 
 
 //for vim modeline: (do not edit)

@@ -121,7 +121,8 @@ checkit <- microbenchmark(sd(x),
 													ref_running_sd_intnel(x,wins),
 													ref_running_sd_objecty(x,wins),
 													ref_running_sd_onecheck(x,wins),
-													ref_running_sd_fooz(x,wins))
+													ref_running_sd_fooz(x,wins),
+													ref_running_sd_barz(x,wins))
 
 
 print(checkit)
