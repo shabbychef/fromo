@@ -3405,6 +3405,52 @@ NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
     }//UNFOLD
     return xret;
 }
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_batz(NumericVector v,int window=1000) {
+    Welford<double,false,false> frets = Welford<double,false,false>(2);
+    double nextv, prevv;
+    double nextw;
+    NumericVector dummy_wts;
+    int ord=2;
+    bool na_rm=false;
+    bool check_wts=false;
+
+    // only for retwhat==ret_sharpese, but cannot define outside its scope.
+    // no bigs.
+    double sigma,skew,exkurt,sr;
+
+    int lll,jjj;
+    int numel = v.size();
+
+    // preallocated with zeros; should
+    // probably be NA?
+    int ncols=1;
+    NumericVector xret(numel);
+
+    // now run through lll index//FOLDUP
+    frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false>(v,dummy_wts,ord,
+                                                                               0,       //bottom
+                                                                               0,     //top
+                                                                               na_rm, check_wts);
+    int firstpart;
+    firstpart = MIN(numel,window);
+
+    for (int lll=0;lll < firstpart;++lll) {
+        frets.add_one(v[lll],1.0);
+        xret[lll] = frets.sd(false,1.0);
+    }
+    if (firstpart < numel) {
+        jjj = 0;
+        for (int lll=firstpart;lll < numel;++lll) {
+            ++jjj;
+            frets.swap_one(v[lll],1.0,v[jjj],1.0);
+            xret[lll] = frets.sd(false,1.0);
+        }
+    }//UNFOLD
+    return xret;
+}
 
 
 

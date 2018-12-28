@@ -17,6 +17,7 @@
 \alias{ref_running_sd_objecty}
 \alias{ref_running_sd_fooz}
 \alias{ref_running_sd_barz}
+\alias{ref_running_sd_batz}
 \title{Compute first K moments over a sliding window}
 \usage{
 running_sd3(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
@@ -68,6 +69,8 @@ ref_running_sd_objecty(v, window = 1000L)
 ref_running_sd_fooz(v, window = 1000L)
 
 ref_running_sd_barz(v, window = 1000L)
+
+ref_running_sd_batz(v, window = 1000L)
 }
 \arguments{
 \item{v}{a vector}
