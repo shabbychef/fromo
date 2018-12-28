@@ -29,14 +29,14 @@ RUN (apt-get clean -y ; \
 RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -q -y --no-install-recommends \ 
   libgs9 texlive-base texlive-binaries libcupsimage2 libcups2 file curl wget qpdf pandoc ghostscript \
   texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texinfo \
-  liblapack-dev libblas-dev libssl-dev libcurl4-openssl-dev libgit2-dev libxml2-dev libcairo2-dev; \
+  libmariadbclient-dev libpq-dev liblapack-dev libblas-dev libssl-dev libcurl4-openssl-dev libgit2-dev libxml2-dev libcairo2-dev; \
   sync ; \
   mkdir -p /usr/local/lib/R/site-library ; \
   chmod -R 777 /usr/local/lib/R/site-library ; \
   sync )
 
 # rinstall somethings...
-RUN (install2.r --error --deps TRUE \
+RUN (install2.r --error --skipinstalled --deps TRUE \
   devtools roxygen2 testthat curl \
   knitr formatR codetools \
   Rcpp \
