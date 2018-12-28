@@ -2311,7 +2311,7 @@ NumericMatrix runQM(T v,
                 if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     prevv = double(v[tr_jjj]);
                     nextw = double(wts[tr_jjj]); 
-                    if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0)))) {
+                    if (! (na_rm && (ISNAN(prevv) || ISNAN(nextw) || (nextw <= 0)))) {
                         frets.rem_one(prevv,nextw);
                         subcount++;
                     }
@@ -2350,7 +2350,7 @@ NumericMatrix runQM(T v,
                 // remove prevv:
                 if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     prevv = double(v[tr_jjj]);
-                    if (! (na_rm && (ISNAN(nextv)))) {
+                    if (! (na_rm && (ISNAN(prevv)))) {
                         frets.rem_one(prevv,1);
                         subcount++;
                     }
