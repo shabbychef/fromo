@@ -16,7 +16,7 @@ FROM shabbychef/crancheck
 MAINTAINER Steven E. Pav, shabbychef@gmail.com
 # UNFOLD
 
-ENV DOCKERFILE_REFRESHED_AT 2018-06-15
+ENV DOCKERFILE_REFRESHED_AT 2018-12-27
 # see http://crosbymichael.com/dockerfile-best-practices.html
 #RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 
@@ -30,7 +30,7 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
   libgs9 texlive-base texlive-binaries \
 	libcupsimage2 libcups2 curl wget \
 	qpdf pandoc ghostscript \
-	texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra \
+	texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texinfo \
 	liblapack-dev libblas-dev ; \
 	sync ; \
 	mkdir -p /usr/local/lib/R/site-library ; \
@@ -39,12 +39,8 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
 	/usr/local/bin/install2.r Rcpp testthat roxygen2 devtools knitr formatR codetools)
 
 # rinstall somethings...
-RUN /usr/local/bin/install2.r moments microbenchmark PDQutils;
-
-# needed for readme
-RUN /usr/local/bin/install2.r dplyr ggplot2 roll RcppRoll multcomp readr tidyr;
-RUN /usr/local/bin/install2.r curl;
-RUN /usr/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' 
+RUN ( /usr/local/bin/install2.r moments microbenchmark PDQutils dplyr ggplot2 roll RcppRoll multcomp readr tidyr curl; \
+	/usr/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
 
 # already in there, I think. weird.
 #RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
