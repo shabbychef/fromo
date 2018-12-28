@@ -12,11 +12,11 @@
 
 #####################################################
 # preamble# FOLDUP
-FROM shabbychef/crancheck
+FROM rocker/r-base:latest
 MAINTAINER Steven E. Pav, shabbychef@gmail.com
 # UNFOLD
 
-ENV DOCKERFILE_REFRESHED_AT 2018-12-27
+ENV DOCKERFILE_REFRESHED_AT 2018-12-28
 # see http://crosbymichael.com/dockerfile-best-practices.html
 #RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 
@@ -27,31 +27,28 @@ RUN (apt-get clean -y ; \
 #RUN (apt-get dist-upgrade -y ; \
 #apt-get update -qq ; \
 RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -q -y --no-install-recommends \ 
-  libgs9 texlive-base texlive-binaries \
-	libcupsimage2 libcups2 curl wget \
-	qpdf pandoc ghostscript \
-	texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texinfo \
-	liblapack-dev libblas-dev ; \
-	sync ; \
-	mkdir -p /usr/local/lib/R/site-library ; \
-	chmod -R 777 /usr/local/lib/R/site-library ; \
-	sync )
-
-RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -q -y --no-install-recommends \ 
-	r-cran-curl )
-
-#RUN (Rscript -e 'install.packages("docopt")'; \
-	#/usr/local/bin/install2.r Rcpp testthat roxygen2 devtools knitr formatR codetools)
+  libgs9 texlive-base texlive-binaries libcupsimage2 libcups2 file curl wget qpdf pandoc ghostscript \
+  texlive-latex-extra texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texinfo \
+  liblapack-dev libblas-dev libssl-dev libcurl4-openssl-dev libgit2-dev libxml2-dev libcairo2-dev; \
+  sync ; \
+  mkdir -p /usr/local/lib/R/site-library ; \
+  chmod -R 777 /usr/local/lib/R/site-library ; \
+  sync )
 
 # rinstall somethings...
-#RUN ( /usr/local/bin/install2.r moments microbenchmark PDQutils dplyr ggplot2 roll RcppRoll multcomp readr tidyr curl; \
-	#r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
+RUN (install2.r --error --deps TRUE \
+  devtools roxygen2 testthat curl \
+  knitr formatR codetools \
+  Rcpp \
+  readr dplyr tidyr ggplot2 \
+  moments microbenchmark PDQutils roll RcppRoll multcomp; \
+  r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
 
 # already in there, I think. weird.
-RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
-USER spav
-# docker is user 1000
-#USER docker
+# RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
+# USER spav
+# docker has id 1000 in rocker/r-base; so use that. ugh.
+USER docker
 
 #####################################################
 # entry and cmd# FOLDUP
@@ -64,4 +61,4 @@ CMD ["/srv/*.tar.gz"]
 # UNFOLD
 
 #for vim modeline: (do not edit)
-# vim:nu:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=Dockerfile:ft=Dockerfile:fo=croql
+# vim:nu:et:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=Dockerfile:ft=Dockerfile:fo=croql
