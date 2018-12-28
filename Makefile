@@ -21,7 +21,7 @@ include ./rpkg_make/Makefile
 nodist/%.csv nodist/%.md : nodist/%.Rmd $(PKG_INSTALLED) 
 	$(DOCKER) run -it --rm \
 		--volume $(PWD)/nodist:/srv:rw \
-		--volume $$(pwd $(RLIB_D)):/opt/R/lib:rw \
+		--volume $$(readlink -f $(RLIB_D)):/opt/R/lib:rw \
 		$(DOCKER_ENV) \
 		--entrypoint="r" $(USER)/$(PKG_LCNAME)-crancheck \
 		"-l" "knitr" "-l" "$(PKG_NAME)" \
@@ -43,7 +43,7 @@ ref_timings : nodist/ref_timings.md  ## timing against reference implementations
 reame : $(PKG_INSTALLED) $(DOCKER_IMG)
 	$(DOCKER) run -it --rm \
 		--volume $(PWD):/srv:rw \
-		--volume $$(pwd $(RLIB_D)):/opt/R/lib:rw \
+		--volume $$(readlink -f $(RLIB_D)):/opt/R/lib:rw \
 		$(DOCKER_ENV) \
 		--entrypoint="r" $(USER)/$(PKG_LCNAME)-crancheck \
 		"-l" "knitr" "-l" "$(PKG_NAME)" \

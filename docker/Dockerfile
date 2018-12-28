@@ -50,6 +50,8 @@ RUN (install2.r --error --deps TRUE \
 # docker has id 1000 in rocker/r-base; so use that. ugh.
 USER docker
 
+WORKDIR /srv
+
 #####################################################
 # entry and cmd# FOLDUP
 # these are the default, but remind you that you might want to use /usr/bin/R instead?
