@@ -48,7 +48,9 @@ RUN /usr/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andre
 
 # already in there, I think. weird.
 #RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
-USER spav
+#USER spav
+# docker is user 1000
+USER docker
 
 #####################################################
 # entry and cmd# FOLDUP
