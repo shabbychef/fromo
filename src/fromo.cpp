@@ -671,7 +671,7 @@ class Welford<W,has_wts,false> {
     public:
         // add another (weighted) observation to our set of x
         inline Welford& add_one (const double xval, const W wt) {
-            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            double della,nel,delnel,nelm;
             if (has_wts) { m_nel++; }
             della = xval - m_xx[1];
             nelm = double(m_wsum.as());
@@ -679,12 +679,14 @@ class Welford<W,has_wts,false> {
             nel = double(m_wsum.as());
             delnel = della * double(wt) / nel;
             m_xx[1] += delnel;
-            m_xx[2] += della * wt * (xval - m_xx[1]);
+            //m_xx[2] += della * wt * (xval - m_xx[1]);
+            // I believe these are equivalent ; 
+            m_xx[2] += della * delnel * nelm;
             return *this;
         }
         // remove one (weighted) observation from our set of x
         inline Welford& rem_one (const double xval, const W wt) {
-            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
+            double della,nel,delnel,nelm;
             if (has_wts) { m_nel--; }
             della = xval - m_xx[1];
             nelm = double(m_wsum.as());
@@ -693,7 +695,9 @@ class Welford<W,has_wts,false> {
             if (nel > 0) {
                 delnel = della * double(wt) / nel;
                 m_xx[1] -= delnel;
-                m_xx[2] -= della * wt * (xval - m_xx[1]);
+                //m_xx[2] -= della * wt * (xval - m_xx[1]);
+                // I believe these are equivalent ; 
+                m_xx[2] -= della * delnel * nelm;
                 //drat = delnel * nel;
                 //ac_dn = drat*drat;
                 //ac_on = -double(wt) / nel;
