@@ -35,11 +35,64 @@ library(microbenchmark)
 
 # fromo timings against reference implementations
 
+Let us check timings of simple sums:
+
+```{r timing_I,eval=TRUE,echo=TRUE,cache=FALSE}
+library(fromo)
+library(microbenchmark)
+
+print(Sys.info())
+print(sessionInfo())
+
+
+set.seed(12345)
+x    <- rnorm(1e5)
+wins <- 250
+
+ref_running_sum <- function(x,wins) {
+	cx <- cumsum(x)
+	cx - c(rep(0,wins),cx[1:(length(cx)-wins)])
+}
+
+ref_running_sum2 <- function(x,wins) {
+	cx <- cumsum(x)
+	c(cx[1:wins],cx[(wins+1):length(cx)] - cx[1:(length(cx)-wins)])
+}
+
+
+# check first
+blah <- running_sum(x,wins) - ref_running_sum(x,wins)
+print(summary(blah[4:length(blah)]))
+
+# timings
+checkit <- microbenchmark(sum(x),
+													mean(x),
+													gc(),
+													running_sum(x,wins),
+													running_sum(x,wins,na_rm=FALSE,restart_period=50000L),
+													running_mean(x,wins),
+													ref_running_sum(x,wins),
+													ref_running_sum2(x,wins),
+													cumsum(x))
+
+print(checkit)
+
+checkit %>%
+	group_by(expr) %>%
+		dplyr::summarize(meant=mean(time,na.rm=TRUE)) %>%
+	ungroup() %>%
+	dplyr::filter(grepl('running_sum',expr)) %>%
+	mutate(timeover=meant / min(meant,na.rm=TRUE)) %>%
+	kable()
+	
+
+```
+
 Welford standard deviation is easy to compute quickly:
 
 
 
-```{r timing_I,eval=TRUE,echo=TRUE,cache=FALSE}
+```{r timing_II,eval=TRUE,echo=TRUE,cache=FALSE}
 library(fromo)
 library(microbenchmark)
 
