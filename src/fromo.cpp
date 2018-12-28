@@ -3337,6 +3337,13 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     return vret;
 }
 
+//' @export
+//' @rdname runningmoments
+// [[Rcpp::export]]
+NumericVector ref_running_sd_fooz(NumericVector v,int window=1000) {
+    NumericVector dummy_wts;
+    return runQMCurryZero<NumericVector,ret_stdev,NumericVector,double,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE,FALSE);
+}
 
 
 //for vim modeline: (do not edit)

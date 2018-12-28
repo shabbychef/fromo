@@ -618,6 +618,12 @@ ref_running_sd_objecty <- function(v, window = 1000L) {
     .Call('_fromo_ref_running_sd_objecty', PACKAGE = 'fromo', v, window)
 }
 
+#' @export
+#' @rdname runningmoments
+ref_running_sd_fooz <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_fooz', PACKAGE = 'fromo', v, window)
+}
+
 #' @title
 #' Compute sums or means over a sliding window.
 #'

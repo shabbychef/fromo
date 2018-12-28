@@ -621,6 +621,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ref_running_sd_fooz
+NumericVector ref_running_sd_fooz(NumericVector v, int window);
+RcppExport SEXP _fromo_ref_running_sd_fooz(SEXP vSEXP, SEXP windowSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type window(windowSEXP);
+    rcpp_result_gen = Rcpp::wrap(ref_running_sd_fooz(v, window));
+    return rcpp_result_gen;
+END_RCPP
+}
 // running_sum
 SEXP running_sum(SEXP v, SEXP window, SEXP wts, bool na_rm, int restart_period, bool check_wts);
 RcppExport SEXP _fromo_running_sum(SEXP vSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP) {
@@ -694,6 +706,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_ref_running_sd_onecheck", (DL_FUNC) &_fromo_ref_running_sd_onecheck, 3},
     {"_fromo_ref_running_sd_intnel", (DL_FUNC) &_fromo_ref_running_sd_intnel, 2},
     {"_fromo_ref_running_sd_objecty", (DL_FUNC) &_fromo_ref_running_sd_objecty, 2},
+    {"_fromo_ref_running_sd_fooz", (DL_FUNC) &_fromo_ref_running_sd_fooz, 2},
     {"_fromo_running_sum", (DL_FUNC) &_fromo_running_sum, 6},
     {"_fromo_running_mean", (DL_FUNC) &_fromo_running_mean, 7},
     {NULL, NULL, 0}
