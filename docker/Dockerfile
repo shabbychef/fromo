@@ -35,24 +35,29 @@ RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get ins
 	sync ; \
 	mkdir -p /usr/local/lib/R/site-library ; \
 	chmod -R 777 /usr/local/lib/R/site-library ; \
-	sync ; \
-	/usr/local/bin/install2.r Rcpp testthat roxygen2 devtools knitr formatR codetools)
+	sync )
+
+RUN (DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -q -y --no-install-recommends \ 
+	r-cran-curl )
+
+#RUN (Rscript -e 'install.packages("docopt")'; \
+	#/usr/local/bin/install2.r Rcpp testthat roxygen2 devtools knitr formatR codetools)
 
 # rinstall somethings...
-RUN ( /usr/local/bin/install2.r moments microbenchmark PDQutils dplyr ggplot2 roll RcppRoll multcomp readr tidyr curl; \
-	/usr/bin/r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
+#RUN ( /usr/local/bin/install2.r moments microbenchmark PDQutils dplyr ggplot2 roll RcppRoll multcomp readr tidyr curl; \
+	#r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
 
 # already in there, I think. weird.
-#RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
-#USER spav
+RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
+USER spav
 # docker is user 1000
-USER docker
+#USER docker
 
 #####################################################
 # entry and cmd# FOLDUP
 # these are the default, but remind you that you might want to use /usr/bin/R instead?
 # always use array syntax:
-ENTRYPOINT ["/usr/bin/R","CMD","check","--as-cran","--output=/tmp"]
+ENTRYPOINT ["R","CMD","check","--as-cran","--output=/tmp"]
 
 # ENTRYPOINT and CMD are better together:
 CMD ["/srv/*.tar.gz"]

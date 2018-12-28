@@ -129,7 +129,7 @@ class Welford {
         }
 
         // getters 
-        inline int nel() const { if (has_wts) { return m_nel; } else { return wsum(); } }
+        inline int nel() const { if (has_wts) { return m_nel; } else { return wsum(); } }  // not sure I understand this...
         inline W wsum() const { return m_wsum.as(); }
         inline NumericVector as() const { return m_xx; }
         inline NumericVector asvec() const { 
@@ -960,32 +960,26 @@ class Welford<W,false,false> {
 
 // univariate sums, moments, cumulants//FOLDUP
 
-// this function returns a NumericVector of:
-//   the number of elements or the sum of wts, 
-//   the mean, and 
-//   an (ord - 1)-vector consisting of the
-//   2nd through ord'th centered sum, defined
-//   as sum_j wts[j] * (v[j] - mean)^i
-// if top < 0, take the length of v.
-//
-// if normalize_wts and wts are non-null, then
-// we essentially renormalize the weights to
-// have mean 1.
+
+
+// quasiSumThing :
+// given weights and values, computes the
+// sum of weights, and the weighted mean of the values.
+// computes from bottom to top; if top is negative, change to the size of v;
 
 template <typename T,typename W,typename oneW,bool has_wts>
 NumericVector quasiSumThing(T v,
                             W wts,
-                            int ord,
                             int bottom,
                             int top,
                             const bool na_rm,
-                            const bool check_wts) {
+                            const bool check_wts,
+                            const bool normalize_wts) {
     double nextv, nextw;
     Kahan<double> fwvsum;
     Kahan<oneW> fwsum;
     double totwt;
-
-
+    int nel = 0;
 
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
@@ -998,6 +992,7 @@ NumericVector quasiSumThing(T v,
                 // 2FIX: check for zero weight??
                 fwvsum += nextv * nextw;
                 fwsum += nextw;
+                ++nel;
             }
         }
     } else {
@@ -1011,6 +1006,10 @@ NumericVector quasiSumThing(T v,
     }
     totwt = double(fwsum.as());
     NumericVector vret = NumericVector::create(totwt,double(fwvsum.as()) / totwt);
+    // the mean does not change, but the 'sum weights' becomes the number of elements
+    if (has_wts && normalize_wts) {
+        vret[0] = double(nel);
+    }
     return vret;
 }
 
@@ -1046,6 +1045,19 @@ Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
     return frets;
 }
 
+// this function returns a NumericVector of:
+//   the number of elements or the sum of wts, 
+//   the mean, and 
+//   an (ord - 1)-vector consisting of the
+//   2nd through ord'th centered sum, defined
+//   as sum_j wts[j] * (v[j] - mean)^i
+// if top < 0, take the length of v.
+//
+// if normalize_wts and wts are non-null, then
+// we essentially renormalize the weights to
+// have mean 1. in that case, the zeroth element
+// returned is the 
+
 template <typename T,typename W,typename oneW,bool has_wts>
 NumericVector quasiWeightedMoments(T v,
                                    W wts,
@@ -1062,7 +1074,7 @@ NumericVector quasiWeightedMoments(T v,
 
     if (ord == 1) {
         //2FIX: no normalization??
-        xret = quasiSumThing<T,W,oneW,has_wts>(v,wts,ord,bottom,top,na_rm,check_wts);
+        xret = quasiSumThing<T,W,oneW,has_wts>(v,wts,bottom,top,na_rm,check_wts,normalize_wts);
         return xret;
     } else if (ord > 2) {
         Welford<oneW,has_wts,true> frets = quasiWeightedThing<T,W,oneW,has_wts,true>(v,wts,ord,bottom,top,na_rm,check_wts);
