@@ -3126,6 +3126,16 @@ double ref_sd(NumericVector v) {
     //return vret;
     return sqrt(sd / (top - 1));
 }
+// same, but use the Welford object. another comparison point.
+//' @rdname firstmoments
+//' @export
+// [[Rcpp::export]]
+double ref_sd_objecty(NumericVector v) {
+    Welford<double,false,false> frets = Welford<double,false,false>(2);
+    int top=v.size();
+    for (int iii=0;iii < top;++iii) { frets.add_one(v[iii],1.0); }
+    return frets.sd(false,1.0);
+}
 
 //' @export
 //' @rdname runningmoments

@@ -549,6 +549,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ref_sd_objecty
+double ref_sd_objecty(NumericVector v);
+RcppExport SEXP _fromo_ref_sd_objecty(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(ref_sd_objecty(v));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ref_running_sd
 NumericVector ref_running_sd(NumericVector v, int window);
 RcppExport SEXP _fromo_ref_running_sd(SEXP vSEXP, SEXP windowSEXP) {
@@ -677,6 +688,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_running_tstat", (DL_FUNC) &_fromo_running_tstat, 9},
     {"_fromo_cent2raw", (DL_FUNC) &_fromo_cent2raw, 1},
     {"_fromo_ref_sd", (DL_FUNC) &_fromo_ref_sd, 1},
+    {"_fromo_ref_sd_objecty", (DL_FUNC) &_fromo_ref_sd_objecty, 1},
     {"_fromo_ref_running_sd", (DL_FUNC) &_fromo_ref_running_sd, 2},
     {"_fromo_ref_running_sd_narm", (DL_FUNC) &_fromo_ref_running_sd_narm, 2},
     {"_fromo_ref_running_sd_onecheck", (DL_FUNC) &_fromo_ref_running_sd_onecheck, 3},

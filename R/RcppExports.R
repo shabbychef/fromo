@@ -582,6 +582,12 @@ ref_sd <- function(v) {
     .Call('_fromo_ref_sd', PACKAGE = 'fromo', v)
 }
 
+#' @rdname firstmoments
+#' @export
+ref_sd_objecty <- function(v) {
+    .Call('_fromo_ref_sd_objecty', PACKAGE = 'fromo', v)
+}
+
 #' @export
 #' @rdname runningmoments
 ref_running_sd <- function(v, window = 1000L) {

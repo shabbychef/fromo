@@ -112,6 +112,7 @@ print(summary(blah[4:length(blah)]))
 checkit <- microbenchmark(sd(x),
 													sd3(x), 
 													ref_sd(x),
+													ref_sd_objecty(x),
 													running_sd(x,wins),
 													running_sd(x,wins,na_rm=FALSE,restart_period=50000L),
 													gc(),
