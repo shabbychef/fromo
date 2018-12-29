@@ -216,6 +216,7 @@ class Welford {
         }
         inline Welford& swap_one (const double addxval, const W addwt,
                                   const double remxval, const W remwt) {
+            // too hard for ord > 2 case;
             add_one(addxval,addwt);
             rem_one(remxval,remwt);
             return *this;
@@ -474,6 +475,7 @@ class Welford<W,false,ord_beyond> {
         }
         inline Welford& swap_one (const double addxval, const W addwt,
                                   const double remxval, const W remwt) {
+            // too hard for ord > 2 case;
             add_one(addxval,addwt);
             rem_one(remxval,remwt);
             return *this;
@@ -702,15 +704,34 @@ class Welford<W,has_wts,false> {
                 //ac_dn = drat*drat;
                 //ac_on = -double(wt) / nel;
                 //m_xx[2] -= ac_dn * (1.0 - ac_on);
+            } else {
+                // zero it out?
+                m_xx[1] = 0.0;
+                m_xx[2] = 0.0;
             }
             return *this;
         }
         inline Welford& swap_one (const double addxval, const W addwt,
                                   const double remxval, const W remwt) {
-            add_one(addxval,addwt);
-            rem_one(remxval,remwt);
+            //add_one(addxval,addwt);
+            //rem_one(remxval,remwt);
+            double diffw,diffx,diffxw,addxw,remxw,diffmu,prevmu,nel,nelm;
+            nelm = double(m_nel);
+            addxw = addxval * double(addwt);
+            remxw = remxval * double(remwt);
+            diffw = double(addwt) - double(remwt);
+            diffx = addxval - remxval;
+            diffxw = addxw - remxw;
+            diffmu = m_xx[1] * diffw + diffxw;
+
+            m_wsum += diffw;
+            nel = double(m_wsum.as());
+            // 2FIX: check for bottoming out?
+            prevmu = m_xx[1];
+            m_xx[1] += (diffmu/nel);
+            m_xx[2] += (nelm * (-prevmu * (diffmu + diffxw) + (addxw * addxval - remxw * remxval)) - double(addwt) * double(remwt) * diffx * diffx) / nel;
             return *this;
-       }
+        }
         // join two Welford objects together
         inline Welford& join(const Welford& rhs) {
             double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
