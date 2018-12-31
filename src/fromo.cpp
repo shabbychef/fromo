@@ -2223,6 +2223,15 @@ class moment_converter<ret_exkurt,F,T,renormalize> {
 //UNFOLD
 
 
+// some notes:
+// I believe we can just use
+// Vector<REALSXP> instead of NumericVector
+// Vector<INTSXP> instead of IntegerVector
+// Vector<LGLSXP> instead of LogicalVector
+// which may simplify some of the W vs oneW nonsense
+//
+// also there is a std::enable_if thingy which we can
+// use, I think, to do boolean template magic.
 
 
 template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond,bool renormalize>
