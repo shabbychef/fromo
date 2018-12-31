@@ -37,7 +37,9 @@
 #ifndef __DEF_FROMO_COMMON__
 #define __DEF_FROMO_COMMON__
 
-#include <math.h>
+// for c++11 use cmath not math.h
+// and use std::isnan not isnan
+#include <cmath>
 
 // preallocate the Binomial Coefficients, for efficiency
 
@@ -128,7 +130,7 @@ template<class w>
 bool inline bad_weights(w wts) {
     int top=wts.size();
     for (int iii=0;iii<top;++iii) {
-        if (isnan(wts[iii]) || (wts[iii] < 0)) { return true; }
+        if (std::isnan(wts[iii]) || (wts[iii] < 0)) { return true; }
     }
     return false;
 }

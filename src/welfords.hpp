@@ -41,7 +41,6 @@
 #ifndef __DEF_WELFORD__
 #define __DEF_WELFORD__
 
-#include <math.h>
 #include <Rcpp.h>
 #include "common.h"
 #include "kahan.cpp"

@@ -37,13 +37,15 @@
 #ifndef __DEF_FROMO__
 #define __DEF_FROMO__
 
-#include <math.h>
 #include "common.h"
 
 #endif /* __DEF_FROMO__ */
 
 #include <Rcpp.h>
 using namespace Rcpp;
+
+// try to use c++11 ? 
+// [[Rcpp::plugins(cpp11)]]
 
 // yeah yeah, I know.
 #include "kahan.cpp"

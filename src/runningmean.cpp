@@ -26,7 +26,6 @@
 #ifndef __DEF_FROMO__
 #define __DEF_FROMO__
 
-#include <math.h>
 #include "common.h"
 
 #endif /* __DEF_FROMO__ */

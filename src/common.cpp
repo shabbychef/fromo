@@ -26,7 +26,7 @@
 #ifndef __DEF_COMMON__
 #define __DEF_COMMON__
 
-#include <math.h>
+#include <cmath>
 #include <string.h>
 
 #include <Rcpp.h>

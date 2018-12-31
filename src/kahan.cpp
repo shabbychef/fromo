@@ -27,7 +27,7 @@
 #ifndef __DEF_KAHAN__
 #define __DEF_KAHAN__
 
-#include <math.h>
+#include <cmath>
 
 #define KAHAN_ADD(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
     _tmpv_    = (_newx_) - (_err_);                    \
