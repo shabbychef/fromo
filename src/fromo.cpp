@@ -3197,6 +3197,8 @@ NumericVector cent2raw(NumericVector input) {
 // http://stackoverflow.com/a/25254680/164611
 // http://gallery.rcpp.org/articles/rcpp-wrap-and-recurse/
      
+//UNFOLD
+
 // reference implementations for speed;
 // these should be the fastest possible versions of sd and running_sd
 
