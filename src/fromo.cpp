@@ -1839,10 +1839,10 @@ NumericMatrix runQM(T v,
 
     int iii,jjj,lll,mmm,ppp,qqq,tr_iii,tr_jjj;
     int numel = v.size();
-    //const bool non_aligned = (lookahead != 0);
-    bool non_aligned = (lookahead != 0);
-    //2FIX: fix this later; is misset so travis will not barf?
-    non_aligned=true;
+    // I do not understand boolean assignment in c++
+    bool aligned;
+    if (lookahead != 0) { aligned = false; } else { aligned = true; }
+    aligned = false;
     // refers to the number of *subtractions* performed
     int subcount = 0;
     bool do_add, do_rem;
@@ -1868,7 +1868,7 @@ NumericMatrix runQM(T v,
     // at head of loop. sneaky.
     subcount = recom_period;
 
-    if (non_aligned) {
+    if (!aligned) {
         // as an invariant, we will start the computation
         // with vret, which is initialized as the summed
         // means on [jjj,iii]
