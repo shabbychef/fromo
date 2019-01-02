@@ -505,12 +505,11 @@ class Welford {
 // sum of weights, and the weighted mean of the values.
 // computes from bottom to top; if top is negative, change to the size of v;
 
-template <typename T,typename W,typename oneW,bool has_wts>
+template <typename T,typename W,typename oneW,bool has_wts,bool na_rm>
 NumericVector quasiSumThing(T v,
                             W wts,
                             int bottom,
                             int top,
-                            const bool na_rm,
                             const bool check_wts,
                             const bool normalize_wts) {
     double nextv, nextw;
@@ -523,20 +522,39 @@ NumericVector quasiSumThing(T v,
     if (has_wts) {
         if (wts.size() < top) { stop("size of wts does not match v"); }
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
-        for (int iii=bottom;iii < top;++iii) {
-            nextv = v[iii];
-            nextw = double(wts[iii]); 
-            if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
-                // 2FIX: check for zero weight??
+        //2FIX: push na_rm into template params?
+        if (na_rm) {
+            for (int iii=bottom;iii < top;++iii) {
+                nextv = v[iii];
+                nextw = double(wts[iii]); 
+                if (! (ISNAN(nextv) || ISNAN(nextw))) {
+                    // 2FIX: check for zero weight??
+                    fwvsum += nextv * nextw;
+                    fwsum += nextw;
+                    ++nel;
+                }
+            }
+        } else {
+            for (int iii=bottom;iii < top;++iii) {
+                nextv = v[iii];
+                nextw = double(wts[iii]); 
                 fwvsum += nextv * nextw;
                 fwsum += nextw;
                 ++nel;
             }
         }
     } else {
-        for (int iii=bottom;iii < top;++iii) {
-            nextv = v[iii];
-            if (! (na_rm && ISNAN(nextv))) { 
+        if (na_rm) {
+            for (int iii=bottom;iii < top;++iii) {
+                nextv = v[iii];
+                if (! (ISNAN(nextv))) { 
+                    fwvsum += nextv; 
+                    ++fwsum;
+                }
+            }
+        } else {
+            for (int iii=bottom;iii < top;++iii) {
+                nextv = v[iii];
                 fwvsum += nextv; 
                 ++fwsum;
             }
@@ -551,13 +569,12 @@ NumericVector quasiSumThing(T v,
     return vret;
 }
 
-template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond>
+template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
 Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
                                                     W wts,
                                                     int ord,
                                                     int bottom,
                                                     int top,
-                                                    const bool na_rm,
                                                     const bool check_wts) {
     double nextv, nextw;
     Welford<oneW,has_wts,ord_beyond> frets = Welford<oneW,has_wts,ord_beyond>(ord);
@@ -569,15 +586,23 @@ Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
         for (int iii=bottom;iii < top;++iii) {
             nextv = v[iii];
             nextw = double(wts[iii]); 
-            if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw)))) {
-                // 2FIX: check for zero weight??
+            if (na_rm) {
+                if (! (ISNAN(nextv) || ISNAN(nextw))) {
+                    // 2FIX: check for zero weight??
+                    frets.add_one(nextv,nextw);
+                }
+            } else {
                 frets.add_one(nextv,nextw);
             }
         }
     } else {
         for (int iii=bottom;iii < top;++iii) {
             nextv = v[iii];
-            if (! (na_rm && ISNAN(nextv))) { frets.add_one(nextv,1); }
+            if (na_rm) {
+                if (! (ISNAN(nextv))) { frets.add_one(nextv,1); }
+            } else {
+                frets.add_one(nextv,1);
+            }
         }
     }
     return frets;
@@ -596,13 +621,12 @@ Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
 // have mean 1. in that case, the zeroth element
 // returned is the 
 
-template <typename T,typename W,typename oneW,bool has_wts>
+template <typename T,typename W,typename oneW,bool has_wts,bool na_rm>
 NumericVector quasiWeightedMoments(T v,
                                    W wts,
                                    int ord,
                                    int bottom,
                                    int top,
-                                   const bool na_rm,
                                    const bool check_wts,
                                    const bool normalize_wts) {
     double nextv, nextw, renorm, nok;
@@ -612,14 +636,14 @@ NumericVector quasiWeightedMoments(T v,
 
     if (ord == 1) {
         //2FIX: no normalization??
-        xret = quasiSumThing<T,W,oneW,has_wts>(v,wts,bottom,top,na_rm,check_wts,normalize_wts);
+        xret = quasiSumThing<T,W,oneW,has_wts,na_rm>(v,wts,bottom,top,check_wts,normalize_wts);
         return xret;
     } else if (ord > 2) {
-        Welford<oneW,has_wts,true> frets = quasiWeightedThing<T,W,oneW,has_wts,true>(v,wts,ord,bottom,top,na_rm,check_wts);
+        Welford<oneW,has_wts,true> frets = quasiWeightedThing<T,W,oneW,has_wts,true,na_rm>(v,wts,ord,bottom,top,check_wts);
         xret = frets.asvec();
         nok = double(frets.nel());
     } else {
-        Welford<oneW,has_wts,false> irets = quasiWeightedThing<T,W,oneW,has_wts,false>(v,wts,ord,bottom,top,na_rm,check_wts);
+        Welford<oneW,has_wts,false> irets = quasiWeightedThing<T,W,oneW,has_wts,false,na_rm>(v,wts,ord,bottom,top,check_wts);
         xret = irets.asvec();
         xret[0] = double(irets.wsum());
         nok = double(irets.nel());
@@ -635,6 +659,23 @@ NumericVector quasiWeightedMoments(T v,
     return xret;
 }
 
+// wrap one level
+template <typename T,typename W,typename oneW,bool has_wts>
+NumericVector quasiWeightedMomentsCurryZero(T v, 
+                                            W wts,
+                                            int ord,
+                                            int bottom,
+                                            int top,
+                                            const bool na_rm,
+                                            const bool check_wts,
+                                            const bool normalize_wts) {
+
+    if (na_rm) {
+        return quasiWeightedMoments<T,W,oneW,has_wts,true>(v, wts, ord, bottom, top, check_wts, normalize_wts); 
+    } 
+    // have to have fallthrough for CRAN check.
+    return quasiWeightedMoments<T,W,oneW,has_wts,false>(v, wts, ord, bottom, top, check_wts, normalize_wts); 
+}
 
 // wrap one level
 // fix ord_beyond
@@ -648,13 +689,14 @@ NumericVector quasiWeightedMomentsCurryOne(T v,
     NumericVector dummy_wts;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
-            case  INTSXP: { return quasiWeightedMoments<T,IntegerVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case REALSXP: { return quasiWeightedMoments<T,NumericVector,double,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case  LGLSXP: { return quasiWeightedMoments<T,LogicalVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  INTSXP: { return quasiWeightedMomentsCurryZero<T,IntegerVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case REALSXP: { return quasiWeightedMomentsCurryZero<T,NumericVector,double,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  LGLSXP: { return quasiWeightedMomentsCurryZero<T,LogicalVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
             default: stop("Unsupported weight type"); // nocov
         }
     }
-    return quasiWeightedMoments<T,NumericVector,int,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
+    // have to have fallthrough for CRAN check.
+    return quasiWeightedMomentsCurryZero<T,NumericVector,int,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
 }
 
 // wrap one level
@@ -1745,7 +1787,7 @@ class moment_converter<ret_exkurt,F,T,renormalize> {
 // use, I think, to do boolean template magic.
 
 
-template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond,bool renormalize>
+template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond,bool renormalize,bool na_rm>
 NumericMatrix runQM(T v,
                     W wts,
                     const int ord,
@@ -1754,7 +1796,6 @@ NumericMatrix runQM(T v,
                     const int lookahead,
                     const int min_df,
                     const double used_df,
-                    const bool na_rm,
                     const bool check_wts,
                     const bool normalize_wts) {
 
@@ -1845,10 +1886,10 @@ NumericMatrix runQM(T v,
                     iii = MIN(numel-1,tr_iii);
                     jjj = MAX(0,tr_jjj+1);
                     if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond>(v,wts,ord,
-                                                                                jjj,       //bottom
-                                                                                iii+1,     //top
-                                                                                na_rm, check_wts);
+                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                      jjj,       //bottom
+                                                                                      iii+1,     //top
+                                                                                      check_wts);
                     }
                     subcount = 0;
                 } else {
@@ -1886,10 +1927,10 @@ NumericMatrix runQM(T v,
                     iii = MIN(numel-1,tr_iii);
                     jjj = MAX(0,tr_jjj+1);
                     if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond>(v,wts,ord,
-                                                                                jjj,       //bottom
-                                                                                iii+1,     //top
-                                                                                na_rm, check_wts);
+                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                      jjj,       //bottom
+                                                                                      iii+1,     //top
+                                                                                      check_wts);
                     }
                     subcount = 0;
                 } else {
@@ -1926,10 +1967,10 @@ NumericMatrix runQM(T v,
             for (lll=0;lll < firstpart;++lll) {
                 // check subcount first and just recompute if needed.
                 if (subcount >= recom_period) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond>(v,wts,ord,
-                                                                            0,       //bottom
-                                                                            lll+1,     //top
-                                                                            na_rm, check_wts);
+                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                  0,       //bottom
+                                                                                  lll+1,     //top
+                                                                                  check_wts);
                     subcount = 0;
                 } else {
                     // add on nextv:
@@ -1950,10 +1991,10 @@ NumericMatrix runQM(T v,
                 for (lll=firstpart;lll < numel;++lll) {
                     // check subcount first and just recompute if needed.
                     if (subcount >= recom_period) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond>(v,wts,ord,
-                                                                                jjj,       //bottom
-                                                                                lll+1,     //top
-                                                                                na_rm, check_wts);
+                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                      jjj,       //bottom
+                                                                                      lll+1,     //top
+                                                                                      check_wts);
                         subcount = 0;
                     } else {
                         // add on nextv:
@@ -1982,6 +2023,7 @@ NumericMatrix runQM(T v,
                     moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
                 }
             }
+            //UNFOLD
         } else {
             // 2FIX: start from here with the conversion to firstpart ? 
             // now run through lll index//FOLDUP
@@ -1993,10 +2035,10 @@ NumericMatrix runQM(T v,
                     iii = MIN(numel-1,tr_iii);
                     jjj = MAX(0,tr_jjj+1);
                     if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond>(v,wts,ord,
-                                                                                jjj,       //bottom
-                                                                                iii+1,     //top
-                                                                                na_rm, check_wts);
+                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                      jjj,       //bottom
+                                                                                      iii+1,     //top
+                                                                                      check_wts);
                     }
                     subcount = 0;
                 } else {
@@ -2042,9 +2084,16 @@ NumericMatrix runQMCurryZero(T v,
                              const bool check_wts,
                              const bool normalize_wts) {
     if (has_wts && normalize_wts) {
-        return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+        if (na_rm) {
+            return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, check_wts, normalize_wts); 
+        } else {
+            return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, check_wts, normalize_wts); 
+        }
     } 
-    return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
+    if (na_rm) {
+        return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,true>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, check_wts, normalize_wts); 
+    } 
+    return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, check_wts, normalize_wts); 
 }
 
 template <typename T,ReturnWhat retwhat,bool ord_beyond>
@@ -2072,16 +2121,16 @@ NumericMatrix runQMCurryOne(T v,
 
 template <typename T,ReturnWhat retwhat>
 NumericMatrix runQMCurryTwo(T v, 
-                                       Rcpp::Nullable< Rcpp::NumericVector > wts,
-                                       const int ord,
-                                       const int window,
-                                       const int recom_period,
-                                       const int lookahead,
-                                       const int min_df,
-                                       const double used_df,
-                                       const bool na_rm,
-                                       const bool check_wts,
-                                       const bool normalize_wts) {
+                            Rcpp::Nullable< Rcpp::NumericVector > wts,
+                            const int ord,
+                            const int window,
+                            const int recom_period,
+                            const int lookahead,
+                            const int min_df,
+                            const double used_df,
+                            const bool na_rm,
+                            const bool check_wts,
+                            const bool normalize_wts) {
 
     if (ord==2) {
         return runQMCurryOne<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
@@ -2951,7 +3000,7 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
 // [[Rcpp::export]]
 NumericVector ref_running_sd_fooz(NumericVector v,int window=1000) {
     NumericVector dummy_wts;
-    return runQM<NumericVector,ret_stdev,NumericVector,double,false,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE,FALSE);
+    return runQM<NumericVector,ret_stdev,NumericVector,double,false,false,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE);
 }
 
 //' @export
@@ -2985,10 +3034,17 @@ NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
     tr_jjj = - window;
 
     // now run through lll index//FOLDUP
-    frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false>(v,dummy_wts,ord,
-                                                                               0,       //bottom
-                                                                               0,     //top
-                                                                               na_rm, check_wts);
+    if (na_rm) {
+        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,true>(v,dummy_wts,ord,
+                                                                                        0,       //bottom
+                                                                                        0,     //top
+                                                                                        check_wts);
+    } else {
+        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,false>(v,dummy_wts,ord,
+                                                                                            0,       //bottom
+                                                                                            0,     //top
+                                                                                            check_wts);
+    }
     for (lll=0;lll < numel;++lll) {
         tr_iii++;
         if ((tr_iii < numel) && (tr_iii >= 0)) {
@@ -3038,10 +3094,17 @@ NumericVector ref_running_sd_batz(NumericVector v,int window=1000) {
     NumericVector xret(numel);
 
     // now run through lll index//FOLDUP
-    frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false>(v,dummy_wts,ord,
-                                                                               0,       //bottom
-                                                                               0,     //top
-                                                                               na_rm, check_wts);
+    if (na_rm) {
+        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,true>(v,dummy_wts,ord,
+                                                                                        0,       //bottom
+                                                                                        0,     //top
+                                                                                        check_wts);
+    } else {
+        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,false>(v,dummy_wts,ord,
+                                                                                         0,       //bottom
+                                                                                         0,     //top
+                                                                                         check_wts);
+    }
     int firstpart;
     firstpart = MIN(numel,window);
 
