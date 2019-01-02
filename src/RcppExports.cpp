@@ -646,7 +646,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ref_running_sd_batz
-NumericVector ref_running_sd_batz(NumericVector v, int window);
+NumericMatrix ref_running_sd_batz(NumericVector v, int window);
 RcppExport SEXP _fromo_ref_running_sd_batz(SEXP vSEXP, SEXP windowSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

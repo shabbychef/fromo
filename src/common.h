@@ -37,6 +37,8 @@
 #ifndef __DEF_FROMO_COMMON__
 #define __DEF_FROMO_COMMON__
 
+#define FORCE_INLINE __attribute__((always_inline)) inline 
+
 // for c++11 use cmath not math.h
 // and use std::isnan not isnan
 #include <cmath>
