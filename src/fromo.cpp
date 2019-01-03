@@ -2538,36 +2538,5 @@ NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
     return xret;
 }
 
-// ret_stdev//FOLDUP
-template<typename F,typename T,bool renormalize>
-FORCE_INLINE static void oneoff_mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) 
-{
-    // instead assume renormalize is false. just for checking...
-    xret(rownum,0) = frets.sd(false,used_df); 
-    // forget that for now, no checking...
-        //if (frets.wsum() >= min_df) {
-            //xret(rownum,0) = frets.sd(false,used_df); 
-        //} else {
-            //xret(rownum,0) = NAN;
-        //}
-}
-    //if (renormalize) {
-        //if (frets.nel() >= min_df) {
-            //xret(rownum,0) = frets.sd(true,used_df); 
-        //}
-    //} else {
-        //if (frets.wsum() >= min_df) {
-            //xret(rownum,0) = frets.sd(false,used_df); 
-        //} else {
-            //xret(rownum,0) = NAN;
-        //}
-    //}
-    //if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-        //xret(rownum,0) = frets.sd(renormalize,used_df); 
-    //} else {
-        //xret(rownum,0) = NAN;
-    //}
-//UNFOLD
-
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
