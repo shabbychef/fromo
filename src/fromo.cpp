@@ -1848,11 +1848,12 @@ NumericMatrix runQM(T v,
     Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
 
     // 2FIX:
-    double nextv, prevv;
-    double nextw, prevw;
+    const int numel = v.size();
+
+    double nextv, prevv, nextw, prevw;
 
     if (has_wts) {
-        if (wts.size() < v.size()) { stop("size of wts does not match v"); }
+        if (wts.size() < numel) { stop("size of wts does not match v"); }
     }
 
     if (ord < 1) { stop("require positive order"); }
@@ -1862,6 +1863,8 @@ NumericMatrix runQM(T v,
     // from happening. like subtracting old observations, say.
     const bool infwin = IntegerVector::is_na(window);
     if ((window < 1) && (!infwin)) { stop("must give positive window"); }
+
+    const int quasiwin = (infwin)? (numel):(window);
 
     if (min_df < 0) { stop("require positive min_df"); }
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
@@ -1880,15 +1883,14 @@ NumericMatrix runQM(T v,
         stop("bad code: order too small to support this computation"); 
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
-    int numel = v.size();
     // I do not understand boolean assignment in c++
     bool aligned = (lookahead == 0);
-    // refers to the number of *subtractions* performed
-    bool do_add, do_rem;
 
     // super gross; I need these for the include later.
     double sg_denom,renorm,denom,sigmasq,sigma,sigmapow,mydf,dwsum,skew,exkurt,sr;
     int mmm;
+
+    const int firstpart = MIN(numel,quasiwin);
 
     // preallocated with zeros; should
     // probably be NA?
@@ -1917,23 +1919,50 @@ NumericMatrix runQM(T v,
         // as an invariant, we will start the computation
         // with frets, which is initialized as the summed
         // means on [jjj,lll]
-        tr_jjj = - window;
+        //
 
         // now run through lll index//FOLDUP
-        for (lll=0;lll < numel;++lll) {
+        for (lll=0;lll < firstpart;++lll) {
             // check subcount first and just recompute if needed.
             if (frets.subcount() >= recom_period) {
                 // fix this
-                jjj = MAX(0,tr_jjj+1);
                 frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              jjj,       //bottom
+                                                                              0,         //bottom
                                                                               lll+1,     //top
                                                                               false);    //no need to check weights as we have done it once above.
             } else {
                 // add on nextv:
                 nextv = double(v[lll]);
-                // remove prevv:
-                if (tr_jjj >= 0) {
+                if (has_wts) { 
+                    nextw = double(wts[lll]); 
+                    frets.add_one(nextv,nextw); 
+                } else { 
+                    frets.add_one(nextv,1.0); 
+                } 
+            }
+
+            // fill in the value in the output.
+            // 2FIX: give access to v, not v[lll]...
+            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+//yuck!!
+#include "moment_interp.hpp"
+        }//UNFOLD
+        if (firstpart < numel) {
+            tr_jjj = 0;
+            // now run through lll index//FOLDUP
+            for (lll=firstpart;lll < numel;++lll) {
+                // check subcount first and just recompute if needed.
+                if (frets.subcount() >= recom_period) {
+                    // fix this
+                    jjj = tr_jjj+1;
+                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                  jjj,       //bottom
+                                                                                  lll+1,     //top
+                                                                                  false);    //no need to check weights as we have done it once above.
+                } else {
+                    // add on nextv:
+                    nextv = double(v[lll]);
+                    // remove prevv:
                     prevv = double(v[tr_jjj]);
                     if (has_wts) { 
                         nextw = double(wts[lll]); 
@@ -1942,30 +1971,23 @@ NumericMatrix runQM(T v,
                     } else {
                         frets.swap_one(nextv,1.0,prevv,1.0);
                     }
-                } else {
-                    if (has_wts) { 
-                        nextw = double(wts[lll]); 
-                        frets.add_one(nextv,nextw); 
-                    } else { 
-                        frets.add_one(nextv,1.0); 
-                    } 
                 }
-            }
-            tr_jjj++;
+                tr_jjj++;
 
-            // fill in the value in the output.
-            // 2FIX: give access to v, not v[lll]...
-            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-//yuck!!
+                // fill in the value in the output.
+                // 2FIX: give access to v, not v[lll]...
+                // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+    //yuck!!
 #include "moment_interp.hpp"
-        }//UNFOLD
+            }//UNFOLD
+        }
     } else {
         // nonaligned case
         // as an invariant, we will start the computation
         // with frets, which is initialized as the summed
         // means on [jjj,iii]
         tr_iii = lookahead - 1;
-        tr_jjj = lookahead - window;
+        tr_jjj = lookahead - quasiwin;
 
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
@@ -2714,10 +2736,10 @@ double ref_sd(NumericVector v) {
     double mu,sd,delta;
     double x;
     
-    int top=v.size();
+    int numel=v.size();
     sd = 0.0;
     mu = v[0];
-    for (int iii=2;iii <= top;++iii) {
+    for (int iii=2;iii <= numel;++iii) {
         x = v[iii-1];
         delta = x - mu;
         mu += delta / double(iii);
@@ -2725,7 +2747,7 @@ double ref_sd(NumericVector v) {
     }
     //NumericVector vret = NumericVector::create(sqrt(sd / (nel - 1)));
     //return vret;
-    return sqrt(sd / (top - 1));
+    return sqrt(sd / (numel - 1));
 }
 // same, but use the Welford object. another comparison point.
 //' @rdname firstmoments
@@ -2733,8 +2755,8 @@ double ref_sd(NumericVector v) {
 // [[Rcpp::export]]
 double ref_sd_objecty(NumericVector v) {
     Welford<double,false,false,false> frets = Welford<double,false,false,false>(2);
-    int top=v.size();
-    for (int iii=0;iii < top;++iii) { frets.add_one(v[iii],1.0); }
+    int numel=v.size();
+    for (int iii=0;iii < numel;++iii) { frets.add_one(v[iii],1.0); }
     return frets.sd(false,1.0);
 }
 
@@ -2748,9 +2770,9 @@ NumericVector ref_running_sd(NumericVector v,int window=1000) {
     double x;
     int jjj;
     
-    int top=v.size();
-    NumericVector vret = NumericVector(top);
-    const int firstpart = MIN(top,window);
+    int numel=v.size();
+    NumericVector vret = NumericVector(numel);
+    const int firstpart = MIN(numel,window);
 
     nel = 0.0;
     sd = 0.0;
@@ -2763,9 +2785,9 @@ NumericVector ref_running_sd(NumericVector v,int window=1000) {
         sd += delta * (x - mu);
         vret[iii] = sqrt(sd / (nel - 1));
     }
-    if (firstpart < top) {
+    if (firstpart < numel) {
         jjj = 0;
-        for (int iii=firstpart;iii < top;++iii) {
+        for (int iii=firstpart;iii < numel;++iii) {
             //++nel;
             //x = v[iii];
             //delta = x - mu;
@@ -2800,9 +2822,9 @@ NumericVector ref_running_sd_narm(NumericVector v,int window=1000) {
     int jjj;
     double addx,remx,diffmu,prevmu;
     
-    int top=v.size();
-    NumericVector vret = NumericVector(top);
-    const int firstpart = MIN(top,window);
+    int numel=v.size();
+    NumericVector vret = NumericVector(numel);
+    const int firstpart = MIN(numel,window);
 
     nel = 0.0;
     sd = 0.0;
@@ -2817,9 +2839,9 @@ NumericVector ref_running_sd_narm(NumericVector v,int window=1000) {
         }
         vret[iii] = sqrt(sd / (nel - 1));
     }
-    if (firstpart < top) {
+    if (firstpart < numel) {
         jjj = 0;
-        for (int iii=firstpart;iii < top;++iii) {
+        for (int iii=firstpart;iii < numel;++iii) {
             addx = v[iii];
             remx = v[jjj];
             ++jjj;
@@ -2868,9 +2890,9 @@ NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
     int inel;
     double nextx,prevx,diffmu,prevmu;
     
-    int top=v.size();
-    NumericVector vret = NumericVector(top);
-    const int firstpart = MIN(top,window);
+    int numel=v.size();
+    NumericVector vret = NumericVector(numel);
+    const int firstpart = MIN(numel,window);
 
     inel = 0;
     nel = 0.0;
@@ -2885,9 +2907,9 @@ NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
         sd += delta * (x - mu);
         vret[iii] = sqrt(sd / (nel - 1));
     }
-    if (firstpart < top) {
+    if (firstpart < numel) {
         jjj = 0;
-        for (int iii=firstpart;iii < top;++iii) {
+        for (int iii=firstpart;iii < numel;++iii) {
             nextx = v[iii];
             prevx = v[jjj];
             jjj++;
@@ -2912,18 +2934,18 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     double nextx,prevx;
     int jjj;
     
-    int top=v.size();
-    NumericVector vret = NumericVector(top);
-    const int firstpart = MIN(top,window);
+    int numel=v.size();
+    NumericVector vret = NumericVector(numel);
+    const int firstpart = MIN(numel,window);
 
     for (int iii=0;iii < firstpart;++iii) {
         x = v[iii];
         frets.add_one(x,1.0);
         vret[iii] = frets.sd(false,1.0);
     }
-    if (firstpart < top) {
+    if (firstpart < numel) {
         jjj = 0;
-        for (int iii=firstpart;iii < top;++iii) {
+        for (int iii=firstpart;iii < numel;++iii) {
             nextx = v[iii];
             prevx = v[jjj];
             ++jjj;
