@@ -2016,22 +2016,20 @@ NumericMatrix runQM(T v,
                         }
                     }
                     // remove prevv:
-                    if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-                        prevv = double(v[tr_jjj]);
-                        if (has_wts) { prevw = double(wts[tr_jjj]); }
-                        if (!na_rm) {
-                            if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
+                    prevv = double(v[tr_jjj]);
+                    if (has_wts) { prevw = double(wts[tr_jjj]); }
+                    if (!na_rm) {
+                        if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
+                    } else {
+                        if (has_wts) {
+                            if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
+                                frets.rem_one(prevv,prevw);
+                                subcount++;
+                            }
                         } else {
-                            if (has_wts) {
-                                if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
-                                    frets.rem_one(prevv,prevw);
-                                    subcount++;
-                                }
-                            } else {
-                                if (! (ISNAN(prevv))) {
-                                    frets.rem_one(prevv,1.0);
-                                    subcount++;
-                                }
+                            if (! (ISNAN(prevv))) {
+                                frets.rem_one(prevv,1.0);
+                                subcount++;
                             }
                         }
                     }
