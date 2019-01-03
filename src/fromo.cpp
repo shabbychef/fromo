@@ -57,6 +57,9 @@ using namespace Rcpp;
 // we only track this in the case of weighted observations, as in the
 // unweighted case it is redundant to m_wsum.
 //
+// m_subc : the (integer) number of subtractions performed on this object.
+// not accurate for (un)joins.
+//
 // m_wsum : a Kahan<W> object of the total weight. When unweighted
 // observations are used, this is just a duplicate of m_nel.
 //
@@ -81,7 +84,7 @@ class Welford {
         int m_ord;
         NumericVector m_xx;
     public:
-        inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
+        inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_subc(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); }
             }
@@ -89,13 +92,13 @@ class Welford {
         inline Welford(const int &ord, 
                        const int &nel, 
                        const W &sumwt, 
-                       const NumericVector &xx) : m_ord(ord), m_nel(nel), m_wsum(Kahan<W>(sumwt)), m_xx(NumericVector(xx)) {
+                       const NumericVector &xx) : m_ord(ord), m_nel(nel), m_subc(0), m_wsum(Kahan<W>(sumwt)), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); }
             }
         }
         inline Welford(const int &ord, 
-                       const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {
+                       const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_subc(0), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); }
             }
@@ -103,10 +106,12 @@ class Welford {
     private:
         Kahan<W> m_wsum;
         int m_nel;
+        int m_subc;
     public:
         // reset to zero
         inline Welford& tare() {
             m_nel = 0;
+            m_subc = 0;
             m_wsum = W(0);
             for (int iii=0;iii < m_xx.length();++iii) {
                 m_xx[iii] = 0;
@@ -161,6 +166,8 @@ class Welford {
 
         // getters 
         inline int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
+        inline int subcount() const { return m_subc; }
+
         inline W wsum() const { 
             if (has_wts) { return m_wsum.as(); }
             return W(m_nel);
@@ -255,6 +262,7 @@ class Welford {
                     }
                 }
             }
+            m_subc++;
 
             double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
             della = xval - m_xx[1];
@@ -349,6 +357,7 @@ class Welford {
                     }
                 }
             }
+            m_subc++;
 
             double diffmu,prevmu,nel;
             double diffw,diffx,diffxw,addxw,remxw,nelm;
@@ -397,6 +406,7 @@ class Welford {
                 // lhs is empty; just copy the rhs.
                 m_nel = rhs.m_nel;
                 m_wsum = rhs.m_wsum;
+                m_subc = rhs.m_subc;
                 // clone it?
                 if (!ord_beyond) {
                     m_xx[1] = rhs.m_xx[1];
@@ -419,6 +429,7 @@ class Welford {
             // else onboard the observations
             m_nel += rhs.m_nel; 
             m_wsum += rhs.m_wsum;
+            m_subc += rhs.m_subc;
 
             //ntot = double(m_wsum.as());
             ntot = n1 + n2;
@@ -495,6 +506,8 @@ class Welford {
             } else {
                 n1 = double(m_nel);
             }
+            // crap. this is just wrong...
+            m_subc += rhs.m_subc;
 
             n1rat = n1 / ntot;
             n2rat = n2 / ntot;
@@ -1871,7 +1884,6 @@ NumericMatrix runQM(T v,
     // I do not understand boolean assignment in c++
     bool aligned = (lookahead == 0);
     // refers to the number of *subtractions* performed
-    int subcount = 0;
     bool do_add, do_rem;
 
     // super gross; I need these for the include later.
@@ -1895,10 +1907,6 @@ NumericMatrix runQM(T v,
         
     NumericMatrix xret(numel,ncols);
 
-    // sneakily set subcount large so we just recompute
-    // at head of loop. sneaky.
-    subcount = recom_period;
-
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
     }
@@ -1914,7 +1922,7 @@ NumericMatrix runQM(T v,
         for (lll=0;lll < numel;++lll) {
             tr_iii++;
             // check subcount first and just recompute if needed.
-            if (subcount >= recom_period) {
+            if ((lll==0) || (frets.subcount() >= recom_period)) {
                 // fix this
                 iii = MIN(numel-1,tr_iii);
                 jjj = MAX(0,tr_jjj+1);
@@ -1924,7 +1932,6 @@ NumericMatrix runQM(T v,
                                                                                   iii+1,     //top
                                                                                   false);    //no need to check weights as we have done it once above.
                 }
-                subcount = 0;
             } else {
                 if ((tr_iii < numel) && (tr_iii >= 0)) {
                     // add on nextv:
@@ -1942,10 +1949,8 @@ NumericMatrix runQM(T v,
                     if (has_wts) { 
                         prevw = double(wts[tr_jjj]); 
                         frets.rem_one(prevv,prevw); 
-                        subcount++;
                     } else {
                         frets.rem_one(prevv,1.0); 
-                        subcount++;
                     }
                 }
             }
@@ -1968,14 +1973,13 @@ NumericMatrix runQM(T v,
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
             // check subcount first and just recompute if needed.
-            if (subcount >= recom_period) {
+            if ((lll==0) || (frets.subcount() >= recom_period)) {
                 // fix this
                 jjj = MAX(0,tr_jjj+1);
                 frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                               jjj,       //bottom
                                                                               lll+1,     //top
                                                                               false);    //no need to check weights as we have done it once above.
-                subcount = 0;
             } else {
                 // add on nextv:
                 nextv = double(v[lll]);
@@ -1991,12 +1995,8 @@ NumericMatrix runQM(T v,
                     if (has_wts) { 
                         prevw = double(wts[tr_jjj]); 
                         frets.rem_one(prevv,prevw); 
-                        // not quite accurate now, as na_rm might mean no subtraction done. we have to move the subcount into the Welford object?
-                        subcount++;
                     } else {
                         frets.rem_one(prevv,1.0); 
-                        // not quite accurate now, as na_rm might mean no subtraction done. we have to move the subcount into the Welford object?
-                        subcount++;
                     }
                 }
             }
