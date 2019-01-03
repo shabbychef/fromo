@@ -327,17 +327,17 @@
             xret(lll,0) = NAN;
         }
     }//UNFOLD
-    if (retwhat==ret_tstat) {//FOLDUP
-        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-            if (renormalize) {
-                xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.nel()));
-            } else {
-                xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.wsum()));
-            }
-        } else {
-            xret(lll,0) = NAN;
-        }
-    }//UNFOLD
+    //if (retwhat==ret_tstat) {//FOLDUP
+    //if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+    //if (renormalize) {
+    //xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.nel()));
+    //} else {
+    //xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.wsum()));
+    //}
+    //} else {
+    //xret(lll,0) = NAN;
+    //}
+    //}//UNFOLD
     if (retwhat==ret_sharpe) { //FOLDUP
         if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
             xret(lll,0) = frets.sharpe(renormalize,used_df); 
