@@ -1962,45 +1962,40 @@ NumericMatrix runQM(T v,
         // sigh. broken.
         // as an invariant, we will start the computation
         // with frets, which is initialized as the summed
-        // means on [jjj,iii]
-        tr_iii = lookahead - 1;
+        // means on [jjj,lll]
         tr_jjj = lookahead - window;
 
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
-            tr_iii++;
             // check subcount first and just recompute if needed.
             if (subcount >= recom_period) {
                 // fix this
-                iii = MIN(numel-1,tr_iii);
                 jjj = MAX(0,tr_jjj+1);
-                if (jjj <= iii) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  jjj,       //bottom
-                                                                                  iii+1,     //top
-                                                                                  false);    //no need to check weights as we have done it once above.
-                }
+                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              jjj,       //bottom
+                                                                              lll+1,     //top
+                                                                              false);    //no need to check weights as we have done it once above.
                 subcount = 0;
             } else {
-                if ((tr_iii < numel) && (tr_iii >= 0)) {
-                    // add on nextv:
-                    nextv = double(v[tr_iii]);
-                    if (has_wts) { 
-                        nextw = double(wts[tr_iii]); 
-                        frets.add_one(nextv,nextw); 
-                    } else { 
-                        frets.add_one(nextv,1.0); 
-                    } 
-                }
+                // add on nextv:
+                nextv = double(v[lll]);
+                if (has_wts) { 
+                    nextw = double(wts[lll]); 
+                    frets.add_one(nextv,nextw); 
+                } else { 
+                    frets.add_one(nextv,1.0); 
+                } 
                 // remove prevv:
-                if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+                if (tr_jjj >= 0) {
                     prevv = double(v[tr_jjj]);
                     if (has_wts) { 
                         prevw = double(wts[tr_jjj]); 
                         frets.rem_one(prevv,prevw); 
+                        // not quite accurate now, as na_rm might mean no subtraction done. we have to move the subcount into the Welford object?
                         subcount++;
                     } else {
                         frets.rem_one(prevv,1.0); 
+                        // not quite accurate now, as na_rm might mean no subtraction done. we have to move the subcount into the Welford object?
                         subcount++;
                     }
                 }
