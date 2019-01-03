@@ -1869,7 +1869,6 @@ NumericMatrix runQM(T v,
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
     }
-    int firstpart;
 
     if (!aligned) {
         // as an invariant, we will start the computation
@@ -1942,16 +1941,19 @@ NumericMatrix runQM(T v,
 #include "moment_interp.hpp"
         }//UNFOLD
     } else {
+        int firstpart;
         firstpart = MIN(numel,window);
 
         // now run through lll index//FOLDUP
         for (lll=0;lll < firstpart;++lll) {
             // check subcount first and just recompute if needed.
             if (subcount >= recom_period) {
-                // fix this ?
+                // fix this
+                iii = lll;
+                jjj = 0;
                 frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              0,         //bottom
-                                                                              lll+1,     //top
+                                                                              jjj,       //bottom
+                                                                              iii+1,     //top
                                                                               false);    //no need to check weights as we have done it once above.
                 subcount = 0;
             } else {
@@ -1985,9 +1987,11 @@ NumericMatrix runQM(T v,
                 // check subcount first and just recompute if needed.
                 if (subcount >= recom_period) {
                     // fix this
+                    iii = lll;
+                    jjj = tr_jjj+1;
                     frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  tr_jjj+1,       //bottom
-                                                                                  lll+1,     //top
+                                                                                  jjj,       //bottom
+                                                                                  iii+1,     //top
                                                                                   false);    //no need to check weights as we have done it once above.
                     subcount = 0;
                 } else {
