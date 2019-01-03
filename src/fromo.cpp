@@ -1949,14 +1949,12 @@ NumericMatrix runQM(T v,
             // check subcount first and just recompute if needed.
             if (subcount >= recom_period) {
                 // fix this
-                iii = MIN(numel-1,lll);
+                iii = lll;
                 jjj = 0;
-                if (jjj <= iii) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  jjj,       //bottom
-                                                                                  iii+1,     //top
-                                                                                  false);    //no need to check weights as we have done it once above.
-                }
+                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              jjj,       //bottom
+                                                                              iii+1,     //top
+                                                                              false);    //no need to check weights as we have done it once above.
                 subcount = 0;
             } else {
                 // add on nextv:
@@ -1989,45 +1987,54 @@ NumericMatrix runQM(T v,
                 // check subcount first and just recompute if needed.
                 if (subcount >= recom_period) {
                     // fix this
-                    iii = MIN(numel-1,lll);
-                    jjj = MAX(0,tr_jjj+1);
-                    if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                      jjj,       //bottom
-                                                                                      iii+1,     //top
-                                                                                      false);    //no need to check weights as we have done it once above.
-                    }
+                    iii = lll;
+                    jjj = tr_jjj+1;
+                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                  jjj,       //bottom
+                                                                                  iii+1,     //top
+                                                                                  false);    //no need to check weights as we have done it once above.
                     subcount = 0;
                 } else {
                     // add on nextv:
                     nextv = double(v[lll]);
-                    if (has_wts) { nextw = double(wts[lll]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.add_one(nextv,nextw); } else { frets.add_one(nextv,1.0); } 
-                    } else {
-                        if (has_wts) {
-                            if (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))) {
-                                frets.add_one(nextv,nextw);
-                            }
-                        } else {
-                            if (! (ISNAN(nextv))) {
-                                frets.add_one(nextv,1.0);
-                            }
-                        }
-                    }
-                    // remove prevv:
                     prevv = double(v[tr_jjj]);
-                    if (has_wts) { prevw = double(wts[tr_jjj]); }
+                    if (has_wts) { 
+                        nextw = double(wts[lll]); 
+                        prevw = double(wts[tr_jjj]); 
+                    }
                     if (!na_rm) {
-                        if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
+                        if (has_wts) { 
+                            frets.swap_one(nextv,nextw,prevv,prevw); 
+                        } else { 
+                            frets.swap_one(nextv,1.0,prevv,1.0);
+                        }
+                        subcount++;
                     } else {
                         if (has_wts) {
-                            if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
-                                frets.rem_one(prevv,prevw);
+                            do_add = (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0)));
+                            do_rem = (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0)));
+                            if (do_add) {
+                                if (do_rem) {
+                                    frets.swap_one(nextv,nextw,prevv,prevw); 
+                                    subcount++;
+                                } else {
+                                    frets.add_one(nextv,nextw);
+                                } 
+                            } else {
+                                frets.rem_one(prevv,1.0); 
                                 subcount++;
                             }
                         } else {
-                            if (! (ISNAN(prevv))) {
+                            do_add = (! (ISNAN(nextv)));
+                            do_rem = (! (ISNAN(prevv)));
+                            if (do_add) {
+                                if (do_rem) {
+                                    frets.swap_one(nextv,1.0,prevv,1.0);
+                                    subcount++;
+                                } else {
+                                    frets.add_one(nextv,1.0);
+                                } 
+                            } else {
                                 frets.rem_one(prevv,1.0);
                                 subcount++;
                             }
