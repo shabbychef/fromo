@@ -1950,7 +1950,7 @@ NumericMatrix runQM(T v,
         tr_jjj = - window;
 
         // now run through lll index//FOLDUP
-        for (lll=0;lll < firstpart;++lll) {
+        for (lll=0;lll < numel;++lll) {
             // check subcount first and just recompute if needed.
             if (subcount >= recom_period) {
                 // fix this
@@ -2009,68 +2009,6 @@ NumericMatrix runQM(T v,
 //yuck!!
 #include "moment_interp.hpp"
         }//UNFOLD
-        if (firstpart < numel) { 
-            // now run through lll index//FOLDUP
-            for (lll=firstpart;lll < numel;++lll) {
-                // check subcount first and just recompute if needed.
-                if (subcount >= recom_period) {
-                    // fix this
-                    iii = MIN(numel-1,lll);
-                    jjj = MAX(0,tr_jjj+1);
-                    if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                      jjj,       //bottom
-                                                                                      iii+1,     //top
-                                                                                      false);    //no need to check weights as we have done it once above.
-                    }
-                    subcount = 0;
-                } else {
-                    // add on nextv:
-                    nextv = double(v[lll]);
-                    if (has_wts) { nextw = double(wts[lll]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.add_one(nextv,nextw); } else { frets.add_one(nextv,1.0); } 
-                    } else {
-                        if (has_wts) {
-                            if (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))) {
-                                frets.add_one(nextv,nextw);
-                            }
-                        } else {
-                            if (! (ISNAN(nextv))) {
-                                frets.add_one(nextv,1.0);
-                            }
-                        }
-                    }
-                    // remove prevv:
-                    if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-                        prevv = double(v[tr_jjj]);
-                        if (has_wts) { prevw = double(wts[tr_jjj]); }
-                        if (!na_rm) {
-                            if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
-                        } else {
-                            if (has_wts) {
-                                if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
-                                    frets.rem_one(prevv,prevw);
-                                    subcount++;
-                                }
-                            } else {
-                                if (! (ISNAN(prevv))) {
-                                    frets.rem_one(prevv,1.0);
-                                    subcount++;
-                                }
-                            }
-                        }
-                    }
-                }
-                tr_jjj++;
-
-                // fill in the value in the output.
-                // 2FIX: give access to v, not v[lll]...
-                // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-    //yuck!!
-#include "moment_interp.hpp"
-            }//UNFOLD
-        }
     }
     return xret;
 }
