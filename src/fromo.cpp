@@ -1775,10 +1775,7 @@ class moment_converter<ret_exkurt,F,T,renormalize> {
 };
 //UNFOLD
 
-<<<<<<< HEAD
 
-=======
->>>>>>> b6eaa46... and move to an include
 // some notes:
 // I believe we can just use
 // Vector<REALSXP> instead of NumericVector
