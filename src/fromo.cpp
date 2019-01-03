@@ -691,7 +691,7 @@ NumericVector quasiWeightedMomentsCurryOne(T v,
         switch (TYPEOF(wts)) {
             case  INTSXP: { return quasiWeightedMomentsCurryZero<T,IntegerVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
             case REALSXP: { return quasiWeightedMomentsCurryZero<T,NumericVector,double,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
-            case  LGLSXP: { return quasiWeightedMomentsCurryZero<T,LogicalVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
+            case  LGLSXP: { return quasiWeightedMomentsCurryZero<T,IntegerVector,int,true>(v, as<IntegerVector>(wts), ord, 0, -1, na_rm, check_wts, normalize_wts); } // bools can be upcast to save build size.
             default: stop("Unsupported weight type"); // nocov
         }
     }
@@ -709,7 +709,7 @@ NumericVector quasiWeightedMomentsCurryTwo(SEXP v,
     switch (TYPEOF(v)) {
         case  INTSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
         case REALSXP: { return quasiWeightedMomentsCurryOne<NumericVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
-        case  LGLSXP: { return quasiWeightedMomentsCurryOne<LogicalVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
+        case  LGLSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(as<IntegerVector>(v), wts, ord, na_rm, check_wts, normalize_wts); }  // bools can be upcast to save build size.
         default: stop("Unsupported weight type"); // nocov
     }
     // have to have fallthrough for CRAN check.
@@ -2231,7 +2231,7 @@ NumericMatrix runQMCurryThree(SEXP v,
     switch (TYPEOF(v)) {
         case  INTSXP: { return runQMCurryTwo<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
         case REALSXP: { return runQMCurryTwo<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
-        case  LGLSXP: { return runQMCurryTwo<LogicalVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
+        case  LGLSXP: { return runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); }  // bools can be upcast to save build size.
         default: stop("Unsupported weight type"); // nocov
     }
     // have to have fallthrough for CRAN check.
