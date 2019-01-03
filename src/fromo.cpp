@@ -1912,6 +1912,11 @@ NumericMatrix runQM(T v,
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
     }
+    // set them once only
+    if (!has_wts) {
+        nextw = 1.0;
+        prevw = 1.0;
+    }
 
     if (aligned) {
         // aligned case
@@ -1933,12 +1938,8 @@ NumericMatrix runQM(T v,
             } else {
                 // add on nextv:
                 nextv = double(v[lll]);
-                if (has_wts) { 
-                    nextw = double(wts[lll]); 
-                    frets.add_one(nextv,nextw); 
-                } else { 
-                    frets.add_one(nextv,1.0); 
-                } 
+                if (has_wts) { nextw = double(wts[lll]); }  
+                frets.add_one(nextv,nextw); 
             }
 
             // fill in the value in the output.
@@ -1967,10 +1968,8 @@ NumericMatrix runQM(T v,
                     if (has_wts) { 
                         nextw = double(wts[lll]); 
                         prevw = double(wts[tr_jjj]); 
-                        frets.swap_one(nextv,nextw,prevv,prevw); 
-                    } else {
-                        frets.swap_one(nextv,1.0,prevv,1.0);
                     }
+                    frets.swap_one(nextv,nextw,prevv,prevw); 
                 }
                 tr_jjj++;
 
@@ -2007,22 +2006,14 @@ NumericMatrix runQM(T v,
                 if ((tr_iii < numel) && (tr_iii >= 0)) {
                     // add on nextv:
                     nextv = double(v[tr_iii]);
-                    if (has_wts) { 
-                        nextw = double(wts[tr_iii]); 
-                        frets.add_one(nextv,nextw); 
-                    } else { 
-                        frets.add_one(nextv,1.0); 
-                    } 
+                    if (has_wts) { nextw = double(wts[tr_iii]); } 
+                    frets.add_one(nextv,nextw); 
                 }
                 // remove prevv:
                 if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     prevv = double(v[tr_jjj]);
-                    if (has_wts) { 
-                        prevw = double(wts[tr_jjj]); 
-                        frets.rem_one(prevv,prevw); 
-                    } else {
-                        frets.rem_one(prevv,1.0); 
-                    }
+                    if (has_wts) { prevw = double(wts[tr_jjj]); }
+                    frets.rem_one(prevv,prevw); 
                 }
             }
             tr_jjj++;
