@@ -15,14 +15,59 @@
   You should have received a copy of the GNU Lesser General Public License
   along with fromo.  If not, see <http://www.gnu.org/licenses/>.
 
-  this is horrible; including this file because flattening inlines is
-  not working...
+  this is horrible; 
+  originally this was a templated function, but it was too slow:
+  flattening inlines did not work in terms of speed.
+  so include this as a file.
+  sorry.
 
   Created: 2019.01.02
   Copyright: Steven E. Pav, 2016-2019
   Author: Steven E. Pav <shabbychef@gmail.com>
   Comments: Steven E. Pav
 */
+
+// to keep it DRY, this function has a bunch of variants,
+// depending on the templated bools in the vanilla form,
+// this function returns a NumericMatrix with as many rows
+// as elements in the input, and ord+1 columns.
+// unlike the quasiWeightedMoments code, the *last* column
+// is the number of elements,
+// the last minus one is the mean and so on;
+// this simplifies the transformation to moments later.
+//
+//   the first column is the number of elements, 
+//   the second is the mean,
+//   the (ord + 1 - k)th is the k-1th centered sum, defined as
+//   as sum_j (v[j] - mean)^i
+//
+// moreover we adapt a sliding window of size window.
+// for computational efficiency, we add and subtract
+// observations. this can lead to roundoff issues,
+// especially in the subtraction of observations.
+// the algorithm checks for negative second moment and
+// starts afresh when encountered. Also, the computation
+// is periodically restarted.
+//
+// in other forms, depending on templated bools, this
+// computes the centered input, the rescaled input, the z-scored input
+// the running sharpe or running t-score, as matrices with a single column.
+//
+// we have a lookahead option for the centered, scaled, and Z-scored
+// variants. Positive lookahead means take info from the future.
+//
+// there is also a 'minimum df' parameter. this is the minimum count
+// required to return data for the ret_cent, _scald, _z, _sr, _srmer, and _t forms.
+// the reasoning is that you might not want the z-score on fweer than 10
+// observations. these do the right thing wrt NA, BTW. some moments
+// come out as zero when computed on too few observations, and we blindly
+// return Inf or NaN in that case. set the min_df to correct for this.
+// srmer is 'Sharpe ratio and Mertens standard error'
+//
+// in summary:
+// ret_mat return a rows x (1+ord) matrix of the running centered sums
+//
+// pipe in used_df
 
 // assumes that template parameters retwhat, T, and renormalize are set.
 // and that xret, lll (rownum), ord, frets, v, used_df and min_df are set.
