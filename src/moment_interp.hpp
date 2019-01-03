@@ -28,10 +28,14 @@
 // and that xret, lll (rownum), ord, frets, v, used_df and min_df are set.
 // do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
 
+// assumes these have been defined:
+//double sg_denom,renorm,denom,sigmasq,sigma,sigmapow,mydf,dwsum,skew,exkurt,sr;
+//int mmm;
+
     if (retwhat==ret_centmoments) {//FOLDUP
-        double sg_denom,renorm;
-        double mydf,dwsum;
-        int mmm;
+        //double sg_denom,renorm;
+        //double mydf,dwsum;
+        //int mmm;
         dwsum = double(frets.wsum());
         if (renormalize) { 
             mydf = double(frets.nel());
@@ -72,10 +76,10 @@
         }
     }//UNFOLD
     if (retwhat==ret_stdmoments) { //FOLDUP
-        double sg_denom,renorm;
-        double mydf,dwsum;
-        double sigmasq,sigma,sigmapow;
-        int mmm;
+        //double sg_denom,renorm;
+        //double mydf,dwsum;
+        //double sigmasq,sigma,sigmapow;
+        //int mmm;
         dwsum = double(frets.wsum());
         if (renormalize) { 
             mydf = double(frets.nel());
@@ -117,8 +121,8 @@
     //UNFOLD
     if (retwhat==ret_sd3) { //FOLDUP
         if (renormalize) {
-            double sg_denom,renorm;
-            double mydf,dwsum,sigma;
+            //double sg_denom,renorm;
+            //double mydf,dwsum,sigma;
             dwsum = double(frets.wsum());
             mydf = double(frets.nel());
             renorm = mydf / dwsum;
@@ -148,7 +152,7 @@
             }
         }
         if (!renormalize) {
-            double sg_denom,mydf,sigma;
+            //double sg_denom,mydf,sigma;
             mydf = double(frets.wsum());
 
             if (mydf >= min_df) {
@@ -174,10 +178,10 @@
         }
     } //UNFOLD
     if (retwhat==ret_skew4) { //FOLDUP
-        double sg_denom,renorm;
-        double mydf,dwsum;
-        double sigmasq,sigma,sigmapow;
-        int mmm;
+        //double sg_denom,renorm;
+        //double mydf,dwsum;
+        //double sigmasq,sigma,sigmapow;
+        //int mmm;
         dwsum = double(frets.wsum());
         if (renormalize) { 
             mydf = double(frets.nel());
@@ -221,10 +225,10 @@
         }
     }//UNFOLD
     if (retwhat==ret_exkurt5) { //FOLDUP
-        double sg_denom,renorm;
-        double mydf,dwsum;
-        double sigmasq,sigma,sigmapow;
-        int mmm;
+        //double sg_denom,renorm;
+        //double mydf,dwsum;
+        //double sigmasq,sigma,sigmapow;
+        //int mmm;
         dwsum = double(frets.wsum());
         if (renormalize) { 
             mydf = double(frets.nel());
@@ -280,9 +284,9 @@
         }
     }//UNFOLD
     if (retwhat==ret_centmaxonly) { //FOLDUP
-        double denom,renorm;
-        double mydf,dwsum;
-        int mmm;
+        //double denom,renorm;
+        //double mydf,dwsum;
+        //int mmm;
         dwsum = double(frets.wsum());
         if (renormalize) { 
             mydf = double(frets.nel());
@@ -346,7 +350,7 @@
         }
     }//UNFOLD
     if (retwhat==ret_sharpese) { //FOLDUP
-        double skew,exkurt,sr;
+        //double skew,exkurt,sr;
         if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
             skew = frets.skew();
             exkurt = frets.exkurt();

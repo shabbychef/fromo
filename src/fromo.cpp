@@ -576,32 +576,33 @@ Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
                                                     int bottom,
                                                     int top,
                                                     const bool check_wts) {
-    double nextv, nextw;
+    double nextval, nextwt;
     Welford<oneW,has_wts,ord_beyond> frets = Welford<oneW,has_wts,ord_beyond>(ord);
 
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
         if (wts.size() < top) { stop("size of wts does not match v"); }
-        for (int iii=bottom;iii < top;++iii) {
-            nextv = v[iii];
-            nextw = double(wts[iii]); 
-            if (na_rm) {
-                if (! (ISNAN(nextv) || ISNAN(nextw))) {
+    }
+    for (int iii=bottom;iii < top;++iii) {
+        nextval = v[iii];
+        if (has_wts) { nextwt = double(wts[iii]); }
+        if (na_rm) {
+            if (has_wts) {
+                if (! (ISNAN(nextval) || ISNAN(nextwt))) {
                     // 2FIX: check for zero weight??
-                    frets.add_one(nextv,nextw);
+                    frets.add_one(nextval,nextwt);
                 }
             } else {
-                frets.add_one(nextv,nextw);
+                if (! (ISNAN(nextval))) {
+                    frets.add_one(nextval,1.0);
+                }
             }
-        }
-    } else {
-        for (int iii=bottom;iii < top;++iii) {
-            nextv = v[iii];
-            if (na_rm) {
-                if (! (ISNAN(nextv))) { frets.add_one(nextv,1); }
+        } else {
+            if (has_wts) {
+                frets.add_one(nextval,nextwt);
             } else {
-                frets.add_one(nextv,1);
+                frets.add_one(nextval,1.0);
             }
         }
     }
@@ -1833,17 +1834,17 @@ NumericMatrix runQM(T v,
           (retwhat==ret_exkurt5)) && (ord < 4))) { 
         stop("bad code: order too small to support this computation"); 
     }
-    // only for retwhat==ret_sharpese, but cannot define outside its scope.
-    // no bigs.
-    double sigma,skew,exkurt,sr;
-
-    int iii,jjj,lll,mmm,ppp,qqq,tr_iii,tr_jjj;
+    int iii,jjj,lll,tr_iii,tr_jjj;
     int numel = v.size();
     // I do not understand boolean assignment in c++
     bool aligned = (lookahead == 0);
     // refers to the number of *subtractions* performed
     int subcount = 0;
     bool do_add, do_rem;
+
+    // super gross; I need these for the include later.
+    double sg_denom,renorm,denom,sigmasq,sigma,sigmapow,mydf,dwsum,skew,exkurt,sr;
+    int mmm;
 
     // preallocated with zeros; should
     // probably be NA?
@@ -1872,7 +1873,7 @@ NumericMatrix runQM(T v,
 
     if (!aligned) {
         // as an invariant, we will start the computation
-        // with vret, which is initialized as the summed
+        // with frets, which is initialized as the summed
         // means on [jjj,iii]
         tr_iii = lookahead - 1;
         tr_jjj = lookahead - window;
@@ -1941,20 +1942,21 @@ NumericMatrix runQM(T v,
 #include "moment_interp.hpp"
         }//UNFOLD
     } else {
-        int firstpart;
-        firstpart = MIN(numel,window);
-
+        // aligned case
+        // sigh. broken.
         // as an invariant, we will start the computation
-        // with vret, which is initialized as the summed
+        // with frets, which is initialized as the summed
         // means on [jjj,iii]
-        tr_jjj = - window;
+        tr_iii = lookahead - 1;
+        tr_jjj = lookahead - window;
 
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
+            tr_iii++;
             // check subcount first and just recompute if needed.
             if (subcount >= recom_period) {
                 // fix this
-                iii = MIN(numel-1,lll);
+                iii = MIN(numel-1,tr_iii);
                 jjj = MAX(0,tr_jjj+1);
                 if (jjj <= iii) {
                     frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
@@ -1964,19 +1966,21 @@ NumericMatrix runQM(T v,
                 }
                 subcount = 0;
             } else {
-                // add on nextv:
-                nextv = double(v[lll]);
-                if (has_wts) { nextw = double(wts[lll]); }
-                if (!na_rm) {
-                    if (has_wts) { frets.add_one(nextv,nextw); } else { frets.add_one(nextv,1.0); } 
-                } else {
-                    if (has_wts) {
-                        if (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))) {
-                            frets.add_one(nextv,nextw);
-                        }
+                if ((tr_iii < numel) && (tr_iii >= 0)) {
+                    // add on nextv:
+                    nextv = double(v[tr_iii]);
+                    if (has_wts) { nextw = double(wts[tr_iii]); }
+                    if (!na_rm) {
+                        if (has_wts) { frets.add_one(nextv,nextw); } else { frets.add_one(nextv,1.0); } 
                     } else {
-                        if (! (ISNAN(nextv))) {
-                            frets.add_one(nextv,1.0);
+                        if (has_wts) {
+                            if (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))) {
+                                frets.add_one(nextv,nextw);
+                            }
+                        } else {
+                            if (! (ISNAN(nextv))) {
+                                frets.add_one(nextv,1.0);
+                            }
                         }
                     }
                 }
@@ -2012,115 +2016,6 @@ NumericMatrix runQM(T v,
     }
     return xret;
 }
-
-/*
-        if (has_wts) {
-            if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
-            // now run through lll index//FOLDUP
-            for (lll=0;lll < firstpart;++lll) {
-                // check subcount first and just recompute if needed.
-                if (subcount >= recom_period) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  0,       //bottom
-                                                                                  lll+1,     //top
-                                                                                  check_wts);
-                    subcount = 0;
-                } else {
-                    // add on nextv:
-                    nextv = double(v[lll]);
-                    nextw = double(wts[lll]); 
-                    if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0)))) {
-                        frets.add_one(nextv,nextw);
-                    }
-                }
-
-                // fill in the value in the output.
-                // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-            }
-            // 2FIX: start from here ... 
-            if (firstpart < numel) {
-                jjj = 0;
-                for (lll=firstpart;lll < numel;++lll) {
-                    // check subcount first and just recompute if needed.
-                    if (subcount >= recom_period) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                      jjj,       //bottom
-                                                                                      lll+1,     //top
-                                                                                      check_wts);
-                        subcount = 0;
-                    } else {
-                        // add on nextv:
-                        nextv = double(v[lll]);
-                        nextw = double(wts[lll]); 
-                        prevv = double(v[jjj]);
-                        prevw = double(wts[jjj]); 
-                        do_add = (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))));
-                        do_rem = (! (na_rm && (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))));
-
-                        if (do_add) {
-                            if (do_rem) {
-                                frets.swap_one(nextv,nextw,prevv,prevw);
-                            } else {
-                                frets.add_one(nextv,nextw);
-                            }
-                        } else {
-                            frets.rem_one(prevv,prevw);
-                            
-                        }
-                    }
-                    ++jjj;
-
-                    // fill in the value in the output.
-                    // 2FIX: give access to v, not v[lll]...
-                    moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-                }
-            }
-            //UNFOLD
-        } else {
-            // 2FIX: start from here with the conversion to firstpart ? 
-            // now run through lll index//FOLDUP
-            for (lll=0;lll < numel;++lll) {
-                tr_iii++;
-                // check subcount first and just recompute if needed.
-                if (subcount >= recom_period) {
-                    // fix this
-                    iii = MIN(numel-1,tr_iii);
-                    jjj = MAX(0,tr_jjj+1);
-                    if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                      jjj,       //bottom
-                                                                                      iii+1,     //top
-                                                                                      check_wts);
-                    }
-                    subcount = 0;
-                } else {
-                    if ((tr_iii < numel) && (tr_iii >= 0)) {
-                        // add on nextv:
-                        nextv = double(v[tr_iii]);
-                        if (! (na_rm && (ISNAN(nextv)))) {
-                            frets.add_one(nextv,1);
-                        }
-                    }
-                    // remove prevv:
-                    if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-                        prevv = double(v[tr_jjj]);
-                        if (! (na_rm && (ISNAN(prevv)))) {
-                            frets.rem_one(prevv,1);
-                            subcount++;
-                        }
-                    }
-                }
-                tr_jjj++;
-
-                // fill in the value in the output.
-                // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-            }//UNFOLD
-        }
-
-*/
-
 
 template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
 NumericMatrix runQMCurryZero(T v, 
@@ -2857,8 +2752,7 @@ NumericVector ref_running_sd(NumericVector v,int window=1000) {
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
-    int firstpart;
-    firstpart = MIN(top,window);
+    const int firstpart = MIN(top,window);
 
     nel = 0.0;
     sd = 0.0;
@@ -2910,8 +2804,7 @@ NumericVector ref_running_sd_narm(NumericVector v,int window=1000) {
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
-    int firstpart;
-    firstpart = MIN(top,window);
+    const int firstpart = MIN(top,window);
 
     nel = 0.0;
     sd = 0.0;
@@ -2979,8 +2872,7 @@ NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
-    int firstpart;
-    firstpart = MIN(top,window);
+    const int firstpart = MIN(top,window);
 
     inel = 0;
     nel = 0.0;
@@ -3024,8 +2916,7 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
-    int firstpart;
-    firstpart = MIN(top,window);
+    const int firstpart =MIN(top,window);
 
     for (int iii=0;iii < firstpart;++iii) {
         x = v[iii];
@@ -3189,8 +3080,7 @@ NumericMatrix ref_running_sd_batz(NumericVector v,int window=1000) {
                                                                                          0,     //top
                                                                                          check_wts);
     }
-    int firstpart;
-    firstpart = MIN(numel,window);
+    const int firstpart = MIN(numel,window);
 
     for (int lll=0;lll < firstpart;++lll) {
         frets.add_one(v[lll],1.0);
@@ -3206,8 +3096,8 @@ NumericMatrix ref_running_sd_batz(NumericVector v,int window=1000) {
     if (firstpart < numel) {
         jjj = 0;
         for (int lll=firstpart;lll < numel;++lll) {
-            ++jjj;
             frets.swap_one(v[lll],1.0,v[jjj],1.0);
+            ++jjj;
             //xret[lll] = frets.sd(false,1.0);
             //moment_converter<ret_stdev, Welford<double,false,false>, NumericVector,false>::mom_interp(xret,lll,2,frets,v,1.0,0.0);
             oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
