@@ -1911,7 +1911,56 @@ NumericMatrix runQM(T v,
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
     }
 
-    if (!aligned) {
+    if (aligned) {
+        // aligned case
+        // sigh. broken.
+        // as an invariant, we will start the computation
+        // with frets, which is initialized as the summed
+        // means on [jjj,lll]
+        tr_jjj = - window;
+
+        // now run through lll index//FOLDUP
+        for (lll=0;lll < numel;++lll) {
+            // check subcount first and just recompute if needed.
+            if (frets.subcount() >= recom_period) {
+                // fix this
+                jjj = MAX(0,tr_jjj+1);
+                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              jjj,       //bottom
+                                                                              lll+1,     //top
+                                                                              false);    //no need to check weights as we have done it once above.
+            } else {
+                // add on nextv:
+                nextv = double(v[lll]);
+                // remove prevv:
+                if (tr_jjj >= 0) {
+                    prevv = double(v[tr_jjj]);
+                    if (has_wts) { 
+                        nextw = double(wts[lll]); 
+                        prevw = double(wts[tr_jjj]); 
+                        frets.swap_one(nextv,nextw,prevv,prevw); 
+                    } else {
+                        frets.swap_one(nextv,1.0,prevv,1.0);
+                    }
+                } else {
+                    if (has_wts) { 
+                        nextw = double(wts[lll]); 
+                        frets.add_one(nextv,nextw); 
+                    } else { 
+                        frets.add_one(nextv,1.0); 
+                    } 
+                }
+            }
+            tr_jjj++;
+
+            // fill in the value in the output.
+            // 2FIX: give access to v, not v[lll]...
+            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+//yuck!!
+#include "moment_interp.hpp"
+        }//UNFOLD
+    } else {
+        // nonaligned case
         // as an invariant, we will start the computation
         // with frets, which is initialized as the summed
         // means on [jjj,iii]
@@ -1952,54 +2001,6 @@ NumericMatrix runQM(T v,
                     } else {
                         frets.rem_one(prevv,1.0); 
                     }
-                }
-            }
-            tr_jjj++;
-
-            // fill in the value in the output.
-            // 2FIX: give access to v, not v[lll]...
-            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-//yuck!!
-#include "moment_interp.hpp"
-        }//UNFOLD
-    } else {
-        // aligned case
-        // sigh. broken.
-        // as an invariant, we will start the computation
-        // with frets, which is initialized as the summed
-        // means on [jjj,lll]
-        tr_jjj = - window;
-
-        // now run through lll index//FOLDUP
-        for (lll=0;lll < numel;++lll) {
-            // check subcount first and just recompute if needed.
-            if (frets.subcount() >= recom_period) {
-                // fix this
-                jjj = MAX(0,tr_jjj+1);
-                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              jjj,       //bottom
-                                                                              lll+1,     //top
-                                                                              false);    //no need to check weights as we have done it once above.
-            } else {
-                // add on nextv:
-                nextv = double(v[lll]);
-                // remove prevv:
-                if (tr_jjj >= 0) {
-                    prevv = double(v[tr_jjj]);
-                    if (has_wts) { 
-                        nextw = double(wts[lll]); 
-                        prevw = double(wts[tr_jjj]); 
-                        frets.swap_one(nextv,nextw,prevv,prevw); 
-                    } else {
-                        frets.swap_one(nextv,1.0,prevv,1.0);
-                    }
-                } else {
-                    if (has_wts) { 
-                        nextw = double(wts[lll]); 
-                        frets.add_one(nextv,nextw); 
-                    } else { 
-                        frets.add_one(nextv,1.0); 
-                    } 
                 }
             }
             tr_jjj++;
@@ -2913,7 +2914,7 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     
     int top=v.size();
     NumericVector vret = NumericVector(top);
-    const int firstpart =MIN(top,window);
+    const int firstpart = MIN(top,window);
 
     for (int iii=0;iii < firstpart;++iii) {
         x = v[iii];
