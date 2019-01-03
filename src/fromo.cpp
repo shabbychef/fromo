@@ -1775,7 +1775,10 @@ class moment_converter<ret_exkurt,F,T,renormalize> {
 };
 //UNFOLD
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b6eaa46... and move to an include
 // some notes:
 // I believe we can just use
 // Vector<REALSXP> instead of NumericVector
@@ -1913,7 +1916,9 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+//yuck!!
+#include "moment_interp.hpp"
             }//UNFOLD
         } else {
             // now run through lll index//FOLDUP
@@ -1952,7 +1957,9 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                //moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+//yuck!!
+#include "moment_interp.hpp"
             }//UNFOLD
         }
     } else {
@@ -1998,7 +2005,9 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                //moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+//yuck!!
+#include "moment_interp.hpp"
             }//UNFOLD
         } else {
             // now run through lll index//FOLDUP
@@ -2031,7 +2040,9 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                //moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+//yuck!!
+#include "moment_interp.hpp"
             }//UNFOLD
         }
 
