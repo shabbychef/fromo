@@ -81,12 +81,12 @@ class Welford {
         int m_ord;
         NumericVector m_xx;
     public:
-        inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
+        FORCE_INLINE Welford(const int &ord) : m_ord(ord), m_nel(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); }
             }
         }
-        inline Welford(const int &ord, 
+        FORCE_INLINE Welford(const int &ord, 
                        const int &nel, 
                        const W &sumwt, 
                        const NumericVector &xx) : m_ord(ord), m_nel(nel), m_wsum(Kahan<W>(sumwt)), m_xx(NumericVector(xx)) {
@@ -94,7 +94,7 @@ class Welford {
                 if (ord < 2) { stop("must use ord >= 2"); }
             }
         }
-        inline Welford(const int &ord, 
+        FORCE_INLINE Welford(const int &ord, 
                        const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); }
@@ -105,7 +105,7 @@ class Welford {
         int m_nel;
     public:
         // reset to zero
-        inline Welford& tare() {
+        FORCE_INLINE Welford& tare() {
             m_nel = 0;
             m_wsum = W(0);
             for (int iii=0;iii < m_xx.length();++iii) {
@@ -126,59 +126,59 @@ class Welford {
                 return ((m_xx[2]) / (double(m_nel) - used_df));
             }
         }
-        inline double mean() const {
+        FORCE_INLINE double mean() const {
             return m_xx[1];
         }
         FORCE_INLINE double sd(const bool normalize,const double used_df) const {
             return sqrt(var(normalize,used_df));
         }
-        inline double skew() const {
+        FORCE_INLINE double skew() const {
             if (has_wts) {
                 return (sqrt(double(m_wsum.as())) * m_xx[3] / pow(m_xx[2],1.5));
             } else {
                 return (sqrt(double(m_nel)) * m_xx[3] / pow(m_xx[2],1.5));
             }
         }
-        inline double exkurt() const {
+        FORCE_INLINE double exkurt() const {
             if (has_wts) {
                 return ((double(m_wsum.as()) * m_xx[4] / (pow(m_xx[2],2.0))) - 3.0);
             } else {
                 return ((double(m_nel) * m_xx[4] / (pow(m_xx[2],2.0))) - 3.0);
             }
         }
-        inline double sharpe(const bool normalize,const double used_df) const {
+        FORCE_INLINE double sharpe(const bool normalize,const double used_df) const {
             return double(m_xx[1]) / sd(normalize,used_df);
         }
-        inline double centered(const double xval) const {
+        FORCE_INLINE double centered(const double xval) const {
             return (xval - m_xx[1]);
         }
-        inline double scaled(const double xval,const bool normalize,const double used_df) const {
+        FORCE_INLINE double scaled(const double xval,const bool normalize,const double used_df) const {
             return (xval/sd(normalize,used_df));
         }
-        inline double zscored(const double xval,const bool normalize,const double used_df) const {
+        FORCE_INLINE double zscored(const double xval,const bool normalize,const double used_df) const {
             return ((xval - m_xx[1])/sd(normalize,used_df));
         }
 
         // getters 
-        inline int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
-        inline W wsum() const { 
+        FORCE_INLINE int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
+        FORCE_INLINE W wsum() const { 
             if (has_wts) { return m_wsum.as(); }
             return W(m_nel);
         }
-        inline NumericVector as() const { return m_xx; }
-        inline NumericVector asvec() const { 
+        FORCE_INLINE NumericVector as() const { return m_xx; }
+        FORCE_INLINE NumericVector asvec() const { 
             // copy
             //NumericVector resu = NumericVector(m_xx);
             NumericVector resu = Rcpp::clone(m_xx);
             resu[0] = double(wsum());
             return resu;
         }
-        inline NumericVector vecpart() const { 
+        FORCE_INLINE NumericVector vecpart() const { 
             return m_xx;
         }
     public:
         // add another (weighted) observation to our set of x
-        inline Welford& add_one (const double xval, const W wt) {
+        FORCE_INLINE Welford& add_one (const double xval, const W wt) {
             double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
             della = xval - m_xx[1];
             if (has_wts) {
@@ -238,7 +238,7 @@ class Welford {
             return *this;
         }
         // remove one (weighted) observation from our set of x
-        inline Welford& rem_one (const double xval, const W wt) {
+        FORCE_INLINE Welford& rem_one (const double xval, const W wt) {
             double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
             della = xval - m_xx[1];
 
@@ -303,7 +303,7 @@ class Welford {
             }
             return *this;
         }
-        inline Welford& swap_one (const double addxval, const W addwt,
+        FORCE_INLINE Welford& swap_one (const double addxval, const W addwt,
                                   const double remxval, const W remwt) {
             double diffmu,prevmu,nel;
             double diffw,diffx,diffxw,addxw,remxw,nelm;
@@ -339,7 +339,7 @@ class Welford {
             return *this;
         }
         // join two Welford objects together
-        inline Welford& join(const Welford& rhs) {
+        FORCE_INLINE Welford& join(const Welford& rhs) {
             double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
             double ac_nfoo,ac_n2,ac_mn1,ac_del,ac_mn2,ac_n1;
             int ppp,qqq;
@@ -420,7 +420,7 @@ class Welford {
             return *this;
         }
         // remove one from another
-        inline Welford& unjoin(const Welford& rhs) {
+        FORCE_INLINE Welford& unjoin(const Welford& rhs) {
             double n1, n2, ntot, del21, mupart, nfoo, n1rat, n2rat;
             double ac_nfoo,ac_n2,ac_mn1;
             double ac_del,ac_mn2,ac_n1;
@@ -1323,14 +1323,14 @@ NumericMatrix unjoin_cent_cosums(NumericMatrix ret3,NumericMatrix ret2) {
 template<ReturnWhat retwhat,typename F,typename T,bool renormalize>
 class moment_converter {
     public:
-        inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {}
+        FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {}
 };
 
 // ret_centmoments//FOLDUP
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_centmoments,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
             double mydf,dwsum;
             int mmm;
@@ -1379,7 +1379,7 @@ class moment_converter<ret_centmoments,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_stdmoments,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
             double mydf,dwsum;
             double sigmasq,sigma,sigmapow;
@@ -1428,7 +1428,7 @@ class moment_converter<ret_stdmoments,F,T,renormalize> {
 template<typename F,typename T>
 class moment_converter<ret_sd3,F,T,true> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
             double mydf,dwsum,sigma;
             dwsum = double(frets.wsum());
@@ -1465,7 +1465,7 @@ class moment_converter<ret_sd3,F,T,true> {
 template<typename F,typename T>
 class moment_converter<ret_sd3,F,T,false> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,mydf,sigma;
             mydf = double(frets.wsum());
 
@@ -1496,7 +1496,7 @@ class moment_converter<ret_sd3,F,T,false> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_skew4,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
             double mydf,dwsum;
             double sigmasq,sigma,sigmapow;
@@ -1549,7 +1549,7 @@ class moment_converter<ret_skew4,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_exkurt5,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double sg_denom,renorm;
             double mydf,dwsum;
             double sigmasq,sigma,sigmapow;
@@ -1614,7 +1614,7 @@ class moment_converter<ret_exkurt5,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_centmaxonly,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double denom,renorm;
             double mydf,dwsum;
             int mmm;
@@ -1647,7 +1647,7 @@ class moment_converter<ret_centmaxonly,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_centered,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.centered(double(xdat[rownum]));
             } else {
@@ -1660,7 +1660,7 @@ class moment_converter<ret_centered,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_scaled,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.scaled(double(xdat[rownum]),renormalize,used_df);
             } else {
@@ -1673,7 +1673,7 @@ class moment_converter<ret_scaled,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_zscore,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.zscored(double(xdat[rownum]),renormalize,used_df);
             } else {
@@ -1686,7 +1686,7 @@ class moment_converter<ret_zscore,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_tstat,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 if (renormalize) {
                     xret(rownum,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.nel()));
@@ -1703,7 +1703,7 @@ class moment_converter<ret_tstat,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_sharpe,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.sharpe(renormalize,used_df); 
             } else {
@@ -1716,7 +1716,7 @@ class moment_converter<ret_sharpe,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_sharpese,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             double skew,exkurt,sr;
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 skew = frets.skew();
@@ -1739,7 +1739,7 @@ class moment_converter<ret_sharpese,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_stdev,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.sd(renormalize,used_df); 
             } else {
@@ -1752,7 +1752,7 @@ class moment_converter<ret_stdev,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_skew,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.skew();
             } else {
@@ -1765,7 +1765,7 @@ class moment_converter<ret_skew,F,T,renormalize> {
 template<typename F,typename T,bool renormalize>
 class moment_converter<ret_exkurt,F,T,renormalize> {
     public:
-        static inline void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+        static FORCE_INLINE void mom_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
             if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
                 xret(rownum,0) = frets.exkurt();
             } else {
@@ -1774,6 +1774,376 @@ class moment_converter<ret_exkurt,F,T,renormalize> {
         }
 };
 //UNFOLD
+
+
+
+template<ReturnWhat retwhat,typename F,typename T,bool renormalize>
+FORCE_INLINE __attribute__((flatten)) void do_interp(NumericMatrix xret,const int rownum,const int ord,const F frets,T xdat,const double used_df,const double min_df) {
+    if (retwhat==ret_centmoments) {//FOLDUP
+        double sg_denom,renorm;
+        double mydf,dwsum;
+        int mmm;
+        dwsum = double(frets.wsum());
+        if (renormalize) { 
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
+        } else {
+            mydf = dwsum;
+        }
+
+        if (mydf >= min_df) {
+            sg_denom = mydf - used_df;
+            if (renormalize) { sg_denom /= renorm; }
+            xret(rownum,ord) = mydf; 
+            xret(rownum,ord-1) = frets.m_xx[1];
+
+            // put them in backwards!
+            if (mydf >= ord) {
+                if (ord >= 2) {
+                    xret(rownum,ord-2) = frets.m_xx[2] / sg_denom;
+                    for (mmm=3;mmm <= ord;++mmm) {
+                        xret(rownum,ord-mmm) = frets.m_xx[mmm] / dwsum;
+                    }
+                }
+            } else {
+                if (ord >= 2) {
+                    xret(rownum,ord-2) = frets.m_xx[2] / sg_denom;
+                    for (mmm=3;mmm <= mydf;++mmm) {
+                        xret(rownum,ord-mmm) = frets.m_xx[mmm] / dwsum;
+                    }
+                }
+                for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
+                    xret(rownum,ord-mmm) = NAN;
+                }
+            }
+        } else {
+            for (mmm=0;mmm <= ord;++mmm) {
+                xret(rownum,mmm) = NAN;
+            }
+        }
+    }//UNFOLD
+    if (retwhat==ret_stdmoments) { //FOLDUP
+        double sg_denom,renorm;
+        double mydf,dwsum;
+        double sigmasq,sigma,sigmapow;
+        int mmm;
+        dwsum = double(frets.wsum());
+        if (renormalize) { 
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
+        } else {
+            mydf = dwsum;
+        }
+
+        if (mydf >= min_df) {
+            sg_denom = mydf - used_df;
+            if (renormalize) { sg_denom /= renorm; }
+            sigmasq = frets.m_xx[2] / sg_denom;
+            sigma = sqrt(sigmasq);
+            xret(rownum,ord) = mydf; 
+            xret(rownum,ord-1) = frets.m_xx[1];
+            xret(rownum,ord-2) = sigma;
+
+            // put them in backwards!
+            if (mydf >= ord) {
+                for (mmm=3;mmm <= ord;++mmm) {
+                    sigmasq *= sigma;
+                    xret(rownum,ord-mmm) = frets.m_xx[mmm] / (dwsum * sigmasq);
+                }
+            } else {
+                for (mmm=3;mmm <= mydf;++mmm) {
+                    sigmasq *= sigma;
+                    xret(rownum,ord-mmm) = frets.m_xx[mmm] / (dwsum * sigmasq);
+                }
+                for (mmm=int(ceil(mydf))+1;mmm <= ord;++mmm) {
+                    xret(rownum,ord-mmm) = NAN;
+                }
+            }
+        } else {
+            for (mmm=0;mmm <= ord;++mmm) {
+                xret(rownum,mmm) = NAN;
+            }
+        }
+    }
+    //UNFOLD
+    if (retwhat==ret_sd3) { //FOLDUP
+        if (renormalize) {
+            double sg_denom,renorm;
+            double mydf,dwsum,sigma;
+            dwsum = double(frets.wsum());
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
+
+            if (mydf >= min_df) {
+                xret(rownum,2) = mydf; 
+
+                // put them in backwards!
+                if (mydf >= ord) {
+                    sg_denom = (mydf - used_df) / renorm;
+                    sigma = sqrt(frets.m_xx[2] / sg_denom);
+
+                    xret(rownum,1) = frets.m_xx[1];
+                    xret(rownum,0) = sigma;
+                } else {
+                    if (mydf >= 1) { 
+                        xret(rownum,1) = frets.m_xx[1]; 
+                    } else  {
+                        xret(rownum,1) = NAN;
+                    }
+                    xret(rownum,0) = NAN;
+                }
+            } else {
+                xret(rownum,2) = NAN;
+                xret(rownum,1) = NAN;
+                xret(rownum,0) = NAN;
+            }
+        }
+        if (!renormalize) {
+            double sg_denom,mydf,sigma;
+            mydf = double(frets.wsum());
+
+            if (mydf >= min_df) {
+                // put them in backwards!
+                xret(rownum,2) = mydf;
+                if (mydf >= ord) {
+                    sigma = sqrt(frets.m_xx[2] / (mydf - used_df));
+                    xret(rownum,1) = frets.m_xx[1];
+                    xret(rownum,0) = sigma;
+                } else {
+                    if (mydf >= 1) { 
+                        xret(rownum,1) = frets.m_xx[1]; 
+                    } else  {
+                        xret(rownum,1) = NAN;
+                    }
+                    xret(rownum,0) = NAN;
+                }
+            } else {
+                xret(rownum,2) = NAN;
+                xret(rownum,1) = NAN;
+                xret(rownum,0) = NAN;
+            }
+        }
+    } //UNFOLD
+    if (retwhat==ret_skew4) { //FOLDUP
+        double sg_denom,renorm;
+        double mydf,dwsum;
+        double sigmasq,sigma,sigmapow;
+        int mmm;
+        dwsum = double(frets.wsum());
+        if (renormalize) { 
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
+        } else {
+            mydf = dwsum;
+        }
+
+        if (mydf >= min_df) {
+            sg_denom = mydf - used_df;
+            if (renormalize) { sg_denom /= renorm; }
+            sigmasq = frets.m_xx[2] / sg_denom;
+            sigma = sqrt(sigmasq);
+
+            // put them in backwards!
+            if (mydf >= ord) {
+                xret(rownum,3) = mydf; 
+                xret(rownum,2) = frets.m_xx[1];
+                xret(rownum,1) = sigma;
+                xret(rownum,0) = COMP_SKEW_TWO(frets.m_xx,dwsum);
+            } else {
+                xret(rownum,3) = mydf; 
+                if (mydf >= 1) {
+                    xret(rownum,2) = frets.m_xx[1];
+                    if (mydf >= 2) {
+                        xret(rownum,1) = sigma;
+                    } else {
+                        xret(rownum,1) = NAN;
+                    }
+                } else {
+                    xret(rownum,2) = NAN;
+                    xret(rownum,1) = NAN;
+                }
+                xret(rownum,0) = NAN;
+            }
+        } else {
+            xret(rownum,3) = NAN;
+            xret(rownum,2) = NAN;
+            xret(rownum,1) = NAN;
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+    if (retwhat==ret_exkurt5) { //FOLDUP
+        double sg_denom,renorm;
+        double mydf,dwsum;
+        double sigmasq,sigma,sigmapow;
+        int mmm;
+        dwsum = double(frets.wsum());
+        if (renormalize) { 
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
+        } else {
+            mydf = dwsum;
+        }
+
+        if (mydf >= min_df) {
+            sg_denom = mydf - used_df;
+            if (renormalize) { sg_denom /= renorm; }
+            sigmasq = frets.m_xx[2] / sg_denom;
+            sigma = sqrt(sigmasq);
+
+            // put them in backwards!
+            if (mydf >= ord) {
+                xret(rownum,4) = mydf; 
+                xret(rownum,3) = frets.m_xx[1];
+                xret(rownum,2) = sigma;
+                // uhoh! renormalization!
+                xret(rownum,1) = COMP_SKEW_TWO(frets.m_xx,dwsum);
+                // uhoh! renormalization!
+                xret(rownum,0) = (COMP_KURT_TWO(frets.m_xx,dwsum)) - 3.0;
+            } else {
+                xret(rownum,4) = mydf; 
+                if (mydf >= 1) {
+                    xret(rownum,3) = frets.m_xx[1];
+                    if (mydf >= 2) {
+                        xret(rownum,2) = sigma;
+                        if (mydf >= 3) {
+                            // uhoh! renormalization!
+                            xret(rownum,1) = COMP_SKEW_TWO(frets.m_xx,dwsum);
+                        } else {
+                            xret(rownum,1) = NAN;
+                        }
+                    } else {
+                        xret(rownum,2) = NAN;
+                        xret(rownum,1) = NAN;
+                    }
+                } else {
+                    xret(rownum,3) = NAN;
+                    xret(rownum,2) = NAN;
+                    xret(rownum,1) = NAN;
+                }
+                xret(rownum,0) = NAN;
+            }
+        } else {
+            xret(rownum,4) = NAN;
+            xret(rownum,3) = NAN;
+            xret(rownum,2) = NAN;
+            xret(rownum,1) = NAN;
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+    if (retwhat==ret_centmaxonly) { //FOLDUP
+        double denom,renorm;
+        double mydf,dwsum;
+        int mmm;
+        dwsum = double(frets.wsum());
+        if (renormalize) { 
+            mydf = double(frets.nel());
+            renorm = mydf / dwsum;
+        } else {
+            mydf = dwsum;
+        }
+
+        if ((mydf >= min_df) && (mydf >= ord)) {
+            if (ord==2) {
+                denom = mydf - used_df;
+            } else {
+                denom = dwsum;
+            }
+            if (renormalize) { 
+                xret(rownum,0) = renorm * frets.m_xx[ord] / denom;
+            } else {
+                xret(rownum,0) = frets.m_xx[ord] / denom;
+            }
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    } //UNFOLD
+    if (retwhat==ret_centered) {//FOLDUP
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            xret(rownum,0) = frets.centered(double(xdat[rownum]));
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+    if (retwhat==ret_scaled) {//FOLDUP
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            xret(rownum,0) = frets.scaled(double(xdat[rownum]),renormalize,used_df);
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+    //if (retwhat==ret_zscore) { //FOLDUP
+    //if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+    //xret(rownum,0) = frets.zscored(double(xdat[rownum]),renormalize,used_df);
+    //} else {
+    //xret(rownum,0) = NAN;
+    //}
+    //}//UNFOLD
+    //if (retwhat==ret_tstat) {//FOLDUP
+    //if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+    //if (renormalize) {
+    //xret(rownum,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.nel()));
+    //} else {
+    //xret(rownum,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.wsum()));
+    //}
+    //} else {
+    //xret(rownum,0) = NAN;
+    //}
+    //}//UNFOLD
+    if (retwhat==ret_sharpe) { //FOLDUP
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            xret(rownum,0) = frets.sharpe(renormalize,used_df); 
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+    if (retwhat==ret_sharpese) { //FOLDUP
+        double skew,exkurt,sr;
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            skew = frets.skew();
+            exkurt = frets.exkurt();
+            sr = frets.sharpe(renormalize,used_df);
+            xret(rownum,0) = sr;
+            if (renormalize) {
+                xret(rownum,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / double(frets.nel()));
+            } else {
+                xret(rownum,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / double(frets.wsum()));
+            }
+        } else {
+            xret(rownum,0) = NAN;
+            xret(rownum,1) = NAN;
+        }
+    }//UNFOLD
+    if (retwhat==ret_stdev) { //FOLDUP
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            xret(rownum,0) = frets.sd(renormalize,used_df); 
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+    if (retwhat==ret_skew) { //FOLDUP
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            xret(rownum,0) = frets.skew();
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    } //UNFOLD
+    if (retwhat==ret_exkurt) { //FOLDUP
+        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
+            xret(rownum,0) = frets.exkurt();
+        } else {
+            xret(rownum,0) = NAN;
+        }
+    }//UNFOLD
+}
+
+
+
+
+
+
+
+
+
 
 
 // some notes:
@@ -1913,7 +2283,8 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
             }//UNFOLD
         } else {
             // now run through lll index//FOLDUP
@@ -1952,7 +2323,8 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                //moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
             }//UNFOLD
         }
     } else {
@@ -1998,7 +2370,8 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                //moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
             }//UNFOLD
         } else {
             // now run through lll index//FOLDUP
@@ -2031,7 +2404,8 @@ NumericMatrix runQM(T v,
 
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                //moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+                do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
             }//UNFOLD
         }
 
@@ -2039,115 +2413,6 @@ NumericMatrix runQM(T v,
     }
     return xret;
 }
-
-/*
-        if (has_wts) {
-            if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
-            // now run through lll index//FOLDUP
-            for (lll=0;lll < firstpart;++lll) {
-                // check subcount first and just recompute if needed.
-                if (subcount >= recom_period) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  0,       //bottom
-                                                                                  lll+1,     //top
-                                                                                  check_wts);
-                    subcount = 0;
-                } else {
-                    // add on nextv:
-                    nextv = double(v[lll]);
-                    nextw = double(wts[lll]); 
-                    if (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0)))) {
-                        frets.add_one(nextv,nextw);
-                    }
-                }
-
-                // fill in the value in the output.
-                // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-            }
-            // 2FIX: start from here ... 
-            if (firstpart < numel) {
-                jjj = 0;
-                for (lll=firstpart;lll < numel;++lll) {
-                    // check subcount first and just recompute if needed.
-                    if (subcount >= recom_period) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                      jjj,       //bottom
-                                                                                      lll+1,     //top
-                                                                                      check_wts);
-                        subcount = 0;
-                    } else {
-                        // add on nextv:
-                        nextv = double(v[lll]);
-                        nextw = double(wts[lll]); 
-                        prevv = double(v[jjj]);
-                        prevw = double(wts[jjj]); 
-                        do_add = (! (na_rm && (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))));
-                        do_rem = (! (na_rm && (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))));
-
-                        if (do_add) {
-                            if (do_rem) {
-                                frets.swap_one(nextv,nextw,prevv,prevw);
-                            } else {
-                                frets.add_one(nextv,nextw);
-                            }
-                        } else {
-                            frets.rem_one(prevv,prevw);
-                            
-                        }
-                    }
-                    ++jjj;
-
-                    // fill in the value in the output.
-                    // 2FIX: give access to v, not v[lll]...
-                    moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-                }
-            }
-            //UNFOLD
-        } else {
-            // 2FIX: start from here with the conversion to firstpart ? 
-            // now run through lll index//FOLDUP
-            for (lll=0;lll < numel;++lll) {
-                tr_iii++;
-                // check subcount first and just recompute if needed.
-                if (subcount >= recom_period) {
-                    // fix this
-                    iii = MIN(numel-1,tr_iii);
-                    jjj = MAX(0,tr_jjj+1);
-                    if (jjj <= iii) {
-                        frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                      jjj,       //bottom
-                                                                                      iii+1,     //top
-                                                                                      check_wts);
-                    }
-                    subcount = 0;
-                } else {
-                    if ((tr_iii < numel) && (tr_iii >= 0)) {
-                        // add on nextv:
-                        nextv = double(v[tr_iii]);
-                        if (! (na_rm && (ISNAN(nextv)))) {
-                            frets.add_one(nextv,1);
-                        }
-                    }
-                    // remove prevv:
-                    if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-                        prevv = double(v[tr_jjj]);
-                        if (! (na_rm && (ISNAN(prevv)))) {
-                            frets.rem_one(prevv,1);
-                            subcount++;
-                        }
-                    }
-                }
-                tr_jjj++;
-
-                // fill in the value in the output.
-                // 2FIX: give access to v, not v[lll]...
-                moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-            }//UNFOLD
-        }
-
-*/
-
 
 template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
 NumericMatrix runQMCurryZero(T v, 
@@ -3179,6 +3444,8 @@ FORCE_INLINE static void oneoff_mom_interp(NumericMatrix xret,const int rownum,c
     //}
 //UNFOLD
 
+#define ONEOFF_MI(_frets_,_xret_,_rownum_,_used_df_) \
+    _xret_(_rownum_,0) = _frets_.sd(false,_used_df_); 
 
 //' @export
 //' @rdname runningmoments
@@ -3222,7 +3489,9 @@ NumericMatrix ref_running_sd_batz(NumericVector v,int window=1000) {
     for (int lll=0;lll < firstpart;++lll) {
         frets.add_one(v[lll],1.0);
         //xret[lll] = frets.sd(false,1.0);
-        oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
+        //oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
+        do_interp<ret_stdev, Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
+        //ONEOFF_MI(frets,xret,lll,1.0)
 
         //if (frets.wsum() >= 1.0) {
             //xret(lll,0) = frets.sd(false,1.0);
@@ -3236,8 +3505,11 @@ NumericMatrix ref_running_sd_batz(NumericVector v,int window=1000) {
             ++jjj;
             frets.swap_one(v[lll],1.0,v[jjj],1.0);
             //xret[lll] = frets.sd(false,1.0);
-            //moment_converter<ret_stdev, Welford<double,false,false>, NumericVector,false>::mom_interp(xret,lll,2,frets,v,1.0,0.0);
-            oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
+            //moment_converter<ret_stdev, Welford<double,false,false>, NumericVector,false>::mom_interp(xret,lll,2,frets,v,1.0,1.0);
+            //oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
+            //ONEOFF_MI(frets,xret,lll,1.0)
+            do_interp<ret_stdev, Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
+
             //if (frets.wsum() >= 1.0) {
                 //xret(lll,0) = frets.sd(false,1.0);
             //} else {
