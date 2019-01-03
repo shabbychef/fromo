@@ -1944,18 +1944,13 @@ NumericMatrix runQM(T v,
         int firstpart;
         firstpart = MIN(numel,window);
 
-        // as an invariant, we will start the computation
-        // with vret, which is initialized as the summed
-        // means on [jjj,iii]
-        tr_jjj = - window;
-
         // now run through lll index//FOLDUP
         for (lll=0;lll < firstpart;++lll) {
             // check subcount first and just recompute if needed.
             if (subcount >= recom_period) {
                 // fix this
                 iii = MIN(numel-1,lll);
-                jjj = MAX(0,tr_jjj+1);
+                jjj = 0;
                 if (jjj <= iii) {
                     frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                                   jjj,       //bottom
@@ -1980,29 +1975,7 @@ NumericMatrix runQM(T v,
                         }
                     }
                 }
-                // remove prevv:
-                if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-                    prevv = double(v[tr_jjj]);
-                    if (has_wts) { prevw = double(wts[tr_jjj]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
-                    } else {
-                        if (has_wts) {
-                            if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
-                                frets.rem_one(prevv,prevw);
-                                subcount++;
-                            }
-                        } else {
-                            if (! (ISNAN(prevv))) {
-                                frets.rem_one(prevv,1.0);
-                                subcount++;
-                            }
-                        }
-                    }
-                }
             }
-            tr_jjj++;
-
             // fill in the value in the output.
             // 2FIX: give access to v, not v[lll]...
             // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
@@ -2010,6 +1983,7 @@ NumericMatrix runQM(T v,
 #include "moment_interp.hpp"
         }//UNFOLD
         if (firstpart < numel) { 
+            tr_jjj = 0;
             // now run through lll index//FOLDUP
             for (lll=firstpart;lll < numel;++lll) {
                 // check subcount first and just recompute if needed.
