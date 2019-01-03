@@ -75,7 +75,7 @@ using namespace Rcpp;
 // ord_beyond must be used for (ord > 2)
 // when has_wts is true, we accumulate the number of
 // elements in m_nel; 
-template<class W,bool has_wts,bool ord_beyond>
+template<class W,bool has_wts,bool ord_beyond,bool na_rm>
 class Welford {
     public:
         int m_ord;
@@ -179,6 +179,14 @@ class Welford {
     public:
         // add another (weighted) observation to our set of x
         inline Welford& add_one (const double xval, const W wt) {
+            if (na_rm) {
+                if (ISNAN(xval)) { return *this; }
+                if (has_wts) {
+                    if (ISNAN(wt) || (wt <= 0)) {
+                        return *this;
+                    }
+                }
+            }
             double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
             della = xval - m_xx[1];
             if (has_wts) {
@@ -239,6 +247,15 @@ class Welford {
         }
         // remove one (weighted) observation from our set of x
         inline Welford& rem_one (const double xval, const W wt) {
+            if (na_rm) {
+                if (ISNAN(xval)) { return *this; }
+                if (has_wts) {
+                    if (ISNAN(wt) || (wt <= 0)) {
+                        return *this;
+                    }
+                }
+            }
+
             double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
             della = xval - m_xx[1];
 
@@ -305,6 +322,34 @@ class Welford {
         }
         inline Welford& swap_one (const double addxval, const W addwt,
                                   const double remxval, const W remwt) {
+            // na checking
+            if (na_rm) {
+                if (ISNAN(addxval)) {
+                    if (ISNAN(remxval)) {
+                        return *this;
+                    } else {
+                        rem_one(remxval,remwt);
+                        return *this;
+                    }
+                } else if (ISNAN(remxval)) {
+                    add_one(addxval,addwt);
+                    return *this;
+                }
+                if (has_wts) {
+                    if (ISNAN(addwt) || (addwt <= 0)) {
+                        if (ISNAN(remwt) || (remwt <= 0)) {
+                            return *this;
+                        } else {
+                            rem_one(remxval,remwt);
+                            return *this;
+                        }
+                    } else if (ISNAN(remwt) || (remwt <= 0)) {
+                        add_one(addxval,addwt);
+                        return *this;
+                    }
+                }
+            }
+
             double diffmu,prevmu,nel;
             double diffw,diffx,diffxw,addxw,remxw,nelm;
             if (!ord_beyond) {
@@ -570,14 +615,14 @@ NumericVector quasiSumThing(T v,
 }
 
 template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
-Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
+Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
                                                     W wts,
                                                     int ord,
                                                     int bottom,
                                                     int top,
                                                     const bool check_wts) {
     double nextval, nextwt;
-    Welford<oneW,has_wts,ord_beyond> frets = Welford<oneW,has_wts,ord_beyond>(ord);
+    Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
 
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
@@ -586,24 +631,11 @@ Welford<oneW,has_wts,ord_beyond> quasiWeightedThing(T v,
     }
     for (int iii=bottom;iii < top;++iii) {
         nextval = v[iii];
-        if (has_wts) { nextwt = double(wts[iii]); }
-        if (na_rm) {
-            if (has_wts) {
-                if (! (ISNAN(nextval) || ISNAN(nextwt))) {
-                    // 2FIX: check for zero weight??
-                    frets.add_one(nextval,nextwt);
-                }
-            } else {
-                if (! (ISNAN(nextval))) {
-                    frets.add_one(nextval,1.0);
-                }
-            }
+        if (has_wts) { 
+            nextwt = double(wts[iii]); 
+            frets.add_one(nextval,nextwt);
         } else {
-            if (has_wts) {
-                frets.add_one(nextval,nextwt);
-            } else {
-                frets.add_one(nextval,1.0);
-            }
+            frets.add_one(nextval,1.0);
         }
     }
     return frets;
@@ -640,11 +672,11 @@ NumericVector quasiWeightedMoments(T v,
         xret = quasiSumThing<T,W,oneW,has_wts,na_rm>(v,wts,bottom,top,check_wts,normalize_wts);
         return xret;
     } else if (ord > 2) {
-        Welford<oneW,has_wts,true> frets = quasiWeightedThing<T,W,oneW,has_wts,true,na_rm>(v,wts,ord,bottom,top,check_wts);
+        Welford<oneW,has_wts,true,na_rm> frets = quasiWeightedThing<T,W,oneW,has_wts,true,na_rm>(v,wts,ord,bottom,top,check_wts);
         xret = frets.asvec();
         nok = double(frets.nel());
     } else {
-        Welford<oneW,has_wts,false> irets = quasiWeightedThing<T,W,oneW,has_wts,false,na_rm>(v,wts,ord,bottom,top,check_wts);
+        Welford<oneW,has_wts,false,na_rm> irets = quasiWeightedThing<T,W,oneW,has_wts,false,na_rm>(v,wts,ord,bottom,top,check_wts);
         xret = irets.asvec();
         xret[0] = double(irets.wsum());
         nok = double(irets.nel());
@@ -1011,8 +1043,8 @@ NumericVector join_cent_sums(NumericVector ret1,NumericVector ret2) {
     NumericVector cret2 = Rcpp::clone(ret2);
 
     // always safe to do ord_beyond=true, as it is just an optimization.
-    Welford<double,true,true> frets1 = Welford<double,true,true>(ord,cret1);
-    Welford<double,true,true> frets2 = Welford<double,true,true>(ord,cret2);
+    Welford<double,true,true,true> frets1 = Welford<double,true,true,true>(ord,cret1);
+    Welford<double,true,true,true> frets2 = Welford<double,true,true,true>(ord,cret2);
     frets1.join(frets2);
     return frets1.asvec();
 }
@@ -1027,8 +1059,8 @@ NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
     NumericVector cret2 = Rcpp::clone(ret2);
 
     // always safe to do ord_beyond=true, as it is just an optimization.
-    Welford<double,true,true> frets3 = Welford<double,true,true>(ord,cret3);
-    Welford<double,true,true> frets2 = Welford<double,true,true>(ord,cret2);
+    Welford<double,true,true,true> frets3 = Welford<double,true,true,true>(ord,cret3);
+    Welford<double,true,true,true> frets2 = Welford<double,true,true,true>(ord,cret2);
     frets3.unjoin(frets2);
     return frets3.asvec();
 }
@@ -1800,7 +1832,7 @@ NumericMatrix runQM(T v,
                     const bool check_wts,
                     const bool normalize_wts) {
 
-    Welford<oneW,has_wts,ord_beyond> frets = Welford<oneW,has_wts,ord_beyond>(ord);
+    Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
 
     // 2FIX:
     double nextv, prevv;
@@ -1897,39 +1929,23 @@ NumericMatrix runQM(T v,
                 if ((tr_iii < numel) && (tr_iii >= 0)) {
                     // add on nextv:
                     nextv = double(v[tr_iii]);
-                    if (has_wts) { nextw = double(wts[tr_iii]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.add_one(nextv,nextw); } else { frets.add_one(nextv,1.0); } 
-                    } else {
-                        if (has_wts) {
-                            if (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))) {
-                                frets.add_one(nextv,nextw);
-                            }
-                        } else {
-                            if (! (ISNAN(nextv))) {
-                                frets.add_one(nextv,1.0);
-                            }
-                        }
-                    }
+                    if (has_wts) { 
+                        nextw = double(wts[tr_iii]); 
+                        frets.add_one(nextv,nextw); 
+                    } else { 
+                        frets.add_one(nextv,1.0); 
+                    } 
                 }
                 // remove prevv:
                 if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     prevv = double(v[tr_jjj]);
-                    if (has_wts) { prevw = double(wts[tr_jjj]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
+                    if (has_wts) { 
+                        prevw = double(wts[tr_jjj]); 
+                        frets.rem_one(prevv,prevw); 
+                        subcount++;
                     } else {
-                        if (has_wts) {
-                            if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
-                                frets.rem_one(prevv,prevw);
-                                subcount++;
-                            }
-                        } else {
-                            if (! (ISNAN(prevv))) {
-                                frets.rem_one(prevv,1.0);
-                                subcount++;
-                            }
-                        }
+                        frets.rem_one(prevv,1.0); 
+                        subcount++;
                     }
                 }
             }
@@ -1937,7 +1953,7 @@ NumericMatrix runQM(T v,
 
             // fill in the value in the output.
             // 2FIX: give access to v, not v[lll]...
-            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
 //yuck!!
 #include "moment_interp.hpp"
         }//UNFOLD
@@ -1969,39 +1985,23 @@ NumericMatrix runQM(T v,
                 if ((tr_iii < numel) && (tr_iii >= 0)) {
                     // add on nextv:
                     nextv = double(v[tr_iii]);
-                    if (has_wts) { nextw = double(wts[tr_iii]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.add_one(nextv,nextw); } else { frets.add_one(nextv,1.0); } 
-                    } else {
-                        if (has_wts) {
-                            if (! (ISNAN(nextv) || ISNAN(nextw) || (nextw <= 0))) {
-                                frets.add_one(nextv,nextw);
-                            }
-                        } else {
-                            if (! (ISNAN(nextv))) {
-                                frets.add_one(nextv,1.0);
-                            }
-                        }
-                    }
+                    if (has_wts) { 
+                        nextw = double(wts[tr_iii]); 
+                        frets.add_one(nextv,nextw); 
+                    } else { 
+                        frets.add_one(nextv,1.0); 
+                    } 
                 }
                 // remove prevv:
                 if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     prevv = double(v[tr_jjj]);
-                    if (has_wts) { prevw = double(wts[tr_jjj]); }
-                    if (!na_rm) {
-                        if (has_wts) { frets.rem_one(prevv,prevw); } else { frets.rem_one(prevv,1.0); } 
+                    if (has_wts) { 
+                        prevw = double(wts[tr_jjj]); 
+                        frets.rem_one(prevv,prevw); 
+                        subcount++;
                     } else {
-                        if (has_wts) {
-                            if (! (ISNAN(prevv) || ISNAN(prevw) || (prevw <= 0))) {
-                                frets.rem_one(prevv,prevw);
-                                subcount++;
-                            }
-                        } else {
-                            if (! (ISNAN(prevv))) {
-                                frets.rem_one(prevv,1.0);
-                                subcount++;
-                            }
-                        }
+                        frets.rem_one(prevv,1.0); 
+                        subcount++;
                     }
                 }
             }
@@ -2009,7 +2009,7 @@ NumericMatrix runQM(T v,
 
             // fill in the value in the output.
             // 2FIX: give access to v, not v[lll]...
-            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
 //yuck!!
 #include "moment_interp.hpp"
         }//UNFOLD
@@ -2734,7 +2734,7 @@ double ref_sd(NumericVector v) {
 //' @export
 // [[Rcpp::export]]
 double ref_sd_objecty(NumericVector v) {
-    Welford<double,false,false> frets = Welford<double,false,false>(2);
+    Welford<double,false,false,false> frets = Welford<double,false,false,false>(2);
     int top=v.size();
     for (int iii=0;iii < top;++iii) { frets.add_one(v[iii],1.0); }
     return frets.sd(false,1.0);
@@ -2909,7 +2909,7 @@ NumericVector ref_running_sd_intnel(NumericVector v,int window=1000) {
 NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
     // integer number of elements and double conversion? no time.
     //
-    Welford<double,false,false> frets = Welford<double,false,false>(2);
+    Welford<double,false,false,false> frets = Welford<double,false,false,false>(2);
     double x;
     double nextx,prevx;
     int jjj;
@@ -2949,7 +2949,6 @@ NumericVector ref_running_sd_fooz(NumericVector v,int window=1000) {
 //' @rdname runningmoments
 // [[Rcpp::export]]
 NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
-    Welford<double,false,false> frets = Welford<double,false,false>(2);
     double nextv, prevv;
     double nextw;
     NumericVector dummy_wts;
@@ -2975,40 +2974,59 @@ NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
     tr_iii = - 1;
     tr_jjj = - window;
 
-    // now run through lll index//FOLDUP
+    Welford<double,false,false,false> frets = Welford<double,false,false,false>(2);
+    Welford<double,false,false,true> trets = Welford<double,false,false,true>(2);
     if (na_rm) {
-        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,true>(v,dummy_wts,ord,
+        trets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,true>(v,dummy_wts,ord,
                                                                                         0,       //bottom
                                                                                         0,     //top
                                                                                         check_wts);
+
+
+        // now run through lll index//FOLDUP
+        for (lll=0;lll < numel;++lll) {
+            tr_iii++;
+            if ((tr_iii < numel) && (tr_iii >= 0)) {
+                // add on nextv:
+                nextv = double(v[tr_iii]);
+                trets.add_one(nextv,1);
+            }
+            // remove prevv:
+            if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+                prevv = double(v[tr_jjj]);
+                trets.rem_one(prevv,1);
+            }
+            tr_jjj++;
+
+            // fill in the value in the output.
+            // 2FIX: give access to v, not v[lll]...
+            xret[lll] = trets.sd(false,1.0);
+        }//UNFOLD
     } else {
         frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,false>(v,dummy_wts,ord,
                                                                                             0,       //bottom
                                                                                             0,     //top
                                                                                             check_wts);
-    }
-    for (lll=0;lll < numel;++lll) {
-        tr_iii++;
-        if ((tr_iii < numel) && (tr_iii >= 0)) {
-            // add on nextv:
-            nextv = double(v[tr_iii]);
-            if (! (na_rm && (ISNAN(nextv)))) {
+        // now run through lll index//FOLDUP
+        for (lll=0;lll < numel;++lll) {
+            tr_iii++;
+            if ((tr_iii < numel) && (tr_iii >= 0)) {
+                // add on nextv:
+                nextv = double(v[tr_iii]);
                 frets.add_one(nextv,1);
             }
-        }
-        // remove prevv:
-        if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-            prevv = double(v[tr_jjj]);
-            if (! (na_rm && (ISNAN(prevv)))) {
+            // remove prevv:
+            if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+                prevv = double(v[tr_jjj]);
                 frets.rem_one(prevv,1);
             }
-        }
-        tr_jjj++;
+            tr_jjj++;
 
-        // fill in the value in the output.
-        // 2FIX: give access to v, not v[lll]...
-        xret[lll] = frets.sd(false,1.0);
-    }//UNFOLD
+            // fill in the value in the output.
+            // 2FIX: give access to v, not v[lll]...
+            xret[lll] = frets.sd(false,1.0);
+        }//UNFOLD
+    }
     return xret;
 }
 
@@ -3042,74 +3060,6 @@ FORCE_INLINE static void oneoff_mom_interp(NumericMatrix xret,const int rownum,c
         //xret(rownum,0) = NAN;
     //}
 //UNFOLD
-
-
-//' @export
-//' @rdname runningmoments
-// [[Rcpp::export]]
-NumericMatrix ref_running_sd_batz(NumericVector v,int window=1000) {
-    Welford<double,false,false> frets = Welford<double,false,false>(2);
-    double nextv, prevv;
-    double nextw;
-    NumericVector dummy_wts;
-    int ord=2;
-    bool na_rm=false;
-    bool check_wts=false;
-
-    // only for retwhat==ret_sharpese, but cannot define outside its scope.
-    // no bigs.
-    double sigma,skew,exkurt,sr;
-
-    int lll,jjj;
-    int numel = v.size();
-
-    // preallocated with zeros; should
-    // probably be NA?
-    int ncols=1;
-    NumericMatrix xret(numel,1);
-
-    // now run through lll index//FOLDUP
-    if (na_rm) {
-        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,true>(v,dummy_wts,ord,
-                                                                                        0,       //bottom
-                                                                                        0,     //top
-                                                                                        check_wts);
-    } else {
-        frets = quasiWeightedThing<NumericVector,NumericVector,double,false,false,false>(v,dummy_wts,ord,
-                                                                                         0,       //bottom
-                                                                                         0,     //top
-                                                                                         check_wts);
-    }
-    const int firstpart = MIN(numel,window);
-
-    for (int lll=0;lll < firstpart;++lll) {
-        frets.add_one(v[lll],1.0);
-        //xret[lll] = frets.sd(false,1.0);
-        oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
-
-        //if (frets.wsum() >= 1.0) {
-            //xret(lll,0) = frets.sd(false,1.0);
-        //} else {
-            //xret(lll,0) = NAN;
-        //}
-    }
-    if (firstpart < numel) {
-        jjj = 0;
-        for (int lll=firstpart;lll < numel;++lll) {
-            frets.swap_one(v[lll],1.0,v[jjj],1.0);
-            ++jjj;
-            //xret[lll] = frets.sd(false,1.0);
-            //moment_converter<ret_stdev, Welford<double,false,false>, NumericVector,false>::mom_interp(xret,lll,2,frets,v,1.0,0.0);
-            oneoff_mom_interp<Welford<double,false,false>, NumericVector,false>(xret,lll,2,frets,v,1.0,1.0);
-            //if (frets.wsum() >= 1.0) {
-                //xret(lll,0) = frets.sd(false,1.0);
-            //} else {
-                //xret(lll,0) = NAN;
-            //}
-        }
-    }//UNFOLD
-    return xret;
-}
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
