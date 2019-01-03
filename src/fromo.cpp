@@ -1968,12 +1968,12 @@ NumericMatrix runQM(T v,
         // as an invariant, we will start the computation
         // with frets, which is initialized as the summed
         // means on [jjj,lll]
-        tr_jjj = lookahead - window;
+        tr_jjj = - window;
 
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
             // check subcount first and just recompute if needed.
-            if ((lll==0) || (frets.subcount() >= recom_period)) {
+            if (frets.subcount() >= recom_period) {
                 // fix this
                 jjj = MAX(0,tr_jjj+1);
                 frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
@@ -1983,21 +1983,23 @@ NumericMatrix runQM(T v,
             } else {
                 // add on nextv:
                 nextv = double(v[lll]);
-                if (has_wts) { 
-                    nextw = double(wts[lll]); 
-                    frets.add_one(nextv,nextw); 
-                } else { 
-                    frets.add_one(nextv,1.0); 
-                } 
                 // remove prevv:
                 if (tr_jjj >= 0) {
                     prevv = double(v[tr_jjj]);
                     if (has_wts) { 
+                        nextw = double(wts[lll]); 
                         prevw = double(wts[tr_jjj]); 
-                        frets.rem_one(prevv,prevw); 
+                        frets.swap_one(nextv,nextw,prevv,prevw); 
                     } else {
-                        frets.rem_one(prevv,1.0); 
+                        frets.swap_one(nextv,1.0,prevv,1.0);
                     }
+                } else {
+                    if (has_wts) { 
+                        nextw = double(wts[lll]); 
+                        frets.add_one(nextv,nextw); 
+                    } else { 
+                        frets.add_one(nextv,1.0); 
+                    } 
                 }
             }
             tr_jjj++;
