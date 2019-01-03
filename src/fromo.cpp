@@ -1866,6 +1866,10 @@ NumericMatrix runQM(T v,
     // at head of loop. sneaky.
     subcount = recom_period;
 
+    if (has_wts) {
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
+    }
+
     if (!aligned) {
         // as an invariant, we will start the computation
         // with vret, which is initialized as the summed
@@ -1873,8 +1877,8 @@ NumericMatrix runQM(T v,
         tr_iii = lookahead - 1;
         tr_jjj = lookahead - window;
 
+
         if (has_wts) {
-            if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
             // now run through lll index//FOLDUP
             for (lll=0;lll < numel;++lll) {
                 tr_iii++;
@@ -1887,7 +1891,7 @@ NumericMatrix runQM(T v,
                         frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                                       jjj,       //bottom
                                                                                       iii+1,     //top
-                                                                                      check_wts);
+                                                                                      false);    //no need to check weights as we have done it once above.
                     }
                     subcount = 0;
                 } else {
@@ -1930,7 +1934,7 @@ NumericMatrix runQM(T v,
                         frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                                       jjj,       //bottom
                                                                                       iii+1,     //top
-                                                                                      check_wts);
+                                                                                      false);    //no need to check weights as we have done it once above.
                     }
                     subcount = 0;
                 } else {
@@ -1969,7 +1973,6 @@ NumericMatrix runQM(T v,
         tr_jjj = - window;
 
         if (has_wts) {
-            if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
             // now run through lll index//FOLDUP
             for (lll=0;lll < numel;++lll) {
                 // check subcount first and just recompute if needed.
@@ -1979,7 +1982,7 @@ NumericMatrix runQM(T v,
                     frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                                   jjj,       //bottom
                                                                                   lll+1,     //top
-                                                                                  check_wts);
+                                                                                  false);    //no need to check weights as we have done it once above.
                     subcount = 0;
                 } else {
                     // add on nextv:
@@ -2016,7 +2019,7 @@ NumericMatrix runQM(T v,
                     frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                                   jjj,       //bottom
                                                                                   lll+1,     //top
-                                                                                  check_wts);
+                                                                                  false);    //no need to check weights as we have done it once above.
                     subcount = 0;
                 } else {
                     // add on nextv:
