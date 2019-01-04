@@ -261,6 +261,75 @@ unjoin_cent_cosums <- function(ret3, ret2) {
 }
 
 #' @title
+#' Convert between different types of moments, raw, central, standardized.
+#' @description
+#' Given raw or central or standardized moments, convert to another type.
+#' 
+#' @param input a vector of the count, then the mean, then the \code{2} through \code{k}
+#' raw or central moments.
+#'
+#' @template etc
+#' @rdname moment_conversions
+#' @export
+cent2raw <- function(input) {
+    .Call('_fromo_cent2raw', PACKAGE = 'fromo', input)
+}
+
+#' @rdname firstmoments
+#' @export
+ref_sd <- function(v) {
+    .Call('_fromo_ref_sd', PACKAGE = 'fromo', v)
+}
+
+#' @rdname firstmoments
+#' @export
+ref_sd_objecty <- function(v) {
+    .Call('_fromo_ref_sd_objecty', PACKAGE = 'fromo', v)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_narm <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_narm', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_onecheck <- function(v, window = 1000L, na_rm = FALSE) {
+    .Call('_fromo_ref_running_sd_onecheck', PACKAGE = 'fromo', v, window, na_rm)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_intnel <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_intnel', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_objecty <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_objecty', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_fooz <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_fooz', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_barz <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_barz', PACKAGE = 'fromo', v, window)
+}
+
+#' @title
 #' Compute first K moments over a sliding window
 #' @description
 #' Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
@@ -559,75 +628,6 @@ running_sharpe <- function(v, window = NULL, wts = NULL, na_rm = FALSE, compute_
 #' @export
 running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
     .Call('_fromo_running_tstat', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
-}
-
-#' @title
-#' Convert between different types of moments, raw, central, standardized.
-#' @description
-#' Given raw or central or standardized moments, convert to another type.
-#' 
-#' @param input a vector of the count, then the mean, then the \code{2} through \code{k}
-#' raw or central moments.
-#'
-#' @template etc
-#' @rdname moment_conversions
-#' @export
-cent2raw <- function(input) {
-    .Call('_fromo_cent2raw', PACKAGE = 'fromo', input)
-}
-
-#' @rdname firstmoments
-#' @export
-ref_sd <- function(v) {
-    .Call('_fromo_ref_sd', PACKAGE = 'fromo', v)
-}
-
-#' @rdname firstmoments
-#' @export
-ref_sd_objecty <- function(v) {
-    .Call('_fromo_ref_sd_objecty', PACKAGE = 'fromo', v)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd <- function(v, window = 1000L) {
-    .Call('_fromo_ref_running_sd', PACKAGE = 'fromo', v, window)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd_narm <- function(v, window = 1000L) {
-    .Call('_fromo_ref_running_sd_narm', PACKAGE = 'fromo', v, window)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd_onecheck <- function(v, window = 1000L, na_rm = FALSE) {
-    .Call('_fromo_ref_running_sd_onecheck', PACKAGE = 'fromo', v, window, na_rm)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd_intnel <- function(v, window = 1000L) {
-    .Call('_fromo_ref_running_sd_intnel', PACKAGE = 'fromo', v, window)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd_objecty <- function(v, window = 1000L) {
-    .Call('_fromo_ref_running_sd_objecty', PACKAGE = 'fromo', v, window)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd_fooz <- function(v, window = 1000L) {
-    .Call('_fromo_ref_running_sd_fooz', PACKAGE = 'fromo', v, window)
-}
-
-#' @export
-#' @rdname runningmoments
-ref_running_sd_barz <- function(v, window = 1000L) {
-    .Call('_fromo_ref_running_sd_barz', PACKAGE = 'fromo', v, window)
 }
 
 #' @title
