@@ -27,7 +27,7 @@
 #ifndef __DEF_KAHAN__
 #define __DEF_KAHAN__
 
-#include <cmath>
+#include "common.h"
 
 #define KAHAN_ADD(_sumx_,_err_,_newx_,_nxtv_,_tmpv_) \
     _tmpv_    = (_newx_) - (_err_);                    \
@@ -40,9 +40,6 @@
     _nxtv_    = (_sumx_) + _tmpv_;                     \
     (_err_)   = (_nxtv_ - (_sumx_)) - _tmpv_;          \
     (_sumx_)  = _nxtv_;
-
-
-#endif /* __DEF_KAHAN__ */
 
 // Kahan compensated summation object.//FOLDUP
 template<class T>
@@ -148,6 +145,8 @@ class Kahan<int> {
         }
 };
 //UNFOLD
+
+#endif /* __DEF_KAHAN__ */
 
 //for vim modeline: (do not edit)
 // vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

@@ -27,15 +27,13 @@
 #define __DEF_FROMO__
 
 #include "common.h"
+#include "kahan.h"
+#include "welford.h"
 
 #endif /* __DEF_FROMO__ */
 
 #include <Rcpp.h>
 using namespace Rcpp;
-
-// yeah yeah, I know.
-#include "kahan.cpp"
-
 
 // running sums and means 
 
