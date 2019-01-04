@@ -686,3 +686,304 @@ running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
     .Call('_fromo_running_mean', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, restart_period, check_wts)
 }
 
+#' @title
+#' Compute first K moments over a sliding window
+#' @description
+#' Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
+#' an infinite or finite sliding window, returning a matrix.
+#' 
+#' @param v a vector
+#' @param window the window size. if given as finite integer or double, passed through.
+#' If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
+#' to an infinite window size. If negative, an error will be thrown.
+#' @param restart_period the recompute period. because subtraction of elements can cause
+#' loss of precision, the computation of moments is restarted periodically based on 
+#' this parameter. Larger values mean fewer restarts and faster, though less accurate
+#' results. Note that the code checks for negative second and fourth moments and
+#' recomputes when needed.
+#' @param na_rm whether to remove NA, false by default.
+#' @param max_order the maximum order of the centered moment to be computed.
+#' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
+#' This can be used to prevent moments from being computed on too few observations.
+#' Defaults to zero, meaning no restriction.
+#' @param used_df the number of degrees of freedom consumed, used in the denominator
+#' of the centered moments computation. These are subtracted from the number of
+#' observations.
+#'
+#' @details
+#'
+#' Computes the number of elements, the mean, and the 2nd through kth
+#' centered (and typically standardized) moments, for \eqn{k=2,3,4}{k=2,3,4}. These
+#' are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
+#'
+#' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
+#' \eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
+#' excess kurtosis, skewness, standard deviation, mean or number of elements)
+#' of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
+#' Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
+#' During the 'burn-in' phase, we take fewer elements.
+#'
+#' @return Typically a matrix, where the first columns are the kth, k-1th through 2nd standardized, 
+#' centered moments, then a column of the mean, then a column of the number of (non-nan) elements in the input,
+#' with the following exceptions:
+#' \describe{
+#' \item{running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
+#' only a column of the maximum order centered moment is returned.}
+#' \item{running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
+#' and the count. There is not yet an option for \code{max_order_only}, but probably should be.}
+#' \item{running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
+#' (which is the variance) cumulant, then the mean, and the count.}
+#' }
+#'
+#' @note
+#' the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
+#' for Gaussian input.
+#'
+#' @examples
+#' x <- rnorm(1e5)
+#' xs3 <- running_sd3(x,10)
+#' xs4 <- running_skew4(x,10)
+#'
+#' if (require(moments)) {
+#'     set.seed(123)
+#'     x <- rnorm(5e1)
+#'     window <- 10L
+#'     kt5 <- running_kurt5(x,window=window)
+#'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
+#'                 xrang <- x[max(1,iii-window+1):iii]
+#'                 c(moments::kurtosis(xrang)-3.0,moments::skewness(xrang),
+#'                 sd(xrang),mean(xrang),length(xrang)) },
+#'              simplify=TRUE))
+#'     stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
+#' }
+#'
+#' xc6 <- running_cent_moments(x,window=100L,max_order=6L)
+#'
+#' @template etc
+#' @template ref-romo
+#' @template param-wts
+#' @rdname t_runningmoments
+#' @export
+t_running_sd3 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_t_running_sd3', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, wts_as_delta, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_skew4 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_skew4', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_kurt5 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_kurt5', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_sd <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_sd', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_skew <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_skew', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_kurt <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_kurt', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
+#' the maximum order centered moment, and return in a vector.
+#' @rdname runningmoments
+#' @export
+running_cent_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_cent_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, max_order_only, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_std_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_std_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningmoments
+#' @export
+running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_cumulants', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @title
+#' Compute approximate quantiles over a sliding window
+#' @description
+#' Computes cumulants up to some given order, then employs the Cornish-Fisher approximation
+#' to compute approximate quantiles using a Gaussian basis.
+#' 
+#' @param p the probability points at which to compute the quantiles. Should be in the range (0,1).
+#' @inheritParams running_cumulants
+#'
+#' @details
+#'
+#' Computes the cumulants, then approximates quantiles using AS269 of Lee & Lin.
+#'
+#' @references 
+#'
+#' Lee, Y-S., and Lin, T-K. "Algorithm AS269: High Order Cornish Fisher
+#' Expansion." Appl. Stat. 41, no. 1 (1992): 233-240. 
+#' \url{http://www.jstor.org/stable/2347649}
+#'
+#' Lee, Y-S., and Lin, T-K. "Correction to Algorithm AS269: High Order 
+#' Cornish Fisher Expansion." Appl. Stat. 42, no. 1 (1993): 268-269. 
+#' \url{http://www.jstor.org/stable/2347433}
+#'
+#' AS 269. \url{http://lib.stat.cmu.edu/apstat/269}
+#'
+#' Jaschke, Stefan R. "The Cornish-Fisher-expansion in the context of 
+#' Delta-Gamma-normal approximations." No. 2001, 54. Discussion Papers, 
+#' Interdisciplinary Research Project 373: Quantification and Simulation of 
+#' Economic Processes, 2001. 
+#' \url{http://www.jaschke-net.de/papers/CoFi.pdf}
+#'
+#' @return A matrix, with one row for each element of \code{x}, and one column for each element of \code{q}.
+#'
+#' @note
+#' The current implementation is not as space-efficient as it could be, as it first computes
+#' the cumulants for each row, then performs the Cornish-Fisher approximation on a row-by-row
+#' basis. In the future, this computation may be moved earlier into the pipeline to be more
+#' space efficient. File an issue if the memory footprint is an issue for you.
+#'
+#' @examples
+#' x <- rnorm(1e5)
+#' xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
+#' xm <- running_apx_median(x)
+#'
+#' @seealso \code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
+#' @template etc
+#' @template ref-romo
+#' @template param-wts
+#' @rdname runningquantiles
+#' @export
+running_apx_quantiles <- function(v, p, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningquantiles
+#' @export
+running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_apx_median', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @title
+#' Compare data to moments computed over a sliding window.
+#' @description
+#' Computes moments over a sliding window, then adjusts the data accordingly, centering, or scaling,
+#' or z-scoring, and so on.
+#' 
+#' @inheritParams running_cent_moments
+#' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
+#' This can be used to prevent \emph{e.g.} Z-scores from being computed on only 3
+#' observations. Defaults to zero, meaning no restriction, which can result in 
+#' infinite Z-scores during the burn-in period.
+#' @param lookahead for some of the operations, the value is compared to 
+#' mean and standard deviation possibly using 'future' or 'past' information
+#' by means of a non-zero lookahead. Positive values mean data are taken from
+#' the future.
+#' @param compute_se for \code{running_sharpe}, return an extra column of the
+#' standard error, as computed by Mertens' correction.
+#'
+#' @details
+#'
+#' Given the length \eqn{n} vector \eqn{x}, for
+#' a given index \eqn{i}, define \eqn{x^{(i)}}{x^(i)}
+#' as the vector of 
+#' \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i},
+#' where we do not run over the 'edge' of the vector. In code, this is essentially
+#' \code{x[(max(1,i-window+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
+#' and \eqn{n_i}{n_i} as, respectively, the sample mean, standard deviation and number of
+#' non-NA elements in \eqn{x^{(i)}}{x^(i)}. 
+#'
+#' We compute output vector \eqn{m} the same size as \eqn{x}. 
+#' For the 'centered' version of \eqn{x}, we have \eqn{m_i = x_i - \mu_i}{m_i = x_i - mu_i}.
+#' For the 'scaled' version of \eqn{x}, we have \eqn{m_i = x_i / \sigma_i}{m_i = x_i / sigma_i}.
+#' For the 'z-scored' version of \eqn{x}, we have \eqn{m_i = (x_i - \mu_i) / \sigma_i}{m_i = (x_i - mu_i) / sigma_i}.
+#' For the 't-scored' version of \eqn{x}, we have \eqn{m_i = \sqrt{n_i} \mu_i / \sigma_i}{m_i = sqrt(n_i) mu_i / sigma_i}.
+#'
+#' We also allow a 'lookahead' for some of these operations.
+#' If positive, the moments are computed using data from larger indices;
+#' if negative, from smaller indices. Letting \eqn{j = i + lookahead}{j = i + lookahead}:
+#' For the 'centered' version of \eqn{x}, we have \eqn{m_i = x_i - \mu_j}{m_i = x_i - mu_j}.
+#' For the 'scaled' version of \eqn{x}, we have \eqn{m_i = x_i / \sigma_j}{m_i = x_i / sigma_j}.
+#' For the 'z-scored' version of \eqn{x}, we have \eqn{m_i = (x_i - \mu_j) / \sigma_j}{m_i = (x_i - mu_j) / sigma_j}.
+#'
+#' @return a vector the same size as the input consisting of the adjusted version of the input.
+#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+#'
+#' @examples
+#'
+#' if (require(moments)) {
+#'     set.seed(123)
+#'     x <- rnorm(5e1)
+#'     window <- 10L
+#'     rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
+#'                   xrang <- x[max(1,iii-window+1):iii]
+#'                   c(sd(xrang),mean(xrang),length(xrang)) },
+#'                   simplify=TRUE))
+#'     rcent <- running_centered(x,window=window)
+#'     rscal <- running_scaled(x,window=window)
+#'     rzsco <- running_zscored(x,window=window)
+#'     rshrp <- running_sharpe(x,window=window)
+#'     rtsco <- running_tstat(x,window=window)
+#'     rsrse <- running_sharpe(x,window=window,compute_se=TRUE)
+#'     stopifnot(max(abs(rcent - (x - rm1[,2])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rscal - (x / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rzsco - ((x - rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rshrp - (rm1[,2] / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rtsco - ((sqrt(rm1[,3]) * rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
+#'     stopifnot(max(abs(rsrse[,1] - rshrp),na.rm=TRUE) < 1e-12)
+#'
+#'     rm2 <- t(sapply(seq_len(length(x)),function(iii) { 
+#'                   xrang <- x[max(1,iii-window+1):iii]
+#'                   c(kurtosis(xrang)-3.0,skewness(xrang)) },
+#'                   simplify=TRUE))
+#'     mertens_se <- sqrt((1 + ((2 + rm2[,1])/4) * rshrp^2 - rm2[,2]*rshrp) / rm1[,3])
+#'     stopifnot(max(abs(rsrse[,2] - mertens_se),na.rm=TRUE) < 1e-12)
+#' }
+#'
+#' @seealso \code{\link{scale}}
+#' @template etc
+#' @template ref-romo
+#' @rdname runningadjustments
+#' @export
+running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = FALSE) {
+    .Call('_fromo_running_centered', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningadjustments
+#' @export
+running_scaled <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_scaled', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningadjustments
+#' @export
+running_zscored <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_zscored', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningadjustments
+#' @export
+running_sharpe <- function(v, window = NULL, wts = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_sharpe', PACKAGE = 'fromo', v, window, wts, na_rm, compute_se, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+
+#' @rdname runningadjustments
+#' @export
+running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_running_tstat', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+}
+

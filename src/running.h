@@ -15,20 +15,7 @@
   You should have received a copy of the GNU Lesser General Public License
   along with fromo.  If not, see <http://www.gnu.org/licenses/>.
 
-  numerically stable computation of sample moments.
- 
-  see also: 
-  * http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation/
-  * http://www.johndcook.com/standard_deviation.html
-  * J. Bennett, et. al., 'Numerically Stable, Single-Pass,
-    Parallel Statistics Algorithms,' Proceedings of IEEE
-    International Conference on Cluster Computing, 2009.
-    http://www.janinebennett.org/index_files/ParallelStatisticsAlgorithms.pdf
-    https://www.semanticscholar.org/paper/Numerically-stable-single-pass-parallel-statistics-Bennett-Grout/a83ed72a5ba86622d5eb6395299b46d51c901265
-  * T. Terriberry, 'Computing Higher-Order Moments Online,' 
-    http://people.xiph.org/~tterribe/notes/homs.html
-
-  Created: 2019.01.23
+  Created: 2019.01.03
   Copyright: Steven E. Pav, 2016-2019
   Author: Steven E. Pav <shabbychef@gmail.com>
   Comments: Steven E. Pav
@@ -70,7 +57,6 @@ NumericMatrix runQM(T v,
 
     Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
 
-    // 2FIX:
     const int numel = v.size();
 
     double nextv, prevv, nextw, prevw;
@@ -106,7 +92,6 @@ NumericMatrix runQM(T v,
         stop("bad code: order too small to support this computation"); 
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
-    // I do not understand boolean assignment in c++
     bool aligned = (lookahead == 0);
 
     // super gross; I need these for the include later.

@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Lesser General Public License
   along with fromo.  If not, see <http://www.gnu.org/licenses/>.
 
-  running operations.
- 
+  time-based running operations.
+
   Created: 2019.01.03
   Copyright: Steven E. Pav, 2016-2019
   Author: Steven E. Pav <shabbychef@gmail.com>
@@ -117,15 +117,20 @@ using namespace Rcpp;
 //' @template etc
 //' @template ref-romo
 //' @template param-wts
-//' @rdname runningmoments
+//' @rdname t_runningmoments
 //' @export
 // [[Rcpp::export]]
-NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, 
-                          Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                          bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                          bool check_wts=false, bool normalize_wts=true) {
-    int wins=get_wins(window);
-    NumericMatrix preval = runQMCurryThree<ret_sd3>(v, wts, 2, wins, restart_period, 0, min_df, used_df, 
+NumericMatrix t_running_sd3(SEXP v, 
+                            Rcpp::Nullable< Rcpp::NumericVector > time = R_NilValue, 
+                            Rcpp::Nullable< Rcpp::NumericVector > time_deltas = R_NilValue, 
+                            SEXP window = R_NilValue, 
+                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
+                            Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
+                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
+                            bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+    int wins = get_wins(window);
+    //2FIX: start here ... 
+    NumericMatrix preval = t_runQMCurryThree<ret_sd3>(v, wts, 2, wins, restart_period, 0, min_df, used_df, 
                                                             na_rm, check_wts, normalize_wts);
     return preval;
 }
