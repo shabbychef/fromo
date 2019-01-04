@@ -29,7 +29,7 @@
     http://people.xiph.org/~tterribe/notes/homs.html
 
   Created: 2017.07.17
-  Copyright: Steven E. Pav, 2016-2017
+  Copyright: Steven E. Pav, 2016-2019
   Author: Steven E. Pav <shabbychef@gmail.com>
   Comments: Steven E. Pav
 */

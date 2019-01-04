@@ -29,7 +29,7 @@
     http://people.xiph.org/~tterribe/notes/homs.html
 
   Created: 2016.03.25
-  Copyright: Steven E. Pav, 2016
+  Copyright: Steven E. Pav, 2016-2019
   Author: Steven E. Pav <shabbychef@gmail.com>
   Comments: Steven E. Pav
 */
@@ -583,31 +583,6 @@ NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue,
     return runQMCurryThree<ret_tstat>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 //UNFOLD
-
-//
-// 2FIX:
-//
-// compensated summation for weights where necessary
-// no Kahans for running sum of integers or logicals
-//
-// 2FIX: make a compensated summation class/object ?
-// 2FIX: inline code for adding a (weighted) observation ?
-// 2FIX: default to infinity for windows, not NULL...
-
-// notes on Rcpp
-// http://thecoatlessprofessor.com/programming/rcpp/unofficial-rcpp-api-docs/#nan-constants
-//
-// types in R!
-// INTSXP REALSXP CPLXSXP
-//
-// https://stackoverflow.com/questions/25172419/how-can-i-get-the-sexptype-of-an-sexp-value
-// https://teuder.gitbooks.io/introduction-to-rcpp/en/07_data_types.html
-// http://adv-r.had.co.nz/C-interface.html
-//
-// overload += in c++
-// https://stackoverflow.com/questions/34663785/c-operator-overload
-// https://stackoverflow.com/questions/4581961/c-how-to-overload-operator
-// 
 
 // for help on dispatch, see:
 // http://stackoverflow.com/a/25254680/164611
