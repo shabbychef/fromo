@@ -512,7 +512,8 @@ test_that("running ops",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		times <- seq_along(x)
-		wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
+		#wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
+		wtlist <- list(NULL,rep(1L,xlen))
 		for (wts in wtlist) {
 			for (window in c(5,30,Inf)) { # FOLDUP
 				#expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
@@ -520,7 +521,58 @@ test_that("running ops",{#FOLDUP
 				#expect_equal(box,tbox,tolerance=1e-8)
 
 				expect_error(box <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_skew(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_skew(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_kurt(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_kurt(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_sd3(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_sd3(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+				
+				expect_error(box <- running_skew4(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_skew4(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_kurt5(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_kurt5(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_centered(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_centered(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_scaled(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_scaled(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_zscored(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_zscored(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_tstat(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_tstat(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_sharpe(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_sharpe(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
 				expect_equal(box,tbox,tolerance=1e-8)
 				
 			}# UNFOLD
