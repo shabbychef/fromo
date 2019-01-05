@@ -1,4 +1,4 @@
-#' @section{Time Windowing}{
+#' @section Time Windowing :
 #'
 #' This function supports time (or other counter) based running computation. 
 #' Here the input are the data \eqn{x_i}, and optional weights vectors, \eqn{w_i}, defaulting to 1,
@@ -35,4 +35,3 @@
 #' the lookback times are equal to the times, since each moment computation
 #' is over a set of a single index, and most moments are underdefined.
 #'
-#'}

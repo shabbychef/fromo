@@ -27,6 +27,7 @@
 #include "common.h"
 #include "kahan.h"
 #include "welford.h"
+#include "runningmean.h"
 
 #include <Rcpp.h>
 using namespace Rcpp;
@@ -103,14 +104,14 @@ NumericMatrix t_runQM(T v,
         if (bad_weights<W>(time_deltas)) { stop("negative time deltas detected"); }
         // just going to use the sugar function here;
         //time = Rcpp::cumsum(time_deltas);
-        //time = runningSumishCurryFour<ret_sum>(time_deltas,R_NilValue,R_NilValue,0,10000,false,false);
+        time = (runningSumishCurryFour<ret_sum>(time_deltas,R_NilValue,NA_INTEGER,0,100000,false,false));
         // ack, just roll my own cumsum. so annoying.
-        time = NumericVector(time_deltas.size());
-        double tval=0;
-        for (int zzz=0;zzz < time_deltas.size();zzz++) {
-            tval += time_deltas[zzz];
-            time[zzz] = tval;
-        }
+        //time = NumericVector(time_deltas.size());
+        //double tval=0;
+        //for (int zzz=0;zzz < time_deltas.size();zzz++) {
+            //tval += time_deltas[zzz];
+            //time[zzz] = tval;
+        //}
     }
     if (opt_lb_time.isNotNull()) {
         lb_time = opt_lb_time.get();
