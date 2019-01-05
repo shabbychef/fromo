@@ -128,11 +128,22 @@ enum ReturnWhat { ret_centmaxonly, // maxonly is a *centered* moment
 using namespace Rcpp;
 
 // check weights with this guy:
-template<class w>
-bool inline bad_weights(w wts) {
+template<class W>
+bool inline bad_weights(W wts) {
     int top=wts.size();
     for (int iii=0;iii<top;++iii) {
         if (std::isnan(wts[iii]) || (wts[iii] < 0)) { return true; }
+    }
+    return false;
+}
+
+// check times with this guy
+template<class W>
+bool inline has_decrease(W sers) {
+    int top=sers.size();
+    if (top < 2) { return false; }
+    for (int iii=1;iii<top;++iii) {
+        if (std::isnan(sers[iii-1]) || (sers[iii-1] > sers[iii])) { return true; }
     }
     return false;
 }
@@ -145,6 +156,9 @@ bool inline bad_weights(w wts) {
 //   else convert to integer via as<int>( )
 int get_wins(SEXP window);
 
+void centmom2cumulants(NumericMatrix cumulants,int max_order);
+
+NumericMatrix cumulants2quantiles(NumericMatrix cumulants,NumericVector p, int max_order);
 
 #endif /* __DEF_FROMO_COMMON__ */
 

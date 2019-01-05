@@ -199,6 +199,10 @@ NumericMatrix runQM(T v,
         // now run through lll index//FOLDUP
         for (lll=0;lll < numel;++lll) {
             tr_iii++;
+            // 2FIX: I feel like there is a corner case here waiting to bite me.
+            // perhaps no computation is performed for lll=0, but
+            // needs to be done for lll=1? 
+            
             // check subcount first and just recompute if needed.
             if ((lll==0) || (frets.subcount() >= recom_period)) {
                 // fix this

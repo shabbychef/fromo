@@ -68,10 +68,11 @@ NumericMatrix t_runQM(T v,
                       const int ord,
                       const int window,
                       const int recom_period,
-                      const int lookahead,
+                      const double lookahead,
                       const int min_df,
                       const double used_df,
                       const bool check_wts,
+                      const bool variable_win,
                       const bool wts_as_delta,
                       const bool normalize_wts) {
 
@@ -83,8 +84,7 @@ NumericMatrix t_runQM(T v,
         if (opt_time_deltas.isNotNull()) {
             Rcpp::warning("time deltas given, but not needed; ignoring.");
         }
-        // 2FIX: check for decreasing time vector.
-
+        if (has_decrease<NumericVector>(time)) { stop("decreasing time detected"); }
     } else {
         if (opt_time_deltas.isNotNull()) {
             time_deltas = opt_time_deltas.get();
@@ -102,11 +102,19 @@ NumericMatrix t_runQM(T v,
         // to be sure, check again; this might be redundant in the case where deltas are weights, but whatever.
         if (bad_weights<W>(time_deltas)) { stop("negative time deltas detected"); }
         // just going to use the sugar function here;
-        time = cumsum(time_deltas);
+        //time = Rcpp::cumsum(time_deltas);
+        //time = runningSumishCurryFour<ret_sum>(time_deltas,R_NilValue,R_NilValue,0,10000,false,false);
+        // ack, just roll my own cumsum. so annoying.
+        time = NumericVector(time_deltas.size());
+        double tval=0;
+        for (int zzz=0;zzz < time_deltas.size();zzz++) {
+            tval += time_deltas[zzz];
+            time[zzz] = tval;
+        }
     }
     if (opt_lb_time.isNotNull()) {
         lb_time = opt_lb_time.get();
-        // 2FIX: check for decreasing lb_time vector.
+        if (has_decrease<NumericVector>(lb_time)) { stop("decreasing lb_time detected"); }
     } else {
         // read only so relax.
         lb_time = time;
@@ -116,6 +124,7 @@ NumericMatrix t_runQM(T v,
     if (time.size() != numel) {
         stop("size of time does not match v"); // nocov
     }
+    const int numlb = lb_time.size();
 
     double nextv, prevv, nextw, prevw;
 
@@ -130,8 +139,11 @@ NumericMatrix t_runQM(T v,
     // from happening. like subtracting old observations, say.
     const bool infwin = IntegerVector::is_na(window);
     if ((window < 1) && (!infwin)) { stop("must give positive window"); }
-
+    if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); }
     const int quasiwin = (infwin)? (numel):(window);
+
+    // whether to use the gap between lb_time as the effective window
+    const bool gapwin = variable_win && infwin;
 
     if (min_df < 0) { stop("require positive min_df"); }
     // min_df is now on # of observations, but window is a time delta
@@ -152,13 +164,25 @@ NumericMatrix t_runQM(T v,
         stop("bad code: order too small to support this computation"); 
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
-    bool aligned = (lookahead == 0);
+    // these define the time window for any lll; 
+    // we aim to perform computations over the half-open interval
+    // (t0,tf]
+    // generally we will have
+    // t0 = lb_time[lll] + lookahead - window
+    // tf = lb_time[lll] + lookahead
+    // note that the the window can depend on lll in a simple way:
+    // if gapwin is true, then
+    // t0 = lb_time[lll-1] + lookahead
+    // tf = lb_time[lll] + lookahead
+    // where lb_time[-1] is understood to be -inf
+    double tf,t0;
+    double prev_tf;
+    const double tminf = time[0] - 1.0;  // effectively -inf?
+    if (!gapwin && infwin) { t0 = tminf; }
 
     // super gross; I need these for the include later.
     double sg_denom,renorm,denom,sigmasq,sigma,sigmapow,mydf,dwsum,skew,exkurt,sr;
     int mmm;
-
-    const int firstpart = MIN(numel,quasiwin);
 
     // preallocated with zeros; should
     // probably be NA?
@@ -175,7 +199,7 @@ NumericMatrix t_runQM(T v,
         ncols = 1; 
     }
         
-    NumericMatrix xret(numel,ncols);
+    NumericMatrix xret(numlb,ncols);
 
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
@@ -186,113 +210,73 @@ NumericMatrix t_runQM(T v,
         prevw = 1.0;
     }
 
-    if (aligned) {
-        // aligned case
-        // sigh. broken.
-        // as an invariant, we will start the computation
-        // with frets, which is initialized as the summed
-        // means on [jjj,lll]
-        //
+    tr_jjj = 0;
+    tr_iii = -1;
+    prev_tf = tminf;
 
-        // now run through lll index//FOLDUP
-        for (lll=0;lll < firstpart;++lll) {
-            // check subcount first and just recompute if needed.
-            if (frets.subcount() >= recom_period) {
-                // fix this
-                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              0,         //bottom
-                                                                              lll+1,     //top
-                                                                              false);    //no need to check weights as we have done it once above.
+
+    // now run through lll index//FOLDUP
+    for (lll=0;lll < numlb;++lll) {
+        tf = lb_time[lll] + lookahead;
+        if (gapwin) {
+            if (lll==0) {
+                t0 = tminf;  // effectively -inf?
             } else {
-                // add on nextv:
-                nextv = double(v[lll]);
-                if (has_wts) { nextw = double(wts[lll]); }  
+                t0 = lb_time[lll-1] + lookahead;
+            }
+        } else if (!infwin) {
+            t0 = tf - window;
+        }
+        // otherwise t0 was set as tminf previously.
+
+        // if there is no overlap, then just restart the whole thingy.
+        if ((prev_tf <= t0) || (frets.subcount() >= recom_period)) {
+            while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; }
+            tr_iii = tr_jjj;
+            while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
+
+            iii = MIN(numel-1,tr_iii);
+            jjj = MAX(0,tr_jjj);  // not required?
+            if (jjj <= iii) {
+                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              jjj,       //bottom
+                                                                              iii+1,     //top
+                                                                              false);    //no need to check weights as we have done it once above.
+            }
+        } else {
+            while ((tr_iii < numel) && (time[tr_iii] <= tf)) { 
+                tr_iii++; 
+                nextv = double(v[tr_iii]);
+                if (has_wts) { nextw = double(wts[tr_iii]); } 
                 frets.add_one(nextv,nextw); 
             }
-
-            // fill in the value in the output.
-            // 2FIX: give access to v, not v[lll]...
-            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-//yuck!!
-#include "moment_interp.hpp"
-        }//UNFOLD
-        if (firstpart < numel) {
-            tr_jjj = 0;
-            // now run through lll index//FOLDUP
-            for (lll=firstpart;lll < numel;++lll) {
-                // check subcount first and just recompute if needed.
-                if (frets.subcount() >= recom_period) {
-                    // fix this
-                    jjj = tr_jjj+1;
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  jjj,       //bottom
-                                                                                  lll+1,     //top
-                                                                                  false);    //no need to check weights as we have done it once above.
-                } else {
-                    // add on nextv:
-                    nextv = double(v[lll]);
-                    // remove prevv:
-                    prevv = double(v[tr_jjj]);
-                    if (has_wts) { 
-                        nextw = double(wts[lll]); 
-                        prevw = double(wts[tr_jjj]); 
-                    }
-                    frets.swap_one(nextv,nextw,prevv,prevw); 
-                }
-                tr_jjj++;
-
-                // fill in the value in the output.
-                // 2FIX: give access to v, not v[lll]...
-                // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
-    //yuck!!
-#include "moment_interp.hpp"
-            }//UNFOLD
-        }
-    } else {
-        // nonaligned case
-        // as an invariant, we will start the computation
-        // with frets, which is initialized as the summed
-        // means on [jjj,iii]
-        tr_iii = lookahead - 1;
-        tr_jjj = lookahead - quasiwin;
-
-        // now run through lll index//FOLDUP
-        for (lll=0;lll < numel;++lll) {
-            tr_iii++;
-            // check subcount first and just recompute if needed.
-            if ((lll==0) || (frets.subcount() >= recom_period)) {
-                // fix this
+            while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { 
+                prevv = double(v[tr_jjj]);
+                if (has_wts) { prevw = double(wts[tr_jjj]); }
+                frets.rem_one(prevv,prevw); 
+                tr_jjj++; 
+            }
+            // may need to recompute based on the number of subtractions
+            if (frets.subcount() >= recom_period) {
                 iii = MIN(numel-1,tr_iii);
-                jjj = MAX(0,tr_jjj+1);
+                jjj = MAX(0,tr_jjj);  // not required?
                 if (jjj <= iii) {
                     frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
                                                                                   jjj,       //bottom
                                                                                   iii+1,     //top
                                                                                   false);    //no need to check weights as we have done it once above.
                 }
-            } else {
-                if ((tr_iii < numel) && (tr_iii >= 0)) {
-                    // add on nextv:
-                    nextv = double(v[tr_iii]);
-                    if (has_wts) { nextw = double(wts[tr_iii]); } 
-                    frets.add_one(nextv,nextw); 
-                }
-                // remove prevv:
-                if ((tr_jjj < numel) && (tr_jjj >= 0)) {
-                    prevv = double(v[tr_jjj]);
-                    if (has_wts) { prevw = double(wts[tr_jjj]); }
-                    frets.rem_one(prevv,prevw); 
-                }
             }
-            tr_jjj++;
+        }
 
-            // fill in the value in the output.
-            // 2FIX: give access to v, not v[lll]...
-            // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
+        // fill in the value in the output.
+        // 2FIX: give access to v, not v[lll]...
+        // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
 //yuck!!
 #include "moment_interp.hpp"
-        }//UNFOLD
-    }
+
+        prev_tf = tf;
+    }//UNFOLD
     return xret;
 }
 
@@ -305,11 +289,12 @@ NumericMatrix t_runQMCurryZero(T v,
                                const int ord,
                                const int window,
                                const int recom_period,
-                               const int lookahead,
+                               const double lookahead,
                                const int min_df,
                                const double used_df,
                                const bool na_rm,
                                const bool check_wts,
+                               const bool variable_win,
                                const bool wts_as_delta,
                                const bool normalize_wts) {
     if (has_wts && normalize_wts) {
@@ -317,24 +302,24 @@ NumericMatrix t_runQMCurryZero(T v,
             return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,true>(v, wts, 
                                                                           time, time_deltas, lb_time,
                                                                           ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                          wts_as_delta, normalize_wts); 
+                                                                          variable_win, wts_as_delta, normalize_wts); 
         } else {
             return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,false>(v, wts, 
                                                                           time, time_deltas, lb_time,
                                                                           ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                          wts_as_delta, normalize_wts); 
+                                                                          variable_win, wts_as_delta, normalize_wts); 
         }
     } 
     if (na_rm) {
         return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,true>(v, wts, 
                                                                        time, time_deltas, lb_time,
                                                                        ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                       wts_as_delta, normalize_wts); 
+                                                                       variable_win, wts_as_delta, normalize_wts); 
     } 
     return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,false>(v, wts, 
                                                                        time, time_deltas, lb_time,
                                                                        ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                       wts_as_delta, normalize_wts); 
+                                                                       variable_win, wts_as_delta, normalize_wts); 
 }
 
 template <typename T,ReturnWhat retwhat,bool ord_beyond>
@@ -346,11 +331,12 @@ NumericMatrix t_runQMCurryOne(T v,
                               const int ord,
                               const int window,
                               const int recom_period,
-                              const int lookahead,
+                              const double lookahead,
                               const int min_df,
                               const double used_df,
                               const bool na_rm,
                               const bool check_wts,
+                              const bool variable_win,
                               const bool wts_as_delta,
                               const bool normalize_wts) {
 
@@ -358,14 +344,16 @@ NumericMatrix t_runQMCurryOne(T v,
     if (wts.isNotNull()) {
         return t_runQMCurryZero<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), 
                                                                                 time, time_deltas, lb_time,
-                                                                                ord, window, recom_period, lookahead, min_df, used_df, na_rm, 
-                                                                                check_wts, wts_as_delta, normalize_wts); 
+                                                                                ord, window, recom_period, lookahead, 
+                                                                                min_df, used_df, na_rm, check_wts, 
+                                                                                variable_win, wts_as_delta, normalize_wts); 
     }
     NumericVector dummy_wts;
     return t_runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, 
                                                                              time, time_deltas, lb_time,
-                                                                             ord, window, recom_period, lookahead, min_df, used_df, na_rm, 
-                                                                             check_wts, wts_as_delta, normalize_wts); 
+                                                                             ord, window, recom_period, lookahead, 
+                                                                             min_df, used_df, na_rm, check_wts, 
+                                                                             variable_win, wts_as_delta, normalize_wts); 
 }
 
 
@@ -379,11 +367,12 @@ NumericMatrix t_runQMCurryTwo(T v,
                               const int ord,
                               const int window,
                               const int recom_period,
-                              const int lookahead,
+                              const double lookahead,
                               const int min_df,
                               const double used_df,
                               const bool na_rm,
                               const bool check_wts,
+                              const bool variable_win,
                               const bool wts_as_delta,
                               const bool normalize_wts) {
 
@@ -391,12 +380,12 @@ NumericMatrix t_runQMCurryTwo(T v,
         return t_runQMCurryOne<T,retwhat,false>(v, wts, 
                                                 time, time_deltas, lb_time,
                                                 ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                wts_as_delta, normalize_wts); 
+                                                variable_win, wts_as_delta, normalize_wts); 
     }
     return t_runQMCurryOne<T,retwhat,true>(v, wts, 
                                            time, time_deltas, lb_time,
                                            ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                           wts_as_delta, normalize_wts); 
+                                           variable_win, wts_as_delta, normalize_wts); 
 }
 
 template <ReturnWhat retwhat>
@@ -408,26 +397,27 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                 const int ord,
                                 const int window,
                                 const int recom_period,
-                                const int lookahead,
+                                const double lookahead,
                                 const int min_df,
                                 const double used_df,
                                 const bool na_rm,
                                 const bool check_wts,
+                                const bool variable_win,
                                 const bool wts_as_delta,
                                 const bool normalize_wts) {
     switch (TYPEOF(v)) {
         case  INTSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(v, wts, 
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                                      wts_as_delta, normalize_wts); }
+                                                                      variable_win, wts_as_delta, normalize_wts); }
         case REALSXP: { return t_runQMCurryTwo<NumericVector,retwhat>(v, wts, 
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                                      wts_as_delta, normalize_wts); }
+                                                                      variable_win, wts_as_delta, normalize_wts); }
         case  LGLSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, 
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                                      wts_as_delta, normalize_wts); }
+                                                                      variable_win, wts_as_delta, normalize_wts); }
         default: stop("Unsupported weight type"); // nocov
     }
     // have to have fallthrough for CRAN check.
