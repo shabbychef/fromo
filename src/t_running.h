@@ -242,6 +242,18 @@ NumericMatrix t_runQM(T v,
                                                                           tr_iii,       //top
                                                                           false);    //no need to check weights as we have done it once above.
         } else {
+            while ((tr_iii < numel) && (time[tr_iii] <= tf) && (time[tr_jjj] <= t0)) { 
+                nextv = double(v[tr_iii]);
+                prevv = double(v[tr_jjj]);
+                if (has_wts) { 
+                    nextw = double(wts[tr_iii]); 
+                    prevw = double(wts[tr_jjj]); 
+                } 
+                frets.swap_one(nextv,nextw,prevv,prevw); 
+                tr_iii++; 
+                tr_jjj++; 
+            }
+            // 2FIX: check for subcount? 
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { 
                 nextv = double(v[tr_iii]);
                 if (has_wts) { nextw = double(wts[tr_iii]); } 
