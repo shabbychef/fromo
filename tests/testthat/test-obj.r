@@ -39,37 +39,31 @@ test_that("constructor and such",{#FOLDUP
 	set.char.seed("33c133f6-930f-4656-88d4-84493784eee3")
 
 	x <- rnorm(100)
-	csums <- cent_sums(x, max_order=5L, na_rm=TRUE)
-	xobj <- centsums(csums)
+	expect_error(csums <- cent_sums(x, max_order=5L, na_rm=TRUE),NA)
+	expect_error(xobj <- centsums(csums),NA)
 
 	foo <- sums(xobj)
 	for (type in c('central','raw','standardized')) {
 		moms <- moments(xobj,type=type)
 	}
-	show(xobj)
+	expect_error(capture_output(show(xobj)),NA)
 
-	xobj <- as.centsums(x,order=5L, na.rm=TRUE)
-
-	# sentinel
-	expect_true(TRUE)
+	expect_error(xobj <- as.centsums(x,order=5L, na.rm=TRUE),NA)
 })#UNFOLD
 test_that("cosum constructor and such",{#FOLDUP
 	set.char.seed("817d965f-c3fb-439b-92ef-8c42452688ea")
 
 	x <- matrix(rnorm(30*3),ncol=3)
-	csums <- cent_cosums(x, max_order=2L, na_omit=TRUE)
-	xobj <- centcosums(csums)
+	expect_error(csums <- cent_cosums(x, max_order=2L, na_omit=TRUE),NA)
+	expect_error(xobj <- centcosums(csums),NA)
 
 	foo <- cosums(xobj)
 	for (type in c('central','raw')) {
-		moms <- comoments(xobj,type=type)
+		expect_error(moms <- comoments(xobj,type=type),NA)
 	}
-	show(xobj)
+	expect_error(capture_output(show(xobj)),NA)
 
-	xobj <- as.centcosums(x,order=2L, na.omit=TRUE)
-
-	# sentinel
-	expect_true(TRUE)
+	expect_error(xobj <- as.centcosums(x,order=2L, na.omit=TRUE),NA)
 })#UNFOLD
 # 2FIX: check the effects of NA
 #UNFOLD
@@ -80,20 +74,17 @@ test_that("monoidal homomorphism",{#FOLDUP
 	x <- rnorm(100)
 	y <- rnorm(100)
 	order <- 5L
-	xobj <- as.centsums(x,order=order, na.rm=TRUE)
-	yobj <- as.centsums(y,order=order, na.rm=TRUE)
-	zobj <- as.centsums(c(x,y),order=order, na.rm=TRUE)
+	expect_error(xobj <- as.centsums(x,order=order, na.rm=TRUE),NA)
+	expect_error(yobj <- as.centsums(y,order=order, na.rm=TRUE),NA)
+	expect_error(zobj <- as.centsums(c(x,y),order=order, na.rm=TRUE),NA)
 
 	zalt <- c(xobj,yobj)
 	expect_equal(sums(zalt),sums(zobj),tolerance=1e-9)
 
-	xalt <- zobj %-% yobj
-	yalt <- zobj %-% xobj
+	expect_error(xalt <- zobj %-% yobj,NA)
+	expect_error(yalt <- zobj %-% xobj,NA)
 	expect_equal(sums(xalt),sums(xobj),tolerance=1e-9)
 	expect_equal(sums(yalt),sums(yobj),tolerance=1e-9)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("cosums monoidal homomorphism",{#FOLDUP
 	set.char.seed("68d7b935-7d0d-42a5-91e0-2ae711d92b35")
@@ -101,20 +92,17 @@ test_that("cosums monoidal homomorphism",{#FOLDUP
 	x <- matrix(rnorm(100*4),ncol=4)
 	y <- matrix(rnorm(100*4),ncol=4)
 	order <- 2L
-	xobj <- as.centcosums(x,order=order, na.omit=TRUE)
-	yobj <- as.centcosums(y,order=order, na.omit=TRUE)
-	zobj <- as.centcosums(rbind(x,y),order=order, na.omit=TRUE)
+	expect_error(xobj <- as.centcosums(x,order=order, na.omit=TRUE),NA)
+	expect_error(yobj <- as.centcosums(y,order=order, na.omit=TRUE),NA)
+	expect_error(zobj <- as.centcosums(rbind(x,y),order=order, na.omit=TRUE),NA)
 
 	zalt <- c(xobj,yobj)
 	expect_equal(cosums(zalt),cosums(zobj),tolerance=1e-9)
 
-	xalt <- zobj %-% yobj
-	yalt <- zobj %-% xobj
+	expect_error(xalt <- zobj %-% yobj,NA)
+	expect_error(yalt <- zobj %-% xobj,NA)
 	expect_equal(cosums(xalt),cosums(xobj),tolerance=1e-9)
 	expect_equal(cosums(yalt),cosums(yobj),tolerance=1e-9)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("cosums make zero?",{#FOLDUP
 	set.char.seed("5fbdb6e1-64ee-48dd-9131-98c66cfd1486")
@@ -122,10 +110,10 @@ test_that("cosums make zero?",{#FOLDUP
 	x <- matrix(rnorm(100*4),ncol=4)
 	y <- matrix(rnorm(100*4),ncol=4)
 	order <- 2L
-	xobj <- as.centcosums(x,order=order, na.omit=TRUE)
-	yobj <- as.centcosums(y,order=order, na.omit=TRUE)
+	expect_error(xobj <- as.centcosums(x,order=order, na.omit=TRUE),NA)
+	expect_error(yobj <- as.centcosums(y,order=order, na.omit=TRUE),NA)
 	# x - x = 0
-	allz <- xobj %-% xobj
+	expect_error(allz <- xobj %-% xobj,NA)
 	expect_true(all(cosums(allz)==0))
 
 	# x + 0 = x
@@ -134,9 +122,6 @@ test_that("cosums make zero?",{#FOLDUP
 	yalt <- c(allz,yobj)
 	expect_equal(cosums(xalt),cosums(xobj),tolerance=1e-9)
 	expect_equal(cosums(yalt),cosums(yobj),tolerance=1e-9)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("cosums bad input?",{#FOLDUP
 	set.char.seed("6e06ef0e-fb0e-4adb-b27d-028db8028f20")
@@ -145,15 +130,12 @@ test_that("cosums bad input?",{#FOLDUP
 	y <- matrix(rnorm(100*6),ncol=6)
 
 	order <- 2L
-	xobj <- as.centcosums(x,order=order, na.omit=TRUE)
-	yobj <- as.centcosums(y,order=order, na.omit=TRUE)
+	expect_error(xobj <- as.centcosums(x,order=order, na.omit=TRUE),NA)
+	expect_error(yobj <- as.centcosums(y,order=order, na.omit=TRUE),NA)
 
 	# these should all be erorrs??
 	#expect_error(c(xobj,yobj))
 	#expect_error(xobj %-% yobj)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 
 

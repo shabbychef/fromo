@@ -39,9 +39,9 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 	set.char.seed("c4007dba-2010-481e-abe5-f07d3ce94eb4")
 	x <- rnorm(1000)
 
-	sid <- sd3(x)
-	ske <- skew4(x)
-	krt <- kurt5(x)
+	expect_error(sid <- sd3(x),NA)
+	expect_error(ske <- skew4(x),NA)
+	expect_error(krt <- kurt5(x),NA)
 
 	expect_equal(length(sid),3)
 	expect_equal(length(ske),4)
@@ -181,38 +181,32 @@ test_that("normalize weights works",{#FOLDUP
 							 running_std_moments(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
 	expect_equal(running_cumulants(x,wts=wts,normalize_wts=TRUE),
 							 running_cumulants(x,wts=2*wts,normalize_wts=TRUE),tolerance=1e-9)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("weight scaling what you expect",{#FOLDUP
 	set.char.seed("efaa75ac-bb9e-4e4a-a375-7028f099366e")
 	x <- rnorm(50)
 	wts <- runif(length(x))
 
-	sid_1 <- sd3(x,wts=wts,normalize_wts=FALSE,sg_df=0)
-	ske_1 <- skew4(x,wts=wts,normalize_wts=FALSE,sg_df=0)
-	krt_1 <- kurt5(x,wts=wts,normalize_wts=FALSE,sg_df=0)
+	expect_error(sid_1 <- sd3(x,wts=wts,normalize_wts=FALSE,sg_df=0),NA)
+	expect_error(ske_1 <- skew4(x,wts=wts,normalize_wts=FALSE,sg_df=0),NA)
+	expect_error(krt_1 <- kurt5(x,wts=wts,normalize_wts=FALSE,sg_df=0),NA)
 
-	sid_2 <- sd3(x,wts=2*wts,normalize_wts=FALSE,sg_df=0)
-	ske_2 <- skew4(x,wts=2*wts,normalize_wts=FALSE,sg_df=0)
-	krt_2 <- kurt5(x,wts=2*wts,normalize_wts=FALSE,sg_df=0)
+	expect_error(sid_2 <- sd3(x,wts=2*wts,normalize_wts=FALSE,sg_df=0),NA)
+	expect_error(ske_2 <- skew4(x,wts=2*wts,normalize_wts=FALSE,sg_df=0),NA)
+	expect_error(krt_2 <- kurt5(x,wts=2*wts,normalize_wts=FALSE,sg_df=0),NA)
 
 	expect_equal(sid_1 * c(1,1,2),sid_2,tolerance=1e-9)
 	expect_equal(ske_1 * c(1,1,1,2),ske_2,tolerance=1e-9)
 	expect_equal(krt_1 * c(1,1,1,1,2),krt_2,tolerance=1e-9)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	set.char.seed("4e17d837-69c1-41d1-906f-c82224d7ce41")
 	x <- rnorm(1000)
 	wts <- runif(length(x))
 
-	sid <- sd3(x,wts=wts,normalize_wts=TRUE)
-	ske <- skew4(x,wts=wts,normalize_wts=TRUE)
-	krt <- kurt5(x,wts=wts,normalize_wts=TRUE)
+	expect_error(sid <- sd3(x,wts=wts,normalize_wts=TRUE),NA)
+	expect_error(ske <- skew4(x,wts=wts,normalize_wts=TRUE),NA)
+	expect_error(krt <- kurt5(x,wts=wts,normalize_wts=TRUE),NA)
 	# 2FIX: add more here to check correctness ... 
 
 	expect_equal(length(sid),3)
@@ -266,9 +260,6 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	expect_equal(ske[1],dumb_skew,tolerance=1e-9)
 	# kurtosis
 	expect_equal(krt[1],dumb_exkurt,tolerance=1e-9)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 #UNFOLD
 #
@@ -378,9 +369,6 @@ test_that("running ops are correct",{#FOLDUP
 			}
 		}
 	}
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("running adjustments are correct",{#FOLDUP
 	# hey, Volkswagon called while you were out:
@@ -436,9 +424,6 @@ test_that("running adjustments are correct",{#FOLDUP
 			}
 		}
 	}
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("running weights work correctly",{#FOLDUP
 	# hey, Volkswagon called while you were out:
@@ -471,8 +456,8 @@ test_that("running weights work correctly",{#FOLDUP
 				fastv <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm)
 				expect_equal(fastv,dumb_mean,tolerance=1e-8)
 
-				fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE)
-				fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
 
 				#fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
 				## the dumb value:
@@ -514,9 +499,6 @@ test_that("running weights work correctly",{#FOLDUP
 			}# UNFOLD
 		}
 	}
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 # UNFOLD
 context("monoid nonsense")# FOLDUP
@@ -526,9 +508,9 @@ test_that("join/unjoin",{#FOLDUP
 	x1 <- rnorm(1e3,mean=1)
 	x2 <- rnorm(1e3,mean=1)
 	max_ord <- 6L
-	rs1 <- cent_sums(x1,max_ord)
-	rs2 <- cent_sums(x2,max_ord)
-	rs3 <- cent_sums(c(x1,x2),max_ord)
+	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+	expect_error(rs3 <- cent_sums(c(x1,x2),max_ord),NA)
 	# make sure these don't change? 
 	copy_rs1 <- rs1 + 0
 	copy_rs2 <- rs2 + 0
@@ -549,23 +531,17 @@ test_that("join/unjoin",{#FOLDUP
 
 	expect_equal(rs1,rs1alt,tolerance=1e-7)
 	expect_equal(rs2,rs2alt,tolerance=1e-7)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("cosums are sane",{#FOLDUP
 	set.char.seed("0020a8c0-ff6a-447c-a9bf-c6cc7160195f")
 
 	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
 	max_ord <- 2L
-	rs1 <- cent_comoments(x1,max_ord,used_df=1L)
+	expect_error(rs1 <- cent_comoments(x1,max_ord,used_df=1L),NA)
 	expect_equal(rs1[1,1],nrow(x1))
 	expect_equal(rs1[1,1 + (1:ncol(x1))],colMeans(x1),tolerance=1e-7)
 	expect_equal(rs1[1 + (1:ncol(x1)),1],colMeans(x1),tolerance=1e-7)
 	expect_equal(rs1[1 + (1:ncol(x1)),1 + (1:ncol(x1))],cov(x1),tolerance=1e-7)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 test_that("join/unjoin cosums",{#FOLDUP
 	set.char.seed("9ecdda29-aaae-4f88-9fe7-4418846ca54c")
@@ -573,19 +549,16 @@ test_that("join/unjoin cosums",{#FOLDUP
 	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
 	x2 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
 	max_ord <- 2L
-	rs1 <- cent_cosums(x1,max_ord)
-	rs2 <- cent_cosums(x2,max_ord)
-	rs3 <- cent_cosums(rbind(x1,x2),max_ord)
+	expect_error(rs1 <- cent_cosums(x1,max_ord),NA)
+	expect_error(rs2 <- cent_cosums(x2,max_ord),NA)
+	expect_error(rs3 <- cent_cosums(rbind(x1,x2),max_ord),NA)
 	rs3alt <- join_cent_cosums(rs1,rs2)
 	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
 
-	rs1alt <- unjoin_cent_cosums(rs3,rs2)
-	rs2alt <- unjoin_cent_cosums(rs3,rs1)
+	expect_error(rs1alt <- unjoin_cent_cosums(rs3,rs2),NA)
+	expect_error(rs2alt <- unjoin_cent_cosums(rs3,rs1),NA)
 	expect_lt(max(abs(rs1 - rs1alt)),1e-7)
 	expect_lt(max(abs(rs2 - rs2alt)),1e-7)
-
-	# sentinel
-	expect_true(TRUE)
 })#UNFOLD
 # UNFOLD
 # 2FIX: check the effects of NA
