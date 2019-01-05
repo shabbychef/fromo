@@ -513,8 +513,8 @@ test_that("running ops",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		times <- seq_along(x)
-		#wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
-		wtlist <- list(NULL,rep(1L,xlen))
+		wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
+		#wtlist <- list(NULL,rep(1L,xlen))
 		for (wts in wtlist) {
 			for (window in c(5,30,Inf)) { # FOLDUP
 				#expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
