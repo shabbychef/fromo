@@ -508,6 +508,7 @@ test_that("running ops",{#FOLDUP
 
 	set.char.seed("712463ec-f266-4de7-89d2-ce3c824327b0")
 	na_rm <- FALSE
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
@@ -570,11 +571,22 @@ test_that("running ops",{#FOLDUP
 				expect_error(tbox <- t_running_tstat(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
 				expect_equal(box,tbox,tolerance=1e-8)
 
-				expect_error(box <- running_sharpe(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				for (cse in c(TRUE,FALSE)) {
+					expect_error(box <- running_sharpe(x,wts=wts,window=window,na_rm=na_rm,compute_se=cse,normalize_wts=TRUE),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_sharpe(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,compute_se=cse,normalize_wts=TRUE),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+				}
+
+				expect_error(box <- running_apx_median(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
 				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_sharpe(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_error(tbox <- t_running_apx_median(x,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
 				expect_equal(box,tbox,tolerance=1e-8)
-				
+
+				expect_error(box <- running_apx_quantiles(x,ptiles,max_order=3,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				# the 0.1 is to avoid roundoff issues on the double times.
+				expect_error(tbox <- t_running_apx_quantiles(x,ptiles,max_order=3,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
 			}# UNFOLD
 		}
 	}
