@@ -558,6 +558,9 @@ class Welford {
 // given weights and values, computes the
 // sum of weights, and the weighted mean of the values.
 // computes from bottom to top; if top is negative, change to the size of v;
+// note that top should be like numel. we sum over indices iii such that
+// bottom <= iii < top
+// if it happens to be the case that bottom == top, we should return a tared Welford object.
 
 template <typename T,typename W,typename oneW,bool has_wts,bool na_rm>
 NumericVector quasiSumThing(T v,
@@ -633,6 +636,7 @@ Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
     double nextval, nextwt;
     Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
 
+    if (!has_wts) { nextwt = 1.0; }
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
@@ -642,10 +646,8 @@ Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
         nextval = v[iii];
         if (has_wts) { 
             nextwt = double(wts[iii]); 
-            frets.add_one(nextval,nextwt);
-        } else {
-            frets.add_one(nextval,1.0);
         }
+        frets.add_one(nextval,nextwt);
     }
     return frets;
 }

@@ -213,7 +213,7 @@ NumericMatrix t_runQM(T v,
 
     tr_jjj = 0;
     tr_iii = -1;
-    prev_tf = tminf;
+    prev_tf = MIN(tminf,lb_time[0] + lookahead - window - 1.0);  // make it less than t0 will be.
 
 
     // now run through lll index//FOLDUP
@@ -221,7 +221,7 @@ NumericMatrix t_runQM(T v,
         tf = lb_time[lll] + lookahead;
         if (gapwin) {
             if (lll==0) {
-                t0 = tminf;  // effectively -inf?
+                t0 = tminf;  // effectively -inf? should there be lookahead? ack.
             } else {
                 t0 = lb_time[lll-1] + lookahead;
             }
@@ -232,24 +232,21 @@ NumericMatrix t_runQM(T v,
 
         // if there is no overlap, then just restart the whole thingy.
         if ((prev_tf <= t0) || (frets.subcount() >= recom_period)) {
+            // could bisect, but lets not get fancy
             while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; }
             tr_iii = tr_jjj;
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
 
-            iii = MIN(numel-1,tr_iii);
-            jjj = MAX(0,tr_jjj);  // not required?
-            if (jjj <= iii) {
-                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              jjj,       //bottom
-                                                                              iii+1,     //top
-                                                                              false);    //no need to check weights as we have done it once above.
-            }
+            frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                          tr_jjj,       //bottom
+                                                                          tr_iii,       //top
+                                                                          false);    //no need to check weights as we have done it once above.
         } else {
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { 
-                tr_iii++; 
                 nextv = double(v[tr_iii]);
                 if (has_wts) { nextw = double(wts[tr_iii]); } 
                 frets.add_one(nextv,nextw); 
+                tr_iii++; 
             }
             while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { 
                 prevv = double(v[tr_jjj]);
@@ -257,16 +254,12 @@ NumericMatrix t_runQM(T v,
                 frets.rem_one(prevv,prevw); 
                 tr_jjj++; 
             }
-            // may need to recompute based on the number of subtractions
+            // may need to recompute based on the number of subtractions. bummer.
             if (frets.subcount() >= recom_period) {
-                iii = MIN(numel-1,tr_iii);
-                jjj = MAX(0,tr_jjj);  // not required?
-                if (jjj <= iii) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  jjj,       //bottom
-                                                                                  iii+1,     //top
-                                                                                  false);    //no need to check weights as we have done it once above.
-                }
+                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              tr_jjj,       //bottom
+                                                                              tr_iii,       //top
+                                                                              false);    //no need to check weights as we have done it once above.
             }
         }
 

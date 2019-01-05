@@ -297,58 +297,58 @@ test_that("running ops are correct",{#FOLDUP
 						dumb_cmom6 <- sapply(seq_along(x),function(iii) { moments::moment(x[max(1,iii-window+1):iii],central=TRUE,na.rm=na_rm,order=6) },simplify=TRUE)
 
 						# SD
-						fastv <- running_sd(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_sd(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(dumb_sd)
 						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
 
-						fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(cbind(dumb_sd,dumb_mean,dumb_count))
 						expect_equal(dumbv[2:xlen,],fastv[2:xlen,],tolerance=1e-7 * toler)
 
 						# skew
-						fastv <- running_skew(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_skew(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(dumb_skew)
 						expect_equal(dumbv[3:xlen],fastv[3:xlen],tolerance=1e-6 * toler)
 
-						fastv <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(cbind(dumb_skew,dumb_sd,dumb_mean,dumb_count))
 						expect_equal(dumbv[3:xlen,],fastv[3:xlen,],tolerance=1e-7 * toler)
 
 						# excess kurtosis
-						fastv <- running_kurt(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_kurt(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(dumb_exkurt)
 						expect_equal(dumbv[4:xlen],fastv[4:xlen],tolerance=1e-6 * toler)
 
-						fastv <- running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(cbind(dumb_exkurt,dumb_skew,dumb_sd,dumb_mean,dumb_count))
 						expect_equal(dumbv[4:xlen,],fastv[4:xlen,],tolerance=1e-6 * toler)
 
 						# higher order moments
 
-						fastv <- running_cent_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_cent_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count))
 						expect_equal(dumbv[6:xlen,],fastv[6:xlen,],tolerance=1e-6 * toler)
 
-						fastv <- running_cent_moments(x,window=window,max_order=6L,max_order_only=TRUE,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_cent_moments(x,window=window,max_order=6L,max_order_only=TRUE,used_df=0L,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(dumb_cmom6)
 						expect_equal(dumbv[6:xlen,],fastv[6:xlen,],tolerance=1e-7 * toler)
 
-						fastv <- running_std_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_std_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- tomat(cbind(dumb_cmom6 / (dumb_cmom2^3),dumb_cmom5 / (dumb_cmom2^2.5),dumb_cmom4 / (dumb_cmom2^2.0),dumb_cmom3 / (dumb_cmom2^1.5),sqrt(dumb_cmom2),dumb_mean,dumb_count))
 						expect_equal(dumbv[6:xlen,],fastv[6:xlen,],tolerance=1e-7 * toler)
 
 						# running sum and mean
-						fastv <- running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- dumb_sum
 						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
 
-						fastv <- running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm)
+						expect_error(fastv <- running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 						dumbv <- dumb_mean
 						expect_equal(dumbv[2:xlen],fastv[2:xlen],tolerance=1e-7 * toler)
 
 						if (require(PDQutils)) {
 							# cumulants
-							fastv <- running_cumulants(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm)
+							expect_error(fastv <- running_cumulants(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm),NA)
 							pre_dumbv <- cbind(dumb_cmom6,dumb_cmom5,dumb_cmom4,dumb_cmom3,dumb_cmom2,dumb_mean,dumb_count)
 							dumbv <- t(sapply(seq_along(x),function(iii) { 
 															rv <- rev(PDQutils::moment2cumulant(c(0,rev(pre_dumbv[iii,1:(ncol(pre_dumbv)-2)]))))
@@ -358,7 +358,7 @@ test_that("running ops are correct",{#FOLDUP
 							expect_equal(max(abs(dumbv[6:xlen,] - fastv[6:xlen,])),0,tolerance=1e-8 * toler)
 
 							# quantiles
-							fastv <- running_apx_quantiles(x,ptiles,max_order=ncol(dumbv)-1,used_df=0L,window=window,restart_period=restart_period,na_rm=na_rm)
+							expect_error(fastv <- running_apx_quantiles(x,ptiles,max_order=ncol(dumbv)-1,used_df=0L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 							dumbq <- t(sapply(seq_along(x),function(iii) { 
 								PDQutils::qapx_cf(ptiles,raw.cumulants=rev(dumbv[iii,1:(ncol(dumbv)-1)]))
 							}, simplify=TRUE))
@@ -384,32 +384,32 @@ test_that("running adjustments are correct",{#FOLDUP
 					dumb_mean <- sapply(seq_along(x),function(iii) { mean(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 					dumb_sd <- sapply(seq_along(x),function(iii) { sd(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
 
-					fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					expect_error(fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 					# the dumb value:
 					dumbv <- x - dumb_mean;
 					expect_equal(max(abs(dumbv - fastv)),0,tolerance=1e-12)
 
-					fastv <- running_scaled(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					expect_error(fastv <- running_scaled(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 					# the dumb value:
 					dumbv <- x / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_zscored(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					expect_error(fastv <- running_zscored(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 					# the dumb value:
 					dumbv <- (x - dumb_mean) / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					expect_error(fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 					# the dumb value:
 					dumbv <- dumb_mean / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_tstat(x,window=window,restart_period=restart_period,na_rm=na_rm)
+					expect_error(fastv <- running_tstat(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 					# the dumb value:
 					dumbv <- (dumb_mean * sqrt(dumb_count)) / dumb_sd
 					expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
 
-					fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm,compute_se=TRUE)
+					expect_error(fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm,compute_se=TRUE),NA)
 					# the dumb value:
 					dumb_sr <- dumb_mean / dumb_sd
 					expect_equal(max(abs(dumb_sr[2:length(x)] - fastv[2:length(x),1])),0,tolerance=1e-12)
@@ -453,7 +453,7 @@ test_that("running weights work correctly",{#FOLDUP
 							 },simplify=TRUE)
 				dumb_sd <- sqrt(dumb_var)
 
-				fastv <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm)
+				expect_error(fastv <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
 				expect_equal(fastv,dumb_mean,tolerance=1e-8)
 
 				expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
@@ -500,6 +500,34 @@ test_that("running weights work correctly",{#FOLDUP
 		}
 	}
 })#UNFOLD
+# UNFOLD
+context("t_running for trivial case")# FOLDUP
+test_that("running ops",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
+	set.char.seed("712463ec-f266-4de7-89d2-ce3c824327b0")
+	na_rm <- FALSE
+
+	for (xlen in c(20,50)) {
+		x <- rnorm(xlen)
+		times <- seq_along(x)
+		wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
+		for (wts in wtlist) {
+			for (window in c(5,30,Inf)) { # FOLDUP
+				#expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
+				#expect_error(tbox <- t_running_mean(x,time=times,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
+				#expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
+				
+			}# UNFOLD
+		}
+	}
+})#UNFOLD
+
 # UNFOLD
 context("monoid nonsense")# FOLDUP
 test_that("join/unjoin",{#FOLDUP
