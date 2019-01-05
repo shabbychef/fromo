@@ -502,7 +502,7 @@ test_that("running weights work correctly",{#FOLDUP
 })#UNFOLD
 # UNFOLD
 context("t_running for trivial case")# FOLDUP
-test_that("running ops",{#FOLDUP
+test_that("vs running ops",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
@@ -587,6 +587,74 @@ test_that("running ops",{#FOLDUP
 				# the 0.1 is to avoid roundoff issues on the double times.
 				expect_error(tbox <- t_running_apx_quantiles(x,ptiles,max_order=3,time=times,wts=wts,window=window+0.1,na_rm=na_rm,normalize_wts=TRUE),NA)
 				expect_equal(box,tbox,tolerance=1e-8)
+			}# UNFOLD
+		}
+	}
+})#UNFOLD
+# UNFOLD
+context("t_running vs slow version")# FOLDUP
+test_that("check em",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
+
+	slow_op <- function(v,func,time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
+											na_rm=FALSE,min_df=0,lookahead=0,variable_win=FALSE,wts_as_delta=TRUE,...) {
+		if (is.null(time)) {
+			if (is.null(time_deltas) && !is.null(wts) && wts_as_delta) {
+				time_deltas <- wts
+			} else {
+				stop('bad input')
+			}
+			time <- cumsum(time_deltas)
+		}
+		if (is.null(lb_time)) {
+			lb_time <- time
+		}
+		lb_time <- lb_time + lookahead
+		if (variable_win) {
+			tprev <- c(-Inf,lb_time[1:(length(lb_time)-1)])
+		} else {
+			tprev <- lb_time - window
+		}
+		# fix weights.
+		sapply(seq_along(lb_time),
+			function(idx) {
+				tf <- lb_time[idx]
+				t0 <- tprev[idx]
+				vsub <- v[(t0 < time) & (time <= tf)]
+				if (is.null(wts)) {
+					retv <- func(vsub,...)
+				} else {
+					subwts <- wts[(t0 < time) & (time <= tf)]
+					retv <- func(vsub,wts=subwts...)
+				}
+				retv
+			})
+	}
+
+	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
+
+
+	na_rm <- FALSE
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+
+	for (xlen in c(20,50)) {
+		x <- rnorm(xlen)
+		times <- cumsum(runif(length(x),min=0.2,max=0.4))
+		#wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
+		wtlist <- list(NULL)
+		for (wts in wtlist) {
+			for (window in c(5,30,Inf)) { # FOLDUP
+				#expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
+				#expect_error(tbox <- t_running_mean(x,time=times,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
+				#expect_equal(box,tbox,tolerance=1e-8)
+
+				expect_error(box <- slow_op(x,time=times,func=sd,wts=wts,window=window,na_rm=na_rm),NA)
+				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+
+				expect_equal(box,as.numeric(tbox),tolerance=1e-8)
+
 			}# UNFOLD
 		}
 	}
