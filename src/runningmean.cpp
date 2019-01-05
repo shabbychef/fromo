@@ -51,13 +51,12 @@ using namespace Rcpp;
 // 2FIX: oneT and oneW should be the accumulator types, not one type.
 // that is sum of logicals should go to int !?
 
-template <typename RET,typename T,typename oneT,bool v_robustly,typename W,typename oneW,bool w_robustly,ReturnWhat retwhat,bool has_wts,bool do_recompute>
+template <typename RET,typename T,typename oneT,bool v_robustly,typename W,typename oneW,bool w_robustly,ReturnWhat retwhat,bool has_wts,bool do_recompute,bool na_rm>
 RET runningSumish(T v,
                   W wts,
                   int window,
                   const int min_df,
                   int recom_period,
-                  const bool na_rm,
                   const bool check_wts) {
     if (min_df < 0) { stop("BAD CODE: must give positive min_df"); }
 
@@ -105,7 +104,15 @@ RET runningSumish(T v,
                 nextw = wts[iii];
             } 
             nextv = v[iii];
-            if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
+            if (! na_rm) {
+                if (has_wts) {
+                    fvsum += oneT(nextv * nextw);
+                    fwsum += oneW(nextw);
+                } else {
+                    fvsum += oneT(nextv);
+                    ++nel;
+                }
+            } else if (! (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0))))) { 
                 if (has_wts) {
                     fvsum += oneT(nextv * nextw);
                     fwsum += oneW(nextw);
@@ -120,7 +127,16 @@ RET runningSumish(T v,
                     prevw = wts[jjj];
                 } 
                 prevv = v[jjj];
-                if (! (na_rm && (ISNAN(prevv) || (has_wts && (ISNAN(prevw) || (prevw <= 0)))))) { 
+                if (! na_rm) {
+                    if (do_recompute) { ++subcount; }
+                    if (has_wts) {
+                        fvsum -= oneT(prevv * prevw);
+                        fwsum -= oneW(prevw);
+                    } else {
+                        fvsum -= oneT(prevv);
+                        --nel;
+                    }
+                } else if (! (ISNAN(prevv) || (has_wts && (ISNAN(prevw) || (prevw <= 0))))) { 
                     if (do_recompute) { ++subcount; }
                     if (has_wts) {
                         fvsum -= oneT(prevv * prevw);
@@ -134,6 +150,8 @@ RET runningSumish(T v,
             }
         } else {
             // flat out recompute;//FOLDUP
+            // this seems a little odd, but note we are positively adding here,
+            // not subtracting, so increment the jjj first.
             ++jjj;
             // init//FOLDUP
             fvsum = oneT(0);
@@ -186,9 +204,16 @@ SEXP runningSumishCurryOne(T v,
                            const bool check_wts,
                            const bool return_int) {
    if (return_int) {
-       return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts));
+       if (na_rm) {
+           return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,true>(v,wts,window,min_df,recom_period,check_wts));
+       } else {
+           return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,false>(v,wts,window,min_df,recom_period,check_wts));
+       }
    }
-   return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts));
+   if (na_rm) {
+       return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,true>(v,wts,window,min_df,recom_period,check_wts));
+   }
+   return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,false>(v,wts,window,min_df,recom_period,check_wts));
 }
 
 template <typename T,typename oneT,bool v_robustly,ReturnWhat retwhat,bool do_recompute>

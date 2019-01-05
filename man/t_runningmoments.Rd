@@ -10,7 +10,7 @@
 \alias{t_running_cent_moments}
 \alias{t_running_std_moments}
 \alias{t_running_cumulants}
-\title{Compute first K moments over a sliding window}
+\title{Compute first K moments over a sliding time-based window}
 \usage{
 t_running_sd3(v, time = NULL, time_deltas = NULL, window = NULL,
   wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
@@ -59,11 +59,24 @@ t_running_cumulants(v, time = NULL, time_deltas = NULL, window = NULL,
   wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{
-\item{v}{a vector}
+\item{v}{a vector of data.}
 
-\item{window}{the window size. if given as finite integer or double, passed through.
-If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
-to an infinite window size. If negative, an error will be thrown.}
+\item{time}{an optional vector of the timestamps of \code{v}. If given, must be
+the same length as \code{v}. If not given, we try to infer it by summing the
+\code{time_deltas}.}
+
+\item{time_deltas}{an optional vector of the deltas of timestamps. If given, must be
+the same length as \code{v}. If not given, and \code{wts} are given and \code{wts_as_delta} is true,
+we take the \code{wts} as the time deltas.  The deltas must be positive. We sum them to arrive
+at the times.}
+
+\item{window}{the window size, in time units. if given as finite integer or double, passed through.
+If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, 
+ and \code{variable_win} is true, then we infer the window from the lookback times: the
+ first window is infinite, but the remaining is the deltas between lookback times.
+ If \code{variable_win} is false, then these undefined values are equivalent to an
+ infinite window.
+ If negative, an error will be thrown.}
 
 \item{wts}{an optional vector of weights. Weights are \sQuote{replication}
 weights, meaning a value of 2 is shorthand for having two observations
@@ -72,6 +85,9 @@ equal weights, the default. Note that weights are typically only meaningfully de
 up to a multiplicative constant, meaning the units of weights are
 immaterial. When weights are \code{NA}, the same rules for checking \code{v}
 are applied.}
+
+\item{lb_time}{a vector of the times from which lookback will be performed. The output should
+be the same size as this vector. If not given, defaults to \code{time}.}
 
 \item{na_rm}{whether to remove NA, false by default.}
 
@@ -83,11 +99,18 @@ Defaults to zero, meaning no restriction.}
 of the centered moments computation. These are subtracted from the number of
 observations.}
 
-\item{restart_period}{the recompute period. because subtraction of elements can cause
+\item{restart_period}{the recompute period. Because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
 this parameter. Larger values mean fewer restarts and faster, though less accurate
-results. Note that the code checks for negative second and fourth moments and
-recomputes when needed.}
+results. Recomputation is sparked when a critical number of subtractions have
+been reached. Note that the code checks for negative second and fourth moments and
+recomputes when needed. (Really?)}
+
+\item{variable_win}{if true, and the \code{window} is not a concrete number,
+the computation window becomes the time between lookback times.}
+
+\item{wts_as_delta}{if true and the \code{time} and \code{time_deltas} are not
+given, but \code{wts} are given, we take \code{wts} as the \code{time_deltas}.}
 
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}
@@ -108,17 +131,17 @@ Typically a matrix, where the first columns are the kth, k-1th through 2nd stand
 centered moments, then a column of the mean, then a column of the number of (non-nan) elements in the input,
 with the following exceptions:
 \describe{
-\item{running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
+\item{t_running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
 only a column of the maximum order centered moment is returned.}
-\item{running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
+\item{t_running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
 and the count. There is not yet an option for \code{max_order_only}, but probably should be.}
-\item{running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
+\item{t_running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
 (which is the variance) cumulant, then the mean, and the count.}
 }
 }
 \description{
 Compute the (standardized) 2nd through kth moments, the mean, and the number of elements over
-an infinite or finite sliding window, returning a matrix.
+an infinite or finite sliding time based window, returning a matrix.
 }
 \details{
 Computes the number of elements, the mean, and the 2nd through kth
@@ -128,9 +151,8 @@ are computed via the numerically robust one-pass method of Bennett \emph{et. al.
 Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
 \eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
 excess kurtosis, skewness, standard deviation, mean or number of elements)
-of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
-Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
-During the 'burn-in' phase, we take fewer elements.
+of some elements \eqn{x_i} defined by the sliding time window.
+Barring \code{NA} or \code{NaN}, this is over a window of time width \code{window}.
 }
 \note{
 the kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
@@ -145,23 +167,10 @@ the fromo package.
 }
 \examples{
 x <- rnorm(1e5)
-xs3 <- running_sd3(x,10)
-xs4 <- running_skew4(x,10)
-
-if (require(moments)) {
-    set.seed(123)
-    x <- rnorm(5e1)
-    window <- 10L
-    kt5 <- running_kurt5(x,window=window)
-    rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
-                xrang <- x[max(1,iii-window+1):iii]
-                c(moments::kurtosis(xrang)-3.0,moments::skewness(xrang),
-                sd(xrang),mean(xrang),length(xrang)) },
-             simplify=TRUE))
-    stopifnot(max(abs(kt5 - rm1),na.rm=TRUE) < 1e-12)
-}
-
-xc6 <- running_cent_moments(x,window=100L,max_order=6L)
+xs3 <- t_running_sd3(x,time=seq_along(x),window=10)
+xs4 <- t_running_skew4(x,time=seq_along(x),window=10)
+# but what if you only cared about some middle values?
+xs4 <- t_running_skew4(x,time=seq_along(x),lb_time=(length(x) / 2) + 0:10,window=20)
 
 }
 \references{
@@ -179,6 +188,9 @@ Cook, J. D. "Accurately computing running variance."
 Cook, J. D. "Comparing three methods of computing 
 standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
+}
+\seealso{
+\code{\link{running_sd3}}.
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}

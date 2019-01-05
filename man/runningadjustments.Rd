@@ -165,7 +165,7 @@ standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
 }
 \seealso{
-\code{\link{scale}}
+\code{\link{t_running_centered}}, \code{\link{scale}}
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}

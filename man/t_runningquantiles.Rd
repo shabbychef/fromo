@@ -3,7 +3,7 @@
 \name{t_running_apx_quantiles}
 \alias{t_running_apx_quantiles}
 \alias{t_running_apx_median}
-\title{Compute approximate quantiles over a sliding window}
+\title{Compute approximate quantiles over a sliding time window}
 \usage{
 t_running_apx_quantiles(v, p, time = NULL, time_deltas = NULL,
   window = NULL, wts = NULL, lb_time = NULL, max_order = 5L,
@@ -17,13 +17,26 @@ t_running_apx_median(v, time = NULL, time_deltas = NULL, window = NULL,
   wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{
-\item{v}{a vector}
+\item{v}{a vector of data.}
 
 \item{p}{the probability points at which to compute the quantiles. Should be in the range (0,1).}
 
-\item{window}{the window size. if given as finite integer or double, passed through.
-If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
-to an infinite window size. If negative, an error will be thrown.}
+\item{time}{an optional vector of the timestamps of \code{v}. If given, must be
+the same length as \code{v}. If not given, we try to infer it by summing the
+\code{time_deltas}.}
+
+\item{time_deltas}{an optional vector of the deltas of timestamps. If given, must be
+the same length as \code{v}. If not given, and \code{wts} are given and \code{wts_as_delta} is true,
+we take the \code{wts} as the time deltas.  The deltas must be positive. We sum them to arrive
+at the times.}
+
+\item{window}{the window size, in time units. if given as finite integer or double, passed through.
+If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, 
+ and \code{variable_win} is true, then we infer the window from the lookback times: the
+ first window is infinite, but the remaining is the deltas between lookback times.
+ If \code{variable_win} is false, then these undefined values are equivalent to an
+ infinite window.
+ If negative, an error will be thrown.}
 
 \item{wts}{an optional vector of weights. Weights are \sQuote{replication}
 weights, meaning a value of 2 is shorthand for having two observations
@@ -32,6 +45,9 @@ equal weights, the default. Note that weights are typically only meaningfully de
 up to a multiplicative constant, meaning the units of weights are
 immaterial. When weights are \code{NA}, the same rules for checking \code{v}
 are applied.}
+
+\item{lb_time}{a vector of the times from which lookback will be performed. The output should
+be the same size as this vector. If not given, defaults to \code{time}.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
 
@@ -45,11 +61,18 @@ Defaults to zero, meaning no restriction.}
 of the centered moments computation. These are subtracted from the number of
 observations.}
 
-\item{restart_period}{the recompute period. because subtraction of elements can cause
+\item{restart_period}{the recompute period. Because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
 this parameter. Larger values mean fewer restarts and faster, though less accurate
-results. Note that the code checks for negative second and fourth moments and
-recomputes when needed.}
+results. Recomputation is sparked when a critical number of subtractions have
+been reached. Note that the code checks for negative second and fourth moments and
+recomputes when needed. (Really?)}
+
+\item{variable_win}{if true, and the \code{window} is not a concrete number,
+the computation window becomes the time between lookback times.}
+
+\item{wts_as_delta}{if true and the \code{time} and \code{time_deltas} are not
+given, but \code{wts} are given, we take \code{wts} as the \code{time_deltas}.}
 
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}
@@ -85,27 +108,11 @@ the fromo package.
 }
 \examples{
 x <- rnorm(1e5)
-xq <- running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9))
-xm <- running_apx_median(x)
+xq <- t_running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9),time=seq_along(x),window=200,lb_time=c(100,200,400))
+xq <- t_running_apx_median(x,time=seq_along(x),window=200,lb_time=c(100,200,400))
 
 }
 \references{
-Lee, Y-S., and Lin, T-K. "Algorithm AS269: High Order Cornish Fisher
-Expansion." Appl. Stat. 41, no. 1 (1992): 233-240. 
-\url{http://www.jstor.org/stable/2347649}
-
-Lee, Y-S., and Lin, T-K. "Correction to Algorithm AS269: High Order 
-Cornish Fisher Expansion." Appl. Stat. 42, no. 1 (1993): 268-269. 
-\url{http://www.jstor.org/stable/2347433}
-
-AS 269. \url{http://lib.stat.cmu.edu/apstat/269}
-
-Jaschke, Stefan R. "The Cornish-Fisher-expansion in the context of 
-Delta-Gamma-normal approximations." No. 2001, 54. Discussion Papers, 
-Interdisciplinary Research Project 373: Quantification and Simulation of 
-Economic Processes, 2001. 
-\url{http://www.jaschke-net.de/papers/CoFi.pdf}
-
 Terriberry, T. "Computing Higher-Order Moments Online."
 \url{http://people.xiph.org/~tterribe/notes/homs.html}
 
@@ -122,7 +129,7 @@ standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
 }
 \seealso{
-\code{\link{running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
+\code{\link{running_apx_quantiles}}, \code{\link{t_running_cumulants}}, \code{PDQutils::qapx_cf}, \code{PDQutils::AS269}.
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}

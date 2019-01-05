@@ -6,7 +6,7 @@
 \alias{t_running_zscored}
 \alias{t_running_sharpe}
 \alias{t_running_tstat}
-\title{Compare data to moments computed over a sliding window.}
+\title{Compare data to moments computed over a time sliding window.}
 \usage{
 t_running_centered(v, time = NULL, time_deltas = NULL, window = NULL,
   wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1, lookahead = 0,
@@ -34,11 +34,24 @@ t_running_tstat(v, time = NULL, time_deltas = NULL, window = NULL,
   wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
 }
 \arguments{
-\item{v}{a vector}
+\item{v}{a vector of data.}
 
-\item{window}{the window size. if given as finite integer or double, passed through.
-If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, equivalent
-to an infinite window size. If negative, an error will be thrown.}
+\item{time}{an optional vector of the timestamps of \code{v}. If given, must be
+the same length as \code{v}. If not given, we try to infer it by summing the
+\code{time_deltas}.}
+
+\item{time_deltas}{an optional vector of the deltas of timestamps. If given, must be
+the same length as \code{v}. If not given, and \code{wts} are given and \code{wts_as_delta} is true,
+we take the \code{wts} as the time deltas.  The deltas must be positive. We sum them to arrive
+at the times.}
+
+\item{window}{the window size, in time units. if given as finite integer or double, passed through.
+If \code{NULL}, \code{NA_integer_}, \code{NA_real_} or \code{Inf} are given, 
+ and \code{variable_win} is true, then we infer the window from the lookback times: the
+ first window is infinite, but the remaining is the deltas between lookback times.
+ If \code{variable_win} is false, then these undefined values are equivalent to an
+ infinite window.
+ If negative, an error will be thrown.}
 
 \item{wts}{an optional vector of weights. Weights are \sQuote{replication}
 weights, meaning a value of 2 is shorthand for having two observations
@@ -62,13 +75,20 @@ observations.}
 \item{lookahead}{for some of the operations, the value is compared to 
 mean and standard deviation possibly using 'future' or 'past' information
 by means of a non-zero lookahead. Positive values mean data are taken from
-the future.}
+the future. This is in time units, and so should be a real.}
 
-\item{restart_period}{the recompute period. because subtraction of elements can cause
+\item{restart_period}{the recompute period. Because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
 this parameter. Larger values mean fewer restarts and faster, though less accurate
-results. Note that the code checks for negative second and fourth moments and
-recomputes when needed.}
+results. Recomputation is sparked when a critical number of subtractions have
+been reached. Note that the code checks for negative second and fourth moments and
+recomputes when needed. (Really?)}
+
+\item{variable_win}{if true, and the \code{window} is not a concrete number,
+the computation window becomes the time between lookback times.}
+
+\item{wts_as_delta}{if true and the \code{time} and \code{time_deltas} are not
+given, but \code{wts} are given, we take \code{wts} as the \code{time_deltas}.}
 
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}
@@ -78,6 +98,9 @@ renormalized to have a mean value of 1. This mean is computed over elements
 which contribute to the moments, so if \code{na_rm} is set, that means non-NA
 elements of \code{wts} that correspond to non-NA elements of the data
 vector.}
+
+\item{lb_time}{a vector of the times from which lookback will be performed. The output should
+be the same size as this vector. If not given, defaults to \code{time}.}
 
 \item{compute_se}{for \code{running_sharpe}, return an extra column of the
 standard error, as computed by Mertens' correction.}
@@ -93,10 +116,9 @@ or z-scoring, and so on.
 \details{
 Given the length \eqn{n} vector \eqn{x}, for
 a given index \eqn{i}, define \eqn{x^{(i)}}{x^(i)}
-as the vector of 
-\eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i},
-where we do not run over the 'edge' of the vector. In code, this is essentially
-\code{x[(max(1,i-window+1)):i]}. Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
+as the elements of \eqn{x} defined by the sliding time window (see the section
+on time windowing).
+Then define \eqn{\mu_i}{mu_i}, \eqn{\sigma_i}{sigma_i}
 and \eqn{n_i}{n_i} as, respectively, the sample mean, standard deviation and number of
 non-NA elements in \eqn{x^{(i)}}{x^(i)}. 
 
@@ -108,10 +130,7 @@ For the 't-scored' version of \eqn{x}, we have \eqn{m_i = \sqrt{n_i} \mu_i / \si
 
 We also allow a 'lookahead' for some of these operations.
 If positive, the moments are computed using data from larger indices;
-if negative, from smaller indices. Letting \eqn{j = i + lookahead}{j = i + lookahead}:
-For the 'centered' version of \eqn{x}, we have \eqn{m_i = x_i - \mu_j}{m_i = x_i - mu_j}.
-For the 'scaled' version of \eqn{x}, we have \eqn{m_i = x_i / \sigma_j}{m_i = x_i / sigma_j}.
-For the 'z-scored' version of \eqn{x}, we have \eqn{m_i = (x_i - \mu_j) / \sigma_j}{m_i = (x_i - mu_j) / sigma_j}.
+if negative, from smaller indices.
 }
 \note{
 The moment computations provided by fromo are 
@@ -120,38 +139,6 @@ same results as the 'standard' implementations,
 due to differences in roundoff. We make every attempt to balance
 speed and robustness. User assumes all risk from using
 the fromo package.
-}
-\examples{
-
-if (require(moments)) {
-    set.seed(123)
-    x <- rnorm(5e1)
-    window <- 10L
-    rm1 <- t(sapply(seq_len(length(x)),function(iii) { 
-                  xrang <- x[max(1,iii-window+1):iii]
-                  c(sd(xrang),mean(xrang),length(xrang)) },
-                  simplify=TRUE))
-    rcent <- running_centered(x,window=window)
-    rscal <- running_scaled(x,window=window)
-    rzsco <- running_zscored(x,window=window)
-    rshrp <- running_sharpe(x,window=window)
-    rtsco <- running_tstat(x,window=window)
-    rsrse <- running_sharpe(x,window=window,compute_se=TRUE)
-    stopifnot(max(abs(rcent - (x - rm1[,2])),na.rm=TRUE) < 1e-12)
-    stopifnot(max(abs(rscal - (x / rm1[,1])),na.rm=TRUE) < 1e-12)
-    stopifnot(max(abs(rzsco - ((x - rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
-    stopifnot(max(abs(rshrp - (rm1[,2] / rm1[,1])),na.rm=TRUE) < 1e-12)
-    stopifnot(max(abs(rtsco - ((sqrt(rm1[,3]) * rm1[,2]) / rm1[,1])),na.rm=TRUE) < 1e-12)
-    stopifnot(max(abs(rsrse[,1] - rshrp),na.rm=TRUE) < 1e-12)
-
-    rm2 <- t(sapply(seq_len(length(x)),function(iii) { 
-                  xrang <- x[max(1,iii-window+1):iii]
-                  c(kurtosis(xrang)-3.0,skewness(xrang)) },
-                  simplify=TRUE))
-    mertens_se <- sqrt((1 + ((2 + rm2[,1])/4) * rshrp^2 - rm2[,2]*rshrp) / rm1[,3])
-    stopifnot(max(abs(rsrse[,2] - mertens_se),na.rm=TRUE) < 1e-12)
-}
-
 }
 \references{
 Terriberry, T. "Computing Higher-Order Moments Online."
@@ -170,7 +157,7 @@ standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
 }
 \seealso{
-\code{\link{scale}}
+\code{\link{running_centered}}, \code{\link{scale}}
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}
