@@ -622,15 +622,45 @@ test_that("check em",{#FOLDUP
 			function(idx) {
 				tf <- lb_time[idx]
 				t0 <- tprev[idx]
-				vsub <- v[(t0 < time) & (time <= tf)]
-				if (is.null(wts)) {
-					retv <- func(vsub,...)
+				takeus <- (t0 < time) & (time <= tf)
+				if (any(takeus)) {
+					vsub <- v[takeus]
+					if (is.null(wts)) {
+						retv <- func(vsub,...)
+					} else {
+						subwts <- wts[takeus]
+						retv <- func(vsub,wts=subwts,...)
+					}
 				} else {
-					subwts <- wts[(t0 < time) & (time <= tf)]
-					retv <- func(vsub,wts=subwts...)
+					retv <- NA
 				}
 				retv
 			})
+	}
+	slow_t_running_sd <- function(v,...) {
+		func <- function(v,...) { sd3(v,...)[1] }
+		matrix(slow_op(v=v,func=func,...),ncol=1)
+	}
+	slow_t_running_skew <- function(v,...) {
+		func <- function(v,...) { skew4(v,...)[1] }
+		matrix(slow_op(v=v,func=func,...),ncol=1)
+	}
+	slow_t_running_kurt <- function(v,...) {
+		func <- function(v,...) { kurt5(v,...)[1] }
+		matrix(slow_op(v=v,func=func,...),ncol=1)
+	}
+
+	slow_t_running_sd3 <- function(v,...) {
+		func <- function(v,...) { sd3(v,...) }
+		t(slow_op(v=v,func=func,...))
+	}
+	slow_t_running_skew4 <- function(v,...) {
+		func <- function(v,...) { skew4(v,...) }
+		t(slow_op(v=v,func=func,...))
+	}
+	slow_t_running_kurt5 <- function(v,...) {
+		func <- function(v,...) { kurt5(v,...) }
+		t(slow_op(v=v,func=func,...))
 	}
 
 	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
@@ -643,17 +673,37 @@ test_that("check em",{#FOLDUP
 		x <- rnorm(xlen)
 		times <- cumsum(runif(length(x),min=0.2,max=0.4))
 		#wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
-		wtlist <- list(NULL)
+		wtlist <- list(NULL,rep(1L,xlen))
+		#wtlist <- list(NULL)
 		for (wts in wtlist) {
 			for (window in c(5,30,Inf)) { # FOLDUP
 				#expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
 				#expect_error(tbox <- t_running_mean(x,time=times,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
 				#expect_equal(box,tbox,tolerance=1e-8)
 
-				expect_error(box <- slow_op(x,time=times,func=sd,wts=wts,window=window,na_rm=na_rm),NA)
-				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				expect_equal(fast,slow,tolerance=1e-8)
 
-				expect_equal(box,as.numeric(tbox),tolerance=1e-8)
+				slow <- slow_t_running_skew(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				expect_equal(fast,slow,tolerance=1e-8)
+
+				slow <- slow_t_running_kurt(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				expect_error(fast <- t_running_kurt(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				expect_equal(fast,slow,tolerance=1e-8)
+
+				slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				expect_equal(fast,slow,tolerance=1e-8)
+
+				#slow <- slow_t_running_skew4(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				#expect_error(fast <- t_running_skew4(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				#expect_equal(fast,slow,tolerance=1e-8)
+
+				#slow <- slow_t_running_kurt5(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE)
+				#expect_error(fast <- t_running_kurt5(x,time=times,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				#expect_equal(fast,slow,tolerance=1e-8)
 
 			}# UNFOLD
 		}
