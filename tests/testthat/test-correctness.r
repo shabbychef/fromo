@@ -517,7 +517,7 @@ test_that("vs running ops",{#FOLDUP
 		#wtlist <- list(NULL,rep(1L,xlen))
 		for (wts in wtlist) {
 			# 2FIX? Inf window?
-			for (window in c(5,30)) { # FOLDUP
+			for (window in c(5,30,Inf)) { # FOLDUP
 				# to avoid roundoff issues on double times.
 				t_window <- window - 0.1
 
@@ -699,7 +699,7 @@ test_that("check em",{#FOLDUP
 		wtlist <- list(NULL,rep(1L,xlen))
 		for (wts in wtlist) {
 			# 2FIX? Inf window?
-			for (window in c(5,20.5)) { # FOLDUP
+			for (window in c(5,20.5,Inf)) { # FOLDUP
 				for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
 					#slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
 					#expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=FALSE),NA)
