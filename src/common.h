@@ -155,6 +155,13 @@ bool inline has_decrease(W sers) {
 //   if Inf or NA, return NA_INTEGER;
 //   else convert to integer via as<int>( )
 int get_wins(SEXP window);
+// if NULL, return NA_REAL;
+// if integer, convert to double ;
+// if double, then 
+//   if Inf or NA, return NA_REAL;
+//   else return
+
+double get_double_wins(SEXP window);
 
 void centmom2cumulants(NumericMatrix cumulants,int max_order);
 

@@ -928,3 +928,58 @@ t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, w
     .Call('_fromo_t_running_tstat', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, compute_se, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
 }
 
+#' @title
+#' Compute sums or means over a sliding time window.
+#'
+#' @description
+#' Compute the mean or sum over 
+#' an infinite or finite sliding time window, returning a vector the same size as the lookback
+#' times.
+#' 
+#' @param v a vector.
+#' @inheritParams t_running_sd
+#'
+#' @param restart_period the recompute period. because subtraction of elements can cause
+#' loss of precision, the computation of moments is restarted periodically based on 
+#' this parameter. Larger values mean fewer restarts and faster, though potentially less 
+#' accurate results. Unlike in the computation of even order moments, loss of precision
+#' is unlikely to be disastrous, so the default value is rather large.
+#' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned,
+#' only for the means computation.
+#' This can be used to prevent moments from being computed on too few observations.
+#' Defaults to zero, meaning no restriction.
+#'
+#' @details
+#'
+#' Computes the mean or sum of the elements, using a Kahan's Compensated Summation Algorithm,
+#' a numerically robust one-pass method.
+#'
+#' Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
+#' \eqn{M_{i,1}}{M_i,1} is the sum or mean 
+#' of some elements \eqn{x_i} defined by the sliding time window.
+#' Barring \code{NA} or \code{NaN}, this is over a window of time width \code{window}.
+#'
+#' @template sec-t-win
+#'
+#' @return A vector the same size as the lookback times.
+#' @examples
+#' x <- rnorm(1e5)
+#' xs <- t_running_sum(x,time=seq_along(x),window=10)
+#' xm <- t_running_mean(x,time=cumsum(runif(length(x))),window=7.3)
+#'
+#' @template etc
+#' @template ref-romo
+#' @template ref-kahan
+#' @inheritParams sd3
+#' @rdname t_runningmean 
+#' @export
+t_running_sum <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE) {
+    .Call('_fromo_t_running_sum', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts)
+}
+
+#' @rdname t_runningmean
+#' @export
+t_running_mean <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE) {
+    .Call('_fromo_t_running_mean', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts)
+}
+

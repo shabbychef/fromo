@@ -1071,6 +1071,50 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// t_running_sum
+SEXP t_running_sum(SEXP v, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, SEXP wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts);
+RcppExport SEXP _fromo_t_running_sum(SEXP vSEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_sum(v, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_mean
+SEXP t_running_mean(SEXP v, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, SEXP wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts);
+RcppExport SEXP _fromo_t_running_mean(SEXP vSEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type v(vSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_mean(v, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fromo_sd3", (DL_FUNC) &_fromo_sd3, 6},
@@ -1131,6 +1175,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_t_running_zscored", (DL_FUNC) &_fromo_t_running_zscored, 14},
     {"_fromo_t_running_sharpe", (DL_FUNC) &_fromo_t_running_sharpe, 15},
     {"_fromo_t_running_tstat", (DL_FUNC) &_fromo_t_running_tstat, 15},
+    {"_fromo_t_running_sum", (DL_FUNC) &_fromo_t_running_sum, 12},
+    {"_fromo_t_running_mean", (DL_FUNC) &_fromo_t_running_mean, 12},
     {NULL, NULL, 0}
 };
 

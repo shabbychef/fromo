@@ -55,6 +55,26 @@ int get_wins(SEXP window) {
     return NA_INTEGER; 
 }
 
+double get_double_wins(SEXP window) {
+	if (!Rf_isNull(window)) {
+		switch (TYPEOF(window)) {
+			case  INTSXP: { 
+											return as<double>(window); }
+			case REALSXP: { 
+											double wins = as<double>(window);
+											if ((NumericVector::is_na(wins)) || 
+													(traits::is_infinite<REALSXP>(wins) && (wins > 0.0))) {
+												return NA_REAL;
+											}
+											return wins;
+										}
+			default: stop("Unsupported input type");
+		}
+	}
+	return NA_REAL;
+}
+
+
 
 // modifies in place.
 void centmom2cumulants(NumericMatrix cumulants,int max_order) {
