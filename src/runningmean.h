@@ -91,7 +91,9 @@ RET runningSumish(T v,
 
     RET xret(numel);
 
-    if (has_wts && check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
+    if (has_wts) {
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
+    }
 
     jjj = 0;
     // now run through iii
@@ -110,10 +112,12 @@ RET runningSumish(T v,
                     fvsum += oneT(nextv);
                     ++nel;
                 }
-            } else if (! (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0))))) { 
+            } else if (! ISNAN(nextv)) {
                 if (has_wts) {
-                    fvsum += oneT(nextv * nextw);
-                    fwsum += oneW(nextw);
+                    if (! ((ISNAN(nextw) || (nextw <= 0)))) {
+                        fvsum += oneT(nextv * nextw);
+                        fwsum += oneW(nextw);
+                    }
                 } else {
                     fvsum += oneT(nextv);
                     ++nel;
@@ -126,7 +130,6 @@ RET runningSumish(T v,
                 } 
                 prevv = v[jjj];
                 if (! na_rm) {
-                    if (do_recompute) { ++subcount; }
                     if (has_wts) {
                         fvsum -= oneT(prevv * prevw);
                         fwsum -= oneW(prevw);
@@ -134,14 +137,18 @@ RET runningSumish(T v,
                         fvsum -= oneT(prevv);
                         --nel;
                     }
-                } else if (! (ISNAN(prevv) || (has_wts && (ISNAN(prevw) || (prevw <= 0))))) { 
                     if (do_recompute) { ++subcount; }
+                } else if (! ISNAN(prevv)) {
                     if (has_wts) {
-                        fvsum -= oneT(prevv * prevw);
-                        fwsum -= oneW(prevw);
+                        if (! ((ISNAN(prevw) || (prevw <= 0)))) {
+                            fvsum -= oneT(prevv * prevw);
+                            fwsum -= oneW(prevw);
+                        if (do_recompute) { ++subcount; }
+                        }
                     } else {
                         fvsum -= oneT(prevv);
                         --nel;
+                        if (do_recompute) { ++subcount; }
                     }
                 }//UNFOLD
                 ++jjj;

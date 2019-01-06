@@ -67,7 +67,7 @@ NumericMatrix t_runQM(T v,
                       Rcpp::Nullable< Rcpp::NumericVector > opt_time_deltas,
                       Rcpp::Nullable< Rcpp::NumericVector > opt_lb_time,
                       const int ord,
-                      const int window,
+                      const double window,
                       const int recom_period,
                       const double lookahead,
                       const int min_df,
@@ -101,17 +101,10 @@ NumericMatrix t_runQM(T v,
             }
         }
         // to be sure, check again; this might be redundant in the case where deltas are weights, but whatever.
-        if (bad_weights<W>(time_deltas)) { stop("negative time deltas detected"); }
+        if (bad_weights<NumericVector>(time_deltas)) { stop("negative time deltas detected"); }
         // just going to use the sugar function here;
         //time = Rcpp::cumsum(time_deltas);
         time = (runningSumishCurryFour<ret_sum>(time_deltas,R_NilValue,NA_INTEGER,0,100000,false,false));
-        // ack, just roll my own cumsum. so annoying.
-        //time = NumericVector(time_deltas.size());
-        //double tval=0;
-        //for (int zzz=0;zzz < time_deltas.size();zzz++) {
-            //tval += time_deltas[zzz];
-            //time[zzz] = tval;
-        //}
     }
     if (opt_lb_time.isNotNull()) {
         lb_time = opt_lb_time.get();
@@ -138,10 +131,9 @@ NumericMatrix t_runQM(T v,
 
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
-    const bool infwin = IntegerVector::is_na(window);
-    if ((window < 1) && (!infwin)) { stop("must give positive window"); }
+    const bool infwin = NumericVector::is_na(window);
+    if ((window <= 0) && (!infwin)) { stop("must give positive window"); }
     if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); }
-    const int quasiwin = (infwin)? (numel):(window);
 
     // whether to use the gap between lb_time as the effective window
     const bool gapwin = variable_win && infwin;
@@ -213,8 +205,11 @@ NumericMatrix t_runQM(T v,
 
     tr_jjj = 0;
     tr_iii = -1;
-    prev_tf = MIN(tminf,lb_time[0] + lookahead - window - 1.0);  // make it less than t0 will be.
-
+    if (infwin) {
+        prev_tf = tminf;
+    } else {
+        prev_tf = MIN(tminf,lb_time[0] + lookahead - window - 1.0);  // make it less than t0 will be.
+    }
 
     // now run through lll index//FOLDUP
     for (lll=0;lll < numlb;++lll) {
@@ -293,7 +288,7 @@ NumericMatrix t_runQMCurryZero(T v,
                                Rcpp::Nullable< Rcpp::NumericVector > time_deltas,
                                Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                                const int ord,
-                               const int window,
+                               const double window,
                                const int recom_period,
                                const double lookahead,
                                const int min_df,
@@ -335,7 +330,7 @@ NumericMatrix t_runQMCurryOne(T v,
                               Rcpp::Nullable< Rcpp::NumericVector > time_deltas,
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                               const int ord,
-                              const int window,
+                              const double window,
                               const int recom_period,
                               const double lookahead,
                               const int min_df,
@@ -371,7 +366,7 @@ NumericMatrix t_runQMCurryTwo(T v,
                               Rcpp::Nullable< Rcpp::NumericVector > time_deltas,
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                               const int ord,
-                              const int window,
+                              const double window,
                               const int recom_period,
                               const double lookahead,
                               const int min_df,
@@ -401,7 +396,7 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                 Rcpp::Nullable< Rcpp::NumericVector > time_deltas,
                                 Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                                 const int ord,
-                                const int window,
+                                const double window,
                                 const int recom_period,
                                 const double lookahead,
                                 const int min_df,
