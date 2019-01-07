@@ -151,7 +151,8 @@ xq <- t_running_apx_quantiles(x,c(0.1,0.25,0.5,0.75,0.9),
        time=seq_along(x),window=200,lb_time=c(100,200,400))
 
 xq <- t_running_apx_median(x,time=seq_along(x),window=200,lb_time=c(100,200,400))
-xq <- t_running_apx_median(x,time=cumsum(runif(length(x),min=0.5,max=1.5)),window=200,lb_time=c(100,200,400))
+xq <- t_running_apx_median(x,time=cumsum(runif(length(x),min=0.5,max=1.5)),
+      window=200,lb_time=c(100,200,400))
 
 # weighted median?
 wts <- runif(length(x),min=1,max=5)
