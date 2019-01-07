@@ -168,10 +168,20 @@ RET runningSumish(T v,
                     nextw = wts[lll];
                 } 
                 nextv = v[lll];
-                if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
+                if (!na_rm) {
                     if (has_wts) {
                         fvsum += oneT(nextv * nextw);
                         fwsum += oneW(nextw);
+                    } else {
+                        fvsum += oneT(nextv);
+                        ++nel;
+                    }
+                } else if (!ISNAN(nextv)) {
+                    if (has_wts) {
+                        if (!(ISNAN(nextw) || (nextw <= 0))) {
+                            fvsum += oneT(nextv * nextw);
+                            fwsum += oneW(nextw);
+                        }
                     } else {
                         fvsum += oneT(nextv);
                         ++nel;
@@ -231,6 +241,7 @@ SEXP runningSumishCurryTwo(T v,
                            const bool check_wts,
                            const bool return_int) {
     NumericVector dummy_wts;
+    // 2FIX: to get smaller images, use IntegerVector instead of logicals and convert to 0/1
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
             case  INTSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int); }

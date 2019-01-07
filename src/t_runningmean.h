@@ -116,94 +116,75 @@ RET t_runningSumish(T v,
     // from happening. like subtracting old observations, say.
     const bool infwin = NumericVector::is_na(window);
     if ((window <= 0) && (!infwin)) { stop("must give positive window"); }
+    if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); }
 
-    int iii,jjj,lll;
+    // whether to use the gap between lb_time as the effective window
+    const bool gapwin = variable_win && infwin;
+
+    double tf,t0;
+    double prev_tf;
+    const double tminf = time[0] - 1.0;  // effectively -inf?
+    if (!gapwin && infwin) { t0 = tminf; }
+
+
+    int iii,jjj,lll,tr_iii,tr_jjj;
     int numel = v.size();
     if (time.size() != numel) {
         stop("size of time does not match v"); // nocov
     }
     const int numlb = lb_time.size();
 
-    RET xret(numel);
+    RET xret(numlb);
 
     if (has_wts) {
         if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
     }
     // 2FIX: this all has to be recouched in terms of a time window...
+    
+    tr_jjj = 0;
+    tr_iii = -1;
+    if (infwin) {
+        prev_tf = tminf;
+    } else {
+        prev_tf = MIN(tminf,lb_time[0] - window - 1.0);  // make it less than t0 will be.
+    }
 
-    jjj = 0;
-    for (iii=0;iii < numel;++iii) {
-        if (!do_recompute || (subcount < restart_period)) {
-            // add one
-            if (has_wts) { //FOLDUP
-                nextw = wts[iii];
-            } 
-            nextv = v[iii];
-            if (! na_rm) {
-                if (has_wts) {
-                    fvsum += oneT(nextv * nextw);
-                    fwsum += oneW(nextw);
-                } else {
-                    fvsum += oneT(nextv);
-                    ++nel;
-                }
-            } else if (! ISNAN(nextv)) {
-                if (has_wts) {
-                    if (! ((ISNAN(nextw) || (nextw <= 0)))) {
-                        fvsum += oneT(nextv * nextw);
-                        fwsum += oneW(nextw);
-                    }
-                } else {
-                    fvsum += oneT(nextv);
-                    ++nel;
-                }
-            }//UNFOLD
-            // remove one
-            if (!infwin && (iii >= window)) {
-                if (has_wts) { //FOLDUP
-                    prevw = wts[jjj];
-                } 
-                prevv = v[jjj];
-                if (! na_rm) {
-                    if (has_wts) {
-                        fvsum -= oneT(prevv * prevw);
-                        fwsum -= oneW(prevw);
-                    } else {
-                        fvsum -= oneT(prevv);
-                        --nel;
-                    }
-                    if (do_recompute) { ++subcount; }
-                } else if (! ISNAN(prevv)) {
-                    if (has_wts) {
-                        if (! ((ISNAN(prevw) || (prevw <= 0)))) {
-                            fvsum -= oneT(prevv * prevw);
-                            fwsum -= oneW(prevw);
-                        if (do_recompute) { ++subcount; }
-                        }
-                    } else {
-                        fvsum -= oneT(prevv);
-                        --nel;
-                        if (do_recompute) { ++subcount; }
-                    }
-                }//UNFOLD
-                ++jjj;
+    subcount = 0;
+    // now run through lll index//FOLDUP
+    for (lll=0;lll < numlb;++lll) {
+        tf = lb_time[lll];
+        if (gapwin) {
+            if (lll==0) {
+                t0 = tminf;  // effectively -inf? 
+            } else {
+                t0 = lb_time[lll-1];
             }
-        } else {
-            // flat out recompute;//FOLDUP
-            // this seems a little odd, but note we are positively adding here,
-            // not subtracting, so increment the jjj first.
-            ++jjj;
+        } else if (!infwin) {
+            t0 = tf - window;
+        }
+        // otherwise t0 was set as tminf previously.
+
+        // if there is no overlap, then just restart the whole thingy.
+        if ((prev_tf <= t0) || (subcount >= restart_period)) {
+            // could bisect, but lets not get fancy
+            if (!infwin) { while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; } }
+            tr_iii = tr_jjj;
+            while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
+
+            // now sum up all elements from tr_jjj on the bottom, to (tr_iii-1) on the top, inclusive.
+
             // init//FOLDUP
             fvsum = oneT(0);
             if (has_wts) { fwsum = oneW(0); }
             nel = 0; //UNFOLD
-            for (lll=jjj;lll <= iii;++lll) {
+
+            for (iii=tr_jjj;iii < tr_iii;++iii) {
                 // add one
                 if (has_wts) { //FOLDUP
-                    nextw = wts[lll];
+                    nextw = wts[iii];
                 } 
-                nextv = v[lll];
-                if (! (na_rm && (ISNAN(nextv) || (has_wts && (ISNAN(nextw) || (nextw <= 0)))))) { 
+                nextv = v[iii];
+                if (!na_rm) {
                     if (has_wts) {
                         fvsum += oneT(nextv * nextw);
                         fwsum += oneW(nextw);
@@ -211,25 +192,141 @@ RET t_runningSumish(T v,
                         fvsum += oneT(nextv);
                         ++nel;
                     }
+                } else if (!ISNAN(nextv)) {
+                    if (has_wts) {
+                        if (!(ISNAN(nextw) || (nextw <= 0))) {
+                            fvsum += oneT(nextv * nextw);
+                            fwsum += oneW(nextw);
+                        }
+                    } else {
+                        fvsum += oneT(nextv);
+                        ++nel;
+                    }
                 }//UNFOLD
             }
-            subcount = 0;//UNFOLD
-        }
-        // store em
-        if ((has_wts && (fwsum.as() < min_df)) || (!has_wts && (nel < min_df))) { 
-            xret[iii] = oneT(NA_REAL); 
-        } else { 
-            if (retwhat==ret_sum) {
-                xret[iii] = fvsum.as(); 
-            } else {
-                if (has_wts) {
-                    xret[iii] = fvsum.as() /  double(fwsum.as());
-                } else {
-                    xret[iii] = fvsum.as()/nel; 
+            subcount = 0;
+        } else {
+            while ((tr_iii < numel) && (time[tr_iii] <= tf)) { 
+                // add one //FOLDUP
+                if (has_wts) { 
+                    nextw = wts[tr_iii];
+                } 
+                nextv = v[tr_iii];
+                if (! na_rm) {
+                    if (has_wts) {
+                        fvsum += oneT(nextv * nextw);
+                        fwsum += oneW(nextw);
+                    } else {
+                        fvsum += oneT(nextv);
+                        ++nel;
+                    }
+                } else if (! ISNAN(nextv)) {
+                    if (has_wts) {
+                        if (! ((ISNAN(nextw) || (nextw <= 0)))) {
+                            fvsum += oneT(nextv * nextw);
+                            fwsum += oneW(nextw);
+                        }
+                    } else {
+                        fvsum += oneT(nextv);
+                        ++nel;
+                    }
+                }//UNFOLD
+                tr_iii++; 
+            }
+            if (!infwin) {
+                while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { 
+                    // remove one//FOLDUP
+                    if (has_wts) { 
+                        prevw = wts[tr_jjj];
+                    } 
+                    prevv = v[tr_jjj];
+                    if (! na_rm) {
+                        if (has_wts) {
+                            fvsum -= oneT(prevv * prevw);
+                            fwsum -= oneW(prevw);
+                        } else {
+                            fvsum -= oneT(prevv);
+                            --nel;
+                        }
+                        if (do_recompute) { ++subcount; }
+                    } else if (! ISNAN(prevv)) {
+                        if (has_wts) {
+                            if (! ((ISNAN(prevw) || (prevw <= 0)))) {
+                                fvsum -= oneT(prevv * prevw);
+                                fwsum -= oneW(prevw);
+                            if (do_recompute) { ++subcount; }
+                            }
+                        } else {
+                            fvsum -= oneT(prevv);
+                            --nel;
+                            if (do_recompute) { ++subcount; }
+                        }
+                    }//UNFOLD
+                    tr_jjj++; 
                 }
             }
+            // may need to recompute based on the number of subtractions. bummer.
+            if (subcount >= restart_period) {
+                // now sum up all elements from tr_jjj on the bottom, to (tr_iii-1) on the top, inclusive.
+
+                // init//FOLDUP
+                fvsum = oneT(0);
+                if (has_wts) { fwsum = oneW(0); }
+                nel = 0; //UNFOLD
+
+                for (iii=tr_jjj;iii < tr_iii;++iii) {
+                    // add one
+                    if (has_wts) { //FOLDUP
+                        nextw = wts[iii];
+                    } 
+                    nextv = v[iii];
+                    if (!na_rm) {
+                        if (has_wts) {
+                            fvsum += oneT(nextv * nextw);
+                            fwsum += oneW(nextw);
+                        } else {
+                            fvsum += oneT(nextv);
+                            ++nel;
+                        }
+                    } else if (!ISNAN(nextv)) {
+                        if (has_wts) {
+                            if (!(ISNAN(nextw) || (nextw <= 0))) {
+                                fvsum += oneT(nextv * nextw);
+                                fwsum += oneW(nextw);
+                            }
+                        } else {
+                            fvsum += oneT(nextv);
+                            ++nel;
+                        }
+                    }//UNFOLD
+                }
+                subcount = 0;
+            }
         }
-    }
+        // store em//FOLDUP
+        if (has_wts) {
+            if (fwsum.as() < min_df) {
+                xret[lll] = oneT(NA_REAL); 
+            } else { 
+                if (retwhat==ret_sum) {
+                    xret[lll] = fvsum.as(); 
+                } else {
+                    xret[lll] = fvsum.as() /  double(fwsum.as());
+                }
+            }
+        } else {
+            if (nel < min_df) {
+                xret[lll] = oneT(NA_REAL); 
+            } else { 
+                if (retwhat==ret_sum) {
+                    xret[lll] = fvsum.as(); 
+                } else {
+                    xret[lll] = fvsum.as()/nel; 
+                }
+            }
+        }//UNFOLD
+        prev_tf = tf;
+    }//UNFOLD
     return xret;
 }
 

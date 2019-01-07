@@ -521,10 +521,13 @@ test_that("vs running ops",{#FOLDUP
 				# to avoid roundoff issues on double times.
 				t_window <- window - 0.1
 
-				#expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
-				#expect_error(tbox <- t_running_mean(x,time=times,wts=wts,min_df=0,window=t_window,na_rm=na_rm),NA)
-				#expect_equal(box,tbox,tolerance=1e-8)
+				expect_error(box <- running_sum(x,wts=wts,window=window,na_rm=na_rm),NA)
+				expect_error(tbox <- t_running_sum(x,time=times,wts=wts,window=t_window,na_rm=na_rm),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
 
+				expect_error(box <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
+				expect_error(tbox <- t_running_mean(x,time=times,wts=wts,min_df=0,window=t_window,na_rm=na_rm),NA)
+				expect_equal(box,tbox,tolerance=1e-8)
 
 				expect_error(box <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
 				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
@@ -601,7 +604,8 @@ test_that("check em",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
-	slow_op <- function(v,func,outsize=1,time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
+	slow_op <- function(v,func,outsize=1,missfill=NA,
+											time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
 											na_rm=FALSE,min_df=0,lookahead=0,variable_win=FALSE,wts_as_delta=TRUE,...) {
 		if (is.null(time)) {
 			if (is.null(time_deltas) && !is.null(wts) && wts_as_delta) {
@@ -641,10 +645,18 @@ test_that("check em",{#FOLDUP
 						retv <- func(vsub,wts=subwts,...)
 					}
 				} else {
-					retv <- rep(NA,outsize)
+					retv <- rep(missfill,outsize)
 				}
 				retv
 			})
+	}
+	slow_t_running_sum <- function(v,...) {
+		func <- function(v,...) { prod(sd3(v,...)[c(2:3)]) }
+		as.numeric(slow_op(v=v,func=func,missfill=0,...))
+	}
+	slow_t_running_mean <- function(v,...) {
+		func <- function(v,...) { sd3(v,...)[2] }
+		as.numeric(slow_op(v=v,func=func,...))
 	}
 	slow_t_running_sd <- function(v,...) {
 		func <- function(v,...) { sd3(v,...)[1] }
@@ -701,13 +713,13 @@ test_that("check em",{#FOLDUP
 			# 2FIX? Inf window?
 			for (window in c(5,20.5,Inf)) { # FOLDUP
 				for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
-					#slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					#expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=FALSE),NA)
-					#expect_equal(fast,slow,tolerance=1e-8)
+					slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
+					expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
+					expect_equal(fast,slow,tolerance=1e-8)
 					
-					#slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					#expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=FALSE),NA)
-					#expect_equal(fast,slow,tolerance=1e-8)
+					slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
+					expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
+					expect_equal(fast,slow,tolerance=1e-8)
 
 					slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
 					expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=FALSE),NA)
