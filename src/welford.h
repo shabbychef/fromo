@@ -359,21 +359,25 @@ class Welford {
             double diffw,diffx,diffxw,addxw,remxw,nelm;
             if (!ord_beyond) {
                 if (has_wts) {
+                    // try this instead, maybe my math is wrong below...
+                    add_one(addxval,addwt);
+                    rem_one(remxval,remwt);
                     // yuck; maybe just call add_one and rem_one instead?
-                    nelm = double(m_wsum.as());
-                    addxw = addxval * double(addwt);
-                    remxw = remxval * double(remwt);
-                    diffw = double(addwt) - double(remwt);
-                    diffx = addxval - remxval;
-                    diffxw = addxw - remxw;
-                    diffmu = m_xx[1] * diffw + diffxw;
+                    
+                    //nelm = double(m_wsum.as());
+                    //addxw = addxval * double(addwt);
+                    //remxw = remxval * double(remwt);
+                    //diffw = double(addwt) - double(remwt);
+                    //diffx = addxval - remxval;
+                    //diffxw = addxw - remxw;
+                    //diffmu = m_xx[1] * diffw + diffxw;
 
-                    m_wsum += diffw;
-                    nel = double(m_wsum.as());
-                    // 2FIX: check for bottoming out?
-                    prevmu = m_xx[1];
-                    m_xx[1] += (diffmu/nel);
-                    m_xx[2] += (nelm * (-prevmu * (diffmu + diffxw) + (addxw * addxval - remxw * remxval)) - double(addwt) * double(remwt) * diffx * diffx) / nel;
+                    //m_wsum += diffw;
+                    //nel = double(m_wsum.as());
+                    //// 2FIX: check for bottoming out?
+                    //prevmu = m_xx[1];
+                    //m_xx[1] += (diffmu/nel);
+                    //m_xx[2] += (nelm * (-prevmu * (diffmu + diffxw) + (addxw * addxval - remxw * remxval)) - double(addwt) * double(remwt) * diffx * diffx) / nel;
                 } else {
                     nel = double(m_nel);
                     diffmu = addxval - remxval;
