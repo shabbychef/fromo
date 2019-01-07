@@ -154,7 +154,7 @@ NumericMatrix runQM(T v,
             // 2FIX: give access to v, not v[lll]...
             // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
 //yuck!!
-#include "moment_interp.hpp"
+#include "moment_interp.h"
         }//UNFOLD
         if (firstpart < numel) {
             tr_jjj = 0;
@@ -185,7 +185,7 @@ NumericMatrix runQM(T v,
                 // 2FIX: give access to v, not v[lll]...
                 // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
     //yuck!!
-#include "moment_interp.hpp"
+#include "moment_interp.h"
             }//UNFOLD
         }
     } else {
@@ -234,7 +234,7 @@ NumericMatrix runQM(T v,
             // 2FIX: give access to v, not v[lll]...
             // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
 //yuck!!
-#include "moment_interp.hpp"
+#include "moment_interp.h"
         }//UNFOLD
     }
     return xret;
