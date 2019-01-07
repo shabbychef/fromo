@@ -368,7 +368,6 @@ SEXP t_runningSumishCurryTwo(T v,
                              const bool na_rm, const int min_df, const int restart_period,
                              const bool variable_win, const bool wts_as_delta, const bool check_wts,
                              const bool return_int) {
-    NumericVector dummy_wts;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
             case  INTSXP: { return t_runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,time,time_deltas,window,wts,lb_time,
@@ -377,12 +376,14 @@ SEXP t_runningSumishCurryTwo(T v,
             case REALSXP: { return t_runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,true,do_recompute>(v,time,time_deltas,window,wts,lb_time,
                                                                                                                                   na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                                                   false); } // SIC: when double weights, cannot return int
-            case  LGLSXP: { return t_runningSumishCurryOne<T,oneT,v_robustly,LogicalVector,bool,false,retwhat,true,do_recompute>(v,time,time_deltas,window,wts,lb_time,
+            // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
+            case  LGLSXP: { return t_runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,time,time_deltas,window,as<IntegerVector>(wts),lb_time,
                                                                                                                                  na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                                                  return_int); }
             default: stop("Unsupported weight type"); // nocov
         }
     }
+    NumericVector dummy_wts;
     return t_runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,false,do_recompute>(v,time,time_deltas,window,dummy_wts,lb_time,
                                                                                                            na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                            return_int); 
@@ -405,7 +406,8 @@ SEXP t_runningSumishCurryThree(SEXP v,
         case REALSXP: { return t_runningSumishCurryTwo<NumericVector, double, true, retwhat, do_recompute>(v,time,time_deltas,window,wts,lb_time,
                                                                                                          na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                          return_int); }
-        case  LGLSXP: { return t_runningSumishCurryTwo<LogicalVector, bool, false, retwhat, do_recompute>(v,time,time_deltas,window,wts,lb_time,
+        // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
+        case  LGLSXP: { return t_runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(as<IntegerVector>(v),time,time_deltas,window,wts,lb_time,
                                                                                                          na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                          return_int); }
         default: stop("Unsupported input type"); // nocov

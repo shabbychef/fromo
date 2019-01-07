@@ -419,7 +419,8 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts); }
-        case  LGLSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, 
+        // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
+        case  LGLSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts,  
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts); }

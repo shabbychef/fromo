@@ -240,16 +240,17 @@ SEXP runningSumishCurryTwo(T v,
                            const bool na_rm,
                            const bool check_wts,
                            const bool return_int) {
-    NumericVector dummy_wts;
     // 2FIX: to get smaller images, use IntegerVector instead of logicals and convert to 0/1
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
             case  INTSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int); }
             case REALSXP: { return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,false); } // SIC: when double weights, cannot return int
-            case  LGLSXP: { return runningSumishCurryOne<T,oneT,v_robustly,LogicalVector,bool,false,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int); }
+            // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
+            case  LGLSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,as<IntegerVector>(wts),window,min_df,recom_period,na_rm,check_wts,return_int); }
             default: stop("Unsupported weight type"); // nocov
         }
     }
+    NumericVector dummy_wts;
     return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,false,do_recompute>(v,dummy_wts,window,min_df,recom_period,na_rm,check_wts,return_int);
 }
 
@@ -265,7 +266,8 @@ SEXP runningSumishCurryThree(SEXP v,
     switch (TYPEOF(v)) {
         case  INTSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(v, wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
         case REALSXP: { return runningSumishCurryTwo<NumericVector, double, true, retwhat, do_recompute>(v, wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
-        case  LGLSXP: { return runningSumishCurryTwo<LogicalVector, bool, false, retwhat, do_recompute>(v, wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
+        // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
+        case  LGLSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(as<IntegerVector>(v), wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
         default: stop("Unsupported input type");
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
