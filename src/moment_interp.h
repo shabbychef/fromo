@@ -226,7 +226,7 @@
                 xret(lll,3) = mydf; 
                 xret(lll,2) = frets.m_xx[1];
                 xret(lll,1) = frets.sd(renormalize,used_df);
-                xret(lll,0) = frets.skew()
+                xret(lll,0) = frets.skew();
             } else {
                 xret(lll,3) = mydf; 
                 if (mydf >= 1) {
