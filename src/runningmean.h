@@ -112,15 +112,17 @@ RET runningSumish(T v,
                     fvsum += oneT(nextv);
                     ++nel;
                 }
-            } else if (! ISNAN(nextv)) {
-                if (has_wts) {
-                    if (! ((ISNAN(nextw) || (nextw <= 0)))) {
-                        fvsum += oneT(nextv * nextw);
-                        fwsum += oneW(nextw);
+            } else {
+                if (! ISNAN(nextv)) {
+                    if (has_wts) {
+                        if (! ((ISNAN(nextw) || (nextw <= 0)))) {
+                            fvsum += oneT(nextv * nextw);
+                            fwsum += oneW(nextw);
+                        }
+                    } else {
+                        fvsum += oneT(nextv);
+                        ++nel;
                     }
-                } else {
-                    fvsum += oneT(nextv);
-                    ++nel;
                 }
             }//UNFOLD
             // remove one
@@ -138,17 +140,19 @@ RET runningSumish(T v,
                         --nel;
                     }
                     if (do_recompute) { ++subcount; }
-                } else if (! ISNAN(prevv)) {
-                    if (has_wts) {
-                        if (! ((ISNAN(prevw) || (prevw <= 0)))) {
-                            fvsum -= oneT(prevv * prevw);
-                            fwsum -= oneW(prevw);
-                        if (do_recompute) { ++subcount; }
+                } else {
+                    if (! ISNAN(prevv)) {
+                        if (has_wts) {
+                            if (! ((ISNAN(prevw) || (prevw <= 0)))) {
+                                fvsum -= oneT(prevv * prevw);
+                                fwsum -= oneW(prevw);
+                            if (do_recompute) { ++subcount; }
+                            }
+                        } else {
+                            fvsum -= oneT(prevv);
+                            --nel;
+                            if (do_recompute) { ++subcount; }
                         }
-                    } else {
-                        fvsum -= oneT(prevv);
-                        --nel;
-                        if (do_recompute) { ++subcount; }
                     }
                 }//UNFOLD
                 ++jjj;
@@ -176,31 +180,50 @@ RET runningSumish(T v,
                         fvsum += oneT(nextv);
                         ++nel;
                     }
-                } else if (!ISNAN(nextv)) {
-                    if (has_wts) {
-                        if (!(ISNAN(nextw) || (nextw <= 0))) {
-                            fvsum += oneT(nextv * nextw);
-                            fwsum += oneW(nextw);
+                } else {
+                    // in this case no need to increment nel, we know it will be window? 
+                    if (!ISNAN(nextv)) {
+                        if (has_wts) {
+                            if (!(ISNAN(nextw) || (nextw <= 0))) {
+                                fvsum += oneT(nextv * nextw);
+                                fwsum += oneW(nextw);
+                            }
+                        } else {
+                            fvsum += oneT(nextv);
+                            ++nel;
                         }
-                    } else {
-                        fvsum += oneT(nextv);
-                        ++nel;
                     }
                 }//UNFOLD
             }
             subcount = 0;//UNFOLD
         }
         // store em
-        if ((has_wts && (fwsum.as() < min_df)) || (!has_wts && (nel < min_df))) { 
-            xret[iii] = oneT(NA_REAL); 
-        } else { 
-            if (retwhat==ret_sum) {
-                xret[iii] = fvsum.as(); 
-            } else {
-                if (has_wts) {
-                    xret[iii] = fvsum.as() /  double(fwsum.as());
+        if (has_wts) {
+            if (fwsum.as() < min_df) {
+                xret[iii] = oneT(NA_REAL); 
+            } else { 
+                if (retwhat==ret_sum) {
+                    xret[iii] = fvsum.as(); 
                 } else {
-                    xret[iii] = fvsum.as()/nel; 
+                    if (has_wts) {
+                        xret[iii] = fvsum.as() / double(fwsum.as());
+                    } else {
+                        xret[iii] = fvsum.as() / double(nel); 
+                    }
+                }
+            }
+        } else {
+            if (nel < min_df) {
+                xret[iii] = oneT(NA_REAL); 
+            } else { 
+                if (retwhat==ret_sum) {
+                    xret[iii] = fvsum.as(); 
+                } else {
+                    if (has_wts) {
+                        xret[iii] = fvsum.as() / double(fwsum.as());
+                    } else {
+                        xret[iii] = fvsum.as() / double(nel); 
+                    }
                 }
             }
         }
