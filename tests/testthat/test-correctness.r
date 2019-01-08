@@ -32,6 +32,111 @@ set.char.seed <- function(str) {
 	set.seed(as.integer(charToRaw(str)))
 }
 THOROUGHNESS <- getOption('test.thoroughness',1.0)
+
+# slow version of t_running; requires a helper function.
+	slow_op <- function(v,func,outsize=1,missfill=NA,
+											time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
+											na_rm=FALSE,min_df=0,lookahead=0,variable_win=FALSE,wts_as_delta=TRUE,...) {
+		if (is.null(time)) {
+			if (is.null(time_deltas) && !is.null(wts) && wts_as_delta) {
+				time_deltas <- wts
+			} else {
+				stop('bad input')
+			}
+			time <- cumsum(time_deltas)
+		}
+		if (is.null(lb_time)) {
+			lb_time <- time
+		}
+		lb_time <- lb_time + lookahead
+		if (variable_win) {
+			tprev <- c(-Inf,lb_time[1:(length(lb_time)-1)])
+		} else {
+			tprev <- lb_time - window
+		}
+		# fix weights.
+		sapply(seq_along(lb_time),
+			function(idx) {
+				tf <- lb_time[idx]
+				t0 <- tprev[idx]
+				takeus <- (t0 < time) & (time <= tf)
+				if (na_rm) {
+					takeus <- takeus & !is.na(v)
+					if (!is.null(wts)) {
+						takeus <- takeus & !is.na(wts)
+					}
+				}
+				if (any(takeus)) {
+					vsub <- v[takeus]
+					if (is.null(wts)) {
+						retv <- func(vsub,...)
+					} else {
+						subwts <- wts[takeus]
+						retv <- func(vsub,wts=subwts,...)
+					}
+				} else {
+					retv <- rep(missfill,outsize)
+				}
+				retv
+			})
+	}
+
+	slow_t_running_sum <- function(v,...) {
+		func <- function(v,wts=NULL,...) { 
+			if (is.null(wts)) {
+				return(prod(sd3(v,...)[c(2:3)])) 
+			}
+			return(sum(v*wts))
+		}
+		as.numeric(slow_op(v=v,func=func,missfill=0,...))
+	}
+	slow_t_running_mean <- function(v,...) {
+		func <- function(v,...) { sd3(v,...)[2] }
+		as.numeric(slow_op(v=v,func=func,...))
+	}
+	slow_t_running_sd <- function(v,...) {
+		func <- function(v,...) { sd3(v,...)[1] }
+		matrix(slow_op(v=v,func=func,...),ncol=1)
+	}
+	slow_t_running_skew <- function(v,...) {
+		func <- function(v,...) { 
+			return(skew4(v,...)[1]) 
+		}
+		matrix(slow_op(v=v,func=func,...),ncol=1)
+	}
+	slow_t_running_kurt <- function(v,...) {
+		func <- function(v,...) { kurt5(v,...)[1] }
+		matrix(slow_op(v=v,func=func,...),ncol=1)
+	}
+
+	slow_t_running_sd3 <- function(v,...) {
+		func <- function(v,...) { sd3(v,...) }
+		t(slow_op(v=v,func=func,outsize=3,...))
+	}
+	slow_t_running_skew4 <- function(v,...) {
+		func <- function(v,...) { 
+			if (length(v) > 2) {
+				return(skew4(v,...))
+			} else {
+				return(c(NA,sd3(v,...)))
+			}
+		}
+		t(slow_op(v=v,func=func,outsize=4,...))
+	}
+	slow_t_running_kurt5 <- function(v,...) {
+		func <- function(v,...) { 
+			if (length(v) > 3) {
+				return(kurt5(v,...))
+			} else if (length(v) > 2) {
+				return(c(NA,skew4(v,...)))
+			} else {
+				return(c(NA,NA,sd3(v,...)))
+			}
+		}
+		t(slow_op(v=v,func=func,outsize=5,...))
+	}
+
+
 #UNFOLD
 
 context("first moments")#FOLDUP
@@ -270,7 +375,7 @@ tomat <- function(cbound) {
 	dumbv
 }
 
-context("running ops")# FOLDUP
+context("running ops are correct")# FOLDUP
 test_that("running ops are correct",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
@@ -425,6 +530,8 @@ test_that("running adjustments are correct",{#FOLDUP
 		}
 	}
 })#UNFOLD
+# UNFOLD
+context("weighted running ops are correct")# FOLDUP
 test_that("running weights work correctly",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	#skip_on_cran()
@@ -432,10 +539,10 @@ test_that("running weights work correctly",{#FOLDUP
 	set.char.seed("b82d252c-681b-4b98-9bb3-ffd17feeb4a1")
 	na_rm <- FALSE
 
+	restart_period <- 1000
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
-		wtlist <- list(rep(1L,xlen), 2+5*runif(xlen))
-		for (wts in wtlist) {
+		for (wts in list(rep(1L,xlen), runif(xlen,min=2,max=7))) { 
 			for (window in c(5,30,Inf)) { # FOLDUP
 
 				# 2FIX: add to this!
@@ -452,50 +559,54 @@ test_that("running weights work correctly",{#FOLDUP
 															sum(mywts * (x[mydx] - dumb_mean[iii])^2,na.rm=na_rm) / (dumb_sumwt[iii] - 1)
 							 },simplify=TRUE)
 				dumb_sd <- sqrt(dumb_var)
+				# the normalize version;
+				dumb_nvar <- sapply(seq_along(x),function(iii) { 
+															mydx <- max(1,iii-window+1):iii
+															mywts <- wts[mydx]
+															(dumb_count[iii]/dumb_sumwt[iii]) * sum(mywts * (x[mydx] - dumb_mean[iii])^2,na.rm=na_rm) / (dumb_count[iii] - 1)
+							 },simplify=TRUE)
+				dumb_nsd <- sqrt(dumb_nvar)
 
 				expect_error(fastv <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
 				expect_equal(fastv,dumb_mean,tolerance=1e-8)
 
-				expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=FALSE),NA)
+				expect_error(fastv <- running_centered(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+				dumbv <- x - dumb_mean;
+				expect_equal(as.numeric(fastv),dumbv,tolerance=1e-8)
 
-				#fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm)
-				## the dumb value:
-				#dumbv <- x - dumb_mean;
-				#expect_equal(max(abs(dumbv - fastv)),0,tolerance=1e-12)
+				for (nw in c(TRUE,FALSE)) {
+					if (nw) {
+						use_sd <- dumb_nsd
+						use_df <- dumb_count
+					} else {
+						use_sd <- dumb_sd
+						use_df <- dumb_sumwt
+					}
 
-				#fastv <- running_scaled(x,window=window,restart_period=restart_period,na_rm=na_rm)
-				## the dumb value:
-				#dumbv <- x / dumb_sd
-				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+					expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(as.numeric(fastv),use_sd,tolerance=1e-8)
 
-				#fastv <- running_zscored(x,window=window,restart_period=restart_period,na_rm=na_rm)
-				## the dumb value:
-				#dumbv <- (x - dumb_mean) / dumb_sd
-				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+					expect_error(fastv <- running_sd3(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(as.numeric(fastv[,1]),use_sd,tolerance=1e-8)
+					expect_equal(as.numeric(fastv[,2]),dumb_mean,tolerance=1e-8)
+					expect_equal(as.numeric(fastv[,3]),use_df,tolerance=1e-8)
 
-				#fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm)
-				## the dumb value:
-				#dumbv <- dumb_mean / dumb_sd
-				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+					fastv <- running_scaled(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw)
+					dumbv <- x / use_sd
+					expect_equal(as.numeric(fastv[2:length(x)]),dumbv[2:length(x)],tolerance=1e-8)
 
-				#fastv <- running_tstat(x,window=window,restart_period=restart_period,na_rm=na_rm)
-				## the dumb value:
-				#dumbv <- (dumb_mean * sqrt(dumb_count)) / dumb_sd
-				#expect_equal(max(abs(dumbv[2:length(x)] - fastv[2:length(x)])),0,tolerance=1e-12)
+					fastv <- running_zscored(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw)
+					dumbv <- (x - dumb_mean) / use_sd
+					expect_equal(dumbv[2:length(x)],fastv[2:length(x)],tolerance=1e-12)
 
-				#fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm,compute_se=TRUE)
-				## the dumb value:
-				#dumb_sr <- dumb_mean / dumb_sd
-				#expect_equal(max(abs(dumb_sr[2:length(x)] - fastv[2:length(x),1])),0,tolerance=1e-12)
+					fastv <- running_sharpe(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw)
+					dumbv <- dumb_mean / use_sd
+					expect_equal(dumbv[2:length(x)],fastv[2:length(x)],tolerance=1e-12)
 
-				#if (require(moments)) {
-					#dumb_skew <- sapply(seq_along(x),function(iii) { moments::skewness(x[max(1,iii-window+1):iii],na.rm=na_rm) },simplify=TRUE)
-					#dumb_exkurt <- sapply(seq_along(x),function(iii) { moments::kurtosis(x[max(1,iii-window+1):iii],na.rm=na_rm) - 3.0 },simplify=TRUE)
-					#dumb_merse <- sqrt((1 + 0.25 * (2+dumb_exkurt) * dumb_sr^2 - dumb_skew * dumb_sr) / dumb_count)
-					#expect_equal(max(abs(dumb_merse[5:length(x)] - fastv[5:length(x),2])),0,tolerance=1e-9)
-				#}
-				
+					fastv <- running_tstat(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw)
+					dumbv <- (dumb_mean * sqrt(use_df)) / use_sd
+					expect_equal(dumbv[2:length(x)],fastv[2:length(x)],tolerance=1e-12)
+				}
 			}# UNFOLD
 		}
 	}
@@ -601,146 +712,50 @@ test_that("vs running ops",{#FOLDUP
 # UNFOLD
 context("t_running vs slow version")# FOLDUP
 test_that("check em",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
-	slow_op <- function(v,func,outsize=1,missfill=NA,
-											time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
-											na_rm=FALSE,min_df=0,lookahead=0,variable_win=FALSE,wts_as_delta=TRUE,...) {
-		if (is.null(time)) {
-			if (is.null(time_deltas) && !is.null(wts) && wts_as_delta) {
-				time_deltas <- wts
-			} else {
-				stop('bad input')
-			}
-			time <- cumsum(time_deltas)
-		}
-		if (is.null(lb_time)) {
-			lb_time <- time
-		}
-		lb_time <- lb_time + lookahead
-		if (variable_win) {
-			tprev <- c(-Inf,lb_time[1:(length(lb_time)-1)])
-		} else {
-			tprev <- lb_time - window
-		}
-		# fix weights.
-		sapply(seq_along(lb_time),
-			function(idx) {
-				tf <- lb_time[idx]
-				t0 <- tprev[idx]
-				takeus <- (t0 < time) & (time <= tf)
-				if (na_rm) {
-					takeus <- takeus & !is.na(v)
-					if (!is.null(wts)) {
-						takeus <- takeus & !is.na(wts)
-					}
-				}
-				if (any(takeus)) {
-					vsub <- v[takeus]
-					if (is.null(wts)) {
-						retv <- func(vsub,...)
-					} else {
-						subwts <- wts[takeus]
-						retv <- func(vsub,wts=subwts,...)
-					}
-				} else {
-					retv <- rep(missfill,outsize)
-				}
-				retv
-			})
-	}
-	slow_t_running_sum <- function(v,...) {
-		func <- function(v,wts=NULL,...) { 
-			if (is.null(wts)) {
-				return(prod(sd3(v,...)[c(2:3)])) 
-			}
-			return(sum(v*wts))
-		}
-		as.numeric(slow_op(v=v,func=func,missfill=0,...))
-	}
-	slow_t_running_mean <- function(v,...) {
-		func <- function(v,...) { sd3(v,...)[2] }
-		as.numeric(slow_op(v=v,func=func,...))
-	}
-	slow_t_running_sd <- function(v,...) {
-		func <- function(v,...) { sd3(v,...)[1] }
-		matrix(slow_op(v=v,func=func,...),ncol=1)
-	}
-	slow_t_running_skew <- function(v,...) {
-		func <- function(v,...) { 
-			return(skew4(v,...)[1]) 
-		}
-		matrix(slow_op(v=v,func=func,...),ncol=1)
-	}
-	slow_t_running_kurt <- function(v,...) {
-		func <- function(v,...) { kurt5(v,...)[1] }
-		matrix(slow_op(v=v,func=func,...),ncol=1)
-	}
-
-	slow_t_running_sd3 <- function(v,...) {
-		func <- function(v,...) { sd3(v,...) }
-		t(slow_op(v=v,func=func,outsize=3,...))
-	}
-	slow_t_running_skew4 <- function(v,...) {
-		func <- function(v,...) { 
-			if (length(v) > 2) {
-				return(skew4(v,...))
-			} else {
-				return(c(NA,sd3(v,...)))
-			}
-		}
-		t(slow_op(v=v,func=func,outsize=4,...))
-	}
-	slow_t_running_kurt5 <- function(v,...) {
-		func <- function(v,...) { 
-			if (length(v) > 3) {
-				return(kurt5(v,...))
-			} else if (length(v) > 2) {
-				return(c(NA,skew4(v,...)))
-			} else {
-				return(c(NA,NA,sd3(v,...)))
-			}
-		}
-		t(slow_op(v=v,func=func,outsize=5,...))
-	}
-
 	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
-
 	na_rm <- FALSE
-
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
 			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=0.5,max=1.5))) { 
-			#for (wts in list(NULL,rep(1L,xlen))) { 
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
 					for (window in c(5,20.5,Inf)) { # FOLDUP
 						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
-							slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
-							expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
+							slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta)
+							expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
 							expect_equal(fast,slow,tolerance=1e-8)
 							
-							slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
-							expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
+							slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta)
+							expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
 							expect_equal(fast,slow,tolerance=1e-8)
 
 							for (nw in c(TRUE,FALSE)) { 
-								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
-								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
+								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
+								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-8)
 
-								slow <- slow_t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
-								expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								slow <- slow_t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
+								expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-8)
 
-								slow <- slow_t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
-								expect_error(fast <- t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								# the error has nothing to do with wts_as_delta ? 
+								expect_error(gast <- t_running_skew(x,time=cumsum(wts),wts=wts,window=window,lb_time=cumsum(wts),na_rm=na_rm,wts_as_delta=FALSE,normalize_wts=nw),NA)
+								expect_equal(gast,slow,tolerance=1e-8)
+
+
+								#expect_error(fooz <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
+								#expect_error(gooz <- running_skew4(x,window=6,wts=wts,na_rm=na_rm,normalize_wts=nw),NA)
+								#expect_error(blaz <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
+
+								slow <- slow_t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
+								expect_error(fast <- t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-8)
 
-								slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
-								expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
+								expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
 								# ignore the df computation in slow when empty
 								slow[fast[,3]==0,3] <- 0
 								expect_equal(fast,slow,tolerance=1e-8)
@@ -765,10 +780,9 @@ test_that("check em",{#FOLDUP
 })#UNFOLD
 
 # UNFOLD
-#
+context("t_running_sd")# FOLDUP
 # t_running_sd is a bellwether for the other methods
 # as it goes, so goes the other Welford based functions
-context("t_running_sd")# FOLDUP
 test_that("check it",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
@@ -798,52 +812,6 @@ test_that("check it",{#FOLDUP
 		}
 		return(sqrt(vv))
 	}
-	slow_op <- function(v,func,outsize=1,missfill=NA,
-											time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
-											na_rm=FALSE,min_df=0,lookahead=0,variable_win=FALSE,wts_as_delta=TRUE,...) {
-		if (is.null(time)) {
-			if (is.null(time_deltas) && !is.null(wts) && wts_as_delta) {
-				time_deltas <- wts
-			} else {
-				stop('bad input')
-			}
-			time <- cumsum(time_deltas)
-		}
-		if (is.null(lb_time)) {
-			lb_time <- time
-		}
-		lb_time <- lb_time + lookahead
-		if (variable_win) {
-			tprev <- c(-Inf,lb_time[1:(length(lb_time)-1)])
-		} else {
-			tprev <- lb_time - window
-		}
-		# fix weights.
-		sapply(seq_along(lb_time),
-			function(idx) {
-				tf <- lb_time[idx]
-				t0 <- tprev[idx]
-				takeus <- (t0 < time) & (time <= tf)
-				if (na_rm) {
-					takeus <- takeus & !is.na(v)
-					if (!is.null(wts)) {
-						takeus <- takeus & !is.na(wts)
-					}
-				}
-				if (any(takeus)) {
-					vsub <- v[takeus]
-					if (is.null(wts)) {
-						retv <- func(vsub,...)
-					} else {
-						subwts <- wts[takeus]
-						retv <- func(vsub,wts=subwts,...)
-					}
-				} else {
-					retv <- rep(missfill,outsize)
-				}
-				retv
-			})
-	}
 	slow_t_running_sd <- function(v,...) {
 		matrix(slow_op(v=v,func=reference_sd,...),ncol=1)
 	}
@@ -860,9 +828,17 @@ test_that("check it",{#FOLDUP
 					for (window in c(5,20.5,Inf)) { # FOLDUP
 						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
 							for (nw in c(TRUE,FALSE)) { 
-								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw)
-								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
+								expect_error(slow <- slow_t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw),NA)
+								expect_error(fast <- t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-8)
+
+
+							#slowmu <- slow_t_running_mean(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm)
+							#slowmuz <- running_mean(x,wts=wts,window=6)
+							#slowzoo <- running_mean(x,window=window)
+
+								#expect_error(fooz <- t_running_sd3(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
+								#expect_error(barz <- running_sd3(x,wts=wts,window=6,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
 							}
 						}
 					}# UNFOLD
