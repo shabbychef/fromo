@@ -375,7 +375,7 @@ tomat <- function(cbound) {
 	dumbv
 }
 
-context("running ops are correct")# FOLDUP
+context("running ops are correct")
 test_that("running ops are correct",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
@@ -530,8 +530,9 @@ test_that("running adjustments are correct",{#FOLDUP
 		}
 	}
 })#UNFOLD
-# UNFOLD
-context("weighted running ops are correct")# FOLDUP
+
+
+context("weighted running ops are correct")
 test_that("running weights work correctly",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	#skip_on_cran()
@@ -611,8 +612,8 @@ test_that("running weights work correctly",{#FOLDUP
 		}
 	}
 })#UNFOLD
-# UNFOLD
-context("t_running for trivial case")# FOLDUP
+
+context("t_running for trivial case")
 test_that("vs running ops",{#FOLDUP
 	# hey, Volkswagon called while you were out:
 	skip_on_cran()
@@ -624,7 +625,7 @@ test_that("vs running ops",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		times <- seq_along(x)
-		for (wts in list(NULL,rep(1L,xlen), runif(xlen,min=2,max=7))) {
+		for (wts in list(NULL,rep(1L,xlen), runif(xlen,min=1.2,max=3.5))) {
 			# 2FIX? Inf window?
 			for (window in c(5,30,Inf)) { # FOLDUP
 				# to avoid roundoff issues on double times.
@@ -709,8 +710,8 @@ test_that("vs running ops",{#FOLDUP
 		}
 	}
 })#UNFOLD
-# UNFOLD
-context("t_running vs slow version")# FOLDUP
+
+context("t_running vs slow version")
 test_that("check em",{#FOLDUP
 	skip_on_cran()
 
@@ -719,10 +720,10 @@ test_that("check em",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
-			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=0.5,max=1.5))) { 
+			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.1,max=2.1))) { 
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
-					for (window in c(5,20.5,Inf)) { # FOLDUP
+					for (window in c(11.5,20.5,Inf)) { # FOLDUP
 						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
 							slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta)
 							expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
@@ -742,8 +743,8 @@ test_that("check em",{#FOLDUP
 								expect_equal(fast,slow,tolerance=1e-8)
 
 								# the error has nothing to do with wts_as_delta ? 
-								expect_error(gast <- t_running_skew(x,time=cumsum(wts),wts=wts,window=window,lb_time=cumsum(wts),na_rm=na_rm,wts_as_delta=FALSE,normalize_wts=nw),NA)
-								expect_equal(gast,slow,tolerance=1e-8)
+								#expect_error(gast <- t_running_skew(x,time=cumsum(wts),wts=wts,window=window,lb_time=cumsum(wts),na_rm=na_rm,wts_as_delta=FALSE,normalize_wts=nw),NA)
+								#expect_equal(gast,slow,tolerance=1e-8)
 
 
 								#expect_error(fooz <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
@@ -779,8 +780,7 @@ test_that("check em",{#FOLDUP
 	}
 })#UNFOLD
 
-# UNFOLD
-context("t_running_sd")# FOLDUP
+context("t_running_sd")
 # t_running_sd is a bellwether for the other methods
 # as it goes, so goes the other Welford based functions
 test_that("check it",{#FOLDUP
@@ -822,10 +822,10 @@ test_that("check it",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
-			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=0.5,max=1.5))) { 
+			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.2,max=2.1))) { 
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
-					for (window in c(5,20.5,Inf)) { # FOLDUP
+					for (window in c(11.5,20.5,Inf)) { # FOLDUP
 						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
 							for (nw in c(TRUE,FALSE)) { 
 								expect_error(slow <- slow_t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw),NA)
@@ -848,7 +848,6 @@ test_that("check it",{#FOLDUP
 	}
 })#UNFOLD
 
-# UNFOLD
 context("monoid nonsense")# FOLDUP
 test_that("join/unjoin",{#FOLDUP
 	set.char.seed("1325a51e-1584-4f89-9ea3-f15223a223d9")
