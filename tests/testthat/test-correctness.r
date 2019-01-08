@@ -513,9 +513,7 @@ test_that("vs running ops",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		times <- seq_along(x)
-		wtlist <- list(NULL,rep(1L,xlen), 2+5*runif(xlen))
-		#wtlist <- list(NULL,rep(1L,xlen))
-		for (wts in wtlist) {
+		for (wts in list(NULL,rep(1L,xlen), runif(xlen,min=2,max=7))) {
 			# 2FIX? Inf window?
 			for (window in c(5,30,Inf)) { # FOLDUP
 				# to avoid roundoff issues on double times.
@@ -529,71 +527,73 @@ test_that("vs running ops",{#FOLDUP
 				expect_error(tbox <- t_running_mean(x,time=times,wts=wts,min_df=0,window=t_window,na_rm=na_rm),NA)
 				expect_equal(box,tbox,tolerance=1e-8)
 
-				expect_error(box <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
+				for (nw in c(TRUE,FALSE)) { 
+					expect_error(box <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_error(tbox <- t_running_sd(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
 
-				expect_error(box <- running_skew(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_skew(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_kurt(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_kurt(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_sd3(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_sd3(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-				
-				expect_error(box <- running_skew4(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_skew4(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_kurt5(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_kurt5(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_centered(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_centered(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_scaled(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_scaled(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_zscored(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_zscored(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_tstat(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_tstat(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				for (cse in c(TRUE,FALSE)) {
-					expect_error(box <- running_sharpe(x,wts=wts,window=window,na_rm=na_rm,compute_se=cse,normalize_wts=TRUE),NA)
+					expect_error(box <- running_skew(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
 					# the 0.1 is to avoid roundoff issues on the double times.
-					expect_error(tbox <- t_running_sharpe(x,time=times,wts=wts,window=t_window,na_rm=na_rm,compute_se=cse,normalize_wts=TRUE),NA)
+					expect_error(tbox <- t_running_skew(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_kurt(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_kurt(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_sd3(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_sd3(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+					
+					expect_error(box <- running_skew4(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_skew4(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_kurt5(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_kurt5(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_centered(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_centered(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_scaled(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_scaled(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_zscored(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_zscored(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_tstat(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_tstat(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					for (cse in c(TRUE,FALSE)) {
+						expect_error(box <- running_sharpe(x,wts=wts,window=window,na_rm=na_rm,compute_se=cse,normalize_wts=nw),NA)
+						# the 0.1 is to avoid roundoff issues on the double times.
+						expect_error(tbox <- t_running_sharpe(x,time=times,wts=wts,window=t_window,na_rm=na_rm,compute_se=cse,normalize_wts=nw),NA)
+						expect_equal(box,tbox,tolerance=1e-8)
+					}
+
+					expect_error(box <- running_apx_median(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_apx_median(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_apx_quantiles(x,ptiles,max_order=3,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_apx_quantiles(x,ptiles,max_order=3,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
 					expect_equal(box,tbox,tolerance=1e-8)
 				}
-
-				expect_error(box <- running_apx_median(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_apx_median(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
-
-				expect_error(box <- running_apx_quantiles(x,ptiles,max_order=3,wts=wts,window=window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				# the 0.1 is to avoid roundoff issues on the double times.
-				expect_error(tbox <- t_running_apx_quantiles(x,ptiles,max_order=3,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=TRUE),NA)
-				expect_equal(box,tbox,tolerance=1e-8)
 			}# UNFOLD
 		}
 	}
@@ -651,7 +651,12 @@ test_that("check em",{#FOLDUP
 			})
 	}
 	slow_t_running_sum <- function(v,...) {
-		func <- function(v,...) { prod(sd3(v,...)[c(2:3)]) }
+		func <- function(v,wts=NULL,...) { 
+			if (is.null(wts)) {
+				return(prod(sd3(v,...)[c(2:3)])) 
+			}
+			return(sum(v*wts))
+		}
 		as.numeric(slow_op(v=v,func=func,missfill=0,...))
 	}
 	slow_t_running_mean <- function(v,...) {
@@ -702,55 +707,167 @@ test_that("check em",{#FOLDUP
 
 	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
 
-
 	na_rm <- FALSE
 
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
-		times <- cumsum(runif(length(x),min=0.2,max=0.4))
-		wtlist <- list(NULL,rep(1L,xlen))
-		for (wts in wtlist) {
-			# 2FIX? Inf window?
-			for (window in c(5,20.5,Inf)) { # FOLDUP
-				for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
-					slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
-					expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
-					expect_equal(fast,slow,tolerance=1e-8)
-					
-					slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
-					expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
-					expect_equal(fast,slow,tolerance=1e-8)
+		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
+			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=0.5,max=1.5))) { 
+			#for (wts in list(NULL,rep(1L,xlen))) { 
+				wts_as_delta <- is.null(times) & !is.null(wts)
+				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
+					for (window in c(5,20.5,Inf)) { # FOLDUP
+						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
+							slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
+							expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
+							expect_equal(fast,slow,tolerance=1e-8)
+							
+							slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm)
+							expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm),NA)
+							expect_equal(fast,slow,tolerance=1e-8)
 
-					slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=FALSE),NA)
-					expect_equal(fast,slow,tolerance=1e-8)
+							for (nw in c(TRUE,FALSE)) { 
+								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
+								expect_equal(fast,slow,tolerance=1e-8)
 
-					slow <- slow_t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE),NA)
-					expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								expect_equal(fast,slow,tolerance=1e-8)
 
-					slow <- slow_t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					expect_error(fast <- t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE),NA)
-					expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								expect_equal(fast,slow,tolerance=1e-8)
 
-					slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE),NA)
-					# ignore the df computation in slow when empty
-					slow[fast[,3]==0,3] <- 0
-					expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								# ignore the df computation in slow when empty
+								slow[fast[,3]==0,3] <- 0
+								expect_equal(fast,slow,tolerance=1e-8)
 
-					slow <- slow_t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					expect_error(fast <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE),NA)
-					# ignore the df computation in slow when empty
-					slow[fast[,4]==0,4] <- 0
-					expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								# ignore the df computation in slow when empty
+								slow[fast[,4]==0,4] <- 0
+								expect_equal(fast,slow,tolerance=1e-8)
 
-					slow <- slow_t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE)
-					expect_error(fast <- t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=FALSE),NA)
-					slow[fast[,5]==0,5] <- 0
-					expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								slow[fast[,5]==0,5] <- 0
+								expect_equal(fast,slow,tolerance=1e-8)
+							}
+						}
+					}# UNFOLD
 				}
-			}# UNFOLD
+			}
+		}
+	}
+})#UNFOLD
+
+# UNFOLD
+#
+# t_running_sd is a bellwether for the other methods
+# as it goes, so goes the other Welford based functions
+context("t_running_sd")# FOLDUP
+test_that("check it",{#FOLDUP
+	# hey, Volkswagon called while you were out:
+	skip_on_cran()
+
+	reference_sd <- function(x,wts=NULL,na_rm=FALSE,normalize_wts=FALSE,min_df=0,used_df=1) {
+		if (na_rm) {
+			isok <- !is.na(x)
+			if (!is.null(wts)) {
+				isok <- isok & !is.na(wts) & wts >= 0
+			}
+			x <- x[isok]
+			if (!is.null(wts)) {
+				wts <- wts[isok]
+			}
+		}
+		if (length(x) < min_df) {
+			return(NA)
+		}
+		if (!is.null(wts)) {
+			wsum <- sum(wts)
+			mu <- sum(x*wts) / wsum
+			vv <- sum(wts * (x - mu)^2) / (wsum - used_df)
+		} else {
+			wsum <- length(x)
+			mu <- sum(x) / wsum
+			vv <- sum((x - mu)^2) / (wsum - used_df)
+		}
+		return(sqrt(vv))
+	}
+	slow_op <- function(v,func,outsize=1,missfill=NA,
+											time=NULL,time_deltas=NULL,window=Inf,wts=NULL,lb_time=NULL,
+											na_rm=FALSE,min_df=0,lookahead=0,variable_win=FALSE,wts_as_delta=TRUE,...) {
+		if (is.null(time)) {
+			if (is.null(time_deltas) && !is.null(wts) && wts_as_delta) {
+				time_deltas <- wts
+			} else {
+				stop('bad input')
+			}
+			time <- cumsum(time_deltas)
+		}
+		if (is.null(lb_time)) {
+			lb_time <- time
+		}
+		lb_time <- lb_time + lookahead
+		if (variable_win) {
+			tprev <- c(-Inf,lb_time[1:(length(lb_time)-1)])
+		} else {
+			tprev <- lb_time - window
+		}
+		# fix weights.
+		sapply(seq_along(lb_time),
+			function(idx) {
+				tf <- lb_time[idx]
+				t0 <- tprev[idx]
+				takeus <- (t0 < time) & (time <= tf)
+				if (na_rm) {
+					takeus <- takeus & !is.na(v)
+					if (!is.null(wts)) {
+						takeus <- takeus & !is.na(wts)
+					}
+				}
+				if (any(takeus)) {
+					vsub <- v[takeus]
+					if (is.null(wts)) {
+						retv <- func(vsub,...)
+					} else {
+						subwts <- wts[takeus]
+						retv <- func(vsub,wts=subwts,...)
+					}
+				} else {
+					retv <- rep(missfill,outsize)
+				}
+				retv
+			})
+	}
+	slow_t_running_sd <- function(v,...) {
+		matrix(slow_op(v=v,func=reference_sd,...),ncol=1)
+	}
+
+	set.char.seed("79f60eda-7799-46e6-9096-6817b2d4473b")
+
+	na_rm <- FALSE
+	for (xlen in c(20,50)) {
+		x <- rnorm(xlen)
+		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
+			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=0.5,max=1.5))) { 
+				wts_as_delta <- is.null(times) & !is.null(wts)
+				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
+					for (window in c(5,20.5,Inf)) { # FOLDUP
+						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
+							for (nw in c(TRUE,FALSE)) { 
+								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw)
+								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
+								expect_equal(fast,slow,tolerance=1e-8)
+							}
+						}
+					}# UNFOLD
+				}
+			}
 		}
 	}
 })#UNFOLD
