@@ -241,26 +241,29 @@ class Welford {
                     m_xx[2] += xb_les_muA * (xval - m_xx[1]);
                 }
             } else {
-                div_left = -muD_les_muA;
-                term_left = pow(div_left,m_ord) * wtA;
-                if (has_wts) {
-                    div_right = -wtA / double(wt);
-                } else {
-                    div_right = -wtA;
-                }
-                rem_right = pow(div_right,m_ord - 1);
-
-                for (int ppp=m_ord;ppp > 2;ppp--) {
-                    m_xx[ppp] += term_left * (1.0 - rem_right);
-                    term_left /= div_left;
-                    rem_right /= div_right;
-                    inner_term = div_left;
-                    for (int qqq=1;qqq <= ppp-2;qqq++) {
-                        m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
-                        if (qqq < ppp - 2) { inner_term *= div_left; }
+                if (wtA > 0) {
+                    div_left = -muD_les_muA;
+                    term_left = pow(div_left,m_ord) * wtA;
+                    if (has_wts) {
+                        div_right = -wtA / double(wt);
+                    } else {
+                        div_right = -wtA;
                     }
+                    rem_right = pow(div_right,m_ord - 1);
+
+                    for (int ppp=m_ord;ppp > 2;ppp--) {
+                        m_xx[ppp] += term_left * (1.0 - rem_right);
+                        // could hit division by zero here ? 
+                        term_left /= div_left;
+                        rem_right /= div_right;
+                        inner_term = div_left;
+                        for (int qqq=1;qqq <= ppp-2;qqq++) {
+                            m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
+                            if (qqq < ppp - 2) { inner_term *= div_left; }
+                        }
+                    }
+                    m_xx[2] += term_left * (1.0 - rem_right);
                 }
-                m_xx[2] += term_left * (1.0 - rem_right);
             }
             return *this;
         }
@@ -292,42 +295,58 @@ class Welford {
                 m_nel--;
                 wtD = double(m_nel);
             }
-            xc_les_muA = xval - m_xx[1];
+            if (wtD > 0) {
+                xc_les_muA = xval - m_xx[1];
 
-            if (has_wts) {
-                pre_del_mu  = xc_les_muA * double(wt);
-                muD_les_muA = - pre_del_mu / wtD;
-            } else {
-                muD_les_muA = - xc_les_muA / wtD;
-            }
-            m_xx[1] += muD_les_muA;
-            // the mean is computed. drop out if ord==1
-            if (!ord_beyond) {
                 if (has_wts) {
-                    m_xx[2] -= pre_del_mu * (xval - m_xx[1]);
+                    pre_del_mu  = xc_les_muA * double(wt);
+                    muD_les_muA = - pre_del_mu / wtD;
                 } else {
-                    m_xx[2] -= xc_les_muA * (xval - m_xx[1]);
+                    muD_les_muA = - xc_les_muA / wtD;
                 }
-            } else {
-                div_left = -muD_les_muA;
-                term_left = pow(div_left,m_ord) * wtA;
-                if (has_wts) {
-                    div_right = wtA / double(wt);
+                m_xx[1] += muD_les_muA;
+                // the mean is computed. drop out if ord==1
+                if (!ord_beyond) {
+                    if (has_wts) {
+                        m_xx[2] -= pre_del_mu * (xval - m_xx[1]);
+                    } else {
+                        m_xx[2] -= xc_les_muA * (xval - m_xx[1]);
+                    }
                 } else {
-                    div_right = wtA;
-                }
-                rem_right = pow(div_right,m_ord - 1);
+                    div_left = -muD_les_muA;
+                    term_left = pow(div_left,m_ord) * wtA;
+                    if (has_wts) {
+                        div_right = wtA / double(wt);
+                    } else {
+                        div_right = wtA;
+                    }
+                    rem_right = pow(div_right,m_ord - 1);
 
-                for (int ppp=m_ord;ppp >= 2;ppp--) {
-                    m_xx[ppp] += term_left * (1.0 - rem_right);
-                    if (ppp > 2) {
-                        term_left /= div_left;
-                        rem_right /= div_right;
-                        inner_term = div_left;
-                        for (int qqq=1;qqq <= ppp-2;qqq++) {
-                            m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
-                            if (qqq < ppp - 2) { inner_term *= div_left; }
+                    for (int ppp=m_ord;ppp >= 2;ppp--) {
+                        m_xx[ppp] += term_left * (1.0 - rem_right);
+                        if (ppp > 2) {
+                            // could hit division by zero here ? 
+                            // in fact, you will for the first value encountered.
+                            term_left /= div_left;
+                            rem_right /= div_right;
+                            inner_term = div_left;
+                            for (int qqq=1;qqq <= ppp-2;qqq++) {
+                                m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
+                                if (qqq < ppp - 2) { inner_term *= div_left; }
+                            }
                         }
+                    }
+                }
+            } else {
+                // zero it out?
+                m_wsum = W(0);
+                m_nel = 0;
+                if (!ord_beyond) {
+                    m_xx[1] = 0.0;
+                    m_xx[2] = 0.0;
+                } else {
+                    for (int ppp=1;ppp <= m_ord;ppp++) {
+                        m_xx[ppp] = 0.0;
                     }
                 }
             }
