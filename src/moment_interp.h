@@ -403,33 +403,11 @@
         //}
     //}//UNFOLD
     if (retwhat==ret_centmaxonly) { //FOLDUP
-        // 2FIX: move this into welfords.
-        if (renormalize) {
-            mydf = double(frets.nel());
-            if ((mydf >= min_df) && (mydf >= ord)) {
-                dwsum = double(frets.wsum());
-                if (ord==2) {
-                    denom = dwsum - (used_df * mydf / dwsum);
-                } else {
-                    denom = dwsum;
-                }
-                xret(lll,0) = frets.m_xx[ord] / denom;
-            } else {
-                xret(lll,0) = NAN;
-            }
+        mydf = double(frets.wsum());
+        if ((mydf >= min_df) && (mydf >= ord)) {
+            xret(lll,0) = frets.a_cent_mom(ord,renormalize,used_df);
         } else {
-            dwsum = double(frets.wsum());
-            if ((dwsum >= min_df) && (dwsum >= ord)) {
-                mydf = double(frets.nel());
-                if (ord==2) {
-                    denom = mydf - used_df;
-                } else {
-                    denom = mydf;
-                }
-                xret(lll,0) = frets.m_xx[ord] / denom;
-            } else {
-                xret(lll,0) = NAN;
-            }
+            xret(lll,0) = NAN;
         }
     } //UNFOLD
     if (retwhat==ret_centered) {//FOLDUP
