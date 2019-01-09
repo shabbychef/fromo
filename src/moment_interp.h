@@ -430,35 +430,63 @@
         }
     } //UNFOLD
     if (retwhat==ret_centered) {//FOLDUP
-        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-            xret(lll,0) = frets.centered(double(v[lll]));
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                xret(lll,0) = frets.centered(double(v[lll]));
+            } else {
+                xret(lll,0) = NAN;
+            }
         } else {
-            xret(lll,0) = NAN;
+            if (frets.wsum() >= min_df) {
+                xret(lll,0) = frets.centered(double(v[lll]));
+            } else {
+                xret(lll,0) = NAN;
+            }
         }
     }//UNFOLD
     if (retwhat==ret_scaled) {//FOLDUP
-        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-            xret(lll,0) = frets.scaled(double(v[lll]),renormalize,used_df);
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                xret(lll,0) = frets.scaled(double(v[lll]),renormalize,used_df);
+            } else {
+                xret(lll,0) = NAN;
+            }
         } else {
-            xret(lll,0) = NAN;
+            if (frets.wsum() >= min_df) {
+                xret(lll,0) = frets.scaled(double(v[lll]),renormalize,used_df);
+            } else {
+                xret(lll,0) = NAN;
+            }
         }
     }//UNFOLD
     if (retwhat==ret_zscore) { //FOLDUP
-        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-            xret(lll,0) = frets.zscored(double(v[lll]),renormalize,used_df);
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                xret(lll,0) = frets.zscored(double(v[lll]),renormalize,used_df);
+            } else {
+                xret(lll,0) = NAN;
+            }
         } else {
-            xret(lll,0) = NAN;
+            if (frets.wsum() >= min_df) {
+                xret(lll,0) = frets.zscored(double(v[lll]),renormalize,used_df);
+            } else {
+                xret(lll,0) = NAN;
+            }
         }
     }//UNFOLD
     if (retwhat==ret_tstat) {//FOLDUP
-        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-            if (renormalize) {
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
                 xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.nel()));
             } else {
-                xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.wsum()));
+                xret(lll,0) = NAN;
             }
         } else {
-            xret(lll,0) = NAN;
+            if (frets.wsum() >= min_df) {
+                xret(lll,0) = (frets.mean() / frets.sd(renormalize,used_df)) * sqrt(double(frets.wsum()));
+            } else {
+                xret(lll,0) = NAN;
+            }
         }
     }//UNFOLD
     if (retwhat==ret_sharpe) { //FOLDUP
@@ -478,19 +506,37 @@
     }//UNFOLD
     if (retwhat==ret_sharpese) { //FOLDUP
         //double skew,exkurt,sr;
-        if ((!renormalize && (frets.wsum() >= min_df)) || (renormalize && (frets.nel() >= min_df))) {
-            skew = frets.skew();
-            exkurt = frets.exkurt();
-            sr = frets.sharpe(renormalize,used_df);
-            xret(lll,0) = sr;
-            if (renormalize) {
-                xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / double(frets.nel()));
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                // same
+                skew = frets.skew();
+                exkurt = frets.exkurt();
+                sr = frets.sharpe(renormalize,used_df);
+                xret(lll,0) = sr;
+                // different
+                mydf = double(frets.nel());
+
+                xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / mydf);
             } else {
-                xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / double(frets.wsum()));
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
             }
         } else {
-            xret(lll,0) = NAN;
-            xret(lll,1) = NAN;
+            if (frets.wsum() >= min_df) {
+                // same
+                skew = frets.skew();
+                exkurt = frets.exkurt();
+                sr = frets.sharpe(renormalize,used_df);
+                xret(lll,0) = sr;
+                // different
+                mydf = double(frets.wsum());
+
+                xret(lll,1) = sqrt((1.0 + sr * (0.25 * (2.0 + exkurt) * sr - skew)) / mydf);
+
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+            }
         }
     }//UNFOLD
     if (retwhat==ret_stdev) { //FOLDUP
