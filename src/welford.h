@@ -133,6 +133,24 @@ class Welford {
         FORCE_INLINE double sd(const bool normalize,const double used_df) const {
             return sqrt(var(normalize,used_df));
         }
+        // one centered moment, not standardized.
+        // this should be the approximate weighted mean of
+        // (x - weighted_mean)^ord
+        inline double a_cent_mom(const int ord,const bool normalize,const double used_df) const {
+            if (ord==2) {
+                return sqrt(var(normalize,used_df));
+            } else if (ord==1) {
+                Rcpp::warning("first centered moment is zero.");
+                return 0.0;
+            } else {
+                if (ord > m_ord) { stop("cannot compute this high of a moment."); }
+                if (has_wts) {
+                    return m_xx[ord] / double(m_wsum.as());
+                } else {
+                    return m_xx[ord] / double(m_nel);
+                }
+            }
+        }
         inline double skew() const {
             if (has_wts) {
                 return (sqrt(double(m_wsum.as())) * m_xx[3] / pow(m_xx[2],1.5));
@@ -190,61 +208,59 @@ class Welford {
                     }
                 }
             }
-            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
-            della = xval - m_xx[1];
+
+            double xb_les_muA, pre_del_mu, muD_les_muA, wtD, wtA;
+            double term_left, div_left, rem_right, div_right, inner_term;
+            // xval = x_b
+            // wt = w_b
+            // xb_les_muA = x_b - mu_A
+
             if (has_wts) {
-                m_nel++;
-                nelm = double(m_wsum.as());
+                m_nel++; 
+                wtA = double(m_wsum.as());
                 m_wsum += wt;
-                nel = double(m_wsum.as());
+                wtD = double(m_wsum.as());
             } else {
-                nelm = double(m_nel);
+                wtA = double(m_nel);
                 m_nel++;
-                nel = nelm + 1.0;
+                wtD = double(m_nel);
             }
+            xb_les_muA = xval - m_xx[1];
             if (has_wts) {
-                delnel = della * double(wt) / nel;
+                pre_del_mu  = xb_les_muA * double(wt);
+                muD_les_muA = pre_del_mu / wtD;
             } else {
-                delnel = della / nel;
+                muD_les_muA = xb_les_muA / wtD;
             }
-            m_xx[1] += delnel;
+            m_xx[1] += muD_les_muA;
+            // the mean is computed. drop out if ord==1
             if (!ord_beyond) {
-                //m_xx[2] += della * wt * (xval - m_xx[1]);
-                // I believe these are equivalent ; 
-                m_xx[2] += della * delnel * nelm;
+                if (has_wts) {
+                    m_xx[2] += pre_del_mu * (xval - m_xx[1]);
+                } else {
+                    m_xx[2] += xb_les_muA * (xval - m_xx[1]);
+                }
             } else {
-                if (nelm > 0) {
-                    drat = della * nelm / nel;
-                    if (has_wts) {
-                        nbyn = -wt / nelm;
-                    } else {
-                        nbyn = -1.0 / nelm;
-                    }
-                    ac_dn = pow(drat,m_ord);
-                    ac_on = pow(nbyn,m_ord-1);
+                div_left = -muD_les_muA;
+                term_left = pow(div_left,m_ord) * wtA;
+                if (has_wts) {
+                    div_right = -wtA / double(wt);
+                } else {
+                    div_right = -wtA;
+                }
+                rem_right = pow(div_right,m_ord - 1);
 
-                    for (int ppp=m_ord;ppp >= 2;ppp--) {
-                        if (has_wts) {
-                            m_xx[ppp] += ac_dn * wt * (1.0 - ac_on);
-                        } else {
-                            m_xx[ppp] += ac_dn * (1.0 - ac_on);
-                        }
-                        if (ord_beyond) {
-                            if (ppp > 2) {
-                                if (drat != 0) { ac_dn /= drat; }
-                                ac_on /= nbyn;
-                                ac_de = -delnel;
-
-                                for (int qqq=1;qqq <= ppp-2;qqq++) {
-                                    m_xx[ppp] += bincoef[ppp][qqq] * ac_de * m_xx[ppp-qqq];
-                                    if (qqq < ppp - 2) {
-                                        ac_de *= -delnel;
-                                    }
-                                }
-                            }
-                        }
+                for (int ppp=m_ord;ppp > 2;ppp--) {
+                    m_xx[ppp] += term_left * (1.0 - rem_right);
+                    term_left /= div_left;
+                    rem_right /= div_right;
+                    inner_term = div_left;
+                    for (int qqq=1;qqq <= ppp-2;qqq++) {
+                        m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
+                        if (qqq < ppp - 2) { inner_term *= div_left; }
                     }
                 }
+                m_xx[2] += term_left * (1.0 - rem_right);
             }
             return *this;
         }
@@ -260,65 +276,58 @@ class Welford {
             }
             m_subc++;
 
-            double della,nel,delnel,nelm,drat,nbyn,ac_dn,ac_on,ac_de;
-            della = xval - m_xx[1];
+            double xc_les_muA, pre_del_mu, muD_les_muA, wtD, wtA;
+            double term_left, div_left, rem_right, div_right, inner_term;
+
+            // xval = x_c
+            // wt = w_c
+            // xc_les_muA = x_c - mu_A
+            if (has_wts) {
+                m_nel--; 
+                wtA = double(m_wsum.as());
+                m_wsum -= wt;
+                wtD = double(m_wsum.as());
+            } else {
+                wtA = double(m_nel);
+                m_nel--;
+                wtD = double(m_nel);
+            }
+            xc_les_muA = xval - m_xx[1];
 
             if (has_wts) {
-                m_nel--;
-                nelm = double(m_wsum.as());
-                m_wsum -= wt;
-                nel = double(m_wsum.as());
+                pre_del_mu  = xc_les_muA * double(wt);
+                muD_les_muA = - pre_del_mu / wtD;
             } else {
-                nelm = double(m_nel);
-                m_nel--;
-                nel = nelm - 1.0;
+                muD_les_muA = - xc_les_muA / wtD;
             }
-            if (nel > 0) {
+            m_xx[1] += muD_les_muA;
+            // the mean is computed. drop out if ord==1
+            if (!ord_beyond) {
                 if (has_wts) {
-                    delnel = della * double(wt) / nel;
+                    m_xx[2] -= pre_del_mu * (xval - m_xx[1]);
                 } else {
-                    delnel = della / nel;
-                }
-                m_xx[1] -= delnel;
-                if (!ord_beyond) {
-                    //m_xx[2] -= della * wt * (xval - m_xx[1]);
-                    // I believe these are equivalent ; 
-                    m_xx[2] -= della * delnel * nelm;
-                } else {
-                    drat = delnel * nel;
-                    if (has_wts) {
-                        nbyn = -double(wt) / nel;
-                    } else {
-                        nbyn = -1.0 / nel;
-                    }
-                    ac_dn = drat*drat;
-                    ac_on = nbyn;
-
-                    for (int ppp=2;ppp <= m_ord;ppp++) {
-                        m_xx[ppp] -= ac_dn * (1.0 - ac_on);
-                        if (ord_beyond) {
-                            if (ppp < m_ord) {
-                                ac_dn *= drat;
-                                ac_on *= nbyn;
-                            }
-                            ac_de = -delnel;
-                            for (int qqq=1;qqq <= ppp-2;qqq++) {
-                                m_xx[ppp] -= bincoef[ppp][qqq] * ac_de * m_xx[ppp-qqq];
-                                if (qqq < ppp - 2) {
-                                    ac_de *= -delnel;
-                                }
-                            }
-                        }
-                    }
+                    m_xx[2] -= xc_les_muA * (xval - m_xx[1]);
                 }
             } else {
-                // zero it out?
-                if (!ord_beyond) {
-                    m_xx[1] = 0.0;
-                    m_xx[2] = 0.0;
+                div_left = -muD_les_muA;
+                term_left = pow(div_left,m_ord) * wtA;
+                if (has_wts) {
+                    div_right = wtA / double(wt);
                 } else {
-                    for (int ppp=1;ppp <= m_ord;ppp++) {
-                        m_xx[ppp] = 0.0;
+                    div_right = wtA;
+                }
+                rem_right = pow(div_right,m_ord - 1);
+
+                for (int ppp=m_ord;ppp >= 2;ppp--) {
+                    m_xx[ppp] += term_left * (1.0 - rem_right);
+                    if (ppp > 2) {
+                        term_left /= div_left;
+                        rem_right /= div_right;
+                        inner_term = div_left;
+                        for (int qqq=1;qqq <= ppp-2;qqq++) {
+                            m_xx[ppp] += bincoef[ppp][qqq] * inner_term * m_xx[ppp-qqq];
+                            if (qqq < ppp - 2) { inner_term *= div_left; }
+                        }
                     }
                 }
             }
