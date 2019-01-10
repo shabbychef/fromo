@@ -44,6 +44,10 @@ RUN (install2.r --error --skipinstalled --deps TRUE \
   moments microbenchmark PDQutils roll RcppRoll multcomp; \
   r -l 'devtools' -e 'options(unzip="internal");install_github("andrewuhl/rollingwindow");' )
 
+# get latest version of roll to test against. as of 2019-01-09, this is 1.1.2
+# from github
+RUN ( r -l 'devtools' -e 'options(unzip="internal");install_github("jjf234/roll");' )
+
 # already in there, I think. weird.
 # RUN groupadd -g 1000 spav && useradd -g spav -u 1000 spav;
 # USER spav
