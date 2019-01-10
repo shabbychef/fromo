@@ -153,7 +153,8 @@ THOROUGHNESS <- getOption('test.thoroughness',1.0)
 		if (!is.null(wts)) {
 			wsum <- sum(wts)
 			mu <- sum(x*wts) / wsum
-			vv <- sum(wts * (x - mu)^2) / (wsum - used_df)
+			deno <- wsum - used_df * ifelse(normalize_wts,wsum / length(x),1)
+			vv <- sum(wts * (x - mu)^2) / deno
 		} else {
 			wsum <- length(x)
 			mu <- sum(x) / wsum
@@ -761,14 +762,14 @@ test_that("check em",{#FOLDUP
 
 	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
 	na_rm <- FALSE
-	for (xlen in c(20,50)) {# FOLDUP
+	for (xlen in c(40,90)) {# FOLDUP
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
 			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.1,max=2.1))) { 
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
 					for (window in c(11.5,20.5,Inf)) { # FOLDUP
-						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
+						for (lb_time in list(NULL,3+cumsum(runif(10,min=0.4,max=1.1)))) {
 							slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta)
 							expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
 							expect_equal(fast,slow,tolerance=1e-8)
@@ -786,35 +787,27 @@ test_that("check em",{#FOLDUP
 								expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-8)
 
-								# the error has nothing to do with wts_as_delta ? 
-								#expect_error(gast <- t_running_skew(x,time=cumsum(wts),wts=wts,window=window,lb_time=cumsum(wts),na_rm=na_rm,wts_as_delta=FALSE,normalize_wts=nw),NA)
-								#expect_equal(gast,slow,tolerance=1e-8)
-
-
-								#expect_error(fooz <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
-								#expect_error(gooz <- running_skew4(x,window=6,wts=wts,na_rm=na_rm,normalize_wts=nw),NA)
-								#expect_error(blaz <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
-
 								slow <- slow_t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
 								expect_error(fast <- t_running_kurt(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-8)
 
-								#slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
-								#expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
-								## ignore the df computation in slow when empty
-								#slow[fast[,3]==0,3] <- 0
-								#expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
+								expect_error(fast <- t_running_sd3(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
+								# ignore the df computation in slow when empty
+								slow[fast[,3]==0,3] <- 0
+								slow[is.na(fast[,1]),1] <- NA
+								expect_equal(fast,slow,tolerance=1e-8)
 
-								#slow <- slow_t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
-								#expect_error(fast <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
-								## ignore the df computation in slow when empty
-								#slow[fast[,4]==0,4] <- 0
-								#expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_skew4(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								# ignore the df computation in slow when empty
+								okrow <- !is.na(fast[,4]) & fast[,4] > 3 & row(fast)[,4] > 3
+								expect_equal(fast[okrow,],slow[okrow,],tolerance=1e-8)
 
-								#slow <- slow_t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
-								#expect_error(fast <- t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
-								#slow[fast[,5]==0,5] <- 0
-								#expect_equal(fast,slow,tolerance=1e-8)
+								slow <- slow_t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw)
+								expect_error(fast <- t_running_kurt5(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,normalize_wts=nw),NA)
+								okrow <- !is.na(fast[,5]) & fast[,5] > 4 & row(fast)[,5] > 4
+								expect_equal(fast[okrow,],slow[okrow,],tolerance=1e-8)
 							}
 						}
 					}# UNFOLD
@@ -840,20 +833,11 @@ test_that("check it",{#FOLDUP
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
 					for (window in c(11.5,20.5,Inf)) { # FOLDUP
-						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
-							#for (nw in c(TRUE,FALSE)) { 
-							for (nw in c(FALSE)) { 
+						for (lb_time in list(NULL,cumsum(runif(20,min=0.2,max=1)))) {
+							for (nw in c(TRUE,FALSE)) { 
 								expect_error(slow <- reference_t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw),NA)
 								expect_error(fast <- t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,used_df=1,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
 								expect_equal(fast,slow,tolerance=1e-7)
-
-
-							#slowmu <- slow_t_running_mean(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm)
-							#slowmuz <- running_mean(x,wts=wts,window=6)
-							#slowzoo <- running_mean(x,window=window)
-
-								#expect_error(fooz <- t_running_sd3(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
-								#expect_error(barz <- running_sd3(x,wts=wts,window=6,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
 							}
 						}
 					}# UNFOLD
