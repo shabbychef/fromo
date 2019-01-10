@@ -136,7 +136,34 @@ THOROUGHNESS <- getOption('test.thoroughness',1.0)
 		t(slow_op(v=v,func=func,outsize=5,...))
 	}
 
-
+	reference_sd <- function(x,wts=NULL,na_rm=FALSE,normalize_wts=FALSE,min_df=0,used_df=1) {
+		if (na_rm) {
+			isok <- !is.na(x)
+			if (!is.null(wts)) {
+				isok <- isok & !is.na(wts) & wts >= 0
+			}
+			x <- x[isok]
+			if (!is.null(wts)) {
+				wts <- wts[isok]
+			}
+		}
+		if (length(x) < min_df) {
+			return(NA)
+		}
+		if (!is.null(wts)) {
+			wsum <- sum(wts)
+			mu <- sum(x*wts) / wsum
+			vv <- sum(wts * (x - mu)^2) / (wsum - used_df)
+		} else {
+			wsum <- length(x)
+			mu <- sum(x) / wsum
+			vv <- sum((x - mu)^2) / (wsum - used_df)
+		}
+		return(sqrt(vv))
+	}
+	slow_t_running_sd <- function(v,...) {
+		matrix(slow_op(v=v,func=reference_sd,...),ncol=1)
+	}
 #UNFOLD
 
 context("first moments")#FOLDUP
@@ -799,35 +826,6 @@ context("t_running_sd")
 test_that("check it",{#FOLDUP
 	skip_on_cran()
 
-	reference_sd <- function(x,wts=NULL,na_rm=FALSE,normalize_wts=FALSE,min_df=0,used_df=1) {
-		if (na_rm) {
-			isok <- !is.na(x)
-			if (!is.null(wts)) {
-				isok <- isok & !is.na(wts) & wts >= 0
-			}
-			x <- x[isok]
-			if (!is.null(wts)) {
-				wts <- wts[isok]
-			}
-		}
-		if (length(x) < min_df) {
-			return(NA)
-		}
-		if (!is.null(wts)) {
-			wsum <- sum(wts)
-			mu <- sum(x*wts) / wsum
-			vv <- sum(wts * (x - mu)^2) / (wsum - used_df)
-		} else {
-			wsum <- length(x)
-			mu <- sum(x) / wsum
-			vv <- sum((x - mu)^2) / (wsum - used_df)
-		}
-		return(sqrt(vv))
-	}
-	slow_t_running_sd <- function(v,...) {
-		matrix(slow_op(v=v,func=reference_sd,...),ncol=1)
-	}
-
 	set.char.seed("79f60eda-7799-46e6-9096-6817b2d4473b")
 
 	na_rm <- FALSE
@@ -860,68 +858,6 @@ test_that("check it",{#FOLDUP
 		}
 	}
 })#UNFOLD
-
-context("monoid nonsense")# FOLDUP
-test_that("join/unjoin",{#FOLDUP
-	set.char.seed("1325a51e-1584-4f89-9ea3-f15223a223d9")
-
-	x1 <- rnorm(1e3,mean=1)
-	x2 <- rnorm(1e3,mean=1)
-	max_ord <- 6L
-	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
-	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
-	expect_error(rs3 <- cent_sums(c(x1,x2),max_ord),NA)
-	# make sure these don't change? 
-	copy_rs1 <- rs1 + 0
-	copy_rs2 <- rs2 + 0
-	rs3alt <- join_cent_sums(rs1,rs2)
-	expect_equal(rs1,copy_rs1,tolerance=1e-7)
-	expect_equal(rs2,copy_rs2,tolerance=1e-7)
-	expect_equal(rs3,rs3alt,tolerance=1e-7)
-
-	copy_rs1 <- rs1 + 0
-	copy_rs2 <- rs2 + 0
-	copy_rs3 <- rs3 + 0
-
-	rs1alt <- unjoin_cent_sums(rs3,rs2)
-	rs2alt <- unjoin_cent_sums(rs3,rs1)
-	expect_equal(rs1,copy_rs1,tolerance=1e-7)
-	expect_equal(rs2,copy_rs2,tolerance=1e-7)
-	expect_equal(rs3,copy_rs3,tolerance=1e-7)
-
-	expect_equal(rs1,rs1alt,tolerance=1e-7)
-	expect_equal(rs2,rs2alt,tolerance=1e-7)
-})#UNFOLD
-test_that("cosums are sane",{#FOLDUP
-	set.char.seed("0020a8c0-ff6a-447c-a9bf-c6cc7160195f")
-
-	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
-	max_ord <- 2L
-	expect_error(rs1 <- cent_comoments(x1,max_ord,used_df=1L),NA)
-	expect_equal(rs1[1,1],nrow(x1))
-	expect_equal(rs1[1,1 + (1:ncol(x1))],colMeans(x1),tolerance=1e-7)
-	expect_equal(rs1[1 + (1:ncol(x1)),1],colMeans(x1),tolerance=1e-7)
-	expect_equal(rs1[1 + (1:ncol(x1)),1 + (1:ncol(x1))],cov(x1),tolerance=1e-7)
-})#UNFOLD
-test_that("join/unjoin cosums",{#FOLDUP
-	set.char.seed("9ecdda29-aaae-4f88-9fe7-4418846ca54c")
-
-	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
-	x2 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
-	max_ord <- 2L
-	expect_error(rs1 <- cent_cosums(x1,max_ord),NA)
-	expect_error(rs2 <- cent_cosums(x2,max_ord),NA)
-	expect_error(rs3 <- cent_cosums(rbind(x1,x2),max_ord),NA)
-	rs3alt <- join_cent_cosums(rs1,rs2)
-	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
-
-	expect_error(rs1alt <- unjoin_cent_cosums(rs3,rs2),NA)
-	expect_error(rs2alt <- unjoin_cent_cosums(rs3,rs1),NA)
-	expect_lt(max(abs(rs1 - rs1alt)),1e-7)
-	expect_lt(max(abs(rs2 - rs2alt)),1e-7)
-})#UNFOLD
-# UNFOLD
-# 2FIX: check the effects of NA
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=r:ft=r:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
