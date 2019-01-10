@@ -367,8 +367,7 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	expect_equal(krt[1],dumb_exkurt,tolerance=1e-9)
 })#UNFOLD
 #UNFOLD
-#
-#
+
 tomat <- function(cbound) {
 	dumbv <- as.matrix(cbound)
 	attr(dumbv,'dimnames') <- NULL 
@@ -638,7 +637,8 @@ test_that("vs running ops",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		times <- seq_along(x)
-		for (wts in list(NULL,rep(1L,xlen), runif(xlen,min=1.2,max=3.5))) {
+		#for (wts in list(NULL,rep(1L,xlen), runif(xlen,min=1.2,max=3.5))) {
+		for (wts in list(NULL,rep(1L,xlen))) {
 			# 2FIX? Inf window?
 			for (window in c(5,30,Inf)) { # FOLDUP
 				# to avoid roundoff issues on double times.
@@ -733,8 +733,7 @@ test_that("check em",{#FOLDUP
 	for (xlen in c(20,50)) {
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
-			#for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.1,max=2.1))) { 
-			for (wts in list(NULL,rep(1L,xlen))) { 
+			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.1,max=2.1))) { 
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
 					for (window in c(11.5,20.5,Inf)) { # FOLDUP
@@ -798,7 +797,6 @@ context("t_running_sd")
 # t_running_sd is a bellwether for the other methods
 # as it goes, so goes the other Welford based functions
 test_that("check it",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	reference_sd <- function(x,wts=NULL,na_rm=FALSE,normalize_wts=FALSE,min_df=0,used_df=1) {
