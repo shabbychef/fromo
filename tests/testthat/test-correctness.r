@@ -405,7 +405,6 @@ tomat <- function(cbound) {
 
 context("running ops are correct")
 test_that("running ops are correct",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 	set.char.seed("7ffe0035-2d0c-4586-a1a5-6321c7cf8694")
@@ -504,7 +503,6 @@ test_that("running ops are correct",{#FOLDUP
 	}
 })#UNFOLD
 test_that("running adjustments are correct",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	set.char.seed("967d2149-fbff-4d82-b227-ca3e1034bddb")
@@ -562,7 +560,7 @@ test_that("running adjustments are correct",{#FOLDUP
 
 context("weighted running ops are correct")
 test_that("running weights work correctly",{#FOLDUP
-	#skip_on_cran()
+	skip_on_cran()
 
 	set.char.seed("b82d252c-681b-4b98-9bb3-ffd17feeb4a1")
 	na_rm <- FALSE

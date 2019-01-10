@@ -105,7 +105,6 @@ test_that("cosum and comoment run without error",{#FOLDUP
 })#UNFOLD
 context("code runs: running_sd etc")
 test_that("running sd, skew, kurt run without error",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
@@ -218,7 +217,6 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 })#UNFOLD
 context("code runs: running_foo and weights")
 test_that("running foo and weights",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
@@ -256,7 +254,6 @@ test_that("running foo and weights",{#FOLDUP
 })#UNFOLD
 context("code runs: hits heywood")
 test_that("hit heywood branch",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
@@ -292,7 +289,6 @@ test_that("hit heywood branch",{#FOLDUP
 })#UNFOLD
 context("code runs: NA restart")
 test_that("NA restart period?",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
@@ -327,7 +323,6 @@ test_that("NA restart period?",{#FOLDUP
 })#UNFOLD
 context("code runs: running adjustments")
 test_that("running adjustments",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	set.char.seed("e36291f6-70e0-4412-9c50-bc46b6ab8639")
@@ -421,7 +416,6 @@ test_that("running adjustments",{#FOLDUP
 })#UNFOLD
 context("code runs: t_running_sd etc")
 test_that("t_running sd, skew, kurt run without error",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	set.char.seed("1cfb2b84-7eae-42f6-90ad-2552e74a5ad0")
@@ -433,92 +427,47 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
-	for (window in c(50,Inf)) {
-		for (na_rm in c(FALSE,TRUE)) {
-			#running_sum(x,time=times,window=window,restart_period=50L,na_rm=na_rm)
-			#running_mean(x,time=times,window=window,restart_period=50L,na_rm=na_rm)
-			expect_error(t_running_sd(x,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_skew(x,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_kurt(x,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_sd3(x,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_skew4(x,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_kurt5(x,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cent_moments(x,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cent_moments(x,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-			expect_error(t_running_std_moments(x,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cumulants(x,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_apx_quantiles(x,time=times,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-			#running_sum(y,time=times,window=window,restart_period=50L,na_rm=na_rm)
-			#running_mean(y,time=times,window=window,restart_period=50L,na_rm=na_rm)
-			expect_error(t_running_sd(y,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_skew(y,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_kurt(y,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_sd3(y,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_skew4(y,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_kurt5(y,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cent_moments(y,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cent_moments(y,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-			expect_error(t_running_std_moments(y,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cumulants(y,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_apx_quantiles(y,time=times,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-			expect_error(t_running_sd(z,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_skew(z,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_kurt(z,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_sd3(z,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_skew4(z,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_kurt5(z,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cent_moments(z,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cent_moments(z,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-			expect_error(t_running_std_moments(z,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_cumulants(z,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(t_running_apx_quantiles(z,time=times,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+	for (thingy in list(x,y,z)) { 
+		for (window in c(50,Inf)) {
+			for (na_rm in c(FALSE,TRUE)) {
+				expect_error(t_running_sum(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_mean(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_sd(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_skew(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_kurt(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_sd3(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_skew4(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_kurt5(thingy,time=times,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_cent_moments(thingy,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_cent_moments(thingy,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+				expect_error(t_running_std_moments(thingy,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_cumulants(thingy,time=times,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(t_running_apx_quantiles(thingy,time=times,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+			}
 		}
 	}
-	for (min_df in c(2L,10L)) {
-		#running_mean(x,time=times,window=window,min_df=min_df)
-		expect_error(t_running_sd(x,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_skew(x,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_kurt(x,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_sd3(x,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_skew4(x,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_kurt5(x,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_cent_moments(x,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_cent_moments(x,time=times,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
-		expect_error(t_running_std_moments(x,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_cumulants(x,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_apx_quantiles(x,time=times,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
 
-		#running_mean(y,time=times,window=window,min_df=min_df)
-		expect_error(t_running_sd(y,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_skew(y,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_kurt(y,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_sd3(y,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_skew4(y,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_kurt5(y,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_cent_moments(y,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_cent_moments(y,time=times,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
-		expect_error(t_running_std_moments(y,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_cumulants(y,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_apx_quantiles(y,time=times,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
-
-		#running_mean(z,window=window,min_df=min_df)
-		expect_error(t_running_sd(z,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_skew(z,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_kurt(z,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_sd3(z,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_skew4(z,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_kurt5(z,time=times,window=window,min_df=min_df),NA)
-		expect_error(t_running_cent_moments(z,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_cent_moments(z,time=times,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
-		expect_error(t_running_std_moments(z,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_cumulants(z,time=times,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(t_running_apx_quantiles(z,time=times,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
+	for (thingy in list(x,y,z)) { 
+		for (min_df in c(2L,10L)) {
+			expect_error(t_running_sum(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_mean(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_sd(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_skew(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_kurt(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_sd3(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_skew4(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_kurt5(thingy,time=times,window=window,min_df=min_df),NA)
+			expect_error(t_running_cent_moments(thingy,time=times,max_order=5L,window=window,min_df=min_df),NA)
+			expect_error(t_running_cent_moments(thingy,time=times,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
+			expect_error(t_running_std_moments(thingy,time=times,max_order=5L,window=window,min_df=min_df),NA)
+			expect_error(t_running_cumulants(thingy,time=times,max_order=5L,window=window,min_df=min_df),NA)
+			expect_error(t_running_apx_quantiles(thingy,time=times,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
+		}
 	}
 
-	#expect_error(t_running_sum(q))
-	#expect_error(t_running_mean(q))
+
+	expect_error(t_running_sum(q))
+	expect_error(t_running_mean(q))
 	expect_error(t_running_sd(q))
 	expect_error(t_running_skew(q))
 	expect_error(t_running_kurt(q))
@@ -578,10 +527,9 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 
 
 # 2FIX: check the effects of NA
-#
+
 context("weighted estimation")# FOLDUP
 test_that("running adjustments",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	skip_on_cran()
 
 	set.char.seed("e36291f6-70e0-4412-9c50-bc46b6ab8639")
