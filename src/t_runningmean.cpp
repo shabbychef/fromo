@@ -71,6 +71,7 @@ using namespace Rcpp;
 //' @template ref-romo
 //' @template ref-kahan
 //' @inheritParams sd3
+//' @template note-wts
 //' @rdname t_runningmean 
 //' @export
 // [[Rcpp::export]]

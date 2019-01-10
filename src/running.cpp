@@ -117,6 +117,7 @@ using namespace Rcpp;
 //' @template etc
 //' @template ref-romo
 //' @template param-wts
+//' @template note-wts
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
@@ -276,6 +277,7 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue,
 //' @template ref-cf
 //' @template ref-romo
 //' @template param-wts
+//' @template note-wts
 //' @rdname runningquantiles
 //' @export
 // [[Rcpp::export]]
@@ -378,6 +380,7 @@ NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue,
 //' @seealso \code{\link{t_running_centered}}, \code{\link{scale}}
 //' @template etc
 //' @template ref-romo
+//' @template note-wts
 //' @rdname runningadjustments
 //' @export
 // [[Rcpp::export]]

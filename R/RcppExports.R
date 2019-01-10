@@ -92,6 +92,7 @@
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
+#' @template note-wts
 #' @rdname firstmoments
 #' @export
 sd3 <- function(v, na_rm = FALSE, wts = NULL, sg_df = 1.0, check_wts = FALSE, normalize_wts = TRUE) {
@@ -405,6 +406,7 @@ ref_running_sd_barz <- function(v, window = 1000L) {
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
+#' @template note-wts
 #' @rdname runningmoments
 #' @export
 running_sd3 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
@@ -492,6 +494,7 @@ running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_r
 #' @template ref-cf
 #' @template ref-romo
 #' @template param-wts
+#' @template note-wts
 #' @rdname runningquantiles
 #' @export
 running_apx_quantiles <- function(v, p, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
@@ -583,6 +586,7 @@ running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_
 #' @seealso \code{\link{t_running_centered}}, \code{\link{scale}}
 #' @template etc
 #' @template ref-romo
+#' @template note-wts
 #' @rdname runningadjustments
 #' @export
 running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = FALSE) {
@@ -751,6 +755,7 @@ running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
+#' @template note-wts
 #' @seealso \code{\link{running_sd3}}.
 #' @rdname t_runningmoments
 #' @export
@@ -852,6 +857,7 @@ t_running_cumulants <- function(v, time = NULL, time_deltas = NULL, window = NUL
 #' @template ref-cf
 #' @template ref-romo
 #' @template param-wts
+#' @template note-wts
 #' @rdname t_runningquantiles
 #' @export
 t_running_apx_quantiles <- function(v, p, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
@@ -910,6 +916,7 @@ t_running_apx_median <- function(v, time = NULL, time_deltas = NULL, window = NU
 #' @seealso \code{\link{running_centered}}, \code{\link{scale}}
 #' @template etc
 #' @template ref-romo
+#' @template note-wts
 #' @rdname t_runningadjustments
 #' @export
 t_running_centered <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
@@ -983,6 +990,7 @@ t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, w
 #' @template ref-romo
 #' @template ref-kahan
 #' @inheritParams sd3
+#' @template note-wts
 #' @rdname t_runningmean 
 #' @export
 t_running_sum <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, restart_period = 10000L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE) {

@@ -144,6 +144,7 @@ using namespace Rcpp;
 //' @template etc
 //' @template ref-romo
 //' @template param-wts
+//' @template note-wts
 //' @rdname firstmoments
 //' @export
 // [[Rcpp::export]]
