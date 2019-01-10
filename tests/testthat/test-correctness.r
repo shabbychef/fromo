@@ -560,7 +560,6 @@ test_that("running adjustments are correct",{#FOLDUP
 
 context("weighted running ops are correct")
 test_that("running weights work correctly",{#FOLDUP
-	# hey, Volkswagon called while you were out:
 	#skip_on_cran()
 
 	set.char.seed("b82d252c-681b-4b98-9bb3-ffd17feeb4a1")
@@ -599,7 +598,11 @@ test_that("running weights work correctly",{#FOLDUP
 															mywts <- wts[mydx]
 															sum(mywts * (x[mydx] - slow_mean[iii])^3,na.rm=na_rm) / (slow_sumwt[iii])
 							 },simplify=TRUE)
-				# normalized version
+				slow_cent4 <- sapply(seq_along(x),function(iii) { 
+															mydx <- max(1,iii-window+1):iii
+															mywts <- wts[mydx]
+															sum(mywts * (x[mydx] - slow_mean[iii])^4,na.rm=na_rm) / (slow_sumwt[iii])
+							 },simplify=TRUE)
 
 				expect_error(fastv <- running_mean(x,wts=wts,min_df=0,window=window,na_rm=na_rm),NA)
 				expect_equal(fastv,slow_mean,tolerance=1e-8)
@@ -612,11 +615,9 @@ test_that("running weights work correctly",{#FOLDUP
 					if (nw) {
 						use_sd <- slow_nsd
 						use_df <- slow_count
-						cent_renorm <- slow_sumwt / slow_count
 					} else {
 						use_sd <- slow_sd
 						use_df <- slow_sumwt
-						cent_renorm <- 1
 					}
 
 					expect_error(fastv <- running_sd(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
@@ -644,8 +645,12 @@ test_that("running weights work correctly",{#FOLDUP
 					expect_equal(slowv[2:length(x)],fastv[2:length(x)],tolerance=1e-12)
 
 					expect_error(fastv <- running_cent_moments(x,wts=wts,window=window,max_order=3L,max_order_only=TRUE,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw),NA)
-					slowv <- slow_cent3 * cent_renorm 
-					#expect_equal(slowv[3:length(x)],fastv[3:length(x)],tolerance=1e-12)
+					slowv <- slow_cent3 
+					expect_equal(slowv[3:length(x)],fastv[3:length(x)],tolerance=1e-12)
+
+					expect_error(fastv <- running_cent_moments(x,wts=wts,window=window,max_order=4L,max_order_only=TRUE,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw),NA)
+					slowv <- slow_cent4 
+					expect_equal(slowv[4:length(x)],fastv[4:length(x)],tolerance=1e-12)
 				}
 			}# UNFOLD
 		}
