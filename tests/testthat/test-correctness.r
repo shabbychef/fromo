@@ -161,7 +161,8 @@ THOROUGHNESS <- getOption('test.thoroughness',1.0)
 		}
 		return(sqrt(vv))
 	}
-	slow_t_running_sd <- function(v,...) {
+	# not quite the same as slow_t_running_sd above
+	reference_t_running_sd <- function(v,...) {
 		matrix(slow_op(v=v,func=reference_sd,...),ncol=1)
 	}
 #UNFOLD
@@ -760,7 +761,7 @@ test_that("check em",{#FOLDUP
 
 	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
 	na_rm <- FALSE
-	for (xlen in c(20,50)) {
+	for (xlen in c(20,50)) {# FOLDUP
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
 			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.1,max=2.1))) { 
@@ -779,7 +780,7 @@ test_that("check em",{#FOLDUP
 							for (nw in c(TRUE,FALSE)) { 
 								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
 								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
-								#expect_equal(fast,slow,tolerance=1e-8)
+								expect_equal(fast,slow,tolerance=1e-8)
 
 								slow <- slow_t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
 								expect_error(fast <- t_running_skew(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)
@@ -820,7 +821,7 @@ test_that("check em",{#FOLDUP
 				}
 			}
 		}
-	}
+	}# UNFOLD
 })#UNFOLD
 
 context("t_running_sd")
@@ -832,19 +833,19 @@ test_that("check it",{#FOLDUP
 	set.char.seed("79f60eda-7799-46e6-9096-6817b2d4473b")
 
 	na_rm <- FALSE
-	for (xlen in c(20,50)) {
+	for (xlen in c(20,50)) {# FOLDUP
 		x <- rnorm(xlen)
 		for (times in list(NULL,cumsum(runif(length(x),min=0.2,max=0.4)))) {
-			#for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.2,max=2.1))) { 
-			for (wts in list(NULL,rep(1L,xlen))) {
+			for (wts in list(NULL,rep(1L,xlen),runif(xlen,min=1.2,max=2.1))) { 
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
 					for (window in c(11.5,20.5,Inf)) { # FOLDUP
 						for (lb_time in list(NULL,cumsum(runif(10,min=0.1,max=1)))) {
-							for (nw in c(TRUE,FALSE)) { 
-								expect_error(slow <- slow_t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw),NA)
-								expect_error(fast <- t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
-								expect_equal(fast,slow,tolerance=1e-8)
+							#for (nw in c(TRUE,FALSE)) { 
+							for (nw in c(FALSE)) { 
+								expect_error(slow <- reference_t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm,min_df=1,normalize_wts=nw),NA)
+								expect_error(fast <- t_running_sd(x,time=times,wts=wts,wts_as_delta=TRUE,used_df=1,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,normalize_wts=nw),NA)
+								expect_equal(fast,slow,tolerance=1e-7)
 
 
 							#slowmu <- slow_t_running_mean(x,time=times,wts=wts,wts_as_delta=TRUE,window=window,lb_time=lb_time,na_rm=na_rm)
@@ -859,7 +860,7 @@ test_that("check it",{#FOLDUP
 				}
 			}
 		}
-	}
+	}# UNFOLD
 })#UNFOLD
 
 #for vim modeline: (do not edit)
