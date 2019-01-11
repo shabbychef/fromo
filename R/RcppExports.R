@@ -28,6 +28,24 @@
 #' However, they will usually be faster than calling the various standard implementations
 #' more than once.
 #'
+#' Moments are computed as follows, given some values \eqn{x_i} and optional weights \eqn{w_i},
+#' defaulting to 1, the weighted mean is computed as
+#' \deqn{\mu = \frac{\sum_i x_i w_i}{\sum w_i}.}
+#' The weighted kth central sum is computed as
+#' \deqn{\mu = \sum_i \left(x_i - \mu\right)^k w_i.}
+#' Let \eqn{n = \sum_i w_i} be the sum of weights (or number of observations in the unweighted case).
+#' Then the weighted kth central moment is computed as that weighted sum divided by the
+#' adjusted sum weights:
+#' \deqn{\mu_k = \frac{\sum_i \left(x_i - \mu\right)^k w_i}{n - \nu},}
+#' where \eqn{\nu} is the \sQuote{used df}, provided by the user to adjust the denominator.
+#' (Typical values are 0 or 1.)
+#' The weighted kth standardized moment is the central moment divided by the second central moment
+#' to the \eqn{k/2} power:
+#' \deqn{\tilde{\mu}_k = \frac{\mu_k}{\mu_2^{k/2}}.}
+#' The (centered) rth cumulant, for \eqn{r \ge 2} is then computed using the formula of Willink, namely
+#' \deqn{\kappa_r = \mu_r - \sum_{j=0}^{r - 2} \binom{r - 1}{j} \mu_j \kappa {r-j}.}
+#' The standardized rth cumulant is the rth centered cumulant divided by \eqn{\mu_2^{r/2}}.
+#'
 #' @return a vector, filled out as follows:
 #' \describe{
 #' \item{sd3}{A vector of the (sample) standard devation, mean, and number of elements (or the total weight when \code{wts}
@@ -64,7 +82,7 @@
 #' for Gaussian input.
 #'
 #' @note
-#' 'centered cumulants' is redundant. The intent was to avoid possible collision with existing code named 'cumulants'.
+#' The term 'centered cumulants' is redundant. The intent was to avoid possible collision with existing code named 'cumulants'.
 #'
 #' @examples
 #' x <- rnorm(1e5)
@@ -118,6 +136,7 @@
 #'
 #' @template etc
 #' @template ref-romo
+#' @template ref-cumulants
 #' @template param-wts
 #' @template note-wts
 #' @rdname firstmoments

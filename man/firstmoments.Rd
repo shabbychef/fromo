@@ -95,6 +95,24 @@ implementations, due to differences in roundoff.
 These methods are reasonably fast, on par with the 'standard' implementations.
 However, they will usually be faster than calling the various standard implementations
 more than once.
+
+Moments are computed as follows, given some values \eqn{x_i} and optional weights \eqn{w_i},
+defaulting to 1, the weighted mean is computed as
+\deqn{\mu = \frac{\sum_i x_i w_i}{\sum w_i}.}
+The weighted kth central sum is computed as
+\deqn{\mu = \sum_i \left(x_i - \mu\right)^k w_i.}
+Let \eqn{n = \sum_i w_i} be the sum of weights (or number of observations in the unweighted case).
+Then the weighted kth central moment is computed as that weighted sum divided by the
+adjusted sum weights:
+\deqn{\mu_k = \frac{\sum_i \left(x_i - \mu\right)^k w_i}{n - \nu},}
+where \eqn{\nu} is the \sQuote{used df}, provided by the user to adjust the denominator.
+(Typical values are 0 or 1.)
+The weighted kth standardized moment is the central moment divided by the second central moment
+to the \eqn{k/2} power:
+\deqn{\tilde{\mu}_k = \frac{\mu_k}{\mu_2^{k/2}}.}
+The (centered) rth cumulant, for \eqn{r \ge 2} is then computed using the formula of Willink, namely
+\deqn{\kappa_r = \mu_r - \sum_{j=0}^{r - 2} \binom{r - 1}{j} \mu_j \kappa {r-j}.}
+The standardized rth cumulant is the rth centered cumulant divided by \eqn{\mu_2^{r/2}}.
 }
 \note{
 The first centered (and standardized) moment is often defined to be identically 0. Instead \code{cent_moments}
@@ -111,7 +129,7 @@ not the standard deviation. All other code return the standard deviation in that
 The kurtosis is \emph{excess kurtosis}, with a 3 subtracted, and should be nearly zero
 for Gaussian input.
 
-'centered cumulants' is redundant. The intent was to avoid possible collision with existing code named 'cumulants'.
+The term 'centered cumulants' is redundant. The intent was to avoid possible collision with existing code named 'cumulants'.
 
 The moment computations provided by fromo are 
 numerically robust, but will often \emph{not} provide the
@@ -192,6 +210,10 @@ Cook, J. D. "Accurately computing running variance."
 Cook, J. D. "Comparing three methods of computing 
 standard deviation."
 \url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
+
+Willink, R.  "Relationships Between Central Moments and Cumulants, with Formulae for the Central Moments of Gamma Distributions."
+Communications in Statistics - Theory and Methods, 32 no 4 (2003): 701-704.
+\url{https://doi.org/10.1081/STA-120018823}
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}
