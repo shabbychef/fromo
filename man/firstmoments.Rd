@@ -170,6 +170,10 @@ if (require(e1071)) {
     esku <- e1071::skewness(x,type=3)
     nobs <- resu[4]
     stopifnot(abs(esku - resu[1] * ((nobs-1)/nobs)^(3/2)) < 1e-14)
+
+    # similarly:
+    resu <- fromo::std_moments(x,max_order=3,used_df=0)
+    stopifnot(abs(esku - resu[1] * ((nobs-1)/nobs)^(3/2)) < 1e-14)
 }
 
 }

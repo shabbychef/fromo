@@ -162,6 +162,10 @@ using namespace Rcpp;
 //'     esku <- e1071::skewness(x,type=3)
 //'     nobs <- resu[4]
 //'     stopifnot(abs(esku - resu[1] * ((nobs-1)/nobs)^(3/2)) < 1e-14)
+//'
+//'     # similarly:
+//'     resu <- fromo::std_moments(x,max_order=3,used_df=0)
+//'     stopifnot(abs(esku - resu[1] * ((nobs-1)/nobs)^(3/2)) < 1e-14)
 //' }
 //'
 //' @template etc
@@ -241,6 +245,8 @@ NumericVector cent_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fa
                            bool check_wts=false, bool normalize_wts=true) {
     // 2FIX: add sg_df here?
     if (max_order < 1) { stop("must give largeish max_order"); }
+    // WTF, why does it not use the used_df? 
+    
     NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, max_order, na_rm, check_wts, normalize_wts);
     NumericVector vret = sums2revm(preval,(double)used_df);
     return vret;
@@ -256,12 +262,12 @@ NumericVector std_moments(SEXP v, int max_order=5, int used_df=0, bool na_rm=fal
     double sigma, adj;
     int mmm;
     if (max_order > 1) {
-        adj = cmoms(max_order - 2);
+        adj = cmoms[max_order - 2];
         sigma = sqrt(adj);
         cmoms(max_order-2) = sigma;  // put the stdev in
         for (mmm=3;mmm <= max_order;++mmm) {
             adj *= sigma;
-            cmoms(max_order-mmm) /= adj;
+            cmoms[max_order-mmm] /= adj;
         }
     }
     return cmoms;
