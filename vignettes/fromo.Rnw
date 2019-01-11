@@ -523,7 +523,7 @@ Normalization and consumed degrees of freedom affect the computation of \sdevpow
 	\item[Standardized Cumulants] These are the regular cumulants normalized by the
 		computed standard deviation:
 \begin{equation}
-	\sccum{\sta}{r} = \frac{\ccum{\sta}{r}}{\sdevpow{r}}.
+	\sccum{\sta}{r} = \frac{\ccum{\sta}{r}}{\sdevpow{\sta}{r}}.
 \end{equation}
 
 
