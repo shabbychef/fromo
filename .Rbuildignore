@@ -30,5 +30,4 @@ LICENSE
 rpkg_make
 libs
 nohup.out
-^.R
 ^.ipynb_checkpoints$
