@@ -43,7 +43,7 @@
 #' to the \eqn{k/2} power:
 #' \deqn{\tilde{\mu}_k = \frac{\mu_k}{\mu_2^{k/2}}.}
 #' The (centered) rth cumulant, for \eqn{r \ge 2} is then computed using the formula of Willink, namely
-#' \deqn{\kappa_r = \mu_r - \sum_{j=0}^{r - 2} \binom{r - 1}{j} \mu_j \kappa {r-j}.}
+#' \deqn{\kappa_r = \mu_r - \sum_{j=0}^{r - 2} {r - 1 \choose j} \mu_j \kappa {r-j}.}
 #' The standardized rth cumulant is the rth centered cumulant divided by \eqn{\mu_2^{r/2}}.
 #'
 #' @return a vector, filled out as follows:
