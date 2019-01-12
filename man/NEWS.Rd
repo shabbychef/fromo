@@ -10,7 +10,7 @@ News for package 'fromo'
 \newcommand{\cranfromo}{\CRANpkg{fromo}}
 \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 }
-\section{\fromo{} Version 0.2.0 (2019-01-12) }{
+\section{\fromo{} Version 0.2.0 (2019-01-11) }{
 
 \itemize{
 \item add \code{std_cumulants}

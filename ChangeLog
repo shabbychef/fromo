@@ -1,5 +1,5 @@
 
-2019-01-12 Steven E. Pav <shabbychef@gmail.com>
+2019-01-11 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.0 on CRAN
 * add std_cumulants.
 * add running_sum and running_mean.
