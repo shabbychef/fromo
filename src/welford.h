@@ -78,6 +78,12 @@ template<class W,bool has_wts,bool ord_beyond,bool na_rm>
 class Welford {
     public:
         int m_ord;
+    private: 
+        int m_nel;
+        int m_subc;
+    private:
+        Kahan<W> m_wsum;
+    public:
         NumericVector m_xx;
     public:
         inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_subc(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
@@ -99,10 +105,6 @@ class Welford {
                 if (ord < 2) { stop("must use ord >= 2"); }
             }
         }
-    private:
-        Kahan<W> m_wsum;
-        int m_nel;
-        int m_subc;
     public:
         // reset to zero
         inline Welford& tare() {

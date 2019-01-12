@@ -45,6 +45,10 @@
 template<class T>
 class Kahan {
     public:
+        T m_val;
+    private:
+        T m_errs;
+    public:
         inline Kahan() : m_val(0), m_errs(0) {}
 
         inline Kahan(const T &t): m_val(t), m_errs(0) {}
@@ -75,10 +79,7 @@ class Kahan {
         inline Kahan& operator-- () {
             return add(T(-1));
         }
-    public:
-        T m_val;
     private:
-        T m_errs;
         inline Kahan& add(const T& rhs) {
             T tmpv, nxtv;
             KAHAN_ADD(m_val,m_errs,rhs,nxtv,tmpv)
@@ -104,6 +105,8 @@ class Kahan {
 // specialization to int which do not require special treatment
 template<>
 class Kahan<int> {
+    public:
+        int m_val;
     public:
         inline Kahan() : m_val(0) {}
 
@@ -136,8 +139,6 @@ class Kahan<int> {
             m_val --;
             return *this;
         }
-    public:
-        int m_val;
     private:
         inline Kahan& add(const int& rhs) {
             m_val += rhs;
