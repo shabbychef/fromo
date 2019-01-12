@@ -3,4 +3,7 @@
 #' This can have subtle effects on computations which require minimum
 #' degrees of freedom, since the sum of weights will be compared to
 #' that minimum, not the number of data points. Weight values
-#' less than 1 should be used with caution, then.
+#' (much) less than 1 can cause computations to return \code{NA}
+#' somewhat unexpectedly due to this condition, while values greater
+#' than one might cause the computation to spuriously return a value
+#' with little precision.

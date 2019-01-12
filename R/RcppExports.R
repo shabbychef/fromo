@@ -335,8 +335,7 @@ cent2raw <- function(input) {
 #' @param restart_period the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
 #' this parameter. Larger values mean fewer restarts and faster, though less accurate
-#' results. Note that the code checks for negative second and fourth moments and
-#' recomputes when needed.
+#' results. 
 #' @param na_rm whether to remove NA, false by default.
 #' @param max_order the maximum order of the centered moment to be computed.
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
@@ -399,6 +398,7 @@ cent2raw <- function(input) {
 #' @template ref-romo
 #' @template param-wts
 #' @template note-wts
+#' @template note-heywood
 #' @rdname runningmoments
 #' @export
 running_sd3 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
@@ -688,12 +688,6 @@ running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
 #'  If negative, an error will be thrown.
 #' @param lb_time  a vector of the times from which lookback will be performed. The output should
 #'  be the same size as this vector. If not given, defaults to \code{time}.
-#' @param restart_period the recompute period. Because subtraction of elements can cause
-#' loss of precision, the computation of moments is restarted periodically based on 
-#' this parameter. Larger values mean fewer restarts and faster, though less accurate
-#' results. Recomputation is sparked when a critical number of subtractions have
-#' been reached. Note that the code checks for negative second and fourth moments and
-#' recomputes when needed. (Really?)
 #' @param na_rm whether to remove NA, false by default.
 #' @param max_order the maximum order of the centered moment to be computed.
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
@@ -744,10 +738,12 @@ running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
 #' # but what if you only cared about some middle values?
 #' xs4 <- t_running_skew4(x,time=seq_along(x),lb_time=(length(x) / 2) + 0:10,window=20)
 #'
+#' @inheritParams running_sd3
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
 #' @template note-wts
+#' @template note-heywood
 #' @seealso \code{\link{running_sd3}}.
 #' @rdname t_runningmoments
 #' @export

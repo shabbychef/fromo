@@ -54,8 +54,7 @@ using namespace Rcpp;
 //' @param restart_period the recompute period. because subtraction of elements can cause
 //' loss of precision, the computation of moments is restarted periodically based on 
 //' this parameter. Larger values mean fewer restarts and faster, though less accurate
-//' results. Note that the code checks for negative second and fourth moments and
-//' recomputes when needed.
+//' results. 
 //' @param na_rm whether to remove NA, false by default.
 //' @param max_order the maximum order of the centered moment to be computed.
 //' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
@@ -118,6 +117,7 @@ using namespace Rcpp;
 //' @template ref-romo
 //' @template param-wts
 //' @template note-wts
+//' @template note-heywood
 //' @rdname runningmoments
 //' @export
 // [[Rcpp::export]]
