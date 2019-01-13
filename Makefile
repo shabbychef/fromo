@@ -10,7 +10,7 @@
 VMAJOR 						 = 0
 VMINOR 						 = 2
 VPATCH  					 = 0
-#VDEV 							 = .6797
+VDEV 							 = .001
 VDEV 							 =
 PKG_NAME 					:= fromo
 

@@ -115,90 +115,43 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
-	for (window in c(50,Inf)) {
-		for (na_rm in c(FALSE,TRUE)) {
-			expect_error(running_sum(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_mean(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sd(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_skew(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_kurt(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sd3(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_skew4(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_kurt5(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-			expect_error(running_std_moments(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cumulants(x,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-			expect_error(running_sum(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_mean(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sd(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_skew(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_kurt(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sd3(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_skew4(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_kurt5(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cent_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cent_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-			expect_error(running_std_moments(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cumulants(y,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_apx_quantiles(y,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-			expect_error(running_sd(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_skew(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_kurt(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sd3(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_skew4(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_kurt5(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cent_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cent_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-			expect_error(running_std_moments(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_cumulants(z,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_apx_quantiles(z,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+	for (thingy in list(x,y,z)) { 
+		for (window in c(50,Inf)) {
+			for (na_rm in c(FALSE,TRUE)) {
+				expect_error(running_sum(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_mean(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_sd(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_skew(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_kurt(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_sd3(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_skew4(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_kurt5(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_cent_moments(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_cent_moments(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+				expect_error(running_std_moments(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_cumulants(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_apx_quantiles(thingy,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+			}
 		}
 	}
-	for (min_df in c(2L,10L)) {
-		expect_error(running_mean(x,window=window,min_df=min_df),NA)
-		expect_error(running_sd(x,window=window,min_df=min_df),NA)
-		expect_error(running_skew(x,window=window,min_df=min_df),NA)
-		expect_error(running_kurt(x,window=window,min_df=min_df),NA)
-		expect_error(running_sd3(x,window=window,min_df=min_df),NA)
-		expect_error(running_skew4(x,window=window,min_df=min_df),NA)
-		expect_error(running_kurt5(x,window=window,min_df=min_df),NA)
-		expect_error(running_cent_moments(x,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_cent_moments(x,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
-		expect_error(running_std_moments(x,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_cumulants(x,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
-
-		expect_error(running_mean(y,window=window,min_df=min_df),NA)
-		expect_error(running_sd(y,window=window,min_df=min_df),NA)
-		expect_error(running_skew(y,window=window,min_df=min_df),NA)
-		expect_error(running_kurt(y,window=window,min_df=min_df),NA)
-		expect_error(running_sd3(y,window=window,min_df=min_df),NA)
-		expect_error(running_skew4(y,window=window,min_df=min_df),NA)
-		expect_error(running_kurt5(y,window=window,min_df=min_df),NA)
-		expect_error(running_cent_moments(y,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_cent_moments(y,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
-		expect_error(running_std_moments(y,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_cumulants(y,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_apx_quantiles(y,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
-
-		expect_error(running_mean(z,window=window,min_df=min_df),NA)
-		expect_error(running_sd(z,window=window,min_df=min_df),NA)
-		expect_error(running_skew(z,window=window,min_df=min_df),NA)
-		expect_error(running_kurt(z,window=window,min_df=min_df),NA)
-		expect_error(running_sd3(z,window=window,min_df=min_df),NA)
-		expect_error(running_skew4(z,window=window,min_df=min_df),NA)
-		expect_error(running_kurt5(z,window=window,min_df=min_df),NA)
-		expect_error(running_cent_moments(z,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_cent_moments(z,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
-		expect_error(running_std_moments(z,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_cumulants(z,max_order=5L,window=window,min_df=min_df),NA)
-		expect_error(running_apx_quantiles(z,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
+	for (thingy in list(x,y,z)) { 
+		for (min_df in c(2L,10L)) {
+			expect_error(running_mean(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_sd(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_skew(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_kurt(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_sd3(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_skew4(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_kurt5(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_cent_moments(thingy,max_order=5L,window=window,min_df=min_df),NA)
+			expect_error(running_cent_moments(thingy,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
+			expect_error(running_std_moments(thingy,max_order=5L,window=window,min_df=min_df),NA)
+			expect_error(running_cumulants(thingy,max_order=5L,window=window,min_df=min_df),NA)
+			expect_error(running_apx_quantiles(thingy,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
+		}
 	}
 
+	# will not work on character input
 	expect_error(running_sum(q))
 	expect_error(running_mean(q))
 	expect_error(running_sd(q))
@@ -224,33 +177,44 @@ test_that("running foo and weights",{#FOLDUP
 	xall <- list(rnorm(nel),
 							 as.integer(rnorm(nel,sd=100)))
 	wall <- list(rep(1.0,nel),
-							 rep(2L,nel),
+							 runif(nel,min=0.9,max=3.5),
 							 NULL)
 
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
 
-	for (x in xall) {
+	for (thingy in xall) {
 		for (wts in wall) {
 			for (window in c(5,21,Inf,NULL)) {
 				for (na_rm in c(FALSE,TRUE)) {
-						#running_sum(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_mean(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						expect_error(running_sd(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_skew(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_kurt(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_sd3(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_skew4(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_kurt5(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_cent_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_cent_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-						expect_error(running_std_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_cumulants(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_apx_quantiles(x,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_apx_median(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_sum(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_mean(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_sd(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_skew(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_kurt(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_sd3(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_skew4(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_kurt5(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_cent_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_cent_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+						expect_error(running_std_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_cumulants(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_apx_quantiles(thingy,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_apx_median(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+
+						for (lookahead in c(0,8)) {
+							expect_error(running_centered(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+							expect_error(running_scaled(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+							expect_error(running_zscored(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+						}
+						expect_error(running_sharpe(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_sharpe(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
+						expect_error(running_tstat(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 				}
 			}
 		}
 	}
+
+
 })#UNFOLD
 context("code runs: hits heywood")
 test_that("hit heywood branch",{#FOLDUP
@@ -331,76 +295,51 @@ test_that("running adjustments",{#FOLDUP
 	z <- as.logical(y)
 	q <- c('a','b','c')
 
-	for (window in c(50,Inf)) {
-		for (na_rm in c(FALSE,TRUE)) {
-			expect_error(running_centered(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_scaled(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_zscored(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-			expect_error(running_tstat(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-			expect_error(running_centered(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_scaled(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_zscored(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-			expect_error(running_tstat(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-			expect_error(running_centered(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_scaled(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_zscored(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-			expect_error(running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-			expect_error(running_tstat(z,window=window,restart_period=50L,na_rm=na_rm),NA)
+	for (thingy in list(x,y,z)) { 
+		for (window in c(50,Inf)) {
+			for (na_rm in c(FALSE,TRUE)) {
+				expect_error(running_centered(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_scaled(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_zscored(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_sharpe(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+				expect_error(running_sharpe(thingy,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
+				expect_error(running_tstat(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+			}
 		}
 	}
+
 	window <- 10L
-
-	for (na_rm in c(FALSE,TRUE)) {
-		expect_error(running_centered(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_scaled(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_zscored(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-		expect_error(running_tstat(x,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-		expect_error(running_centered(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_scaled(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_zscored(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-		expect_error(running_tstat(y,window=window,restart_period=50L,na_rm=na_rm),NA)
-
-		expect_error(running_centered(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_scaled(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_zscored(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm),NA)
-		expect_error(running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-		expect_error(running_tstat(z,window=window,restart_period=50L,na_rm=na_rm),NA)
+	for (thingy in list(x,y,z)) { 
+		for (na_rm in c(FALSE,TRUE)) {
+			expect_error(running_centered(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+			expect_error(running_scaled(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+			expect_error(running_zscored(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+			expect_error(running_sharpe(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+			expect_error(running_sharpe(thingy,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
+			expect_error(running_tstat(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
+		}
 	}
 
-	for (min_df in c(2L,10L)) {
-		expect_error(running_centered(x,window=window,min_df=min_df),NA)
-		expect_error(running_scaled(x,window=window,min_df=min_df),NA)
-		expect_error(running_zscored(x,window=window,min_df=min_df),NA)
-		expect_error(running_sharpe(x,window=window,min_df=min_df),NA)
-		expect_error(running_sharpe(x,window=window,min_df=min_df,compute_se=TRUE),NA)
-		expect_error(running_tstat(x,window=window,min_df=min_df),NA)
+	window <- 10L
+	for (thingy in list(x,y,z)) { 
+		for (na_rm in c(FALSE,TRUE)) {
+			for (lookahead in c(0,-5,10)) {
+				expect_error(running_centered(thingy,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+				expect_error(running_scaled(thingy,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+				expect_error(running_zscored(thingy,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+			}
+		}
+	}
 
-		expect_error(running_centered(y,window=window,min_df=min_df),NA)
-		expect_error(running_scaled(y,window=window,min_df=min_df),NA)
-		expect_error(running_zscored(y,window=window,min_df=min_df),NA)
-		expect_error(running_sharpe(y,window=window,min_df=min_df),NA)
-		expect_error(running_sharpe(y,window=window,min_df=min_df,compute_se=TRUE),NA)
-		expect_error(running_tstat(y,window=window,min_df=min_df),NA)
-
-		expect_error(running_centered(z,window=window,min_df=min_df),NA)
-		expect_error(running_scaled(z,window=window,min_df=min_df),NA)
-		expect_error(running_zscored(z,window=window,min_df=min_df),NA)
-		expect_error(running_sharpe(z,window=window,min_df=min_df),NA)
-		expect_error(running_sharpe(z,window=window,min_df=min_df,compute_se=TRUE),NA)
-		expect_error(running_tstat(z,window=window,min_df=min_df),NA)
+	for (thingy in list(x,y,z)) { 
+		for (min_df in c(2L,10L)) {
+			expect_error(running_centered(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_scaled(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_zscored(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_sharpe(thingy,window=window,min_df=min_df),NA)
+			expect_error(running_sharpe(thingy,window=window,min_df=min_df,compute_se=TRUE),NA)
+			expect_error(running_tstat(thingy,window=window,min_df=min_df),NA)
+		}
 	}
 
 	expect_error(running_centered(q))
@@ -482,8 +421,69 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(t_running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(t_running_apx_median(q,p=ptiles,max_order=5L))
 })#UNFOLD
+context("code runs: t_running_foo and weights")
+test_that("t_running foo and weights",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("95aa6ed1-14dc-473a-a7aa-8dc9869b1dbc")
+	nel <- 20
+	xall <- list(rnorm(nel),
+							 as.integer(rnorm(nel,sd=100)))
+	wall <- list(rep(1.0,nel),
+							 runif(nel,min=0.9,max=3.5),
+							 NULL)
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+
+	for (thingy in xall) {
+		for (times in list(NULL,cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
+			for (wts in wall) {
+				wts_as_delta <- is.null(times) & !is.null(wts)
+				if (!is.null(times) || wts_as_delta) {
+					for (window in c(5.5,21.23,Inf,NULL)) {
+						for (na_rm in c(FALSE,TRUE)) {
+							for (lb_time in list(NULL,3+cumsum(runif(10,min=0.4,max=1.1)))) {
+								expect_error(t_running_sum(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_mean(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_sd(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_skew(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_kurt(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_sd3(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_skew4(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_kurt5(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_cent_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_cent_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+								expect_error(t_running_std_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_cumulants(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_apx_quantiles(thingy,time=times,wts=wts,p=ptiles,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_apx_median(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_sharpe(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_sharpe(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
+								expect_error(t_running_tstat(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+
+								# NOTA BENE: these three do not accept an lb_time b/c they are associated with the thingy;
+								# so we *do* expect these to error.
+								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm))
+								expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm))
+								expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm))
+							}
+
+							for (lookahead in c(0,8.3)) {
+								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+								expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+								expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+})#UNFOLD
+
 #test_that("running foo and weights",{#FOLDUP
-	## hey, Volkswagon called while you were out:
 	#skip_on_cran()
 
 	#set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
@@ -529,101 +529,7 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 # 2FIX: check the effects of NA
 
 context("weighted estimation")# FOLDUP
-test_that("running adjustments",{#FOLDUP
-	skip_on_cran()
 
-	set.char.seed("e36291f6-70e0-4412-9c50-bc46b6ab8639")
-	x <- rnorm(100)
-	y <- as.integer(x)
-	z <- as.logical(y)
-	q <- c('a','b','c')
-
-	for (window in c(50,Inf)) {
-		for (na_rm in c(FALSE,TRUE)) {
-			running_centered(x,window=window,restart_period=50L,na_rm=na_rm)
-			running_scaled(x,window=window,restart_period=50L,na_rm=na_rm)
-			running_zscored(x,window=window,restart_period=50L,na_rm=na_rm)
-			running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm)
-			running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
-			running_tstat(x,window=window,restart_period=50L,na_rm=na_rm)
-
-			running_centered(y,window=window,restart_period=50L,na_rm=na_rm)
-			running_scaled(y,window=window,restart_period=50L,na_rm=na_rm)
-			running_zscored(y,window=window,restart_period=50L,na_rm=na_rm)
-			running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm)
-			running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
-			running_tstat(y,window=window,restart_period=50L,na_rm=na_rm)
-
-			running_centered(z,window=window,restart_period=50L,na_rm=na_rm)
-			running_scaled(z,window=window,restart_period=50L,na_rm=na_rm)
-			running_zscored(z,window=window,restart_period=50L,na_rm=na_rm)
-			running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm)
-			running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
-			running_tstat(z,window=window,restart_period=50L,na_rm=na_rm)
-		}
-	}
-	window <- 10L
-
-	for (na_rm in c(FALSE,TRUE)) {
-		running_centered(x,window=window,restart_period=50L,na_rm=na_rm)
-		running_scaled(x,window=window,restart_period=50L,na_rm=na_rm)
-		running_zscored(x,window=window,restart_period=50L,na_rm=na_rm)
-		running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm)
-		running_sharpe(x,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
-		running_tstat(x,window=window,restart_period=50L,na_rm=na_rm)
-
-		running_centered(y,window=window,restart_period=50L,na_rm=na_rm)
-		running_scaled(y,window=window,restart_period=50L,na_rm=na_rm)
-		running_zscored(y,window=window,restart_period=50L,na_rm=na_rm)
-		running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm)
-		running_sharpe(y,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
-		running_tstat(y,window=window,restart_period=50L,na_rm=na_rm)
-
-		running_centered(z,window=window,restart_period=50L,na_rm=na_rm)
-		running_scaled(z,window=window,restart_period=50L,na_rm=na_rm)
-		running_zscored(z,window=window,restart_period=50L,na_rm=na_rm)
-		running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm)
-		running_sharpe(z,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE)
-		running_tstat(z,window=window,restart_period=50L,na_rm=na_rm)
-	}
-
-	for (min_df in c(2L,10L)) {
-		running_centered(x,window=window,min_df=min_df)
-		running_scaled(x,window=window,min_df=min_df)
-		running_zscored(x,window=window,min_df=min_df)
-		running_sharpe(x,window=window,min_df=min_df)
-		running_sharpe(x,window=window,min_df=min_df,compute_se=TRUE)
-		running_tstat(x,window=window,min_df=min_df)
-
-		running_centered(y,window=window,min_df=min_df)
-		running_scaled(y,window=window,min_df=min_df)
-		running_zscored(y,window=window,min_df=min_df)
-		running_sharpe(y,window=window,min_df=min_df)
-		running_sharpe(y,window=window,min_df=min_df,compute_se=TRUE)
-		running_tstat(y,window=window,min_df=min_df)
-
-		running_centered(z,window=window,min_df=min_df)
-		running_scaled(z,window=window,min_df=min_df)
-		running_zscored(z,window=window,min_df=min_df)
-		running_sharpe(z,window=window,min_df=min_df)
-		running_sharpe(z,window=window,min_df=min_df,compute_se=TRUE)
-		running_tstat(z,window=window,min_df=min_df)
-	}
-
-	expect_error(running_centered(q))
-	expect_error(running_scaled(q))
-	expect_error(running_zscored(q))
-	expect_error(running_sharpe(q))
-	expect_error(running_sharpe(q,compute_se=TRUE))
-	expect_error(running_tstat(q))
-
-	expect_error(running_tstat(x,window='FOO'))
-	expect_error(running_tstat(x,window=-20L))
-	expect_error(running_tstat(x,window=20L,restart_period='FOO'))
-
-	# sentinel
-	expect_true(TRUE)
-})#UNFOLD
 # UNFOLD
 
 context("order of parameters")# FOLDUP
