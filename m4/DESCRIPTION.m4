@@ -14,8 +14,12 @@ Date: DATE()
 License: LGPL-3
 Title: Fast Robust Moments
 BugReports: https://github.com/shabbychef/PKG_NAME()/issues
-Description: Fast computation of moments via 'Rcpp'. Supports computation on
-   vectors and matrices, and Monoidal append of moments.
+Description: Fast, numerically robust computation of weighted moments via 'Rcpp'. 
+   Supports computation on vectors and matrices, and Monoidal append of moments. 
+   Moments and cumulants over running fixed length windows can be computed, 
+   as well as over time-based windows.
+   Moment computations are via a generalization of Welford's method, as described
+   by Bennett et. (2009) <doi:10.1109/CLUSTR.2009.5289161>.
 Imports:
     Rcpp (>= 0.12.3),
     methods
