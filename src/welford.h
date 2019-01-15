@@ -608,69 +608,69 @@ class Welford {
 // bottom <= iii < top
 // if it happens to be the case that bottom == top, we should return a tared Welford object.
 
-template <typename T,typename W,typename oneW,bool has_wts,bool na_rm>
-NumericVector quasiSumThing(T v,
-                            W wts,
-                            int bottom,
-                            int top,
-                            const bool check_wts,
-                            const bool normalize_wts) {
-    double nextv, nextw;
-    Kahan<double> fwvsum;
-    Kahan<oneW> fwsum;
-    double totwt;
-    int nel = 0;
+//template <typename T,typename W,typename oneW,bool has_wts,bool na_rm>
+//NumericVector quasiSumThing(T v,
+                            //W wts,
+                            //int bottom,
+                            //int top,
+                            //const bool check_wts,
+                            //const bool normalize_wts) {
+    //double nextv, nextw;
+    //Kahan<double> fwvsum;
+    //Kahan<oneW> fwsum;
+    //double totwt;
+    //int nel = 0;
 
-    if ((top < 0) || (top > v.size())) { top = v.size(); }
-    if (has_wts) {
-        if (wts.size() < top) { stop("size of wts does not match v"); }
-        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
-        //2FIX: push na_rm into template params?
-        if (na_rm) {
-            for (int iii=bottom;iii < top;++iii) {
-                nextv = v[iii];
-                nextw = double(wts[iii]); 
-                if (! (ISNAN(nextv) || ISNAN(nextw))) {
-                    // 2FIX: check for zero weight??
-                    fwvsum += nextv * nextw;
-                    fwsum += nextw;
-                    ++nel;
-                }
-            }
-        } else {
-            for (int iii=bottom;iii < top;++iii) {
-                nextv = v[iii];
-                nextw = double(wts[iii]); 
-                fwvsum += nextv * nextw;
-                fwsum += nextw;
-                ++nel;
-            }
-        }
-    } else {
-        if (na_rm) {
-            for (int iii=bottom;iii < top;++iii) {
-                nextv = v[iii];
-                if (! (ISNAN(nextv))) { 
-                    fwvsum += nextv; 
-                    ++fwsum;
-                }
-            }
-        } else {
-            for (int iii=bottom;iii < top;++iii) {
-                nextv = v[iii];
-                fwvsum += nextv; 
-                ++fwsum;
-            }
-        }
-    }
-    totwt = double(fwsum.as());
-    NumericVector vret = NumericVector::create(totwt,double(fwvsum.as()) / totwt);
-    // the mean does not change, but the 'sum weights' becomes the number of elements
-    if (has_wts && normalize_wts) {
-        vret[0] = double(nel);
-    }
-    return vret;
-}
+    //if ((top < 0) || (top > v.size())) { top = v.size(); }
+    //if (has_wts) {
+        //if (wts.size() < top) { stop("size of wts does not match v"); }
+        //if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
+        ////2FIX: push na_rm into template params?
+        //if (na_rm) {
+            //for (int iii=bottom;iii < top;++iii) {
+                //nextv = v[iii];
+                //nextw = double(wts[iii]); 
+                //if (! (ISNAN(nextv) || ISNAN(nextw))) {
+                    //// 2FIX: check for zero weight??
+                    //fwvsum += nextv * nextw;
+                    //fwsum += nextw;
+                    //++nel;
+                //}
+            //}
+        //} else {
+            //for (int iii=bottom;iii < top;++iii) {
+                //nextv = v[iii];
+                //nextw = double(wts[iii]); 
+                //fwvsum += nextv * nextw;
+                //fwsum += nextw;
+                //++nel;
+            //}
+        //}
+    //} else {
+        //if (na_rm) {
+            //for (int iii=bottom;iii < top;++iii) {
+                //nextv = v[iii];
+                //if (! (ISNAN(nextv))) { 
+                    //fwvsum += nextv; 
+                    //++fwsum;
+                //}
+            //}
+        //} else {
+            //for (int iii=bottom;iii < top;++iii) {
+                //nextv = v[iii];
+                //fwvsum += nextv; 
+                //++fwsum;
+            //}
+        //}
+    //}
+    //totwt = double(fwsum.as());
+    //NumericVector vret = NumericVector::create(totwt,double(fwvsum.as()) / totwt);
+    //// the mean does not change, but the 'sum weights' becomes the number of elements
+    //if (has_wts && normalize_wts) {
+        //vret[0] = double(nel);
+    //}
+    //return vret;
+//}
 
 template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
 Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
@@ -726,8 +726,9 @@ NumericVector quasiWeightedMoments(T v,
 
     if (ord == 1) {
         //2FIX: no normalization??
-        xret = quasiSumThing<T,W,oneW,has_wts,na_rm>(v,wts,bottom,top,check_wts,normalize_wts);
-        return xret;
+        //xret = quasiSumThing<T,W,oneW,has_wts,na_rm>(v,wts,bottom,top,check_wts,normalize_wts);
+        //return xret;
+        stop("bad code; we never spawn Welford object with ord=1."); // nocov
     } else if (ord > 2) {
         Welford<oneW,has_wts,true,na_rm> frets = quasiWeightedThing<T,W,oneW,has_wts,true,na_rm>(v,wts,ord,bottom,top,check_wts);
         xret = frets.asvec();
