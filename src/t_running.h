@@ -83,9 +83,9 @@ NumericMatrix t_runQM(T v,
     if (opt_time.isNotNull()) {
         time = opt_time.get();
         if (opt_time_deltas.isNotNull()) {
-            Rcpp::warning("time deltas given, but not needed; ignoring.");
+            Rcpp::warning("time deltas given, but not needed; ignoring."); // #nocov
         }
-        if (has_decrease<NumericVector>(time)) { stop("decreasing time detected"); }
+        if (has_decrease<NumericVector>(time)) { stop("decreasing time detected"); } // #nocov
     } else {
         if (opt_time_deltas.isNotNull()) {
             time_deltas = opt_time_deltas.get();
@@ -132,8 +132,8 @@ NumericMatrix t_runQM(T v,
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
     const bool infwin = NumericVector::is_na(window);
-    if ((window <= 0) && (!infwin)) { stop("must give positive window"); }
-    if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); }
+    if ((window <= 0) && (!infwin)) { stop("must give positive window"); } // #nocov
+    if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); } // #nocov
 
     // whether to use the gap between lb_time as the effective window
     const bool gapwin = variable_win && infwin;

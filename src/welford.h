@@ -88,7 +88,7 @@ class Welford {
     public:
         inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_subc(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
             if (!ord_beyond) {
-                if (ord < 2) { stop("must use ord >= 2"); }
+                if (ord < 2) { stop("must use ord >= 2"); } // #nocov
             }
         }
         inline Welford(const int &ord, 
@@ -96,13 +96,13 @@ class Welford {
                        const W &sumwt, 
                        const NumericVector &xx) : m_ord(ord), m_nel(nel), m_subc(0), m_wsum(Kahan<W>(sumwt)), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
-                if (ord < 2) { stop("must use ord >= 2"); }
+                if (ord < 2) { stop("must use ord >= 2"); } // #nocov
             }
         }
         inline Welford(const int &ord, 
                        const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_subc(0), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
-                if (ord < 2) { stop("must use ord >= 2"); }
+                if (ord < 2) { stop("must use ord >= 2"); } // #nocov
             }
         }
     public:
@@ -142,10 +142,10 @@ class Welford {
             if (ord==2) {
                 return sqrt(var(normalize,used_df));
             } else if (ord==1) {
-                Rcpp::warning("first centered moment is zero.");
+                Rcpp::warning("first centered moment is zero."); // #nocov
                 return 0.0;
             } else {
-                if (ord > m_ord) { stop("cannot compute this high of a moment."); }
+                if (ord > m_ord) { stop("cannot compute this high of a moment."); } // #nocov
                 if (has_wts) {
                     return m_xx[ord] / double(m_wsum.as());
                 } else {
@@ -537,7 +537,7 @@ class Welford {
                 // rhs is empty; return lhs.
                 return *this; 
             }
-            if (n2 > ntot) { stop("cannot subtract more observations than were seen."); }
+            if (n2 > ntot) { stop("cannot subtract more observations than were seen."); } // #nocov
 
             mupart = rhs.m_xx[1] - m_xx[1];
 
@@ -685,8 +685,8 @@ Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
     if (!has_wts) { nextwt = 1.0; }
     if ((top < 0) || (top > v.size())) { top = v.size(); }
     if (has_wts) {
-        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
-        if (wts.size() < top) { stop("size of wts does not match v"); }
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); } // #nocov
+        if (wts.size() < top) { stop("size of wts does not match v"); } // #nocov
     }
     for (int iii=bottom;iii < top;++iii) {
         nextval = v[iii];
@@ -720,8 +720,8 @@ NumericVector quasiWeightedMoments(T v,
                                    const bool check_wts,
                                    const bool normalize_wts) {
     double nextv, nextw, renorm, nok;
-    if (ord < 1) { stop("require positive order"); }
-    if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
+    if (ord < 1) { stop("require positive order"); } // #nocov
+    if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); } // #nocov
     NumericVector xret;
 
     if (ord == 1) {
