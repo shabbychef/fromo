@@ -52,15 +52,15 @@ RET t_runningSumish(T v,
                     const int min_df, const int restart_period,
                     const bool variable_win, const bool wts_as_delta, const bool check_wts) {
 
-    if (min_df < 0) { stop("BAD CODE: must give positive min_df"); }
+    if (min_df < 0) { stop("BAD CODE: must give positive min_df"); } // #nocov
 
     NumericVector time, time_deltas, lb_time;
     if (opt_time.isNotNull()) {
         time = opt_time.get();
         if (opt_time_deltas.isNotNull()) {
-            Rcpp::warning("time deltas given, but not needed; ignoring.");
+            Rcpp::warning("time deltas given, but not needed; ignoring."); // #nocov
         }
-        if (has_decrease<NumericVector>(time)) { stop("decreasing time detected"); }
+        if (has_decrease<NumericVector>(time)) { stop("decreasing time detected"); } // #nocov
     } else {
         if (opt_time_deltas.isNotNull()) {
             time_deltas = opt_time_deltas.get();
@@ -69,21 +69,21 @@ RET t_runningSumish(T v,
                 if (has_wts) {
                     time_deltas = as<NumericVector>(wts);
                 } else {
-                    stop("cannot infer times, as time, time_deltas and weights not given."); // nocov
+                    stop("cannot infer times, as time, time_deltas and weights not given."); // #nocov
                 }
             } else {
-                stop("cannot infer times, as time and time_deltas not given, and wts_as_delta is FALSE."); // nocov
+                stop("cannot infer times, as time and time_deltas not given, and wts_as_delta is FALSE."); // #nocov
             }
         }
         // to be sure, check again; this might be redundant in the case where deltas are weights, but whatever.
-        if (bad_weights<NumericVector>(time_deltas)) { stop("negative time deltas detected"); }
+        if (bad_weights<NumericVector>(time_deltas)) { stop("negative time deltas detected"); } // #nocov
         // just going to use the sugar function here;
         //time = Rcpp::cumsum(time_deltas);
         time = (runningSumishCurryFour<ret_sum>(time_deltas,R_NilValue,NA_INTEGER,0,100000,false,false));
     }
     if (opt_lb_time.isNotNull()) {
         lb_time = opt_lb_time.get();
-        if (has_decrease<NumericVector>(lb_time)) { stop("decreasing lb_time detected"); }
+        if (has_decrease<NumericVector>(lb_time)) { stop("decreasing lb_time detected"); } // #nocov
     } else {
         // read only so relax.
         lb_time = time;
@@ -100,7 +100,7 @@ RET t_runningSumish(T v,
 
     oneW nextw, prevw;
     if (has_wts) {
-        if (wts.size() < v.size()) { stop("size of wts does not match v"); }
+        if (wts.size() < v.size()) { stop("size of wts does not match v"); } // #nocov
     } else {
         nextw = oneW(1); 
         prevw=nextw;
@@ -115,8 +115,8 @@ RET t_runningSumish(T v,
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
     const bool infwin = NumericVector::is_na(window);
-    if ((window <= 0) && (!infwin)) { stop("must give positive window"); }
-    if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); }
+    if ((window <= 0) && (!infwin)) { stop("must give positive window"); } // #nocov
+    if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); } // #nocov
 
     // whether to use the gap between lb_time as the effective window
     const bool gapwin = variable_win && infwin;
@@ -130,14 +130,14 @@ RET t_runningSumish(T v,
     int iii,jjj,lll,tr_iii,tr_jjj;
     int numel = v.size();
     if (time.size() != numel) {
-        stop("size of time does not match v"); // nocov
+        stop("size of time does not match v"); // #nocov
     }
     const int numlb = lb_time.size();
 
     RET xret(numlb);
 
     if (has_wts) {
-        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); }
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); } // #nocov
     }
     // 2FIX: this all has to be recouched in terms of a time window...
     
@@ -380,7 +380,7 @@ SEXP t_runningSumishCurryTwo(T v,
             case  LGLSXP: { return t_runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,time,time_deltas,window,as<IntegerVector>(wts),lb_time,
                                                                                                                                  na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                                                  return_int); }
-            default: stop("Unsupported weight type"); // nocov
+            default: stop("Unsupported weight type"); // #nocov
         }
     }
     NumericVector dummy_wts;
@@ -410,7 +410,7 @@ SEXP t_runningSumishCurryThree(SEXP v,
         case  LGLSXP: { return t_runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(as<IntegerVector>(v),time,time_deltas,window,wts,lb_time,
                                                                                                          na_rm,min_df,restart_period,variable_win,wts_as_delta,check_wts,
                                                                                                          return_int); }
-        default: stop("Unsupported input type"); // nocov
+        default: stop("Unsupported input type"); // #nocov
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
     // ... only for a crappy automated warning.

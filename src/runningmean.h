@@ -270,7 +270,7 @@ SEXP runningSumishCurryTwo(T v,
             case REALSXP: { return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,false); } // SIC: when double weights, cannot return int
             // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
             case  LGLSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,as<IntegerVector>(wts),window,min_df,recom_period,na_rm,check_wts,return_int); }
-            default: stop("Unsupported weight type"); // nocov
+            default: stop("Unsupported weight type"); // #nocov
         }
     }
     NumericVector dummy_wts;
@@ -291,7 +291,7 @@ SEXP runningSumishCurryThree(SEXP v,
         case REALSXP: { return runningSumishCurryTwo<NumericVector, double, true, retwhat, do_recompute>(v, wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
         // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
         case  LGLSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(as<IntegerVector>(v), wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
-        default: stop("Unsupported input type");
+        default: stop("Unsupported input type"); // #nocov
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
     // ... only for a crappy automated warning.

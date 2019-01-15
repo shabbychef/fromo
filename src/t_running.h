@@ -94,10 +94,10 @@ NumericMatrix t_runQM(T v,
                 if (has_wts) {
                     time_deltas = wts;
                 } else {
-                    stop("cannot infer times, as time, time_deltas and weights not given."); // nocov
+                    stop("cannot infer times, as time, time_deltas and weights not given."); // #nocov
                 }
             } else {
-                stop("cannot infer times, as time and time_deltas not given, and wts_as_delta is FALSE."); // nocov
+                stop("cannot infer times, as time and time_deltas not given, and wts_as_delta is FALSE."); // #nocov
             }
         }
         // to be sure, check again; this might be redundant in the case where deltas are weights, but whatever.
@@ -116,7 +116,7 @@ NumericMatrix t_runQM(T v,
 
     const int numel = v.size();
     if (time.size() != numel) {
-        stop("size of time does not match v"); // nocov
+        stop("size of time does not match v"); // #nocov
     }
     const int numlb = lb_time.size();
 
@@ -424,7 +424,7 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts); }
-        default: stop("Unsupported weight type"); // nocov
+        default: stop("Unsupported weight type"); // #nocov
     }
     // have to have fallthrough for CRAN check.
     NumericMatrix retv;

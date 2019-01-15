@@ -728,7 +728,7 @@ NumericVector quasiWeightedMoments(T v,
         //2FIX: no normalization??
         //xret = quasiSumThing<T,W,oneW,has_wts,na_rm>(v,wts,bottom,top,check_wts,normalize_wts);
         //return xret;
-        stop("bad code; we never spawn Welford object with ord=1."); // nocov
+        stop("bad code; we never spawn Welford object with ord=1."); // #nocov
     } else if (ord > 2) {
         Welford<oneW,has_wts,true,na_rm> frets = quasiWeightedThing<T,W,oneW,has_wts,true,na_rm>(v,wts,ord,bottom,top,check_wts);
         xret = frets.asvec();
@@ -783,7 +783,7 @@ NumericVector quasiWeightedMomentsCurryOne(T v,
             case  INTSXP: { return quasiWeightedMomentsCurryZero<T,IntegerVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
             case REALSXP: { return quasiWeightedMomentsCurryZero<T,NumericVector,double,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
             case  LGLSXP: { return quasiWeightedMomentsCurryZero<T,IntegerVector,int,true>(v, as<IntegerVector>(wts), ord, 0, -1, na_rm, check_wts, normalize_wts); } // bools can be upcast to save build size.
-            default: stop("Unsupported weight type"); // nocov
+            default: stop("Unsupported weight type"); // #nocov
         }
     }
     // have to have fallthrough for CRAN check.
@@ -801,7 +801,7 @@ NumericVector inline quasiWeightedMomentsCurryTwo(SEXP v,
         case  INTSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
         case REALSXP: { return quasiWeightedMomentsCurryOne<NumericVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
         case  LGLSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(as<IntegerVector>(v), wts, ord, na_rm, check_wts, normalize_wts); }  // bools can be upcast to save build size.
-        default: stop("Unsupported weight type"); // nocov
+        default: stop("Unsupported weight type"); // #nocov
     }
     // have to have fallthrough for CRAN check.
     NumericVector retv;

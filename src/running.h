@@ -323,7 +323,7 @@ NumericMatrix runQMCurryThree(SEXP v,
         case  INTSXP: { return runQMCurryTwo<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
         case REALSXP: { return runQMCurryTwo<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); } 
         case  LGLSXP: { return runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); }  // bools can be upcast to save build size.
-        default: stop("Unsupported weight type"); // nocov
+        default: stop("Unsupported weight type"); // #nocov
     }
     // have to have fallthrough for CRAN check.
     NumericMatrix retv;
