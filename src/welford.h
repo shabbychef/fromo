@@ -184,6 +184,18 @@ class Welford {
         inline int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
         inline int subcount() const { return m_subc; }
 
+        // return true if any even order sums are negative
+        inline bool has_heywoord() const {
+            if (!ord_beyond) {
+                return (m_xx[2] < 0);
+            } else {
+                for (int ppp=2;ppp <= m_ord;ppp += 2) {
+                    if (m_xx[ppp] < 0) { return true; }
+                }
+                return false;
+            }
+            return false;
+        }
         inline W wsum() const { 
             if (has_wts) { return m_wsum.as(); }
             return W(m_nel);

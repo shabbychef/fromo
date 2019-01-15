@@ -11,7 +11,6 @@ VMAJOR 						 = 0
 VMINOR 						 = 2
 VPATCH  					 = 0
 VDEV 							 = .001
-VDEV 							 =
 PKG_NAME 					:= fromo
 
 RPKG_USES_RCPP 		:= 1
