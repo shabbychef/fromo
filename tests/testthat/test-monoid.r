@@ -70,6 +70,10 @@ test_that("join/unjoin",{#FOLDUP
 	x0 <- c()
 	expect_error(rs0 <- cent_sums(x0,max_ord),NA)
 	expect_equal(length(rs0),max_ord+1)
+	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+	copy_rs1 <- rs1 + 0
+	expect_error(rs1alt <- join_cent_sums(rs1,rs0),NA)
+	expect_equal(rs1,rs1alt,tolerance=1e-7)
 	
 })#UNFOLD
 context("monoid cosum")
