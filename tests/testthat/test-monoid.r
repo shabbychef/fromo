@@ -76,6 +76,27 @@ test_that("join/unjoin",{#FOLDUP
 	expect_equal(rs1,rs1alt,tolerance=1e-7)
 	
 })#UNFOLD
+test_that("join commutativity",{#FOLDUP
+	set.char.seed("f33946b3-216e-4977-9535-447b55214197")
+
+	max_ord <- 6L
+	x1 <- rnorm(1e3,mean=1)
+	x2 <- rnorm(1e3,mean=1)
+	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+	expect_error(rs3_a <- join_cent_sums(rs1,rs2),NA)
+	expect_error(rs3_b <- join_cent_sums(rs2,rs1),NA)
+	expect_equal(rs3_a,rs3_b,tolerance=1e-7)
+
+	# on an empty
+	x1 <- c()
+	x2 <- rnorm(1e3,mean=1)
+	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+	expect_error(rs3_a <- join_cent_sums(rs1,rs2),NA)
+	expect_error(rs3_b <- join_cent_sums(rs2,rs1),NA)
+	expect_equal(rs3_a,rs3_b,tolerance=1e-7)
+})#UNFOLD
 context("monoid cosum")
 test_that("cosums are sane",{#FOLDUP
 	set.char.seed("0020a8c0-ff6a-447c-a9bf-c6cc7160195f")
@@ -98,13 +119,27 @@ test_that("join/unjoin cosums",{#FOLDUP
 	expect_error(rs1 <- cent_cosums(x1,max_ord),NA)
 	expect_error(rs2 <- cent_cosums(x2,max_ord),NA)
 	expect_error(rs3 <- cent_cosums(rbind(x1,x2),max_ord),NA)
-	rs3alt <- join_cent_cosums(rs1,rs2)
-	expect_lt(max(abs(rs3 - rs3alt)),1e-7)
+	expect_error(rs3alt <- join_cent_cosums(rs1,rs2),NA)
+	expect_equal(rs3,rs3alt,tolerance=1e-7)
 
 	expect_error(rs1alt <- unjoin_cent_cosums(rs3,rs2),NA)
 	expect_error(rs2alt <- unjoin_cent_cosums(rs3,rs1),NA)
-	expect_lt(max(abs(rs1 - rs1alt)),1e-7)
-	expect_lt(max(abs(rs2 - rs2alt)),1e-7)
+	expect_equal(rs1,rs1alt,tolerance=1e-7)
+	expect_equal(rs2,rs2alt,tolerance=1e-7)
+})#UNFOLD
+test_that("commutativity of join cosums",{#FOLDUP
+	max_ord <- 2L
+
+	set.char.seed("eb9064dc-9463-4a2a-b824-ec33defed3b6")
+	x1 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+	x2 <- matrix(rnorm(1e3*5,mean=1),ncol=5)
+	expect_error(rs1 <- cent_cosums(x1,max_ord),NA)
+	expect_error(rs2 <- cent_cosums(x2,max_ord),NA)
+
+	expect_error(rs3_a <- join_cent_cosums(rs1,rs2),NA)
+	expect_error(rs3_b <- join_cent_cosums(rs2,rs1),NA)
+	expect_equal(rs3_a,rs3_b,tolerance=1e-7)
+
 })#UNFOLD
 
 # 2FIX: check the effects of NA
