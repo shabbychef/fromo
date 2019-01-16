@@ -39,63 +39,69 @@ test_that("join/unjoin",{#FOLDUP
 
 	x1 <- rnorm(1e3,mean=1)
 	x2 <- rnorm(1e3,mean=1)
-	max_ord <- 6L
-	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
-	expect_equal(length(rs1),max_ord+1)
-	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
-	expect_equal(length(rs2),max_ord+1)
-	expect_error(rs3 <- cent_sums(c(x1,x2),max_ord),NA)
-	# make sure these don't change? 
-	copy_rs1 <- rs1 + 0
-	copy_rs2 <- rs2 + 0
-	expect_error(rs3alt <- join_cent_sums(rs1,rs2),NA)
-	expect_equal(rs1,copy_rs1,tolerance=1e-7)
-	expect_equal(rs2,copy_rs2,tolerance=1e-7)
-	expect_equal(rs3,rs3alt,tolerance=1e-7)
+	for (max_ord in c(1L,2L,3L,6L)) {
+		expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+		expect_equal(length(rs1),max_ord+1)
+		expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+		expect_equal(length(rs2),max_ord+1)
+		expect_error(rs3 <- cent_sums(c(x1,x2),max_ord),NA)
+		# make sure these don't change? 
+		copy_rs1 <- rs1 + 0
+		copy_rs2 <- rs2 + 0
+		expect_error(rs3alt <- join_cent_sums(rs1,rs2),NA)
+		expect_equal(rs1,copy_rs1,tolerance=1e-7)
+		expect_equal(rs2,copy_rs2,tolerance=1e-7)
+		expect_equal(rs3,rs3alt,tolerance=1e-7)
 
-	copy_rs1 <- rs1 + 0
-	copy_rs2 <- rs2 + 0
-	copy_rs3 <- rs3 + 0
+		copy_rs1 <- rs1 + 0
+		copy_rs2 <- rs2 + 0
+		copy_rs3 <- rs3 + 0
 
-	expect_error(rs1alt <- unjoin_cent_sums(rs3,rs2),NA)
-	expect_error(rs2alt <- unjoin_cent_sums(rs3,rs1),NA)
-	expect_equal(rs1,copy_rs1,tolerance=1e-7)
-	expect_equal(rs2,copy_rs2,tolerance=1e-7)
-	expect_equal(rs3,copy_rs3,tolerance=1e-7)
+		expect_error(rs1alt <- unjoin_cent_sums(rs3,rs2),NA)
+		expect_error(rs2alt <- unjoin_cent_sums(rs3,rs1),NA)
+		expect_equal(rs1,copy_rs1,tolerance=1e-7)
+		expect_equal(rs2,copy_rs2,tolerance=1e-7)
+		expect_equal(rs3,copy_rs3,tolerance=1e-7)
 
-	expect_equal(rs1,rs1alt,tolerance=1e-7)
-	expect_equal(rs2,rs2alt,tolerance=1e-7)
+		expect_equal(rs1,rs1alt,tolerance=1e-7)
+		expect_equal(rs2,rs2alt,tolerance=1e-7)
 
-	# now an empty guy; this should return empty.
-	x0 <- c()
-	expect_error(rs0 <- cent_sums(x0,max_ord),NA)
-	expect_equal(length(rs0),max_ord+1)
-	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
-	copy_rs1 <- rs1 + 0
-	expect_error(rs1alt <- join_cent_sums(rs1,rs0),NA)
-	expect_equal(rs1,rs1alt,tolerance=1e-7)
-	
+		# now an empty guy; this should return empty.
+		x0 <- c()
+		expect_error(rs0 <- cent_sums(x0,max_ord),NA)
+		expect_equal(length(rs0),max_ord+1)
+		expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+		copy_rs1 <- rs1 + 0
+		expect_error(rs1alt <- join_cent_sums(rs1,rs0),NA)
+		expect_equal(rs1,rs1alt,tolerance=1e-7)
+	}
 })#UNFOLD
 test_that("join commutativity",{#FOLDUP
 	set.char.seed("f33946b3-216e-4977-9535-447b55214197")
 
-	max_ord <- 6L
-	x1 <- rnorm(1e3,mean=1)
-	x2 <- rnorm(1e3,mean=1)
-	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
-	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
-	expect_error(rs3_a <- join_cent_sums(rs1,rs2),NA)
-	expect_error(rs3_b <- join_cent_sums(rs2,rs1),NA)
-	expect_equal(rs3_a,rs3_b,tolerance=1e-7)
+	for (max_ord in c(1L,2L,3L,6L)) {
+		x1 <- rnorm(1e3,mean=1)
+		x2 <- rnorm(1e3,mean=1)
+		expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+		expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+		expect_error(rs3_a <- join_cent_sums(rs1,rs2),NA)
+		expect_error(rs3_b <- join_cent_sums(rs2,rs1),NA)
+		expect_equal(rs3_a,rs3_b,tolerance=1e-7)
 
-	# on an empty
-	x1 <- c()
-	x2 <- rnorm(1e3,mean=1)
-	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
-	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
-	expect_error(rs3_a <- join_cent_sums(rs1,rs2),NA)
-	expect_error(rs3_b <- join_cent_sums(rs2,rs1),NA)
-	expect_equal(rs3_a,rs3_b,tolerance=1e-7)
+		# on an empty
+		x1 <- c()
+		x2 <- rnorm(1e3,mean=1)
+		expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+		expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+		expect_error(rs3_a <- join_cent_sums(rs1,rs2),NA)
+		expect_error(rs3_b <- join_cent_sums(rs2,rs1),NA)
+		expect_equal(rs3_a,rs3_b,tolerance=1e-7)
+	}
+
+	# should this be an error?
+	#rs1[1] <- -1
+	#expect_error(rs3_a <- join_cent_sums(rs1,rs2))
+	#expect_error(rs3_b <- join_cent_sums(rs2,rs1))
 })#UNFOLD
 context("monoid cosum")
 test_that("cosums are sane",{#FOLDUP
