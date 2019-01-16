@@ -170,7 +170,60 @@ test_that("t_running foo and weights",{#FOLDUP
 
 
 })#UNFOLD
+context("code runs: t_running_foo NA weights")
+test_that("t_running foo  NA weights",{#FOLDUP
+	skip_on_cran()
 
+	set.char.seed("82da516f-6185-4f65-8576-f8c02e00d61e")
+	nel <- 25
+
+	xall <- list(rnorm(nel))
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+	rp <- 5L
+	wts_as_delta <- FALSE
+
+	for (thingy in xall) {
+		wts <- runif(length(thingy),min=0.9,max=1.2)
+		wts[wts < 1] <- NA
+		for (times in list(cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
+			for (na_rm in c(FALSE,TRUE)) {
+				for (lb_time in list(max(times) + c(1:2),3+cumsum(runif(10,min=0.4,max=1.1)))) {
+					expect_error(t_running_sum(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_mean(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_sd(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_skew(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_kurt(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_sd3(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_skew4(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_kurt5(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_cent_moments(thingy,time=times,wts=wts,variable_win=TRUE,max_order=5L,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_cent_moments(thingy,time=times,wts=wts,variable_win=TRUE,max_order=5L,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm,max_order_only=TRUE),NA)
+					expect_error(t_running_std_moments(thingy,time=times,wts=wts,variable_win=TRUE,max_order=5L,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_cumulants(thingy,time=times,wts=wts,variable_win=TRUE,max_order=5L,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_apx_quantiles(thingy,time=times,wts=wts,variable_win=TRUE,p=ptiles,max_order=5L,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_apx_median(thingy,time=times,wts=wts,variable_win=TRUE,max_order=5L,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_sharpe(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+					expect_error(t_running_sharpe(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm,compute_se=TRUE),NA)
+					expect_error(t_running_tstat(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+
+					# NOTA BENE: these three do not accept an lb_time b/c they are associated with the thingy;
+					# so we *do* expect these to error.
+					expect_error(t_running_centered(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
+					expect_error(t_running_scaled(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
+					expect_error(t_running_zscored(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
+				}
+
+				#for (lookahead in c(0,8.3)) {
+				#expect_error(t_running_centered(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+				#expect_error(t_running_scaled(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+				#expect_error(t_running_zscored(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+				#}
+			}
+		}
+	}
+
+})#UNFOLD
 context("code runs: t_running_foo odds and ends")
 test_that("t_running foo  variable_win",{#FOLDUP
 	skip_on_cran()
