@@ -777,7 +777,6 @@ NumericVector quasiWeightedMomentsCurryOne(T v,
                                            const bool na_rm, 
                                            const bool check_wts, 
                                            const bool normalize_wts) {
-    NumericVector dummy_wts;
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
             case  INTSXP: { return quasiWeightedMomentsCurryZero<T,IntegerVector,int,true>(v, wts, ord, 0, -1, na_rm, check_wts, normalize_wts); }
@@ -786,25 +785,28 @@ NumericVector quasiWeightedMomentsCurryOne(T v,
             default: stop("Unsupported weight type"); // #nocov
         }
     }
+    NumericVector dummy_wts;
     // have to have fallthrough for CRAN check.
     return quasiWeightedMomentsCurryZero<T,NumericVector,int,false>(v, dummy_wts, ord, 0, -1, na_rm, check_wts, normalize_wts); 
 }
 
 // wrap one level
 NumericVector inline quasiWeightedMomentsCurryTwo(SEXP v, 
-                                           SEXP wts, 
-                                           int ord, 
-                                           const bool na_rm, 
-                                           const bool check_wts, 
-                                           const bool normalize_wts) {
-    switch (TYPEOF(v)) {
-        case  INTSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
-        case REALSXP: { return quasiWeightedMomentsCurryOne<NumericVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
-        case  LGLSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(as<IntegerVector>(v), wts, ord, na_rm, check_wts, normalize_wts); }  // bools can be upcast to save build size.
-        default: stop("Unsupported weight type"); // #nocov
+                                                  SEXP wts, 
+                                                  int ord, 
+                                                  const bool na_rm, 
+                                                  const bool check_wts, 
+                                                  const bool normalize_wts) {
+    if (!Rf_isNull(v)) {  
+        switch (TYPEOF(v)) {
+            case  INTSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
+            case REALSXP: { return quasiWeightedMomentsCurryOne<NumericVector>(v, wts, ord, na_rm, check_wts, normalize_wts); }
+            case  LGLSXP: { return quasiWeightedMomentsCurryOne<IntegerVector>(as<IntegerVector>(v), wts, ord, na_rm, check_wts, normalize_wts); }  // bools can be upcast to save build size.
+            default: stop("Unsupported data type"); // #nocov
+        }
     }
     // have to have fallthrough for CRAN check.
-    NumericVector retv;
+    NumericVector retv(ord);
     return retv;
 }
 

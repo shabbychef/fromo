@@ -63,6 +63,11 @@ test_that("join/unjoin",{#FOLDUP
 
 	expect_equal(rs1,rs1alt,tolerance=1e-7)
 	expect_equal(rs2,rs2alt,tolerance=1e-7)
+
+	# now an empty guy; this should return empty.
+	x0 <- c()
+	 expect_error(rs0 <- cent_sums(x0,max_ord),NA)
+	
 })#UNFOLD
 context("monoid cosum")
 test_that("cosums are sane",{#FOLDUP
