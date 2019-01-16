@@ -426,53 +426,59 @@ test_that("t_running foo and weights",{#FOLDUP
 	skip_on_cran()
 
 	set.char.seed("95aa6ed1-14dc-473a-a7aa-8dc9869b1dbc")
-	nel <- 20
+	nel <- 30
+
+	xna <- rnorm(2*nel)
+	xna[xna < 0] <- NA
+
 	xall <- list(rnorm(nel),
+							 xna,
 							 as.integer(rnorm(nel,sd=100)))
-	wall <- list(rep(1.0,nel),
-							 runif(nel,min=0.9,max=3.5),
-							 NULL)
 
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+	rp <- 5L
 
 	for (thingy in xall) {
 		for (times in list(NULL,cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
+			wall <- list(rep(1.0,length(thingy)),
+									 runif(length(thingy),min=0.9,max=3.5),
+									 NULL)
 			for (wts in wall) {
 				wts_as_delta <- is.null(times) & !is.null(wts)
 				if (!is.null(times) || wts_as_delta) {
 					for (window in c(5.5,21.23,Inf,NULL)) {
 						for (na_rm in c(FALSE,TRUE)) {
 							for (lb_time in list(NULL,3+cumsum(runif(10,min=0.4,max=1.1)))) {
-								expect_error(t_running_sum(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_mean(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_sd(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_skew(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_kurt(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_sd3(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_skew4(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_kurt5(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_cent_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_cent_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-								expect_error(t_running_std_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_cumulants(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_apx_quantiles(thingy,time=times,wts=wts,p=ptiles,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_apx_median(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_sharpe(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
-								expect_error(t_running_sharpe(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
-								expect_error(t_running_tstat(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,na_rm=na_rm),NA)
+								expect_error(t_running_sum(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_mean(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_sd(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_skew(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_kurt(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_sd3(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_skew4(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_kurt5(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_cent_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_cent_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm,max_order_only=TRUE),NA)
+								expect_error(t_running_std_moments(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_cumulants(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_apx_quantiles(thingy,time=times,wts=wts,p=ptiles,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_apx_median(thingy,time=times,wts=wts,max_order=5L,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_sharpe(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+								expect_error(t_running_sharpe(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm,compute_se=TRUE),NA)
+								expect_error(t_running_tstat(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
 
 								# NOTA BENE: these three do not accept an lb_time b/c they are associated with the thingy;
 								# so we *do* expect these to error.
-								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm))
-								expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm))
-								expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm))
+								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
+								expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
+								expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
 							}
 
-							for (lookahead in c(0,8.3)) {
-								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
-								expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
-								expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
-							}
+							#for (lookahead in c(0,8.3)) {
+								#expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+								#expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+								#expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+							#}
 						}
 					}
 				}
