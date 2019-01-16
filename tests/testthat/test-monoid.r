@@ -41,12 +41,14 @@ test_that("join/unjoin",{#FOLDUP
 	x2 <- rnorm(1e3,mean=1)
 	max_ord <- 6L
 	expect_error(rs1 <- cent_sums(x1,max_ord),NA)
+	expect_equal(length(rs1),max_ord+1)
 	expect_error(rs2 <- cent_sums(x2,max_ord),NA)
+	expect_equal(length(rs2),max_ord+1)
 	expect_error(rs3 <- cent_sums(c(x1,x2),max_ord),NA)
 	# make sure these don't change? 
 	copy_rs1 <- rs1 + 0
 	copy_rs2 <- rs2 + 0
-	rs3alt <- join_cent_sums(rs1,rs2)
+	expect_error(rs3alt <- join_cent_sums(rs1,rs2),NA)
 	expect_equal(rs1,copy_rs1,tolerance=1e-7)
 	expect_equal(rs2,copy_rs2,tolerance=1e-7)
 	expect_equal(rs3,rs3alt,tolerance=1e-7)
@@ -55,8 +57,8 @@ test_that("join/unjoin",{#FOLDUP
 	copy_rs2 <- rs2 + 0
 	copy_rs3 <- rs3 + 0
 
-	rs1alt <- unjoin_cent_sums(rs3,rs2)
-	rs2alt <- unjoin_cent_sums(rs3,rs1)
+	expect_error(rs1alt <- unjoin_cent_sums(rs3,rs2),NA)
+	expect_error(rs2alt <- unjoin_cent_sums(rs3,rs1),NA)
 	expect_equal(rs1,copy_rs1,tolerance=1e-7)
 	expect_equal(rs2,copy_rs2,tolerance=1e-7)
 	expect_equal(rs3,copy_rs3,tolerance=1e-7)
@@ -66,7 +68,8 @@ test_that("join/unjoin",{#FOLDUP
 
 	# now an empty guy; this should return empty.
 	x0 <- c()
-	 expect_error(rs0 <- cent_sums(x0,max_ord),NA)
+	expect_error(rs0 <- cent_sums(x0,max_ord),NA)
+	expect_equal(length(rs0),max_ord+1)
 	
 })#UNFOLD
 context("monoid cosum")

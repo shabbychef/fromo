@@ -806,7 +806,7 @@ NumericVector inline quasiWeightedMomentsCurryTwo(SEXP v,
         }
     }
     // have to have fallthrough for CRAN check.
-    NumericVector retv(ord);
+    NumericVector retv(ord+1);
     return retv;
 }
 
