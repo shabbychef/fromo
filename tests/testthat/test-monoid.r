@@ -119,6 +119,19 @@ test_that("weighted join/unjoin",{#FOLDUP
 		expect_error(rs1alt <- join_cent_sums(rs1,rs0),NA)
 		expect_equal(rs1,rs1alt,tolerance=1e-7)
 	}
+	# just hit code to make sure it runs
+	for (max_ord in c(1L,2L,3L,6L)) {
+		for (narm in c(FALSE,TRUE)) {
+			for (cw in c(FALSE,TRUE)) {
+				for (nw in c(FALSE,TRUE)) {
+					expect_error(rs1 <- cent_sums(x1,max_ord,wts=w1,na_rm=narm,
+																				check_wts=cw,normalize_wts=nw),NA)
+					expect_equal(length(rs1),max_ord+1)
+				}
+			}
+		}
+	}
+
 })#UNFOLD
 test_that("join commutativity",{#FOLDUP
 	set.char.seed("f33946b3-216e-4977-9535-447b55214197")
