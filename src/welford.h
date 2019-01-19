@@ -142,7 +142,7 @@ class Welford {
             if (ord==2) {
                 return sqrt(var(normalize,used_df));
             } else if (ord==1) {
-                Rcpp::warning("first centered moment is zero."); // #nocov
+                // Rcpp::warning("first centered moment is zero."); // #nocov
                 return 0.0;
             } else {
                 if (ord > m_ord) { stop("cannot compute this high of a moment."); } // #nocov
