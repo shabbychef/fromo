@@ -321,8 +321,10 @@ cbind(alt5,k5[,1])
 If you like rolling computations, do also check out the following packages (I believe they
 are all on CRAN):
 
+	* [RollingWindow](https://github.com/andrewuhl/rollingwindow), available only from github.
   * [RcppRoll](https://github.com/kevinushey/RcppRoll).
   * [roll](https://cran.r-project.org/package=roll).
+
 
 ## Running 'scale' operations
 
