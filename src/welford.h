@@ -673,32 +673,6 @@ NumericVector quasiSumThing(T v,
 }
 
 template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
-Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
-                                                          W wts,
-                                                          int ord,
-                                                          int bottom,
-                                                          int top,
-                                                          const bool check_wts) {
-    double nextval, nextwt;
-    Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
-
-    if (!has_wts) { nextwt = 1.0; }
-    if ((top < 0) || (top > v.size())) { top = v.size(); }
-    if (has_wts) {
-        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); } // #nocov
-        if (wts.size() < top) { stop("size of wts does not match v"); } // #nocov
-    }
-    for (int iii=bottom;iii < top;++iii) {
-        nextval = v[iii];
-        if (has_wts) { 
-            nextwt = double(wts[iii]); 
-        }
-        frets.add_one(nextval,nextwt);
-    }
-    return frets;
-}
-
-template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
 void add_many(Welford<oneW,has_wts,ord_beyond,na_rm> & frets,
               T v,
               W wts,
@@ -723,6 +697,17 @@ void add_many(Welford<oneW,has_wts,ord_beyond,na_rm> & frets,
     }
 }
 
+template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
+Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
+                                                          W wts,
+                                                          int ord,
+                                                          int bottom,
+                                                          int top,
+                                                          const bool check_wts) {
+    Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
+    add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,v,wts,ord,bottom,top,check_wts);
+    return frets;
+}
 
 // this function returns a NumericVector of:
 //   the number of elements or the sum of wts, 
