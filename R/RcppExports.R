@@ -322,6 +322,60 @@ cent2raw <- function(input) {
     .Call('_fromo_cent2raw', PACKAGE = 'fromo', input)
 }
 
+#' @rdname firstmoments
+#' @export
+ref_sd <- function(v) {
+    .Call('_fromo_ref_sd', PACKAGE = 'fromo', v)
+}
+
+#' @rdname firstmoments
+#' @export
+ref_sd_objecty <- function(v) {
+    .Call('_fromo_ref_sd_objecty', PACKAGE = 'fromo', v)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_narm <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_narm', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_onecheck <- function(v, window = 1000L, na_rm = FALSE) {
+    .Call('_fromo_ref_running_sd_onecheck', PACKAGE = 'fromo', v, window, na_rm)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_intnel <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_intnel', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_objecty <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_objecty', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_fooz <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_fooz', PACKAGE = 'fromo', v, window)
+}
+
+#' @export
+#' @rdname runningmoments
+ref_running_sd_barz <- function(v, window = 1000L) {
+    .Call('_fromo_ref_running_sd_barz', PACKAGE = 'fromo', v, window)
+}
+
 #' @title
 #' Compute first K moments over a sliding window
 #' @description
