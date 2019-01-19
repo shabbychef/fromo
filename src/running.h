@@ -139,10 +139,19 @@ NumericMatrix runQM(T v,
             // check subcount first and just recompute if needed.
             if (frets.subcount() >= recom_period) {
                 // fix this
-                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              0,         //bottom
-                                                                              lll+1,     //top
-                                                                              false);    //no need to check weights as we have done it once above.
+                //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              //0,         //bottom
+                                                                              //lll+1,     //top
+                                                                              //false);    //no need to check weights as we have done it once above.
+                                                                              
+                //zero it out
+                frets.tare();
+                add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
+                                                            v,wts,ord,   
+                                                            0,      //bottom
+                                                            lll+1,  //top
+                                                            false); //no need to check weights as we have done it once above.
+
             } else {
                 // add on nextv:
                 nextv = double(v[lll]);
@@ -164,10 +173,17 @@ NumericMatrix runQM(T v,
                 if (frets.subcount() >= recom_period) {
                     // fix this
                     jjj = tr_jjj+1;
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  jjj,       //bottom
-                                                                                  lll+1,     //top
-                                                                                  false);    //no need to check weights as we have done it once above.
+                    //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                  //jjj,       //bottom
+                                                                                  //lll+1,     //top
+                                                                                  //false);    //no need to check weights as we have done it once above.
+                    //zero it out
+                    frets.tare();
+                    add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
+                                                                v,wts,ord,   
+                                                                jjj,    //bottom
+                                                                lll+1,  //top
+                                                                false); //no need to check weights as we have done it once above.
                 } else {
                     // add on nextv:
                     nextv = double(v[lll]);
@@ -209,10 +225,17 @@ NumericMatrix runQM(T v,
                 iii = MIN(numel-1,tr_iii);
                 jjj = MAX(0,tr_jjj+1);
                 if (jjj <= iii) {
-                    frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                                  jjj,       //bottom
-                                                                                  iii+1,     //top
-                                                                                  false);    //no need to check weights as we have done it once above.
+                    //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                                  //jjj,       //bottom
+                                                                                  //iii+1,     //top
+                                                                                  //false);    //no need to check weights as we have done it once above.
+                    //zero it out
+                    frets.tare();
+                    add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
+                                                                v,wts,ord,   
+                                                                jjj,    //bottom
+                                                                iii+1,  //top
+                                                                false); //no need to check weights as we have done it once above.
                 }
             } else {
                 if ((tr_iii < numel) && (tr_iii >= 0)) {

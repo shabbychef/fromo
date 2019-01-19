@@ -698,6 +698,32 @@ Welford<oneW,has_wts,ord_beyond,na_rm> quasiWeightedThing(T v,
     return frets;
 }
 
+template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
+void add_many(Welford<oneW,has_wts,ord_beyond,na_rm> & frets,
+              T v,
+              W wts,
+              int ord,
+              int bottom,
+              int top,
+              const bool check_wts) {
+    double nextval, nextwt;
+
+    if (!has_wts) { nextwt = 1.0; }
+    if ((top < 0) || (top > v.size())) { top = v.size(); }
+    if (has_wts) {
+        if (check_wts && bad_weights<W>(wts)) { stop("negative weight detected"); } // #nocov
+        if (wts.size() < top) { stop("size of wts does not match v"); } // #nocov
+    }
+    for (int iii=bottom;iii < top;++iii) {
+        nextval = v[iii];
+        if (has_wts) { 
+            nextwt = double(wts[iii]); 
+        }
+        frets.add_one(nextval,nextwt);
+    }
+}
+
+
 // this function returns a NumericVector of:
 //   the number of elements or the sum of wts, 
 //   the mean, and 

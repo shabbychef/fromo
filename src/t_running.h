@@ -232,10 +232,17 @@ NumericMatrix t_runQM(T v,
             tr_iii = tr_jjj;
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
 
-            frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                          tr_jjj,       //bottom
-                                                                          tr_iii,       //top
-                                                                          false);    //no need to check weights as we have done it once above.
+            //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                          //tr_jjj,       //bottom
+                                                                          //tr_iii,       //top
+                                                                          //false);    //no need to check weights as we have done it once above.
+            //zero it out
+            frets.tare();
+            add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
+                                                        v,wts,ord,   
+                                                        tr_jjj,  //bottom
+                                                        tr_iii,  //top
+                                                        false);  //no need to check weights as we have done it once above.
         } else {
             if (!infwin) {
                 while ((tr_iii < numel) && (time[tr_iii] <= tf) && (time[tr_jjj] <= t0)) { 
@@ -267,10 +274,17 @@ NumericMatrix t_runQM(T v,
             }
             // may need to recompute based on the number of subtractions. bummer.
             if (frets.subcount() >= recom_period) {
-                frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              tr_jjj,       //bottom
-                                                                              tr_iii,       //top
-                                                                              false);    //no need to check weights as we have done it once above.
+                //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
+                                                                              //tr_jjj,       //bottom
+                                                                              //tr_iii,       //top
+                                                                              //false);    //no need to check weights as we have done it once above.
+                //zero it out
+                frets.tare();
+                add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
+                                                            v,wts,ord,   
+                                                            tr_jjj,  //bottom
+                                                            tr_iii,  //top
+                                                            false);  //no need to check weights as we have done it once above.
             }
         }
 
