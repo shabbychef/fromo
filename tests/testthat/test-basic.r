@@ -126,8 +126,10 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 				expect_error(running_sd3(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
 				expect_error(running_skew4(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
 				expect_error(running_kurt5(thingy,window=window,restart_period=50L,na_rm=na_rm),NA)
-				expect_error(running_cent_moments(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-				expect_error(running_cent_moments(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+				for (mol in c(1L,2L,5L)) {
+					expect_error(running_cent_moments(thingy,max_order=mol,window=window,restart_period=50L,na_rm=na_rm),NA)
+					expect_error(running_cent_moments(thingy,max_order=mol,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+				}
 				expect_error(running_std_moments(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
 				expect_error(running_cumulants(thingy,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
 				expect_error(running_apx_quantiles(thingy,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
@@ -143,8 +145,10 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 			expect_error(running_sd3(thingy,window=window,min_df=min_df),NA)
 			expect_error(running_skew4(thingy,window=window,min_df=min_df),NA)
 			expect_error(running_kurt5(thingy,window=window,min_df=min_df),NA)
-			expect_error(running_cent_moments(thingy,max_order=5L,window=window,min_df=min_df),NA)
-			expect_error(running_cent_moments(thingy,max_order=5L,window=window,min_df=min_df,max_order_only=TRUE),NA)
+			for (mol in c(1L,2L,5L)) {
+				expect_error(running_cent_moments(thingy,max_order=mol,window=window,min_df=min_df),NA)
+				expect_error(running_cent_moments(thingy,max_order=mol,window=window,min_df=min_df,max_order_only=TRUE),NA)
+			}
 			expect_error(running_std_moments(thingy,max_order=5L,window=window,min_df=min_df),NA)
 			expect_error(running_cumulants(thingy,max_order=5L,window=window,min_df=min_df),NA)
 			expect_error(running_apx_quantiles(thingy,p=ptiles,max_order=5L,window=window,min_df=min_df),NA)
@@ -194,8 +198,10 @@ test_that("running foo and weights",{#FOLDUP
 						expect_error(running_sd3(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_skew4(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_kurt5(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_cent_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						expect_error(running_cent_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+						for (mol in c(1L,2L,5L)) {
+							expect_error(running_cent_moments(thingy,wts=wts,max_order=mol,window=window,restart_period=50L,na_rm=na_rm),NA)
+							expect_error(running_cent_moments(thingy,wts=wts,max_order=mol,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+						}
 						expect_error(running_std_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_cumulants(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_apx_quantiles(thingy,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
@@ -277,7 +283,9 @@ test_that("NA restart period?",{#FOLDUP
 		expect_error(running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 		expect_error(running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 		expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,max_order_only=TRUE,na_rm=na_rm),NA)
+		for (mol in c(1L,2L,5L)) {
+			expect_error(running_cent_moments(x,max_order=mol,window=window,restart_period=restart_period,max_order_only=TRUE,na_rm=na_rm),NA)
+		}
 		expect_error(running_std_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 		expect_error(running_cumulants(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 		expect_error(running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
