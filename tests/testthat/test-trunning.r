@@ -31,7 +31,6 @@
 set.char.seed <- function(str) {
 	set.seed(as.integer(charToRaw(str)))
 }
-THOROUGHNESS <- getOption('test.thoroughness',1.0)
 #UNFOLD
 
 # code runs at all
@@ -122,12 +121,16 @@ test_that("t_running foo and weights",{#FOLDUP
 
 	for (thingy in xall) {
 		for (times in list(NULL,cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
+			wna <- runif(length(thingy),min=1.0,max=3.0)
+			wna[wna < 1.4] <- NA
 			wall <- list(rep(1.0,length(thingy)),
 									 runif(length(thingy),min=0.9,max=3.5),
+									 wna,
 									 NULL)
 			for (wts in wall) {
 				wts_as_delta <- is.null(times) & !is.null(wts)
-				if (!is.null(times) || wts_as_delta) {
+				can_test <- (!wts_as_delta || is.null(wts) || !any(is.na(wts))) && (!is.null(times) || wts_as_delta)
+				if (can_test) { 
 					for (window in c(5.5,21.23,Inf,NULL)) {
 						for (na_rm in c(FALSE,TRUE)) {
 							for (lb_time in list(NULL,3+cumsum(runif(10,min=0.4,max=1.1)))) {
@@ -167,7 +170,27 @@ test_that("t_running foo and weights",{#FOLDUP
 			}
 		}
 	}
-
+	#for (thingy in xall[2]) {
+		#for (times in list(NULL,cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
+			#wall <- list(rep(1.0,length(thingy)),
+									 #runif(length(thingy),min=0.9,max=3.5),
+									 #NULL)
+			#for (wts in wall) {
+				#wts_as_delta <- is.null(times) & !is.null(wts)
+				#if (!is.null(times) || wts_as_delta) {
+					#for (window in c(5.5,21.23,Inf,NULL)) {
+						#for (na_rm in c(FALSE,TRUE)) {
+							#for (lookahead in c(0,8.3)) {
+								#expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+								##expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+								##expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+							#}
+						#}
+					#}
+				#}
+			#}
+		#}
+	#}
 
 })#UNFOLD
 context("code runs: t_running_foo NA weights")
