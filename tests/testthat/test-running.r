@@ -31,79 +31,9 @@
 set.char.seed <- function(str) {
 	set.seed(as.integer(charToRaw(str)))
 }
-THOROUGHNESS <- getOption('test.thoroughness',1.0)
 #UNFOLD
 
-# code runs at all
-context("code runs: sd, skew, kurt")
-test_that("sd, skew, kurt run without error",{#FOLDUP
-	set.char.seed("569dd47d-f9e5-40e4-b2ac-e5dbb4771a53")
-	x <- rnorm(100)
-	y <- as.integer(x)
-	z <- as.logical(y)
-	q <- c('a','b','c')
-	wts <- 100 * runif(length(x))
-
-	for (na_rm in c(FALSE,TRUE)) {
-		for (fnc in list(function(x) { x },as.integer,function(x) { as.logical(x > 0) })) {
-			cls_x <- fnc(x)
-			expect_error(sd3(cls_x,na_rm=na_rm),NA)
-			expect_error(skew4(cls_x,na_rm=na_rm),NA)
-			expect_error(kurt5(cls_x,na_rm=na_rm),NA)
-			expect_error(cent_moments(cls_x,max_order=5L,used_df=1L,na_rm=na_rm),NA)
-			expect_error(std_moments(cls_x,max_order=5L,used_df=1L,na_rm=na_rm),NA)
-			expect_error(cent_cumulants(cls_x,max_order=5L,used_df=1L,na_rm=na_rm),NA)
-			expect_error(std_cumulants(cls_x,max_order=5L,used_df=1L,na_rm=na_rm),NA)
-
-			# weights!?
-			for (wfnc in list(function(x) { x },as.integer,function(x) { as.logical(x > 10) })) {
-				cls_wts <- wfnc(wts)
-				expect_error(sd3(cls_x,na_rm=na_rm,wts=cls_wts),NA)
-				expect_error(skew4(cls_x,na_rm=na_rm,wts=cls_wts),NA)
-				expect_error(kurt5(cls_x,na_rm=na_rm,wts=cls_wts),NA)
-				expect_error(kurt5(cls_x,na_rm=na_rm,wts=cls_wts,check_wts=TRUE),NA)
-				
-				expect_error(cent_moments(cls_x,max_order=5L,used_df=1L,na_rm=na_rm,wts=cls_wts),NA)
-				expect_error(std_moments(cls_x,max_order=5L,used_df=1L,na_rm=na_rm,wts=cls_wts),NA)
-				expect_error(cent_cumulants(cls_x,max_order=5L,used_df=1L,na_rm=na_rm,wts=cls_wts),NA)
-				expect_error(std_cumulants(cls_x,max_order=5L,used_df=1L,na_rm=na_rm,wts=cls_wts),NA)
-			}
-		}
-	}
-	# check some things about weights;
-	expect_error(sd3(x,wts=q))
-	expect_error(sd3(x,wts=rep(-1,length(x)),check_wts=TRUE))
-
-	for (checkme in list(sd3,skew4,kurt5,cent_moments,std_moments,cent_cumulants,std_cumulants)) {
-		expect_error(checkme(q))
-		expect_error(checkme(x,wts=q))
-		expect_error(checkme(x,wts=rep(-1,length(x)),check_wts=TRUE))
-	}
-})#UNFOLD
-context("code runs: cosum and comoment")
-test_that("cosum and comoment run without error",{#FOLDUP
-	set.char.seed("ff34b509-a113-41c9-8517-aa72792c42f7")
-	x <- matrix(rnorm(30*4),ncol=4)
-	y <- matrix(as.integer(x),ncol=ncol(x))
-	z <- matrix(as.logical(y),ncol=ncol(x))
-	q <- matrix(letters[1:24],ncol=4)
-
-	for (na_omit in c(FALSE,TRUE)) {
-		expect_error(cent_cosums(x,max_order=2L,na_omit=na_omit),NA)
-		expect_error(cent_comoments(x,max_order=2L,used_df=1L,na_omit=na_omit),NA)
-
-		expect_error(cent_cosums(y,max_order=2L,na_omit=na_omit),NA)
-		expect_error(cent_comoments(y,max_order=2L,used_df=1L,na_omit=na_omit),NA)
-
-		expect_error(cent_cosums(z,max_order=2L,na_omit=na_omit),NA)
-		expect_error(cent_comoments(z,max_order=2L,used_df=1L,na_omit=na_omit),NA)
-	}
-
-	expect_error(cent_cosums(x,max_order=4L))
-	expect_error(cent_cosums(q,max_order=2L))
-	expect_error(cent_comoments(q,max_order=2L))
-})#UNFOLD
-context("code runs: running_sd etc")
+context("running_foo run without error")
 test_that("running sd, skew, kurt run without error",{#FOLDUP
 	skip_on_cran()
 
@@ -172,7 +102,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(running_apx_median(q,p=ptiles,max_order=5L))
 })#UNFOLD
-context("code runs: running_foo and weights")
+context("running_foo weighted OK")
 test_that("running foo and weights",{#FOLDUP
 	skip_on_cran()
 
@@ -229,7 +159,7 @@ test_that("running foo and weights",{#FOLDUP
 
 
 })#UNFOLD
-context("code runs: hits heywood")
+context("running_foo make it hit heywood?")
 test_that("hit heywood branch",{#FOLDUP
 	skip_on_cran()
 
@@ -264,7 +194,7 @@ test_that("hit heywood branch",{#FOLDUP
 
 	}
 })#UNFOLD
-context("code runs: NA restart")
+context("running_foo: NA restart")
 test_that("NA restart period?",{#FOLDUP
 	skip_on_cran()
 
@@ -300,7 +230,7 @@ test_that("NA restart period?",{#FOLDUP
 
 	}
 })#UNFOLD
-context("code runs: running adjustments")
+context("running adjustments run")
 test_that("running adjustments",{#FOLDUP
 	skip_on_cran()
 
@@ -368,54 +298,6 @@ test_that("running adjustments",{#FOLDUP
 	expect_error(running_tstat(x,window=-20L))
 	expect_error(running_tstat(x,window=20L,restart_period='FOO'))
 })#UNFOLD
-
-#test_that("running foo and weights",{#FOLDUP
-	#skip_on_cran()
-
-	#set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
-	#nel <- 20
-	#xall <- list(rnorm(nel),
-							 #as.integer(rnorm(nel,sd=100)))
-	#wall <- list(rep(1.0,nel),
-							 #rep(2L,nel),
-							 #NULL)
-
-	#ptiles <- c(0.1,0.25,0.5,0.75,0.9)
-
-	#for (x in xall) {
-		#for (wts in wall) {
-			#for (window in c(5,21,Inf,NULL)) {
-				#for (na_rm in c(FALSE,TRUE)) {
-						##running_sum(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						##running_mean(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_sd(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_skew(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_kurt(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_sd3(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_skew4(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_kurt5(x,wts=wts,window=window,restart_period=50L,na_rm=na_rm)
-						#running_cent_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
-						#running_cent_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE)
-						#running_std_moments(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
-						#running_cumulants(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
-						#running_apx_quantiles(x,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
-						#running_apx_median(x,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm)
-				#}
-			#}
-		#}
-	#}
-
-	## sentinel
-	#expect_true(TRUE)
-#})#UNFOLD
-
-# 2FIX: check the effects of NA
-
-context("order of parameters")# FOLDUP
-# named parameters can be given in any order?
-
-# UNFOLD
-
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=r:ft=r:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
