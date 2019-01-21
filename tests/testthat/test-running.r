@@ -159,6 +159,75 @@ test_that("running foo and weights",{#FOLDUP
 
 
 })#UNFOLD
+context("running foo input params")
+test_that("window as integer or double",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("da774aca-bbde-4350-87b2-d21ed0c84124")
+	nel <- 40
+	thingy <- rnorm(nel)
+	iwin <- 50L
+	dwin <- as.numeric(iwin)
+	charwin <- 'window'
+
+	expect_error(rd <- running_sum(thingy,window=dwin),NA)
+	expect_error(ri <- running_sum(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_sum(thingy,window=charwin))
+
+	expect_error(rd <- running_mean(thingy,window=dwin),NA)
+	expect_error(ri <- running_mean(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_mean(thingy,window=charwin))
+
+	expect_error(rd <- running_sd(thingy,window=dwin),NA)
+	expect_error(ri <- running_sd(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_sd(thingy,window=charwin))
+
+	expect_error(rd <- running_skew(thingy,window=dwin),NA)
+	expect_error(ri <- running_skew(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_skew(thingy,window=charwin))
+
+	expect_error(rd <- running_kurt(thingy,window=dwin),NA)
+	expect_error(ri <- running_kurt(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_kurt(thingy,window=charwin))
+
+	expect_error(rd <- running_sd3(thingy,window=dwin),NA)
+	expect_error(ri <- running_sd3(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_sd3(thingy,window=charwin))
+
+	expect_error(rd <- running_skew4(thingy,window=dwin),NA)
+	expect_error(ri <- running_skew4(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_skew4(thingy,window=charwin))
+
+	expect_error(rd <- running_kurt5(thingy,window=dwin),NA)
+	expect_error(ri <- running_kurt5(thingy,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(running_kurt5(thingy,window=charwin))
+
+
+
+})#UNFOLD
+test_that("bad input",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("e6bc7b67-8ba5-4c48-aeed-180a27d3303c")
+	nel <- 10
+	thingy <- rnorm(nel)
+
+	expect_error(rd <- running_sum(thingy,window='bad idea'))
+	expect_error(rd <- running_mean(thingy,window=5,restart_period='dumb'))
+	expect_error(rd <- running_mean(thingy,window=5,min_df='dumb'))
+	expect_error(rd <- running_mean(thingy,window=5,na_rm='dumb'))
+	expect_error(rd <- running_sd3(thingy,window=5,used_df='dumb'))
+	expect_error(rd <- running_sd3(thingy,window=5,check_wts='dumb'))
+	expect_error(rd <- running_sd3(thingy,window=5,normalize_wts='dumb'))
+})#UNFOLD
 context("running_foo make it hit heywood?")
 test_that("hit heywood branch",{#FOLDUP
 	skip_on_cran()
