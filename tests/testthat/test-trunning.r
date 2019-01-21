@@ -310,5 +310,45 @@ test_that("t_running foo  variable_win",{#FOLDUP
 
 })#UNFOLD
 
+context("t_running foo input params")
+test_that("window as integer or double",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("c0b02fb4-cd35-4403-8a13-950b5f2236f2")
+	nel <- 40
+	thingy <- rnorm(nel)
+	times <- seq_along(thingy)
+	iwin <- 50L
+	dwin <- as.numeric(iwin)
+	charwin <- 'window'
+
+	expect_error(rd <- t_running_sum(thingy,time=times,window=dwin),NA)
+	expect_error(ri <- t_running_sum(thingy,time=times,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(t_running_sum(thingy,times=times,window=charwin))
+	
+	expect_error(rd <- t_running_mean(thingy,time=times,window=dwin),NA)
+	expect_error(ri <- t_running_mean(thingy,time=times,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(t_running_mean(thingy,times=times,window=charwin))
+
+	expect_error(rd <- t_running_sd(thingy,time=times,window=dwin),NA)
+	expect_error(ri <- t_running_sd(thingy,time=times,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(t_running_sd(thingy,times=times,window=charwin))
+
+	expect_error(rd <- t_running_skew(thingy,time=times,window=dwin),NA)
+	expect_error(ri <- t_running_skew(thingy,time=times,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(t_running_skew(thingy,times=times,window=charwin))
+
+	expect_error(rd <- t_running_kurt(thingy,time=times,window=dwin),NA)
+	expect_error(ri <- t_running_kurt(thingy,time=times,window=iwin),NA)
+	expect_equal(rd,ri,tolerance=1e-12)
+	expect_error(t_running_kurt(thingy,times=times,window=charwin))
+
+
+})#UNFOLD
+
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=r:ft=r:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
