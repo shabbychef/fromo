@@ -102,6 +102,7 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(t_running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(t_running_apx_median(q,p=ptiles,max_order=5L))
 })#UNFOLD
+
 context("code runs: t_running_foo and weights")
 test_that("t_running foo and weights",{#FOLDUP
 	skip_on_cran()
@@ -159,11 +160,11 @@ test_that("t_running foo and weights",{#FOLDUP
 								expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
 							}
 
-							#for (lookahead in c(0,8.3)) {
-								#expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+							for (lookahead in c(0,8.3)) {
+								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 								#expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 								#expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
-							#}
+							}
 						}
 					}
 				}
@@ -296,11 +297,11 @@ test_that("t_running foo  variable_win",{#FOLDUP
 						expect_error(t_running_zscored(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm))
 					}
 
-					#for (lookahead in c(0,8.3)) {
-						#expect_error(t_running_centered(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
-						#expect_error(t_running_scaled(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
-						#expect_error(t_running_zscored(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
-					#}
+					for (lookahead in c(0,8.3)) {
+						expect_error(t_running_centered(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+						expect_error(t_running_scaled(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+						expect_error(t_running_zscored(thingy,time=times,wts=wts,variable_win=TRUE,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+					}
 				}
 			}
 		}
