@@ -78,6 +78,7 @@ NumericMatrix t_runQM(T v,
                       const bool normalize_wts) {
 
     Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
+    frets.tare();
 
     NumericVector time, time_deltas, lb_time;
     if (opt_time.isNotNull()) {
@@ -231,11 +232,6 @@ NumericMatrix t_runQM(T v,
             if (!infwin) { while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; } }
             tr_iii = tr_jjj;
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
-
-            //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                          //tr_jjj,       //bottom
-                                                                          //tr_iii,       //top
-                                                                          //false);    //no need to check weights as we have done it once above.
             //zero it out
             frets.tare();
             add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
@@ -274,10 +270,6 @@ NumericMatrix t_runQM(T v,
             }
             // may need to recompute based on the number of subtractions. bummer.
             if (frets.subcount() >= recom_period) {
-                //frets = quasiWeightedThing<T,W,oneW,has_wts,ord_beyond,na_rm>(v,wts,ord,
-                                                                              //tr_jjj,       //bottom
-                                                                              //tr_iii,       //top
-                                                                              //false);    //no need to check weights as we have done it once above.
                 //zero it out
                 frets.tare();
                 add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
@@ -290,7 +282,6 @@ NumericMatrix t_runQM(T v,
 
         // fill in the value in the output.
         // 2FIX: give access to v, not v[lll]...
-        // moment_converter<retwhat, Welford<oneW,has_wts,ord_beyond,na_rm> ,T,renormalize>::mom_interp(xret,lll,ord,frets,v,used_df,min_df);
 //yuck!!
 #include "moment_interp.h"
 
