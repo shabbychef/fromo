@@ -210,9 +210,11 @@ NumericMatrix runQM(T v,
             
             // check subcount first and just recompute if needed.
             if ((lll==0) || (frets.subcount() >= recom_period)) {
+                tr_jjj++;
+
                 // fix this
                 iii = MIN(numel-1,tr_iii);
-                jjj = MAX(0,tr_jjj+1);
+                jjj = MAX(0,tr_jjj);
                 if (jjj <= iii) {
                     //zero it out
                     frets.tare();
@@ -227,16 +229,24 @@ NumericMatrix runQM(T v,
                     // add on nextv:
                     nextv = double(v[tr_iii]);
                     if (has_wts) { nextw = double(wts[tr_iii]); } 
-                    frets.add_one(nextv,nextw); 
-                }
-                // remove prevv:
-                if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+
+                    // maybe swap one off;
+                    if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+                        prevv = double(v[tr_jjj]);
+                        if (has_wts) { prevw = double(wts[tr_jjj]); }
+                        frets.swap_one(nextv,nextw,prevv,prevw); 
+                    } else {
+                        // nope, just add this one guy
+                        frets.add_one(nextv,nextw); 
+                    }
+                } else if ((tr_jjj < numel) && (tr_jjj >= 0)) {
+                    // remove prevv:
                     prevv = double(v[tr_jjj]);
                     if (has_wts) { prevw = double(wts[tr_jjj]); }
                     frets.rem_one(prevv,prevw); 
                 }
+                tr_jjj++;
             }
-            tr_jjj++;
 
             // fill in the value in the output.
             // 2FIX: give access to v, not v[lll]...
