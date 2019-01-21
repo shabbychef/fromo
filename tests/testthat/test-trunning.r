@@ -161,7 +161,7 @@ test_that("t_running foo and weights",{#FOLDUP
 							}
 
 							for (lookahead in c(0,8.3)) {
-								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+								#expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 								#expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 								#expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 							}
