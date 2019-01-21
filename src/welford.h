@@ -116,7 +116,7 @@ class Welford {
             }
             return *this;
         }
-        FORCE_INLINE double var(const bool normalize,const double used_df) const {
+        inline double var(const bool normalize,const double used_df) const {
             double renorm;
             if (has_wts) {
                 if (normalize) {
@@ -132,7 +132,7 @@ class Welford {
         inline double mean() const {
             return m_xx[1];
         }
-        FORCE_INLINE double sd(const bool normalize,const double used_df) const {
+        inline double sd(const bool normalize,const double used_df) const {
             return sqrt(var(normalize,used_df));
         }
         // one centered moment, not standardized.
