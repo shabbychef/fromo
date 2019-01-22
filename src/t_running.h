@@ -155,7 +155,7 @@ NumericMatrix t_runQM(T v,
         (((retwhat==ret_sharpese) || 
           (retwhat==ret_exkurt) ||
           (retwhat==ret_exkurt5)) && (ord < 4))) { 
-        stop("bad code: order too small to support this computation"); 
+        stop("bad code: order too small to support this computation");  // #nocov
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
     // these define the time window for any lll; 

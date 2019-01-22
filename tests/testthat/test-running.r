@@ -127,6 +127,8 @@ test_that("running foo and weights",{#FOLDUP
 		for (wts in wall) {
 			for (window in c(5,21,Inf,NULL)) {
 				for (na_rm in c(FALSE,TRUE)) {
+						expect_error(running_sum(thingy,wts=wts,window=window,restart_period=2L,na_rm=na_rm),NA)
+
 						expect_error(running_sum(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_mean(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_sd(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
@@ -148,7 +150,7 @@ test_that("running foo and weights",{#FOLDUP
 							#expect_error(running_centered(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
 							#expect_error(running_scaled(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
 							#expect_error(running_zscored(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
-						#}
+						}
 						#expect_error(running_sharpe(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						#expect_error(running_sharpe(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
 						#expect_error(running_tstat(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
@@ -159,6 +161,43 @@ test_that("running foo and weights",{#FOLDUP
 
 
 })#UNFOLD
+
+context("running_sum every way")
+test_that("running sum",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("20c032c9-deb2-4000-9d73-b7d8395b67b2")
+	nel <- 20
+	xna <- rnorm(nel)
+	xna[xna < -0.5] <- NA
+	xall <- list(rnorm(nel),
+							 xna,
+							 as.integer(rnorm(nel,sd=100)))
+
+	wna <- runif(nel,min=1,max=3)
+	wna[wna < 1.5] <- NA
+	wall <- list(rep(1.0,nel),
+							 runif(nel,min=0.9,max=3.5),
+							 wna,
+							 as.integer(ceiling(runif(nel,min=2,max=100))),
+							 as.logical(ceiling(pmax(0,rnorm(nel)))),
+							 NULL)
+
+	for (thingy in xall) {
+		for (wts in wall) {
+			for (window in c(5,21,Inf,NULL)) {
+				for (na_rm in c(FALSE,TRUE)) {
+					for (rp in c(1L,40L)) {
+						expect_error(running_sum(thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm),NA)
+					}
+				}
+			}
+		}
+	}
+
+
+})#UNFOLD
+
 context("running foo input params")
 test_that("window as integer or double",{#FOLDUP
 	skip_on_cran()
