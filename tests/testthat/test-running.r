@@ -150,7 +150,7 @@ test_that("running foo and weights",{#FOLDUP
 							#expect_error(running_centered(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
 							#expect_error(running_scaled(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
 							#expect_error(running_zscored(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
-						}
+						#}
 						#expect_error(running_sharpe(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						#expect_error(running_sharpe(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm,compute_se=TRUE),NA)
 						#expect_error(running_tstat(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
