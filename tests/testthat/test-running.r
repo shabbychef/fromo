@@ -138,15 +138,17 @@ test_that("running foo and weights",{#FOLDUP
 						expect_error(running_skew4(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						expect_error(running_kurt5(thingy,wts=wts,window=window,restart_period=50L,na_rm=na_rm),NA)
 						#for (mol in c(1L,2L,5L)) {
-							#expect_error(running_cent_moments(thingy,wts=wts,max_order=mol,window=window,restart_period=50L,na_rm=na_rm),NA)
-							#expect_error(running_cent_moments(thingy,wts=wts,max_order=mol,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
-						#}
-						#expect_error(running_std_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						#expect_error(running_cumulants(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						#expect_error(running_apx_quantiles(thingy,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
-						#expect_error(running_apx_median(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						for (mol in c(2L,5L)) {
+							expect_error(running_cent_moments(thingy,wts=wts,max_order=mol,window=window,restart_period=50L,na_rm=na_rm),NA)
+							expect_error(running_cent_moments(thingy,wts=wts,max_order=mol,window=window,restart_period=50L,na_rm=na_rm,max_order_only=TRUE),NA)
+						}
+						expect_error(running_std_moments(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_cumulants(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_apx_quantiles(thingy,wts=wts,p=ptiles,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
+						expect_error(running_apx_median(thingy,wts=wts,max_order=5L,window=window,restart_period=50L,na_rm=na_rm),NA)
 
 						#for (lookahead in c(0,8)) {
+						#for (lookahead in c(0L)) { 
 							#expect_error(running_centered(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
 							#expect_error(running_scaled(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
 							#expect_error(running_zscored(thingy,wts=wts,window=window,restart_period=50L,lookahead=lookahead,na_rm=na_rm),NA)
