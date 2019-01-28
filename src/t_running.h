@@ -77,6 +77,12 @@ NumericMatrix t_runQM(T v,
                       const bool wts_as_delta,
                       const bool normalize_wts) {
 
+    // a bit of a hack here, but you must have ord >= 2 for Welford
+    // objects, otherwise it hits a memory leak. I know that previously
+    // I had hard coded Welford-like objects for the ord=1 case,
+    // but that makes huge libraries. instead, just hack this MAX in here
+    //int fake_ord = MAX(ord,2);
+
     Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
     frets.tare();
 

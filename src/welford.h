@@ -89,6 +89,8 @@ class Welford {
         inline Welford(const int &ord) : m_ord(ord), m_nel(0), m_subc(0), m_wsum(Kahan<W>(0)), m_xx(NumericVector(ord+1)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); } // #nocov
+            } else {
+                if (ord < 1) { stop("must use ord >= 1"); } // #nocov
             }
         }
         inline Welford(const int &ord, 
@@ -97,12 +99,16 @@ class Welford {
                        const NumericVector &xx) : m_ord(ord), m_nel(nel), m_subc(0), m_wsum(Kahan<W>(sumwt)), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); } // #nocov
+            } else {
+                if (ord < 1) { stop("must use ord >= 1"); } // #nocov
             }
         }
         inline Welford(const int &ord, 
                        const NumericVector &xx) : m_ord(ord), m_nel(int(xx[0])), m_subc(0), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {
             if (!ord_beyond) {
                 if (ord < 2) { stop("must use ord >= 2"); } // #nocov
+            } else {
+                if (ord < 1) { stop("must use ord >= 1"); } // #nocov
             }
         }
     public:
@@ -255,7 +261,7 @@ class Welford {
                     m_xx[2] += xb_les_muA * (xval - m_xx[1]);
                 }
             } else {
-                if (wtA > 0) {
+                if ((wtA > 0) && (m_ord > 1)) {
                     div_left = -muD_les_muA;
                     term_left = pow(div_left,m_ord) * wtA;
                     if (has_wts) {
@@ -598,8 +604,6 @@ class Welford {
 
 // univariate sums, moments, cumulants//FOLDUP
 
-
-
 // quasiSumThing :
 // given weights and values, computes the
 // sum of weights, and the weighted mean of the values.
@@ -672,6 +676,7 @@ NumericVector quasiSumThing(T v,
     return vret;
 }
 
+// ord is largely ignred here;
 template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
 void add_many(Welford<oneW,has_wts,ord_beyond,na_rm> & frets,
               T v,

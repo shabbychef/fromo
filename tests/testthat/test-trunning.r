@@ -99,7 +99,7 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 	expect_error(t_running_std_moments(q,max_order=5L))
 	expect_error(t_running_cumulants(q,max_order=5L))
 	expect_error(t_running_apx_quantiles(q,p=ptiles,max_order=5L))
-	expect_error(t_running_apx_quantiles(x,p=q,max_order=5L))
+	#expect_error(t_running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(t_running_apx_median(q,p=ptiles,max_order=5L))
 })#UNFOLD
 
@@ -161,7 +161,11 @@ test_that("t_running foo and weights",{#FOLDUP
 							}
 
 							for (lookahead in c(0,8.3)) {
+<<<<<<< Updated upstream
 								#expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+=======
+								expect_error(t_running_centered(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
+>>>>>>> Stashed changes
 								#expect_error(t_running_scaled(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 								#expect_error(t_running_zscored(thingy,time=times,wts=wts,window=window,wts_as_delta=wts_as_delta,restart_period=rp,lookahead=lookahead,na_rm=na_rm),NA)
 							}
@@ -171,6 +175,7 @@ test_that("t_running foo and weights",{#FOLDUP
 			}
 		}
 	}
+<<<<<<< Updated upstream
 	#for (thingy in xall[2]) {
 		#for (times in list(NULL,cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
 			#wall <- list(rep(1.0,length(thingy)),
@@ -193,6 +198,8 @@ test_that("t_running foo and weights",{#FOLDUP
 		#}
 	#}
 
+=======
+>>>>>>> Stashed changes
 })#UNFOLD
 context("code runs: t_running_foo NA weights")
 test_that("t_running foo  NA weights",{#FOLDUP

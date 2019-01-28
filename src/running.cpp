@@ -390,6 +390,7 @@ NumericMatrix running_centered(SEXP v,
                                bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
                                bool check_wts=false, bool normalize_wts=false) {
     int wins=get_wins(window);
+    // could be a problem with the 1 here;
     return runQMCurryThree<ret_centered>(v, wts, 1, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
 }
 // scale the input

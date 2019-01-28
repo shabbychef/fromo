@@ -55,6 +55,12 @@ NumericMatrix runQM(T v,
                     const bool check_wts,
                     const bool normalize_wts) {
 
+    // a bit of a hack here, but you must have ord >= 2 for Welford
+    // objects, otherwise it hits a memory leak. I know that previously
+    // I had hard coded Welford-like objects for the ord=1 case,
+    // but that makes huge libraries. instead, just hack this MAX in here
+    //const int fake_ord = MAX(ord,2);
+
     Welford<oneW,has_wts,ord_beyond,na_rm> frets = Welford<oneW,has_wts,ord_beyond,na_rm>(ord);
     frets.tare();
 
@@ -318,6 +324,7 @@ NumericMatrix runQMCurryTwo(T v,
                             const bool check_wts,
                             const bool normalize_wts) {
 
+    // ugh, ord < 2 does not go through here, and then it is all awful.
     if (ord==2) {
         return runQMCurryOne<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts); 
     }
