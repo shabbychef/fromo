@@ -105,7 +105,7 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 })#UNFOLD
 context("running_foo weighted OK")
 test_that("running foo and weights",{#FOLDUP
-	#skip_on_cran()
+	skip_on_cran()
 
 	set.char.seed("7097f6ae-eac7-4e3a-b2cc-e9d4a01d43f7")
 	nel <- 20

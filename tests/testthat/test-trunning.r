@@ -288,6 +288,40 @@ test_that("t_running foo  variable_win",{#FOLDUP
 
 
 })#UNFOLD
+test_that("t_running foo  infinite recompute",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("b3efd3a7-9a46-4d37-b6a1-d864a5f9a0f0")
+	nel <- 25
+
+	xna <- rnorm(2*nel)
+	xna[xna < 0] <- NA
+
+	xall <- list(rnorm(nel),
+							 xna,
+							 as.integer(rnorm(nel,sd=100)))
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+	rp <- 5L
+	wts_as_delta <- FALSE
+
+	for (thingy in xall) {
+		for (times in list(cumsum(runif(length(thingy),min=0.2,max=0.4)))) {
+			wall <- list(rep(1.0,length(thingy)), NULL)
+			for (wts in wall) {
+				for (na_rm in c(FALSE,TRUE)) {
+					for (lb_time in list(max(times) + c(1:2),3+cumsum(runif(10,min=0.4,max=1.1)))) {
+						expect_error(vers1 <- t_running_sd(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
+						expect_error(vers2 <- t_running_sd(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=NA,na_rm=na_rm),NA)
+						expect_equal(vers1,vers2)
+					}
+				}
+			}
+		}
+	}
+
+
+})#UNFOLD
 
 context("t_running foo input params")
 test_that("window as integer or double",{#FOLDUP
