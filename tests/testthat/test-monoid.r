@@ -174,6 +174,18 @@ test_that("cosums are sane",{#FOLDUP
 	expect_equal(rs1[1 + (1:ncol(x1)),1],colMeans(x1),tolerance=1e-7)
 	expect_equal(rs1[1 + (1:ncol(x1)),1 + (1:ncol(x1))],cov(x1),tolerance=1e-7)
 })#UNFOLD
+test_that("cosums and na_omit ",{#FOLDUP
+	set.char.seed("9b87264c-e543-44ed-b4df-7e70cfbaf59c")
+
+	x1 <- matrix(rnorm(1e2*5,mean=1),ncol=5)
+	x1[1,1] <- NA
+	x2 <- x1[2:nrow(x1),,drop=FALSE]
+
+	max_ord <- 2L
+	expect_error(rs1 <- cent_comoments(x1,max_ord,used_df=1L,na_omit=TRUE),NA)
+	expect_error(rs2 <- cent_comoments(x2,max_ord,used_df=1L,na_omit=TRUE),NA)
+	expect_equal(rs1,rs2)
+})#UNFOLD
 context("monoid join/unjoin cosums")
 test_that("join/unjoin cosums",{#FOLDUP
 	set.char.seed("9ecdda29-aaae-4f88-9fe7-4418846ca54c")
