@@ -443,6 +443,9 @@ are all on CRAN):
   * [RcppRoll](https://github.com/kevinushey/RcppRoll).
   * [roll](https://cran.r-project.org/package=roll).
 
+Of these three, it seems that `RollingWindow` implements the optimal algorithm
+of reusing computations, while the other two packages gain efficiency from
+parallelization and implementation in C++.
 
 ## Running 'scale' operations
 
@@ -535,6 +538,24 @@ print(ph)
 ```
 
 <img src="tools/figure/toy_zscore-1.png" title="plot of chunk toy_zscore" alt="plot of chunk toy_zscore" width="600px" height="500px" />
+
+### Time-Based Running Computations
+
+The standard running moments computations listed above work on a running window 
+of a fixed number of observations.  However, sometimes one needs to compute
+running moments over a different kind of window. The most common form of this
+is over time-based windows. For example, the following computations:
+
+	* Compute the total sales over the past six months, as of every day.
+	* Compute the volatility of an asset's daily returns, over a yearly window,
+		computed at the end of every trading month.
+
+These are now supported in `fromo` via the `t_running` class of functions,
+which are like the `running` functions, but accept also the 'times' at which
+the input are marked, and optionally also the times at which one will
+'look back' to perform the computations.  The times can be computed implicitly
+as the cumulative sum of given (non-negative) time deltas.
+
 
 ## Efficiency
 
