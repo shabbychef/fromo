@@ -173,6 +173,26 @@ test_that("t_running foo and weights",{#FOLDUP
 	}
 
 })#UNFOLD
+test_that("t_running foo logical weights",{# FOLDUP
+	skip_on_cran()
+
+	set.char.seed("422008f4-5782-4f01-a357-5b254a16660e")
+	nel <- 30
+
+	xna <- rnorm(2*nel)
+	xna[xna < 0] <- NA
+
+	rp <- 5L
+	times <- cumsum(runif(length(xna),min=0.5,max=1.5))
+	window <- 17.5
+	na_rm <- TRUE
+	lb_time <- NULL
+	wts <- rnorm(length(xna)) > 0
+	expect_error(t_running_sum(xna,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=FALSE,restart_period=rp,na_rm=na_rm),NA)
+	expect_error(t_running_mean(xna,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=FALSE,restart_period=rp,na_rm=na_rm),NA)
+	expect_error(t_running_sd(xna,time=times,wts=wts,window=window,lb_time=lb_time,wts_as_delta=FALSE,restart_period=rp,na_rm=na_rm),NA)
+
+})# UNFOLD
 context("code runs: t_running_foo NA weights")
 test_that("t_running foo  NA weights",{#FOLDUP
 	skip_on_cran()
@@ -312,7 +332,7 @@ test_that("t_running foo  infinite recompute",{#FOLDUP
 				for (na_rm in c(FALSE,TRUE)) {
 					for (lb_time in list(max(times) + c(1:2),3+cumsum(runif(10,min=0.4,max=1.1)))) {
 						expect_error(vers1 <- t_running_sd(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=rp,na_rm=na_rm),NA)
-						expect_error(vers2 <- t_running_sd(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=NA,na_rm=na_rm),NA)
+						expect_error(vers2 <- t_running_sd(thingy,time=times,wts=wts,variable_win=TRUE,lb_time=lb_time,wts_as_delta=wts_as_delta,restart_period=NA_integer_,na_rm=na_rm),NA)
 						expect_equal(vers1,vers2)
 					}
 				}
