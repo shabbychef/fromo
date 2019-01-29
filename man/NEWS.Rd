@@ -10,6 +10,13 @@ News for package 'fromo'
 \newcommand{\cranfromo}{\CRANpkg{fromo}}
 \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 }
+\section{\fromo{} Version 0.2.1 (2019-01-29) }{
+
+\itemize{
+\item fix memory leak for case where the mean only need be computed via a Welford object.
+}
+}
+
 \section{\fromo{} Version 0.2.0 (2019-01-12) }{
 
 \itemize{

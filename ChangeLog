@@ -1,5 +1,9 @@
 
-2019-XX-XX Steven E. Pav <shabbychef@gmail.com>
+2019-01-29 Steven E. Pav <shabbychef@gmail.com>
+* 0.2.1 on CRAN
+* fix memory leak for case where the mean only
+  need be computed via a Welford object.
+
 
 2019-01-12 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.0 on CRAN
