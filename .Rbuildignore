@@ -31,3 +31,4 @@ rpkg_make
 libs
 nohup.out
 ^.ipynb_checkpoints$
+.tags
