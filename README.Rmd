@@ -409,6 +409,31 @@ the input are marked, and optionally also the times at which one will
 'look back' to perform the computations.  The times can be computed implicitly
 as the cumulative sum of given (non-negative) time deltas.
 
+```{r trun_testing,eval=TRUE,echo=TRUE}
+# devtools::install_github('shabbychef/aqfb_data')
+library(aqfb.data)
+library(fromo)
+# daily 'returns' of Fama French 4 factors
+data(dff4)
+# compute month end dates:
+library(lubridate)
+mo_ends <- unique(lubridate::ceiling_date(index(dff4),'month') %m-% days(1))
+res <- t_running_sd3(dff4$Mkt,time=index(dff4),window=365.25,min_df=180,lb_time=mo_ends)
+df <- cbind(data.frame(mo_ends),data.frame(res))
+colnames(df) <- c('date','sd','mean','num_days')
+knitr::kable(tail(df),row.names=FALSE)
+require(ggplot2)
+require(scales)
+ph <- df %>%
+	ggplot(aes(date,1e-2 * sd)) +
+	geom_line() + geom_point(alpha=0.1) + 
+	scale_y_continuous(labels=scales::percent) + 
+	labs(x='lookback date',y='standard deviation of percent returns',
+			 title='rolling 1 year volatility of daily Mkt factor returns, computed monthly')
+print(ph)
+
+```
+
 
 ## Efficiency
 
