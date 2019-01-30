@@ -321,7 +321,7 @@ cbind(alt5,k5[,1])
 If you like rolling computations, do also check out the following packages (I believe they
 are all on CRAN):
 
-	* [RollingWindow](https://github.com/andrewuhl/rollingwindow), available only from github.
+  * [RollingWindow](https://github.com/andrewuhl/rollingwindow), available only from github.
   * [RcppRoll](https://github.com/kevinushey/RcppRoll).
   * [roll](https://cran.r-project.org/package=roll).
 
@@ -399,9 +399,9 @@ of a fixed number of observations.  However, sometimes one needs to compute
 running moments over a different kind of window. The most common form of this
 is over time-based windows. For example, the following computations:
 
-	* Compute the total sales over the past six months, as of every day.
-	* Compute the volatility of an asset's daily returns, over a yearly window,
-		computed at the end of every trading month.
+  * Compute the total sales over the past six months, as of every day.
+  * Compute the volatility of an asset's daily returns, over a yearly window,
+    computed at the end of every trading month.
 
 These are now supported in `fromo` via the `t_running` class of functions,
 which are like the `running` functions, but accept also the 'times' at which
@@ -409,7 +409,10 @@ the input are marked, and optionally also the times at which one will
 'look back' to perform the computations.  The times can be computed implicitly
 as the cumulative sum of given (non-negative) time deltas.
 
-```{r trun_testing,eval=TRUE,echo=TRUE}
+Here is an example of computing the volatility of daily 'returns' of the 
+Fama French Market factor, based on a one year window, computed at month ends:
+
+```{r trun_sd_testing,eval=TRUE,echo=TRUE}
 # devtools::install_github('shabbychef/aqfb_data')
 library(aqfb.data)
 library(fromo)
@@ -422,8 +425,13 @@ res <- t_running_sd3(dff4$Mkt,time=index(dff4),window=365.25,min_df=180,lb_time=
 df <- cbind(data.frame(mo_ends),data.frame(res))
 colnames(df) <- c('date','sd','mean','num_days')
 knitr::kable(tail(df),row.names=FALSE)
-require(ggplot2)
-require(scales)
+```
+
+And the plot of the time series:
+
+```{r trun_testing,eval=TRUE,echo=TRUE}
+library(ggplot2)
+library(scales)
 ph <- df %>%
 	ggplot(aes(date,1e-2 * sd)) +
 	geom_line() + geom_point(alpha=0.1) + 
@@ -431,8 +439,9 @@ ph <- df %>%
 	labs(x='lookback date',y='standard deviation of percent returns',
 			 title='rolling 1 year volatility of daily Mkt factor returns, computed monthly')
 print(ph)
-
 ```
+
+---------------
 
 
 ## Efficiency

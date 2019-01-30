@@ -430,7 +430,7 @@ cbind(alt5, k5[, 1])
 If you like rolling computations, do also check out the following packages (I believe they
 are all on CRAN):
 
-	* [RollingWindow](https://github.com/andrewuhl/rollingwindow), available only from github.
+  * [RollingWindow](https://github.com/andrewuhl/rollingwindow), available only from github.
   * [RcppRoll](https://github.com/kevinushey/RcppRoll).
   * [roll](https://cran.r-project.org/package=roll).
 
@@ -537,15 +537,18 @@ of a fixed number of observations.  However, sometimes one needs to compute
 running moments over a different kind of window. The most common form of this
 is over time-based windows. For example, the following computations:
 
-	* Compute the total sales over the past six months, as of every day.
-	* Compute the volatility of an asset's daily returns, over a yearly window,
-		computed at the end of every trading month.
+  * Compute the total sales over the past six months, as of every day.
+  * Compute the volatility of an asset's daily returns, over a yearly window,
+    computed at the end of every trading month.
 
 These are now supported in `fromo` via the `t_running` class of functions,
 which are like the `running` functions, but accept also the 'times' at which
 the input are marked, and optionally also the times at which one will
 'look back' to perform the computations.  The times can be computed implicitly
 as the cumulative sum of given (non-negative) time deltas.
+
+Here is an example of computing the volatility of daily 'returns' of the 
+Fama French Market factor, based on a one year window, computed at month ends:
 
 
 ```r
@@ -576,9 +579,12 @@ knitr::kable(tail(df), row.names = FALSE)
 |2016-11-30 | 0.91| 0.04|      253|
 |2016-12-31 | 0.86| 0.05|      252|
 
+And the plot of the time series:
+
+
 ```r
-require(ggplot2)
-require(scales)
+library(ggplot2)
+library(scales)
 ph <- df %>% ggplot(aes(date, 0.01 * sd)) + geom_line() + 
     geom_point(alpha = 0.1) + scale_y_continuous(labels = scales::percent) + 
     labs(x = "lookback date", y = "standard deviation of percent returns", 
@@ -587,6 +593,8 @@ print(ph)
 ```
 
 <img src="tools/figure/trun_testing-1.png" title="plot of chunk trun_testing" alt="plot of chunk trun_testing" width="700px" height="600px" />
+
+---------------
 
 
 ## Efficiency
