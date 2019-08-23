@@ -134,7 +134,7 @@ library(fromo)
 library(moments)
 library(microbenchmark)
 
-set.seed(123)
+set.seed(1234)
 x <- rnorm(1e3)
 
 dumbk <- function(x) { c(kurtosis(x) - 3.0,skewness(x),sd(x),mean(x),length(x)) }
@@ -535,8 +535,6 @@ stopifnot(max(abs(v2[1000,] - rmu[1000,])) < 1e-14)
 # note fromo_mu and fromo_sd do exactly the same work, so only time one of them
 microbenchmark(fromo_sd(xm,wins),
 							 roll::roll_mean(xm,wins),
-							 roll::roll_mean(xm,wins,parallel_for='cols'),
-							 roll::roll_mean(xm,wins,parallel_for='rows'),
 							 roll::roll_sd(xm,wins),
 							 times=50L)
 ```
