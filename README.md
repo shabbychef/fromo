@@ -694,7 +694,7 @@ library(microbenchmark)
 library(roll)
 
 set.seed(4422)
-xm <- matrix(rnorm(2e+05), ncol = 100)
+xm <- matrix(rnorm(4e+05), ncol = 100)
 fromo_sd <- function(x, wins) {
     apply(x, 2, function(xc) {
         running_sd3(xc, wins)[, 1]
@@ -705,15 +705,15 @@ fromo_mu <- function(x, wins) {
         running_sd3(xc, wins)[, 2]
     })
 }
-wins <- 500
+wins <- 1000
 v1 <- fromo_sd(xm, wins)
 rsd <- roll::roll_sd(xm, wins, min_obs = 3)
 
 v2 <- fromo_mu(xm, wins)
 rmu <- roll::roll_mean(xm, wins)
-# compute error on the 1000th row:
-stopifnot(max(abs(v1[1000, ] - rsd[1000, ])) < 1e-14)
-stopifnot(max(abs(v2[1000, ] - rmu[1000, ])) < 1e-14)
+# compute error on the 2000th row:
+stopifnot(max(abs(v1[2000, ] - rsd[2000, ])) < 1e-14)
+stopifnot(max(abs(v2[2000, ] - rmu[2000, ])) < 1e-14)
 
 # now timings: note fromo_mu and fromo_sd do
 # exactly the same work, so only time one of them
@@ -722,20 +722,15 @@ microbenchmark(fromo_sd(xm, wins), roll::roll_mean(xm,
 ```
 
 ```
-## Unit: microseconds
-##                       expr   min    lq  mean median    uq   max neval cld
-##         fromo_sd(xm, wins) 14407 14917 16544  15384 17728 22413    50   c
-##  roll::roll_mean(xm, wins)   774   907  1297   1175  1611  2378    50 a  
-##    roll::roll_sd(xm, wins)  2200  2583  3122   2870  3468  8349    50  b
+## Unit: milliseconds
+##                       expr  min   lq mean median   uq max neval cld
+##         fromo_sd(xm, wins) 35.0 36.6 45.7   37.3 38.3 134    50   b
+##  roll::roll_mean(xm, wins)  1.3  1.4  5.0    2.1  2.4  58    50  a 
+##    roll::roll_sd(xm, wins)  3.7  3.7  5.4    4.4  4.9  56    50  a
 ```
 
-This was somewhat unexpected. I did not think the `fromo` functions
-would be faster than `roll_sd`, much less `roll_mean`. From these benchmarks, I suspected that
-my computer was not taking advantage of parallelization, since the different
-calls to `roll_mean` had the same timings.  To check, I timed `roll_mean`
-for the same data size, but for larger rolling windows. During the following
-timing, I confirmed that all eight cores on my laptop were at 100% utilization.
-I believe the problem is that `roll_mean` is literally recomputing the moments over the 
+
+I suspect, however, that `roll_mean` is literally recomputing moments over the 
 entire window for every cell of the output, instead of reusing computations,
 which `fromo` mostly does:
 
@@ -773,8 +768,8 @@ microbenchmark(roll::roll_mean(xm, 10, min_obs = 3),
 ##          fromo_mu(xm, 10000, min_df = 3)  81.7  84.5  90.3   87.6  94.3  130.6   100   c
 ```
 
-The runtime for operations from `roll` grow with the window
-size. The equivalent operations from `fromo` appear to also consume more time.
+The runtime for operations from `roll` grow with the window size. 
+The equivalent operations from `fromo` also consume more time for longer windows.
 In theory they would be invariant with respect to window size, but I coded them
 to 'restart' the computation periodically for improved accuracy. The user has control
 over how often this happens, in order to balance speed and accuracy. Here I set
