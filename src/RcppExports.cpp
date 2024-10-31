@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // sd3
 NumericVector sd3(SEXP v, bool na_rm, SEXP wts, double sg_df, bool check_wts, bool normalize_wts);
 RcppExport SEXP _fromo_sd3(SEXP vSEXP, SEXP na_rmSEXP, SEXP wtsSEXP, SEXP sg_dfSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP) {
