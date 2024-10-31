@@ -70,7 +70,7 @@
 #' @importFrom methods new 
 #' @exportPattern "^[[:alpha:]]+"
 #'
-NULL
+"_PACKAGE"
 
 #' @title News for package 'fromo':
 #'

@@ -760,7 +760,7 @@ test_that("basic t_running_sum",{#FOLDUP
 	expect_error(fast <- t_running_sum(x,time=seq_along(x),window=Inf,lb_time=c(3,6,9),variable_win=TRUE),NA)
 	expect_equal(fast,c(1+2+3,4+5+6,7+8+9),tolerance=1e-8)
 	expect_error(fast <- t_running_sd(x,time=seq_along(x),window=Inf,lb_time=c(3,6,9),variable_win=TRUE),NA)
-	expect_equal(fast,c(1,1,1),tolerance=1e-8)
+	expect_equal(as.numeric(fast),c(1,1,1),tolerance=1e-8)
 })#UNFOLD
 test_that("check em",{#FOLDUP
 	skip_on_cran()
