@@ -12,51 +12,162 @@
 \alias{t_running_cumulants}
 \title{Compute first K moments over a sliding time-based window}
 \usage{
-t_running_sd3(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_sd3(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_skew4(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_skew4(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_kurt5(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_kurt5(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_sd(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_sd(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_skew(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_skew(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_kurt(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_kurt(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_cent_moments(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE,
-  max_order_only = FALSE, min_df = 0L, used_df = 0,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_cent_moments(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  max_order = 5L,
+  na_rm = FALSE,
+  max_order_only = FALSE,
+  min_df = 0L,
+  used_df = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_std_moments(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0, restart_period = 100L, variable_win = FALSE,
-  wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
+t_running_std_moments(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  max_order = 5L,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_cumulants(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0, restart_period = 100L, variable_win = FALSE,
-  wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
+t_running_cumulants(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  max_order = 5L,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 }
 \arguments{
 \item{v}{a vector of data.}

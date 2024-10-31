@@ -8,25 +8,69 @@
 \alias{running_tstat}
 \title{Compare data to moments computed over a sliding window.}
 \usage{
-running_centered(v, window = NULL, wts = NULL, na_rm = FALSE,
-  min_df = 0L, used_df = 1, lookahead = 0L, restart_period = 100L,
-  check_wts = FALSE, normalize_wts = FALSE)
+running_centered(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  lookahead = 0L,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = FALSE
+)
 
-running_scaled(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1, lookahead = 0L, restart_period = 100L, check_wts = FALSE,
-  normalize_wts = TRUE)
+running_scaled(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  lookahead = 0L,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-running_zscored(v, window = NULL, wts = NULL, na_rm = FALSE,
-  min_df = 0L, used_df = 1, lookahead = 0L, restart_period = 100L,
-  check_wts = FALSE, normalize_wts = TRUE)
+running_zscored(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  lookahead = 0L,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-running_sharpe(v, window = NULL, wts = NULL, na_rm = FALSE,
-  compute_se = FALSE, min_df = 0L, used_df = 1, restart_period = 100L,
-  check_wts = FALSE, normalize_wts = TRUE)
+running_sharpe(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  compute_se = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-running_tstat(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  used_df = 1, restart_period = 100L, check_wts = FALSE,
-  normalize_wts = TRUE)
+running_tstat(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 }
 \arguments{
 \item{v}{a vector}

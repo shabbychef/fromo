@@ -8,30 +8,92 @@
 \alias{t_running_tstat}
 \title{Compare data to moments computed over a time sliding window.}
 \usage{
-t_running_centered(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1, lookahead = 0,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_centered(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  lookahead = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_scaled(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1, lookahead = 0,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_scaled(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  lookahead = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_zscored(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1, lookahead = 0,
-  restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE, normalize_wts = TRUE)
+t_running_zscored(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  lookahead = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_sharpe(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE,
-  min_df = 0L, used_df = 1, restart_period = 100L, variable_win = FALSE,
-  wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
+t_running_sharpe(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  compute_se = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_tstat(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE,
-  min_df = 0L, used_df = 1, restart_period = 100L, variable_win = FALSE,
-  wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
+t_running_tstat(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  compute_se = FALSE,
+  min_df = 0L,
+  used_df = 1,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 }
 \arguments{
 \item{v}{a vector of data.}

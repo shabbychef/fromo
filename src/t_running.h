@@ -235,7 +235,7 @@ NumericMatrix t_runQM(T v,
         // if there is no overlap, then just restart the whole thingy.
         if ((prev_tf <= t0) || (frets.subcount() >= recom_period)) {
             // could bisect, but lets not get fancy
-            if (!infwin) { while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; } }
+            if (!infwin || gapwin) { while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; } }
             tr_iii = tr_jjj;
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
             //zero it out
@@ -246,7 +246,7 @@ NumericMatrix t_runQM(T v,
                                                         tr_iii,  //top
                                                         false);  //no need to check weights as we have done it once above.
         } else {
-            if (!infwin) {
+            if (!infwin || gapwin) {
                 while ((tr_iii < numel) && (time[tr_iii] <= tf) && (time[tr_jjj] <= t0)) { 
                     nextv = double(v[tr_iii]);
                     prevv = double(v[tr_jjj]);
@@ -266,7 +266,7 @@ NumericMatrix t_runQM(T v,
                 frets.add_one(nextv,nextw); 
                 tr_iii++; 
             }
-            if (!infwin) {
+            if (!infwin || gapwin) {
                 while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { 
                     prevv = double(v[tr_jjj]);
                     if (has_wts) { prevw = double(wts[tr_jjj]); }

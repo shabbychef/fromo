@@ -5,15 +5,35 @@
 \alias{t_running_mean}
 \title{Compute sums or means over a sliding time window.}
 \usage{
-t_running_sum(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 10000L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE)
+t_running_sum(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  restart_period = 10000L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE
+)
 
-t_running_mean(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 10000L, variable_win = FALSE, wts_as_delta = TRUE,
-  check_wts = FALSE)
+t_running_mean(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  restart_period = 10000L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE
+)
 }
 \arguments{
 \item{v}{a vector.}

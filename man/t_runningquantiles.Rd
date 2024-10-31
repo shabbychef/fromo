@@ -5,16 +5,42 @@
 \alias{t_running_apx_median}
 \title{Compute approximate quantiles over a sliding time window}
 \usage{
-t_running_apx_quantiles(v, p, time = NULL, time_deltas = NULL,
-  window = NULL, wts = NULL, lb_time = NULL, max_order = 5L,
-  na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L,
-  variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE,
-  normalize_wts = TRUE)
+t_running_apx_quantiles(
+  v,
+  p,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  max_order = 5L,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-t_running_apx_median(v, time = NULL, time_deltas = NULL, window = NULL,
-  wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE,
-  min_df = 0L, used_df = 0, restart_period = 100L, variable_win = FALSE,
-  wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE)
+t_running_apx_median(
+  v,
+  time = NULL,
+  time_deltas = NULL,
+  window = NULL,
+  wts = NULL,
+  lb_time = NULL,
+  max_order = 5L,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 0,
+  restart_period = 100L,
+  variable_win = FALSE,
+  wts_as_delta = TRUE,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 }
 \arguments{
 \item{v}{a vector of data.}

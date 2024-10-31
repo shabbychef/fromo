@@ -5,11 +5,24 @@
 \alias{running_mean}
 \title{Compute sums or means over a sliding window.}
 \usage{
-running_sum(v, window = NULL, wts = NULL, na_rm = FALSE,
-  restart_period = 10000L, check_wts = FALSE)
+running_sum(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  restart_period = 10000L,
+  check_wts = FALSE
+)
 
-running_mean(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L,
-  restart_period = 10000L, check_wts = FALSE)
+running_mean(
+  v,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  restart_period = 10000L,
+  check_wts = FALSE
+)
 }
 \arguments{
 \item{v}{a vector.}

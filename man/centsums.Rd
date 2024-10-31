@@ -6,8 +6,14 @@
 \alias{unjoin_cent_sums}
 \title{Centered sums; join and unjoined.}
 \usage{
-cent_sums(v, max_order = 5L, na_rm = FALSE, wts = NULL,
-  check_wts = FALSE, normalize_wts = TRUE)
+cent_sums(
+  v,
+  max_order = 5L,
+  na_rm = FALSE,
+  wts = NULL,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
 join_cent_sums(ret1, ret2)
 

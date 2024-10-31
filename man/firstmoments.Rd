@@ -10,26 +10,72 @@
 \alias{std_cumulants}
 \title{Compute first K moments}
 \usage{
-sd3(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
-  normalize_wts = TRUE)
+sd3(
+  v,
+  na_rm = FALSE,
+  wts = NULL,
+  sg_df = 1,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-skew4(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
-  normalize_wts = TRUE)
+skew4(
+  v,
+  na_rm = FALSE,
+  wts = NULL,
+  sg_df = 1,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-kurt5(v, na_rm = FALSE, wts = NULL, sg_df = 1, check_wts = FALSE,
-  normalize_wts = TRUE)
+kurt5(
+  v,
+  na_rm = FALSE,
+  wts = NULL,
+  sg_df = 1,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-cent_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL,
-  check_wts = FALSE, normalize_wts = TRUE)
+cent_moments(
+  v,
+  max_order = 5L,
+  used_df = 0L,
+  na_rm = FALSE,
+  wts = NULL,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-std_moments(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = NULL,
-  check_wts = FALSE, normalize_wts = TRUE)
+std_moments(
+  v,
+  max_order = 5L,
+  used_df = 0L,
+  na_rm = FALSE,
+  wts = NULL,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-cent_cumulants(v, max_order = 5L, used_df = 0L, na_rm = FALSE,
-  wts = NULL, check_wts = FALSE, normalize_wts = TRUE)
+cent_cumulants(
+  v,
+  max_order = 5L,
+  used_df = 0L,
+  na_rm = FALSE,
+  wts = NULL,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 
-std_cumulants(v, max_order = 5L, used_df = 0L, na_rm = FALSE,
-  wts = NULL, check_wts = FALSE, normalize_wts = TRUE)
+std_cumulants(
+  v,
+  max_order = 5L,
+  used_df = 0L,
+  na_rm = FALSE,
+  wts = NULL,
+  check_wts = FALSE,
+  normalize_wts = TRUE
+)
 }
 \arguments{
 \item{v}{a vector}

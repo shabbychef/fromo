@@ -114,11 +114,12 @@ RET t_runningSumish(T v,
     //2FIX: use restart_period and do_recompute ... 
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
+    // const bool infwin = ! R_IsFinite(window);
     const bool infwin = NumericVector::is_na(window);
     if ((window <= 0) && (!infwin)) { stop("must give positive window"); } // #nocov
     if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); } // #nocov
 
-    // whether to use the gap between lb_time as the effective window
+    // whether to use the gap between the lb_time as the effective window
     const bool gapwin = variable_win && infwin;
 
     double tf,t0;
@@ -167,7 +168,7 @@ RET t_runningSumish(T v,
         // if there is no overlap, then just restart the whole thingy.
         if ((prev_tf <= t0) || (subcount >= restart_period)) {
             // could bisect, but lets not get fancy
-            if (!infwin) { while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; } }
+            if (!infwin || gapwin) { while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { tr_jjj++; } }
             tr_iii = tr_jjj;
             while ((tr_iii < numel) && (time[tr_iii] <= tf)) { tr_iii++; }
 
@@ -233,7 +234,7 @@ RET t_runningSumish(T v,
                 }//UNFOLD
                 tr_iii++; 
             }
-            if (!infwin) {
+            if (!infwin || gapwin) {
                 while ((tr_jjj < numel) && (time[tr_jjj] <= t0)) { 
                     // remove one//FOLDUP
                     if (has_wts) { 
