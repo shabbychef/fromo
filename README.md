@@ -4,9 +4,7 @@
 
 [![Build Status](https://github.com/shabbychef/fromo/workflows/R-CMD-check/badge.svg)](https://github.com/shabbychef/fromo/actions)
 [![codecov.io](https://codecov.io/github/shabbychef/fromo/graph/badge.svg?token=aUUQLyasWG)](https://codecov.io/github/shabbychef/fromo)
-[![CRAN](http://www.r-pkg.org/badges/version/fromo)](https://cran.r-project.org/package=fromo)
-[![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=green)](https://www.r-pkg.org:443/pkg/fromo)
-[![Total](http://cranlogs.r-pkg.org/badges/grand-total/fromo?color=green)](https://www.r-pkg.org:43/pkg/fromo)
+![fromo pkg](https://rpkg.net/pub-age-y/fromo/green) 
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
