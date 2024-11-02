@@ -5,6 +5,7 @@
 [![Build Status](https://github.com/shabbychef/fromo/workflows/R-CMD-check/badge.svg)](https://github.com/shabbychef/fromo/actions)
 [![codecov.io](https://codecov.io/github/shabbychef/fromo/graph/badge.svg?token=aUUQLyasWG)](https://codecov.io/github/shabbychef/fromo)
 ![fromo pkg](https://rpkg.net/pub-age-y/fromo/green) 
+[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/fromo?color=brightgreen)](https://www.r-pkg.net/package/fromo)
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
@@ -20,7 +21,7 @@ Computations are via the Welford-Terriberry algorithm, as described by
 
 ## Installation
 
-This package can be installed 
+[This](This) package can be installed 
 from CRAN, 
 via [drat](https://github.com/eddelbuettel/drat "drat"), or
 from github:
