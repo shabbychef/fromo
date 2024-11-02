@@ -40,7 +40,7 @@ library(microbenchmark)
 # fromo
 
 [![Build Status](https://github.com/shabbychef/fromo/workflows/R-CMD-check/badge.svg)](https://github.com/shabbychef/fromo/actions)
-[![codecov.io](http://codecov.io/github/shabbychef/fromo/coverage.svg?branch=master)](https://app.codecov.io/github/shabbychef/fromo?branch=master)
+[![codecov.io](https://codecov.io/github/shabbychef/fromo/graph/badge.svg?token=aUUQLyasWG)](https://codecov.io/github/shabbychef/fromo)
 [![CRAN](http://www.r-pkg.org/badges/version/fromo)](https://cran.r-project.org/package=fromo)
 [![Downloads](http://cranlogs.r-pkg.org/badges/fromo?color=green)](https://www.r-pkg.org:443/pkg/fromo)
 [![Total](http://cranlogs.r-pkg.org/badges/grand-total/fromo?color=green)](https://www.r-pkg.org:43/pkg/fromo)
