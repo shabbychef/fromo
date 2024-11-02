@@ -6,7 +6,7 @@ Authors@R: c(person(c("Steven", "E."), "Pav",
     email="shabbychef@gmail.com",
     comment = c(ORCID = "0000-0002-4197-6195")))
 Version: 0.2.2
-Date: 2024-11-01
+Date: 2024-11-02
 License: LGPL-3
 Title: Fast Robust Moments
 BugReports: https://github.com/shabbychef/fromo/issues

@@ -2,7 +2,7 @@
 #'
 #' Kahan, W. "Further remarks on reducing truncation errors,"
 #' Communications of the ACM, 8 (1), 1965.
-#' \url{https://doi.org/10.1145/363707.363723}
+#' \doi{10.1145/363707.363723}
 #'
 #' Wikipedia contributors "Kahan summation algorithm," 
 #' Wikipedia, The Free Encyclopedia, 

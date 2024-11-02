@@ -251,23 +251,23 @@ if (require(e1071)) {
 }
 \references{
 Terriberry, T. "Computing Higher-Order Moments Online."
-\url{http://people.xiph.org/~tterribe/notes/homs.html}
+\url{https://people.xiph.org/~tterribe/notes/homs.html}
 
 J. Bennett, et. al., "Numerically Stable, Single-Pass, 
 Parallel Statistics Algorithms," Proceedings of IEEE
 International Conference on Cluster Computing, 2009.
-\url{https://www.semanticscholar.org/paper/Numerically-stable-single-pass-parallel-statistics-Bennett-Grout/a83ed72a5ba86622d5eb6395299b46d51c901265}
+\doi{10.1109/CLUSTR.2009.5289161}
 
 Cook, J. D. "Accurately computing running variance."
-\url{http://www.johndcook.com/standard_deviation.html}
+\url{https://www.johndcook.com/standard_deviation.html}
 
 Cook, J. D. "Comparing three methods of computing 
 standard deviation."
-\url{http://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
+\url{https://www.johndcook.com/blog/2008/09/26/comparing-three-methods-of-computing-standard-deviation}
 
 Willink, R.  "Relationships Between Central Moments and Cumulants, with Formulae for the Central Moments of Gamma Distributions."
 Communications in Statistics - Theory and Methods, 32 no 4 (2003): 701-704.
-\url{https://doi.org/10.1081/STA-120018823}
+\doi{10.1081/STA-120018823}
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}

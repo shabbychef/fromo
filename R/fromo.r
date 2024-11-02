@@ -82,7 +82,7 @@
 #' \newcommand{\cranfromo}{\CRANpkg{fromo}}
 #' \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 #'
-#' @section \fromo{} Version 0.2.2 (2024-11-01) :
+#' @section \fromo{} Version 0.2.2 (2024-11-02) :
 #' \itemize{
 #' \item fix \code{t_running_sum} and others to act as documented when
 #' \code{variable_win} is flagged.
