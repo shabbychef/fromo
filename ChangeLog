@@ -1,9 +1,12 @@
 
+2024-11-01 Steven E. Pav <shabbychef@gmail.com>
+* 0.2.2 on CRAN
+* fix t_running_* to act as documented when variable_win is true.
+
 2019-01-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.1 on CRAN
 * fix memory leak for case where the mean only
   need be computed via a Welford object.
-
 
 2019-01-12 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.0 on CRAN

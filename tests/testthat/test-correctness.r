@@ -757,12 +757,15 @@ test_that("vs running ops",{#FOLDUP
 context("t_running vs slow version")
 test_that("basic t_running_sum",{#FOLDUP
 	x <- 1:9
-	expect_error(fast <- t_running_sum(x,time=seq_along(x),window=Inf,lb_time=c(3,6,9),variable_win=TRUE),NA)
+	lb_time <- c(3,6,9)
+	expect_error(fast <- t_running_sum(x,time=seq_along(x),window=Inf,lb_time=lb_time,variable_win=TRUE),NA)
 	expect_equal(fast,c(1+2+3,4+5+6,7+8+9),tolerance=1e-8)
-	expect_error(fast <- t_running_sd(x,time=seq_along(x),window=Inf,lb_time=c(3,6,9),variable_win=TRUE),NA)
+	expect_error(fast <- t_running_mean(x,time=seq_along(x),window=Inf,lb_time=lb_time,variable_win=TRUE),NA)
+	expect_equal(fast,c(1+2+3,4+5+6,7+8+9)/3,tolerance=1e-8)
+	expect_error(fast <- t_running_sd(x,time=seq_along(x),window=Inf,lb_time=lb_time,variable_win=TRUE),NA)
 	expect_equal(as.numeric(fast),c(1,1,1),tolerance=1e-8)
 })#UNFOLD
-test_that("check em",{#FOLDUP
+test_that("check equality",{#FOLDUP
 	skip_on_cran()
 
 	set.char.seed("91b0bd37-0b8e-49d6-8333-039a7d7f7dd5")
@@ -775,14 +778,17 @@ test_that("check em",{#FOLDUP
 				if (!is.null(times) || (wts_as_delta && !is.null(wts))) {
 					for (window in c(11.5,20.5,Inf)) { # FOLDUP
 						for (lb_time in list(NULL,3+cumsum(runif(10,min=0.4,max=1.1)))) {
-							slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta)
-							expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
-							expect_equal(fast,slow,tolerance=1e-8)
-							
-							slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta)
-							expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
-							expect_equal(fast,slow,tolerance=1e-8)
-
+							for (variable_win in c(TRUE, FALSE)) {
+								if (!variable_win || is.infinite(window)) {
+									slow <- slow_t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,variable_win=variable_win,na_rm=na_rm,wts_as_delta=wts_as_delta)
+									expect_error(fast <- t_running_sum(x,time=times,wts=wts,window=window,lb_time=lb_time,variable_win=variable_win,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
+									expect_equal(fast,slow,tolerance=1e-8)
+									
+									slow <- slow_t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,variable_win=variable_win,na_rm=na_rm,wts_as_delta=wts_as_delta)
+									expect_error(fast <- t_running_mean(x,time=times,wts=wts,window=window,lb_time=lb_time,variable_win=variable_win,na_rm=na_rm,wts_as_delta=wts_as_delta),NA)
+									expect_equal(fast,slow,tolerance=1e-8)
+								}
+							}
 							for (nw in c(TRUE,FALSE)) { 
 								slow <- slow_t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw)
 								expect_error(fast <- t_running_sd(x,time=times,wts=wts,window=window,lb_time=lb_time,min_df=1,na_rm=na_rm,wts_as_delta=wts_as_delta,normalize_wts=nw),NA)

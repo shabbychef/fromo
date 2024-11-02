@@ -82,6 +82,12 @@
 #' \newcommand{\cranfromo}{\CRANpkg{fromo}}
 #' \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 #'
+#' @section \fromo{} Version 0.2.2 (2024-11-01) :
+#' \itemize{
+#' \item fix \code{t_running_sum} and others to act as documented when
+#' \code{variable_win} is flagged.
+#' }
+#'
 #' @section \fromo{} Version 0.2.1 (2019-01-29) :
 #' \itemize{
 #' \item fix memory leak for case where the mean only need be computed via a Welford object.
