@@ -3,9 +3,10 @@
 # fromo
 
 [![Build Status](https://github.com/shabbychef/fromo/workflows/R-CMD-check/badge.svg)](https://github.com/shabbychef/fromo/actions)
-[![codecov.io](https://codecov.io/github/shabbychef/fromo/graph/badge.svg?token=aUUQLyasWG)](https://codecov.io/github/shabbychef/fromo)
+[![codecov.io](https://codecov.io/github/shabbychef/fromo/graph/badge.svg?token=aUUQLyasWG)](https://app.codecov.io/github/shabbychef/fromo)
 ![fromo pkg](https://rpkg.net/pub-age-y/fromo/green) 
-[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/fromo?color=brightgreen)](https://www.r-pkg.net/package/fromo)
+[![Downloads](https://cranlogs.r-pkg.org/badges/fromo)](https://r-pkg.org/pkg/fromo)
+[![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/fromo?color=brightgreen)](https://r-pkg.org/pkg/fromo)
 ![RCpp](https://img.shields.io/badge/RCpp-inside-blue.svg)
 ![is true](https://img.shields.io/badge/saying%20%22monoid%22-makes%20you%20cool-dd33ff.svg)
 
@@ -15,13 +16,13 @@
 Fast, numerically robust, higher order moments in R, computed via Rcpp, mostly as an exercise to learn Rcpp. 
 Supports computation on vectors and matrices, and Monoidal append (and unappend) of moments.
 Computations are via the Welford-Terriberry algorithm, as described by
-[Bennett _et al._](https://www.semanticscholar.org/paper/Numerically-stable-single-pass-parallel-statistics-Bennett-Grout/a83ed72a5ba86622d5eb6395299b46d51c901265)
+[Bennett _et al._](https://www.osti.gov/biblio/1426900)
 
 -- Steven E. Pav, shabbychef@gmail.com
 
 ## Installation
 
-[This](This) package can be installed 
+This package can be installed 
 from CRAN, 
 via [drat](https://github.com/eddelbuettel/drat "drat"), or
 from github:
