@@ -10,6 +10,14 @@ News for package 'fromo'
 \newcommand{\cranfromo}{\CRANpkg{fromo}}
 \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 }
+\section{\fromo{} Version 0.2.3 (2024-11-07) }{
+
+\itemize{
+\item adding flag and checking for negative even moments due to roundoff.
+\item fixing divide by zero which would corrupt results when input was constant.
+}
+}
+
 \section{\fromo{} Version 0.2.2 (2024-11-03) }{
 
 \itemize{

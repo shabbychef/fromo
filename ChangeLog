@@ -1,4 +1,9 @@
 
+2024-11-07 Steven E. Pav <shabbychef@gmail.com>
+* 0.2.3 on CRAN
+* adding flag and checking for negative even moments due to roundoff.
+* fixing divide by zero which would corrupt results when input was constant.
+
 2024-11-03 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.2 on CRAN
 * fix t_running_* to act as documented when variable_win is true.
