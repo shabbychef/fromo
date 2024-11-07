@@ -191,7 +191,7 @@ class Welford {
         inline int subcount() const { return m_subc; }
 
         // return true if any even order sums are negative
-        inline bool has_heywoord() const {
+        inline bool has_heywood() const {
             if (!ord_beyond) {
                 return (m_xx[2] < 0);
             } else {
@@ -676,7 +676,7 @@ NumericVector quasiSumThing(T v,
     return vret;
 }
 
-// ord is largely ignred here;
+// ord is largely ignored here;
 template <typename T,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
 void add_many(Welford<oneW,has_wts,ord_beyond,na_rm> & frets,
               T v,

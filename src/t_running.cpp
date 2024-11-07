@@ -119,6 +119,7 @@ using namespace Rcpp;
 //' @template etc
 //' @template ref-romo
 //' @template param-wts
+//' @template param-heywood
 //' @template note-wts
 //' @template note-heywood
 //' @seealso \code{\link{running_sd3}}.
@@ -132,12 +133,13 @@ NumericMatrix t_running_sd3(SEXP v,
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                            bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                            bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true, 
+                            bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     NumericMatrix preval = t_runQMCurryThree<ret_sd3>(v, wts, time, time_deltas, lb_time,
                                                       2, wins, restart_period, lookahead, min_df, used_df, 
-                                                      na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                                      na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
     return preval;
 }
 // return the skew, the standard deviation, the mean, and the dof
@@ -151,12 +153,13 @@ NumericMatrix t_running_skew4(SEXP v,
                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                               bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                              bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                              bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                              bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     NumericMatrix preval = t_runQMCurryThree<ret_skew4>(v, wts, time, time_deltas, lb_time,
                                                         3, wins, restart_period, lookahead, min_df, used_df, 
-                                                        na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                                        na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 
     return preval;
 }
@@ -172,12 +175,13 @@ NumericMatrix t_running_kurt5(SEXP v,
                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                               bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                              bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                              bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                              bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     NumericMatrix preval = t_runQMCurryThree<ret_exkurt5>(v, wts, time, time_deltas, lb_time,
                                                           4, wins, restart_period, lookahead, min_df, used_df, 
-                                                          na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                                          na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
     return preval;
 }
 // just the sd nothing else.
@@ -191,13 +195,14 @@ NumericMatrix t_running_sd(SEXP v,
                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                            Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                           bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                           bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                           bool check_negative_moments=true) {
 //2FIX: introduce used_df ... 
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     return t_runQMCurryThree<ret_stdev>(v, wts, time, time_deltas, lb_time,
                                         2, wins, restart_period, lookahead, min_df, used_df, 
-                                        na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                        na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 // just the skew nothing else.
 //' @rdname t_runningmoments
@@ -210,13 +215,14 @@ NumericMatrix t_running_skew(SEXP v,
                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                              Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                              bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                             bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                             bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                             bool check_negative_moments=true) {
 //2FIX: introduce used_df ... 
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     return t_runQMCurryThree<ret_skew>(v, wts, time, time_deltas, lb_time,
                                        3, wins, restart_period, lookahead, min_df, used_df, 
-                                       na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                       na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 // just the kurtosis nothing else.
 //' @rdname t_runningmoments
@@ -229,13 +235,14 @@ NumericMatrix t_running_kurt(SEXP v,
                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                              Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                              bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                             bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                             bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                             bool check_negative_moments=true) {
 //2FIX: introduce used_df ... 
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     return t_runQMCurryThree<ret_exkurt>(v, wts, time, time_deltas, lb_time,
                                          4, wins, restart_period, lookahead, min_df, used_df, 
-                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 
 // return the centered moments down to the 2nd, then the mean, and the dof.
@@ -252,17 +259,18 @@ NumericMatrix t_running_cent_moments(SEXP v,
                                      Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                                      int max_order=5, bool na_rm=false, bool max_order_only=false, 
                                      int min_df=0, double used_df=0.0, int restart_period=100, 
-                                     bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                     bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                     bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     if (max_order_only) {
         return t_runQMCurryThree<ret_centmaxonly>(v, wts, time, time_deltas, lb_time,
                                          max_order, wins, restart_period, lookahead, min_df, used_df, 
-                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
     } 
     return t_runQMCurryThree<ret_centmoments>(v, wts, time, time_deltas, lb_time,
                                               max_order, wins, restart_period, lookahead, min_df, used_df, 
-                                              na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                              na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 
 // return the standardized moments down to the 3rd, then the standard deviation, the mean, and the dof.
@@ -277,14 +285,15 @@ NumericMatrix t_running_std_moments(SEXP v,
                                     Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                                     int max_order=5, bool na_rm=false, 
                                     int min_df=0, double used_df=0.0, int restart_period=100, 
-                                    bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                    bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                    bool check_negative_moments=true) {
 
 
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     return t_runQMCurryThree<ret_stdmoments>(v, wts, time, time_deltas, lb_time,
                                              max_order, wins, restart_period, lookahead, min_df, used_df, 
-                                             na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                             na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 
 // return the cumulants down to the 2nd, then the standard deviation, the mean, and the dof.
@@ -299,10 +308,11 @@ NumericMatrix t_running_cumulants(SEXP v,
                                   Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                                   int max_order=5, bool na_rm=false, 
                                   int min_df=0, double used_df=0.0, int restart_period=100, 
-                                  bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                  bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                  bool check_negative_moments=true) {
 
     NumericMatrix cumulants = t_running_cent_moments(v, time, time_deltas, window, wts, lb_time, max_order, na_rm, false,
-                                                     min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts);
+                                                     min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments);
 
 
     // changes the cumulants in the background
@@ -353,6 +363,7 @@ NumericMatrix t_running_cumulants(SEXP v,
 //' @template ref-cf
 //' @template ref-romo
 //' @template param-wts
+//' @template param-heywood
 //' @template note-wts
 //' @rdname t_runningquantiles
 //' @export
@@ -365,11 +376,12 @@ NumericMatrix t_running_apx_quantiles(SEXP v, NumericVector p,
                                       Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                                       int max_order=5, bool na_rm=false, 
                                       int min_df=0, double used_df=0.0, int restart_period=100, 
-                                      bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                      bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                      bool check_negative_moments=true) {
                                     
     NumericMatrix cumulants = t_running_cumulants(v, time, time_deltas, window, wts, lb_time,
                                                   max_order, na_rm, min_df, used_df, restart_period, 
-                                                  variable_win, wts_as_delta, check_wts, normalize_wts);
+                                                  variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments);
 
     return cumulants2quantiles(cumulants, p, max_order);
 }
@@ -384,13 +396,14 @@ NumericMatrix t_running_apx_median(SEXP v,
                                    Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                                    int max_order=5, bool na_rm=false, 
                                    int min_df=0, double used_df=0.0, int restart_period=100, 
-                                   bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                   bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                   bool check_negative_moments=true) {
                                    
     NumericVector p(1);
     p(0) = 0.5;
     return t_running_apx_quantiles(v,p, time, time_deltas, window, wts, lb_time,
                                    max_order, na_rm, min_df, used_df, restart_period, 
-                                   variable_win, wts_as_delta, check_wts, normalize_wts);
+                                   variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments);
 }
 
 //' @title
@@ -449,12 +462,13 @@ NumericMatrix t_running_centered(SEXP v,
                                  SEXP window = R_NilValue, 
                                  Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                  bool na_rm=false, int min_df=0, double used_df=1.0, double lookahead=0.0, int restart_period=100,
-                                 bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                 bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                 bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue;
     return t_runQMCurryThree<ret_centered>(v, wts, time, time_deltas, lb_time,
                                            1, wins, restart_period, lookahead, min_df, used_df, 
-                                           na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                           na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 // scale the input
 //' @rdname t_runningadjustments
@@ -466,12 +480,13 @@ NumericMatrix t_running_scaled(SEXP v,
                                SEXP window = R_NilValue, 
                                Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                bool na_rm=false, int min_df=0, double used_df=1.0, double lookahead=0.0, int restart_period=100,
-                               bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                               bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                               bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue;
     return t_runQMCurryThree<ret_scaled>(v, wts, time, time_deltas, lb_time,
                                          2, wins, restart_period, lookahead, min_df, used_df, 
-                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 // zscore the input
 //' @rdname t_runningadjustments
@@ -483,12 +498,13 @@ NumericMatrix t_running_zscored(SEXP v,
                                 SEXP window = R_NilValue, 
                                 Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                 bool na_rm=false, int min_df=0, double used_df=1.0, double lookahead=0.0, int restart_period=100,
-                                bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                                bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                                bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue;
     return t_runQMCurryThree<ret_zscore>(v, wts, time, time_deltas, lb_time,
                                          2, wins, restart_period, lookahead, min_df, used_df, 
-                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 // sharpe on the input
 //' @rdname t_runningadjustments
@@ -501,17 +517,18 @@ NumericMatrix t_running_sharpe(SEXP v,
                                Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                                bool na_rm=false, bool compute_se=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                               bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                               bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                               bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     if (compute_se) {
         return t_runQMCurryThree<ret_sharpese>(v, wts, time, time_deltas, lb_time,
                                                4, wins, restart_period, lookahead, min_df, used_df, 
-                                               na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                               na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
     } 
     return t_runQMCurryThree<ret_sharpe>(v, wts, time, time_deltas, lb_time,
                                          2, wins, restart_period, lookahead, min_df, used_df, 
-                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                         na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 // t stat of the input
 //' @rdname t_runningadjustments
@@ -524,12 +541,13 @@ NumericMatrix t_running_tstat(SEXP v,
                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
                               bool na_rm=false, bool compute_se=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                              bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true) {
+                              bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
+                              bool check_negative_moments=true) {
     double wins = get_double_wins(window);
     const double lookahead=0.0; // 2FIX: allow user to set?
     return t_runQMCurryThree<ret_tstat>(v, wts, time, time_deltas, lb_time,
                                         2, wins, restart_period, lookahead, min_df, used_df, 
-                                        na_rm, check_wts, variable_win, wts_as_delta, normalize_wts);
+                                        na_rm, check_wts, variable_win, wts_as_delta, normalize_wts, check_negative_moments);
 }
 
 //for vim modeline: (do not edit)

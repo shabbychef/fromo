@@ -75,7 +75,8 @@ NumericMatrix t_runQM(T v,
                       const bool check_wts,
                       const bool variable_win,
                       const bool wts_as_delta,
-                      const bool normalize_wts) {
+                      const bool normalize_wts,
+                      const bool check_negative_moments) {
 
     // a bit of a hack here, but you must have ord >= 2 for Welford
     // objects, otherwise it hits a memory leak. I know that previously
@@ -275,7 +276,7 @@ NumericMatrix t_runQM(T v,
                 }
             }
             // may need to recompute based on the number of subtractions. bummer.
-            if (frets.subcount() >= recom_period) {
+            if ((frets.subcount() >= recom_period) || (check_negative_moments && frets.has_heywood())) {
                 //zero it out
                 frets.tare();
                 add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
@@ -312,30 +313,31 @@ NumericMatrix t_runQMCurryZero(T v,
                                const bool check_wts,
                                const bool variable_win,
                                const bool wts_as_delta,
-                               const bool normalize_wts) {
+                               const bool normalize_wts,
+                               const bool check_negative_moments) {
     if (has_wts && normalize_wts) {
         if (na_rm) {
             return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,true>(v, wts, 
                                                                           time, time_deltas, lb_time,
                                                                           ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                          variable_win, wts_as_delta, normalize_wts); 
+                                                                          variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
         } else {
             return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,false>(v, wts, 
                                                                           time, time_deltas, lb_time,
                                                                           ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                          variable_win, wts_as_delta, normalize_wts); 
+                                                                          variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
         }
     } 
     if (na_rm) {
         return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,true>(v, wts, 
                                                                        time, time_deltas, lb_time,
                                                                        ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                       variable_win, wts_as_delta, normalize_wts); 
+                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
     } 
     return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,false>(v, wts, 
                                                                        time, time_deltas, lb_time,
                                                                        ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                       variable_win, wts_as_delta, normalize_wts); 
+                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
 }
 
 template <typename T,ReturnWhat retwhat,bool ord_beyond>
@@ -354,7 +356,8 @@ NumericMatrix t_runQMCurryOne(T v,
                               const bool check_wts,
                               const bool variable_win,
                               const bool wts_as_delta,
-                              const bool normalize_wts) {
+                              const bool normalize_wts,
+                              const bool check_negative_moments) {
 
     //2FIX: typeof wts?
     if (wts.isNotNull()) {
@@ -362,14 +365,16 @@ NumericMatrix t_runQMCurryOne(T v,
                                                                                 time, time_deltas, lb_time,
                                                                                 ord, window, recom_period, lookahead, 
                                                                                 min_df, used_df, na_rm, check_wts, 
-                                                                                variable_win, wts_as_delta, normalize_wts); 
+                                                                                variable_win, wts_as_delta, normalize_wts, 
+                                                                                check_negative_moments); 
     }
     NumericVector dummy_wts;
     return t_runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, 
                                                                              time, time_deltas, lb_time,
                                                                              ord, window, recom_period, lookahead, 
                                                                              min_df, used_df, na_rm, check_wts, 
-                                                                             variable_win, wts_as_delta, normalize_wts); 
+                                                                             variable_win, wts_as_delta, normalize_wts,
+                                                                             check_negative_moments);
 }
 
 
@@ -390,18 +395,19 @@ NumericMatrix t_runQMCurryTwo(T v,
                               const bool check_wts,
                               const bool variable_win,
                               const bool wts_as_delta,
-                              const bool normalize_wts) {
+                              const bool normalize_wts,
+                              const bool check_negative_moments) {
 
     if (ord==2) {
         return t_runQMCurryOne<T,retwhat,false>(v, wts, 
                                                 time, time_deltas, lb_time,
                                                 ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                variable_win, wts_as_delta, normalize_wts); 
+                                                variable_win, wts_as_delta, normalize_wts, check_negative_moments);
     }
     return t_runQMCurryOne<T,retwhat,true>(v, wts, 
                                            time, time_deltas, lb_time,
                                            ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                           variable_win, wts_as_delta, normalize_wts); 
+                                           variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
 }
 
 template <ReturnWhat retwhat>
@@ -420,21 +426,22 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                 const bool check_wts,
                                 const bool variable_win,
                                 const bool wts_as_delta,
-                                const bool normalize_wts) {
+                                const bool normalize_wts,
+                                const bool check_negative_moments) {
     switch (TYPEOF(v)) {
         case  INTSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(v, wts, 
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                                      variable_win, wts_as_delta, normalize_wts); }
+                                                                      variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
         case REALSXP: { return t_runQMCurryTwo<NumericVector,retwhat>(v, wts, 
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                                      variable_win, wts_as_delta, normalize_wts); }
+                                                                      variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
         // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
         case  LGLSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts,  
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
-                                                                      variable_win, wts_as_delta, normalize_wts); }
+                                                                      variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
         default: stop("Unsupported weight type"); // #nocov
     }
     // have to have fallthrough for CRAN check.

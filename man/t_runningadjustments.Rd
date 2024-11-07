@@ -22,7 +22,8 @@ t_running_centered(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_scaled(
@@ -39,7 +40,8 @@ t_running_scaled(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_zscored(
@@ -56,7 +58,8 @@ t_running_zscored(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_sharpe(
@@ -74,7 +77,8 @@ t_running_sharpe(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_tstat(
@@ -92,7 +96,8 @@ t_running_tstat(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 }
 \arguments{
@@ -163,6 +168,18 @@ renormalized to have a mean value of 1. This mean is computed over elements
 which contribute to the moments, so if \code{na_rm} is set, that means non-NA
 elements of \code{wts} that correspond to non-NA elements of the data
 vector.}
+
+\item{check_negative_moments}{a boolean flag. Normal computation of running
+moments can result in negative estimates of even order moments due to loss of
+numerical precision. With this flag active, the computation checks for negative
+even order moments and restarts the computation when one is detected. This
+should eliminate the possibility of negative even order moments. The
+downside is the speed hit of checking on every output step. Note also the
+code checks for negative moments of every even order tracked, even if they
+are not output; that is if the kurtosis, say, is being computed, and a
+negative variance is detected, then the computation is restarted.
+Defaults to \code{TRUE} to avoid negative even moments. Set to \code{FALSE}
+only if you know what you are doing.}
 
 \item{lb_time}{a vector of the times from which lookback will be performed. The output should
 be the same size as this vector. If not given, defaults to \code{time}.}

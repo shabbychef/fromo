@@ -397,62 +397,63 @@ cent2raw <- function(input) {
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
+#' @template param-heywood
 #' @template note-wts
 #' @template note-heywood
 #' @rdname runningmoments
 #' @export
-running_sd3 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_sd3', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_sd3 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_sd3', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_skew4 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_skew4', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_skew4 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_skew4', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_kurt5 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_kurt5', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_kurt5 <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_kurt5', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_sd <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_sd', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_sd <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_sd', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_skew <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_skew', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_skew <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_skew', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_kurt <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_kurt', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_kurt <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_kurt', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
 #' the maximum order centered moment, and return in a vector.
 #' @rdname runningmoments
 #' @export
-running_cent_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_cent_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, max_order_only, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_cent_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_cent_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, max_order_only, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_std_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_std_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_std_moments <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_std_moments', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningmoments
 #' @export
-running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_cumulants', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_cumulants', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title
@@ -489,14 +490,14 @@ running_cumulants <- function(v, window = NULL, wts = NULL, max_order = 5L, na_r
 #' @template note-wts
 #' @rdname runningquantiles
 #' @export
-running_apx_quantiles <- function(v, p, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_apx_quantiles <- function(v, p, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_apx_quantiles', PACKAGE = 'fromo', v, p, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningquantiles
 #' @export
-running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_apx_median', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_apx_median', PACKAGE = 'fromo', v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title
@@ -581,32 +582,32 @@ running_apx_median <- function(v, window = NULL, wts = NULL, max_order = 5L, na_
 #' @template note-wts
 #' @rdname runningadjustments
 #' @export
-running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = FALSE) {
-    .Call('_fromo_running_centered', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+running_centered <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = FALSE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_centered', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_scaled <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_scaled', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+running_scaled <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_scaled', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_zscored <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_zscored', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts)
+running_zscored <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_zscored', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, lookahead, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_sharpe <- function(v, window = NULL, wts = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_sharpe', PACKAGE = 'fromo', v, window, wts, na_rm, compute_se, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_sharpe <- function(v, window = NULL, wts = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_sharpe', PACKAGE = 'fromo', v, window, wts, na_rm, compute_se, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname runningadjustments
 #' @export
-running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_running_tstat', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts)
+running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_tstat', PACKAGE = 'fromo', v, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title
@@ -742,63 +743,64 @@ running_mean <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
+#' @template param-heywood
 #' @template note-wts
 #' @template note-heywood
 #' @seealso \code{\link{running_sd3}}.
 #' @rdname t_runningmoments
 #' @export
-t_running_sd3 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_sd3', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_sd3 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_sd3', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_skew4 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_skew4', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_skew4 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_skew4', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_kurt5 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_kurt5', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_kurt5 <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_kurt5', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_sd <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_sd', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_sd <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_sd', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_skew <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_skew', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_skew <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_skew', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_kurt <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_kurt', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_kurt <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_kurt', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @param max_order_only for \code{running_cent_moments}, if this flag is set, only compute
 #' the maximum order centered moment, and return in a vector.
 #' @rdname t_runningmoments
 #' @export
-t_running_cent_moments <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_cent_moments', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, max_order_only, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_cent_moments <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, max_order_only = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_cent_moments', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, max_order_only, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_std_moments <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_std_moments', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_std_moments <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_std_moments', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningmoments
 #' @export
-t_running_cumulants <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_cumulants', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_cumulants <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_cumulants', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title
@@ -845,17 +847,18 @@ t_running_cumulants <- function(v, time = NULL, time_deltas = NULL, window = NUL
 #' @template ref-cf
 #' @template ref-romo
 #' @template param-wts
+#' @template param-heywood
 #' @template note-wts
 #' @rdname t_runningquantiles
 #' @export
-t_running_apx_quantiles <- function(v, p, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_apx_quantiles', PACKAGE = 'fromo', v, p, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_apx_quantiles <- function(v, p, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_apx_quantiles', PACKAGE = 'fromo', v, p, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningquantiles
 #' @export
-t_running_apx_median <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_apx_median', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_apx_median <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, max_order = 5L, na_rm = FALSE, min_df = 0L, used_df = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_apx_median', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, max_order, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title
@@ -907,32 +910,32 @@ t_running_apx_median <- function(v, time = NULL, time_deltas = NULL, window = NU
 #' @template note-wts
 #' @rdname t_runningadjustments
 #' @export
-t_running_centered <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_centered', PACKAGE = 'fromo', v, time, time_deltas, window, wts, na_rm, min_df, used_df, lookahead, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_centered <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_centered', PACKAGE = 'fromo', v, time, time_deltas, window, wts, na_rm, min_df, used_df, lookahead, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningadjustments
 #' @export
-t_running_scaled <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_scaled', PACKAGE = 'fromo', v, time, time_deltas, window, wts, na_rm, min_df, used_df, lookahead, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_scaled <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_scaled', PACKAGE = 'fromo', v, time, time_deltas, window, wts, na_rm, min_df, used_df, lookahead, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningadjustments
 #' @export
-t_running_zscored <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_zscored', PACKAGE = 'fromo', v, time, time_deltas, window, wts, na_rm, min_df, used_df, lookahead, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_zscored <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, lookahead = 0.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_zscored', PACKAGE = 'fromo', v, time, time_deltas, window, wts, na_rm, min_df, used_df, lookahead, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningadjustments
 #' @export
-t_running_sharpe <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_sharpe', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, compute_se, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_sharpe <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_sharpe', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, compute_se, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname t_runningadjustments
 #' @export
-t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_t_running_tstat', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, compute_se, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts)
+t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_tstat', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, compute_se, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title

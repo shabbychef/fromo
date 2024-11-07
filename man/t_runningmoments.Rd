@@ -26,7 +26,8 @@ t_running_sd3(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_skew4(
@@ -43,7 +44,8 @@ t_running_skew4(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_kurt5(
@@ -60,7 +62,8 @@ t_running_kurt5(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_sd(
@@ -77,7 +80,8 @@ t_running_sd(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_skew(
@@ -94,7 +98,8 @@ t_running_skew(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_kurt(
@@ -111,7 +116,8 @@ t_running_kurt(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_cent_moments(
@@ -130,7 +136,8 @@ t_running_cent_moments(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_std_moments(
@@ -148,7 +155,8 @@ t_running_std_moments(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 t_running_cumulants(
@@ -166,7 +174,8 @@ t_running_cumulants(
   variable_win = FALSE,
   wts_as_delta = TRUE,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 }
 \arguments{
@@ -235,6 +244,18 @@ which contribute to the moments, so if \code{na_rm} is set, that means non-NA
 elements of \code{wts} that correspond to non-NA elements of the data
 vector.}
 
+\item{check_negative_moments}{a boolean flag. Normal computation of running
+moments can result in negative estimates of even order moments due to loss of
+numerical precision. With this flag active, the computation checks for negative
+even order moments and restarts the computation when one is detected. This
+should eliminate the possibility of negative even order moments. The
+downside is the speed hit of checking on every output step. Note also the
+code checks for negative moments of every even order tracked, even if they
+are not output; that is if the kurtosis, say, is being computed, and a
+negative variance is detected, then the computation is restarted.
+Defaults to \code{TRUE} to avoid negative even moments. Set to \code{FALSE}
+only if you know what you are doing.}
+
 \item{max_order}{the maximum order of the centered moment to be computed.}
 
 \item{max_order_only}{for \code{running_cent_moments}, if this flag is set, only compute
@@ -290,10 +311,9 @@ with little precision.
 
 As this code may add and remove observations, numerical imprecision
 may result in negative estimates of squared quantities, like the
-second or fourth moments.  We do not currently correct for this
-issue, although it may be somewhat mitigated by setting a smaller
-\code{restart_period}. In the future we will add a check for
-this case. Post an issue if you experience this bug.
+second or fourth moments.  By default we check for this condition
+in running computations. It may also be mitigated somewhat by setting 
+a smaller \code{restart_period}. Post an issue if you experience this bug.
 }
 \section{Time Windowing }{
 

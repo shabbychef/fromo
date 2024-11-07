@@ -116,6 +116,7 @@ using namespace Rcpp;
 //' @template etc
 //' @template ref-romo
 //' @template param-wts
+//' @template param-heywood
 //' @template note-wts
 //' @template note-heywood
 //' @rdname runningmoments
@@ -124,10 +125,11 @@ using namespace Rcpp;
 NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue, 
                           Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                           bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                          bool check_wts=false, bool normalize_wts=true) {
+                          bool check_wts=false, bool normalize_wts=true,
+                          bool check_negative_moments=true) {
     int wins=get_wins(window);
     NumericMatrix preval = runQMCurryThree<ret_sd3>(v, wts, 2, wins, restart_period, 0, min_df, used_df, 
-                                                            na_rm, check_wts, normalize_wts);
+                                                            na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
 }
 // return the skew, the standard deviation, the mean, and the dof
@@ -137,10 +139,11 @@ NumericMatrix running_sd3(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                            bool check_wts=false, bool normalize_wts=true) {
+                            bool check_wts=false, bool normalize_wts=true,
+                            bool check_negative_moments=true) {
     int wins=get_wins(window);
     NumericMatrix preval = runQMCurryThree<ret_skew4>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
-                                                              na_rm, check_wts, normalize_wts);
+                                                              na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
 }
 
@@ -151,10 +154,11 @@ NumericMatrix running_skew4(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                            bool check_wts=false, bool normalize_wts=true) {
+                            bool check_wts=false, bool normalize_wts=true,
+                            bool check_negative_moments=true) {
     int wins=get_wins(window);
     NumericMatrix preval = runQMCurryThree<ret_exkurt5>(v, wts, 4, wins, restart_period, 0, min_df, used_df, 
-                                                                na_rm, check_wts, normalize_wts);
+                                                                na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
 }
 // just the sd nothing else.
@@ -164,11 +168,12 @@ NumericMatrix running_kurt5(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue, 
                          Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                          bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                         bool check_wts=false, bool normalize_wts=true) {
+                         bool check_wts=false, bool normalize_wts=true,
+                         bool check_negative_moments=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
     return runQMCurryThree<ret_stdev>(v, wts, 2, wins, restart_period, 0, min_df, used_df,
-                                              na_rm, check_wts, normalize_wts);
+                                              na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 // just the skew nothing else.
 //' @rdname runningmoments
@@ -177,11 +182,12 @@ NumericMatrix running_sd(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue, 
                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                           bool check_wts=false, bool normalize_wts=true) {
+                           bool check_wts=false, bool normalize_wts=true,
+                           bool check_negative_moments=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
     return runQMCurryThree<ret_skew>(v, wts, 3, wins, restart_period, 0, min_df, used_df, 
-                                             na_rm, check_wts, normalize_wts);
+                                             na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 // just the kurtosis nothing else.
 //' @rdname runningmoments
@@ -190,11 +196,12 @@ NumericMatrix running_skew(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_kurt(SEXP v, SEXP window = R_NilValue, 
                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                            bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                           bool check_wts=false, bool normalize_wts=true) {
+                           bool check_wts=false, bool normalize_wts=true,
+                           bool check_negative_moments=true) {
 //2FIX: introduce used_df ... 
     int wins=get_wins(window);
     return runQMCurryThree<ret_exkurt>(v, wts, 4, wins, restart_period, 0, min_df, used_df,
-                                               na_rm, check_wts, normalize_wts);
+                                               na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 
 // return the centered moments down to the 2nd, then the mean, and the dof.
@@ -207,14 +214,15 @@ NumericMatrix running_cent_moments(SEXP v, SEXP window = R_NilValue,
                                    Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                    int max_order=5, bool na_rm=false, bool max_order_only=false, 
                                    int min_df=0, double used_df=0.0, int restart_period=100, 
-                                   bool check_wts=false, bool normalize_wts=true) {
+                                   bool check_wts=false, bool normalize_wts=true,
+                                   bool check_negative_moments=true) {
     int wins=get_wins(window);
     if (max_order_only) {
         return runQMCurryThree<ret_centmaxonly>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
-                                                    na_rm, check_wts, normalize_wts);
+                                                    na_rm, check_wts, normalize_wts, check_negative_moments);
     } 
     return runQMCurryThree<ret_centmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
-                                                    na_rm, check_wts, normalize_wts);
+                                                    na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 
 // return the standardized moments down to the 3rd, then the standard deviation, the mean, and the dof.
@@ -225,10 +233,11 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue,
                                   Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                   int max_order=5, bool na_rm=false, 
                                   int min_df=0, double used_df=0, int restart_period=100, 
-                                  bool check_wts=false, bool normalize_wts=true) {
+                                  bool check_wts=false, bool normalize_wts=true,
+                                  bool check_negative_moments=true) {
     int wins=get_wins(window);
     return runQMCurryThree<ret_stdmoments>(v, wts, max_order, wins, restart_period, 0, min_df, used_df, 
-                                                   na_rm, check_wts, normalize_wts);
+                                                   na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 
 // return the cumulants down to the 2nd, then the standard deviation, the mean, and the dof.
@@ -238,9 +247,10 @@ NumericMatrix running_std_moments(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue, 
                                 Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                 int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
-                                bool check_wts=false, bool normalize_wts=true) {
+                                bool check_wts=false, bool normalize_wts=true,
+                                bool check_negative_moments=true) {
     NumericMatrix cumulants = running_cent_moments(v, window, wts, max_order, na_rm, 
-                                                   false, min_df, used_df, restart_period, check_wts, normalize_wts);
+                                                   false, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments);
 
     // changes the cumulants in the background
     centmom2cumulants(cumulants, max_order);
@@ -284,8 +294,9 @@ NumericMatrix running_cumulants(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_NilValue, 
                                     Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                     int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
-                                    bool check_wts=false, bool normalize_wts=true) {
-    NumericMatrix cumulants = running_cumulants(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts);
+                                    bool check_wts=false, bool normalize_wts=true,
+                                    bool check_negative_moments=true) {
+    NumericMatrix cumulants = running_cumulants(v, window, wts, max_order, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments);
     return cumulants2quantiles(cumulants, p, max_order);
 }
 //' @rdname runningquantiles
@@ -294,10 +305,11 @@ NumericMatrix running_apx_quantiles(SEXP v, NumericVector p, SEXP window = R_Nil
 NumericMatrix running_apx_median(SEXP v, SEXP window = R_NilValue, 
                                  Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                  int max_order=5, bool na_rm=false, int min_df=0, double used_df=0.0, int restart_period=100,
-                                 bool check_wts=false, bool normalize_wts=true) {
+                                 bool check_wts=false, bool normalize_wts=true,
+                                 bool check_negative_moments=true) {
     NumericVector p(1);
     p(0) = 0.5;
-    NumericMatrix vret = running_apx_quantiles(v,p,window,wts,max_order,na_rm,min_df,used_df,restart_period,check_wts,normalize_wts);
+    NumericMatrix vret = running_apx_quantiles(v,p,window,wts,max_order,na_rm,min_df,used_df,restart_period,check_wts,normalize_wts, check_negative_moments);
     return vret;
 }
 
@@ -388,10 +400,11 @@ NumericMatrix running_centered(SEXP v,
                                SEXP window = R_NilValue, 
                                Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
-                               bool check_wts=false, bool normalize_wts=false) {
+                               bool check_wts=false, bool normalize_wts=false,
+                               bool check_negative_moments=true) {
     int wins=get_wins(window);
     // could be a problem with the 1 here;
-    return runQMCurryThree<ret_centered>(v, wts, 1, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_centered>(v, wts, 1, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 // scale the input
 //' @rdname runningadjustments
@@ -400,9 +413,10 @@ NumericMatrix running_centered(SEXP v,
 NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue, 
                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                              bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
-                             bool check_wts=false, bool normalize_wts=true) {
+                             bool check_wts=false, bool normalize_wts=true,
+                             bool check_negative_moments=true) {
     int wins=get_wins(window);
-    return runQMCurryThree<ret_scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_scaled>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 // zscore the input
 //' @rdname runningadjustments
@@ -411,9 +425,10 @@ NumericMatrix running_scaled(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                               bool na_rm=false, int min_df=0, double used_df=1.0, int lookahead=0, int restart_period=100,
-                              bool check_wts=false, bool normalize_wts=true) {
+                              bool check_wts=false, bool normalize_wts=true,
+                              bool check_negative_moments=true) {
     int wins=get_wins(window);
-    return runQMCurryThree<ret_zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_zscore>(v, wts, 2, wins, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 // sharpe on the input
 //' @rdname runningadjustments
@@ -422,12 +437,13 @@ NumericMatrix running_zscored(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue, 
                              Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                              bool na_rm=false, bool compute_se=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                             bool check_wts=false, bool normalize_wts=true) {
+                             bool check_wts=false, bool normalize_wts=true,
+                             bool check_negative_moments=true) {
     int wins=get_wins(window);
     if (compute_se) {
-        return runQMCurryThree<ret_sharpese>(v, wts, 4, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
+        return runQMCurryThree<ret_sharpese>(v, wts, 4, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments);
     } 
-    return runQMCurryThree<ret_sharpe>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_sharpe>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments);
 }
 // t stat of the input
 //' @rdname runningadjustments
@@ -436,11 +452,11 @@ NumericMatrix running_sharpe(SEXP v, SEXP window = R_NilValue,
 NumericMatrix running_tstat(SEXP v, SEXP window = R_NilValue, 
                             Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                             bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
-                            bool check_wts=false, bool normalize_wts=true) {
+                            bool check_wts=false, bool normalize_wts=true,
+                            bool check_negative_moments=true) {
     int wins=get_wins(window);
-    return runQMCurryThree<ret_tstat>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts);
+    return runQMCurryThree<ret_tstat>(v, wts, 2, wins, restart_period, 0, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments);
 }
-
 
 //for vim modeline: (do not edit)
 // vim:et:nowrap:ts=4:sw=4:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=//%s:tags=.c_tags;:syn=cpp:ft=cpp:mps+=<\:>:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

@@ -251,9 +251,6 @@ test_that("window as integer or double",{#FOLDUP
 	expect_error(ri <- running_kurt5(thingy,window=iwin),NA)
 	expect_equal(rd,ri,tolerance=1e-12)
 	expect_error(running_kurt5(thingy,window=charwin))
-
-
-
 })#UNFOLD
 test_that("bad input",{#FOLDUP
 	skip_on_cran()
@@ -263,20 +260,20 @@ test_that("bad input",{#FOLDUP
 	thingy <- rnorm(nel)
 	# for some reason, these now cause R to abort? auuggggh!
 
-	#expect_error(rd <- running_sum(thingy,window='bad idea'))
-	#expect_error(rd <- running_mean(thingy,window=5,restart_period='dumb'))
-	#expect_error(rd <- running_mean(thingy,window=5,min_df='dumb'))
-	#expect_error(rd <- running_mean(thingy,window=5,na_rm='dumb'))
-	#expect_error(rd <- running_sd3(thingy,window=5,used_df='dumb'))
-	#expect_error(rd <- running_sd3(thingy,window=5,check_wts='dumb'))
-	#expect_error(rd <- running_sd3(thingy,window=5,normalize_wts='dumb'))
+	expect_error(rd <- running_sum(thingy,window='bad idea'))
+	expect_error(rd <- running_mean(thingy,window=5,restart_period='dumb'))
+	expect_error(rd <- running_mean(thingy,window=5,min_df='dumb'))
+	expect_error(rd <- running_mean(thingy,window=5,na_rm='dumb'))
+	expect_error(rd <- running_sd3(thingy,window=5,used_df='dumb'))
+	expect_error(rd <- running_sd3(thingy,window=5,check_wts='dumb'))
+	expect_error(rd <- running_sd3(thingy,window=5,normalize_wts='dumb'))
 })#UNFOLD
-context("running_foo make it hit heywood?")
+context("running_foo check heywood cases")
 test_that("hit heywood branch",{#FOLDUP
 	skip_on_cran()
 
+	# not sure what I had planned here, and how it tests for heywoods.
 	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
-
 	set.char.seed("3d318f1d-9921-4a20-84fc-c5ffc722d52c")
 	xvals <- list(rnorm(1e5,mean=1e10))
 	x <- rnorm(1e4)
@@ -290,20 +287,28 @@ test_that("hit heywood branch",{#FOLDUP
 		window <- 500L
 		restart_period <- 100000L
 		na_rm <- TRUE
-		# no heywood branch for these?
-		expect_error(running_sum(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_mean(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 
-		expect_error(running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,max_order_only=TRUE,na_rm=na_rm),NA)
-		expect_error(running_std_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_cumulants(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
-		expect_error(running_apx_median(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		expect_error(y <- running_sd3(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		ys <- y[window:nrow(y),1]
+		expect_false(any(ys < 0 | is.na(ys)))
 
+		expect_error(y <- running_skew4(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		ys <- y[window:nrow(y),2]
+		expect_false(any(ys < 0 | is.na(ys)))
+
+		expect_error(y <- running_kurt5(x,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		ys <- 3 + y[window:nrow(y),1]
+		expect_false(any(ys < 0 | is.na(ys)))
+		ys <- y[window:nrow(y),3]
+		expect_false(any(ys < 0 | is.na(ys)))
+
+		# not sure where I would expect Heywoods in here.
+		# expect_error(y <- running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		# expect_error(running_cent_moments(x,max_order=5L,window=window,restart_period=restart_period,max_order_only=TRUE,na_rm=na_rm),NA)
+		# expect_error(running_std_moments(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		# expect_error(running_cumulants(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		# expect_error(running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		# expect_error(running_apx_median(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 	}
 })#UNFOLD
 context("running_foo: NA restart")

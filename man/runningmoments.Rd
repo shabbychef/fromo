@@ -21,7 +21,8 @@ running_sd3(
   used_df = 1,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_skew4(
@@ -33,7 +34,8 @@ running_skew4(
   used_df = 1,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_kurt5(
@@ -45,7 +47,8 @@ running_kurt5(
   used_df = 1,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_sd(
@@ -57,7 +60,8 @@ running_sd(
   used_df = 1,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_skew(
@@ -69,7 +73,8 @@ running_skew(
   used_df = 1,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_kurt(
@@ -81,7 +86,8 @@ running_kurt(
   used_df = 1,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_cent_moments(
@@ -95,7 +101,8 @@ running_cent_moments(
   used_df = 0,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_std_moments(
@@ -108,7 +115,8 @@ running_std_moments(
   used_df = 0,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 
 running_cumulants(
@@ -121,7 +129,8 @@ running_cumulants(
   used_df = 0,
   restart_period = 100L,
   check_wts = FALSE,
-  normalize_wts = TRUE
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
 )
 }
 \arguments{
@@ -167,6 +176,18 @@ renormalized to have a mean value of 1. This mean is computed over elements
 which contribute to the moments, so if \code{na_rm} is set, that means non-NA
 elements of \code{wts} that correspond to non-NA elements of the data
 vector.}
+
+\item{check_negative_moments}{a boolean flag. Normal computation of running
+moments can result in negative estimates of even order moments due to loss of
+numerical precision. With this flag active, the computation checks for negative
+even order moments and restarts the computation when one is detected. This
+should eliminate the possibility of negative even order moments. The
+downside is the speed hit of checking on every output step. Note also the
+code checks for negative moments of every even order tracked, even if they
+are not output; that is if the kurtosis, say, is being computed, and a
+negative variance is detected, then the computation is restarted.
+Defaults to \code{TRUE} to avoid negative even moments. Set to \code{FALSE}
+only if you know what you are doing.}
 
 \item{max_order}{the maximum order of the centered moment to be computed.}
 
@@ -224,10 +245,9 @@ with little precision.
 
 As this code may add and remove observations, numerical imprecision
 may result in negative estimates of squared quantities, like the
-second or fourth moments.  We do not currently correct for this
-issue, although it may be somewhat mitigated by setting a smaller
-\code{restart_period}. In the future we will add a check for
-this case. Post an issue if you experience this bug.
+second or fourth moments.  By default we check for this condition
+in running computations. It may also be mitigated somewhat by setting 
+a smaller \code{restart_period}. Post an issue if you experience this bug.
 }
 \examples{
 x <- rnorm(1e5)

@@ -382,6 +382,41 @@ test_that("window as integer or double",{#FOLDUP
 
 
 })#UNFOLD
+context("trunning_foo check heywood cases")
+test_that("hit heywood branch",{#FOLDUP
+	skip_on_cran()
+	# not sure what I had planned here, and how it tests for heywoods.
+	set.char.seed("3d318f1d-9921-4a20-84fc-c5ffc722d52c")
+	xvals <- list(rnorm(1e5,mean=1e10))
+	x <- rnorm(1e4)
+	x[x < 1.0] <- NA
+	xvals[[length(xvals)+1]] <- x
+	x <- rnorm(1e4)
+	x[x < 1.5] <- NA
+	xvals[[length(xvals)+1]] <- x
+
+	for (x in xvals) {
+		window <- 500
+		restart_period <- 100000L
+		na_rm <- TRUE
+		times <- seq_along(x)
+
+		expect_error(y <- t_running_sd3(x,time=times,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		ys <- y[window:nrow(y),1]
+		expect_false(any(ys < 0 | is.na(ys)))
+
+		expect_error(y <- t_running_skew4(x,time=times,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		ys <- y[window:nrow(y),2]
+		expect_false(any(ys < 0 | is.na(ys)))
+
+		expect_error(y <- t_running_kurt5(x,time=times,window=window,restart_period=restart_period,na_rm=na_rm),NA)
+		ys <- 3 + y[window:nrow(y),1]
+		expect_false(any(ys < 0 | is.na(ys)))
+		ys <- y[window:nrow(y),3]
+		expect_false(any(ys < 0 | is.na(ys)))
+		# not sure where I would expect Heywoods in the other ones.
+	}
+})#UNFOLD
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=r:ft=r:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:
