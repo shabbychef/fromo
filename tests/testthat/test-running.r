@@ -200,6 +200,13 @@ test_that("running sum",{#FOLDUP
 
 
 })#UNFOLD
+test_that("constant input",{#FOLDUP
+	x <- rep(1,7)
+	expect_error(y4 <- running_skew4(x,window=5),NA)
+	expect_true(!any(is.na(y4[nrow(y4),,drop=TRUE]) ))
+	expect_error(y5 <- running_kurt5(x,window=5),NA)
+	expect_true(!any(is.na(y5[nrow(y5),,drop=TRUE]) ))
+})#UNFOLD
 
 context("running foo input params")
 test_that("window as integer or double",{#FOLDUP
@@ -310,6 +317,15 @@ test_that("hit heywood branch",{#FOLDUP
 		# expect_error(running_apx_quantiles(x,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 		# expect_error(running_apx_median(x,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm),NA)
 	}
+})#UNFOLD
+test_that("hit corner cases",{#FOLDUP
+	# created with the intention of causing Heywoods
+	epsi <- 1e-16
+	xx <- c(1,1+epsi,epsi,1,1,1)
+	expect_error(y <- fromo::running_sd3(xx,3,check_negative_moments=FALSE),NA)
+	expect_true(is.nan(y[nrow(y),1]))
+	expect_error(y <- fromo::running_sd3(xx,3,check_negative_moments=TRUE),NA)
+	expect_false(is.nan(y[nrow(y),1]))
 })#UNFOLD
 context("running_foo: NA restart")
 test_that("NA restart period?",{#FOLDUP
