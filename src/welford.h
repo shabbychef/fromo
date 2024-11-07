@@ -261,7 +261,7 @@ class Welford {
                     m_xx[2] += xb_les_muA * (xval - m_xx[1]);
                 }
             } else {
-                if ((wtA > 0) && (m_ord > 1)) {
+                if ((wtA > 0) && (m_ord > 1) && (muD_les_muA!=0.0)) {
                     div_left = -muD_les_muA;
                     term_left = pow(div_left,m_ord) * wtA;
                     if (has_wts) {
@@ -332,7 +332,7 @@ class Welford {
                     } else {
                         m_xx[2] -= xc_les_muA * (xval - m_xx[1]);
                     }
-                } else {
+                } else if (muD_les_muA != 0.0) {
                     div_left = -muD_les_muA;
                     term_left = pow(div_left,m_ord) * wtA;
                     if (has_wts) {
