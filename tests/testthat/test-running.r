@@ -201,11 +201,23 @@ test_that("running sum",{#FOLDUP
 
 })#UNFOLD
 test_that("constant input",{#FOLDUP
-	x <- rep(1,7)
+	x <- rep(1,8)
+	for (maxord in c(2,4,5)) {
+		expect_error(yy <- running_cent_moments(x,window=6,max_order=maxord),NA)
+		expect_true(!any(is.na(yy[nrow(yy),,drop=TRUE]) ))
+	}
+	expect_error(y3 <- running_sd3(x,window=5),NA)
+	expect_true(!is.na(y3[nrow(y3),1,drop=TRUE]))
 	expect_error(y4 <- running_skew4(x,window=5),NA)
-	expect_true(!any(is.na(y4[nrow(y4),,drop=TRUE]) ))
+	expect_true(!is.na(y4[nrow(y4),2,drop=TRUE]))
 	expect_error(y5 <- running_kurt5(x,window=5),NA)
-	expect_true(!any(is.na(y5[nrow(y5),,drop=TRUE]) ))
+	expect_true(!is.na(y5[nrow(y5),3,drop=TRUE]))
+	# if skewness is divided by stdev, there will be 0/0 condition here, 
+	# so drop these
+	# expect_error(y4 <- running_skew4(x,window=5),NA)
+	# expect_true(!any(is.na(y4[nrow(y4),,drop=TRUE]) ))
+	# expect_error(y5 <- running_kurt5(x,window=5),NA)
+	# expect_true(!any(is.na(y5[nrow(y5),,drop=TRUE]) ))
 })#UNFOLD
 
 context("running foo input params")
