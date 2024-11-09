@@ -141,7 +141,7 @@ dumbk <- function(x) { c(kurtosis(x) - 3.0,skewness(x),sd(x),mean(x),length(x)) 
 
 microbenchmark(kurt5(x),
                skew4(x),
-               sd3(x), dumbk(x),
+               sd3(x), 
                dumbk(x),
                kurtosis(x),
                skewness(x),
