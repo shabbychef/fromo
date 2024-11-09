@@ -84,7 +84,7 @@ using namespace Rcpp;
 //' defaulting to 1, the weighted mean is computed as
 //' \deqn{\mu = \frac{\sum_i x_i w_i}{\sum w_i}.}
 //' The weighted kth central sum is computed as
-//' \deqn{\mu = \sum_i \left(x_i - \mu\right)^k w_i.}
+//' \deqn{S_k = \sum_i \left(x_i - \mu\right)^k w_i.}
 //' Let \eqn{n = \sum_i w_i} be the sum of weights (or number of observations in the unweighted case).
 //' Then the weighted kth central moment is computed as that weighted sum divided by the
 //' adjusted sum weights:
@@ -95,7 +95,14 @@ using namespace Rcpp;
 //' to the \eqn{k/2} power:
 //' \deqn{\tilde{\mu}_k = \frac{\mu_k}{\mu_2^{k/2}}.}
 //' The (centered) rth cumulant, for \eqn{r \ge 2} is then computed using the formula of Willink, namely
-//' \deqn{\kappa_r = \mu_r - \sum_{j=0}^{r - 2} {r - 1 \choose j} \mu_j \kappa {r-j}.}
+//' \deqn{\kappa_r = \mu_r - \sum_{j=1}^{r - 2} {r - 1 \choose j} \kappa_{r-j} \mu_{j},}
+//' That is
+//' \deqn{\kappa_2 = \mu_2,}
+//' \deqn{\kappa_3 = \mu_3,}
+//' \deqn{\kappa_4 = \mu_4 - 3 \mu_2^2,}
+//' \deqn{\kappa_5 = \mu_5 - 10 \mu_3\mu_2,}
+//' and so on.
+//'
 //' The standardized rth cumulant is the rth centered cumulant divided by \eqn{\mu_2^{r/2}}.
 //'
 //' @return a vector, filled out as follows:
