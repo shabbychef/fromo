@@ -7,7 +7,7 @@
 \usage{
 as.centsums(x, order=3, na.rm=TRUE)
 
-\method{as.centsums}{default}(x, order = 3, na.rm = TRUE)
+\method{as.centsums}{default}(x, order = 3, na.rm = TRUE, ...)
 }
 \arguments{
 \item{x}{a numeric, array, or matrix.}

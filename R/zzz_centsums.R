@@ -118,15 +118,15 @@ centsums <- function(sums,order=NULL) {
 #' cs <- as.centsums(x, order=5)
 #' @rdname as.centsums
 #' @export as.centsums
-as.centsums <- function(x, order=3, na.rm=TRUE) {
+as.centsums <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, normalize_wts=FALSE) {
 	UseMethod("as.centsums", x)
 }
 #' @rdname as.centsums
 #' @export
 #' @method as.centsums default
 #' @aliases as.centsums
-as.centsums.default <- function(x, order=3, na.rm=TRUE) {
-	sums <- cent_sums(x, max_order=order, na_rm=na.rm)
+as.centsums.default <- function(x, order=3, na.rm=TRUE, ...) {
+	sums <- cent_sums(x, max_order=order, na_rm=na.rm, ...)
 	invisible(centsums(sums,order=order))
 }
 

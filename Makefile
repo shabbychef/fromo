@@ -10,8 +10,8 @@
 VMAJOR 						 = 0
 VMINOR 						 = 2
 VPATCH  					 = 3
-VDEV 							 = 
-#VDEV 							 = .001
+#VDEV 							 = 
+VDEV 							 = .001
 PKG_NAME 					:= fromo
 
 RPKG_USES_RCPP 		:= 1

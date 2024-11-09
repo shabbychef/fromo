@@ -456,6 +456,7 @@ test_that("weights are replication weights",{#FOLDUP
 	expect_error(stm1 <- std_moments(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
 	expect_error(ccm1 <- cent_cumulants(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
 	expect_error(csm1 <- std_cumulants(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
+	expect_error(obj1 <- as.centsums(x,wts=wts,normalize_wts=FALSE,order=5),NA)
 
 	expect_error(sid2 <- sd3(xx),NA)
 	expect_error(ske2 <- skew4(xx),NA)
@@ -464,6 +465,7 @@ test_that("weights are replication weights",{#FOLDUP
 	expect_error(stm2 <- std_moments(xx,max_order=5),NA)
 	expect_error(ccm2 <- cent_cumulants(xx,max_order=5),NA)
 	expect_error(csm2 <- std_cumulants(xx,max_order=5),NA)
+	expect_error(obj2 <- as.centsums(xx,order=5),NA)
 
 	expect_equal(sid1,sid2,tolerance=1e-9)
 	expect_equal(ske1,ske2,tolerance=1e-9)
