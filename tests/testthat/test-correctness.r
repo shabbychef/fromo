@@ -242,6 +242,54 @@ test_that("sd, skew, kurt are correct",{#FOLDUP
 
 	# 2FIX: add cent_moments and std_moments
 	# 2FIX: check NA
+	mux <- mean(x)
+	# adjusted standard deviation
+	sdx <- sqrt((length(x)-1)/length(x)) * sd(x)
+	
+	# test centered moment computation
+	expect_error(cmm <- cent_moments(x,max_order=5),NA)
+	expect_equal(cmm[6],length(x))
+	expect_equal(cmm[5],mux,tolerance=1e-9)
+	for (idx in c(2:5)) {
+		expect_equal(cmm[6-idx],mean((x-mux)^idx),tolerance=1e-9)
+	}
+	
+	# test standardized (centered) moment computation
+	expect_error(stm <- std_moments(x,max_order=5),NA)
+	expect_equal(stm[6],length(x))
+	# mean
+	expect_equal(stm[5],mux,tolerance=1e-9)
+	# standard dev
+	expect_equal(stm[4],sdx,tolerance=1e-9)
+	for (idx in c(3:5)) {
+		expect_equal(stm[6-idx],mean((x-mux)^idx)/(sdx^(idx)),tolerance=1e-9)
+	}
+
+	# test centered cumulants computation
+	expect_error(ccm <- cent_cumulants(x,max_order=5),NA)
+	expect_equal(ccm[6],length(x))
+	# mean
+	expect_equal(ccm[5],mux,tolerance=1e-9)
+	# variance
+	expect_equal(ccm[4],sdx^2,tolerance=1e-9)
+	# add more .
+	if (require(moments)) {
+     mu.raw.x <- moments::all.moments(x, order.max=5)
+		 mu.cent.x <- moments::raw2central(mu.raw.x)
+		 cent_cum <- moments::all.cumulants(mu.cent.x)
+		 expect_equal(rev(ccm)[3:6],cent_cum[3:6],tolerance=1e-12)
+	}
+
+	# test standardized cumulants computation
+	expect_error(csm <- std_cumulants(x,max_order=5),NA)
+	expect_equal(csm[6],length(x))
+	# mean
+	expect_equal(csm[5],mux,tolerance=1e-9)
+	# variance
+	expect_equal(csm[4],sdx^2,tolerance=1e-9)
+	for (idx in c(3:5)) {
+		expect_equal(csm[6-idx],ccm[6-idx]/(sdx^idx),tolerance=1e-9)
+	}
 
 	# sentinel
 	expect_true(TRUE)
@@ -383,7 +431,7 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	dumb_wcmom5  <- wcmom(x,wts,5)
 	dumb_wcmom6  <- wcmom(x,wts,6)
 
-	cmoms <- cent_moments(x,wts=wts,max_order=6,used_df=0,normalize_wts=TRUE)
+	expect_error(cmoms <- cent_moments(x,wts=wts,max_order=6,used_df=0,normalize_wts=TRUE),NA)
 	dumbv <- c(dumb_wcmom6,dumb_wcmom5,dumb_wcmom4,dumb_wcmom3,dumb_wcmom2,dumb_mean,dumb_count)
 	expect_equal(cmoms,dumbv,tolerance=1e-9)
 
@@ -394,6 +442,38 @@ test_that("weighted sd, skew, kurt are correct",{#FOLDUP
 	expect_equal(ske[1],dumb_skew,tolerance=1e-9)
 	# kurtosis
 	expect_equal(krt[1],dumb_exkurt,tolerance=1e-9)
+})#UNFOLD
+test_that("weights are replication weights",{#FOLDUP
+	set.char.seed("babe6284-10dc-48e0-8220-c5e2312364dd")
+	x <- rnorm(15)
+	wts <- c(rep(1,3),rep(2,3),rep(3,length(x)-6))
+	xx <- c(x,x[wts>=2],x[wts>=3])
+
+	expect_error(sid1 <- sd3(x,wts=wts,normalize_wts=FALSE),NA)
+	expect_error(ske1 <- skew4(x,wts=wts,normalize_wts=FALSE),NA)
+	expect_error(krt1 <- kurt5(x,wts=wts,normalize_wts=FALSE),NA)
+	expect_error(cmm1 <- cent_moments(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
+	expect_error(stm1 <- std_moments(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
+	expect_error(ccm1 <- cent_cumulants(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
+	expect_error(csm1 <- std_cumulants(x,wts=wts,normalize_wts=FALSE,max_order=5),NA)
+
+	expect_error(sid2 <- sd3(xx),NA)
+	expect_error(ske2 <- skew4(xx),NA)
+	expect_error(krt2 <- kurt5(xx),NA)
+	expect_error(cmm2 <- cent_moments(xx,max_order=5),NA)
+	expect_error(stm2 <- std_moments(xx,max_order=5),NA)
+	expect_error(ccm2 <- cent_cumulants(xx,max_order=5),NA)
+	expect_error(csm2 <- std_cumulants(xx,max_order=5),NA)
+
+	expect_equal(sid1,sid2,tolerance=1e-9)
+	expect_equal(ske1,ske2,tolerance=1e-9)
+	expect_equal(krt1,krt2,tolerance=1e-9)
+	expect_equal(cmm1,cmm2,tolerance=1e-9)
+	expect_equal(stm1,stm2,tolerance=1e-9)
+	expect_equal(ccm1,ccm2,tolerance=1e-9)
+	expect_equal(csm1,csm2,tolerance=1e-9)
+
+	# 2FIX: add more here to check correctness ... 
 })#UNFOLD
 #UNFOLD
 
