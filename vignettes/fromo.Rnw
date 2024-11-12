@@ -50,6 +50,7 @@
 \providecommand{\neUL}[3]{\mtP{#2}{\mtP{#3}{#1}{{#1}_{#3}}}{\mtP{#3}{{#1}^{#2}}{{#1}^{#2}_{#3}}}}
 \providecommand{\neSUP}[2]{\mtP{#2}{#1}{{{#1}^{#2}}}}
 \providecommand{\mathSUB}[2]{\MATHIT{\neSUB{#1}{#2}}}
+\providecommand{\mathSUP}[2]{\MATHIT{\neSUP{#1}{#2}}}
 \providecommand{\mathUL}[3]{\MATHIT{\neUL{#1}{#2}{#3}}}
 
 \providecommand{\wrapParens}[1]{\left(#1\right)}
@@ -103,6 +104,17 @@
 \providecommand{\sdev}[1]{\sdevpow{#1}{}}
 \providecommand{\tim}[1]{\mathSUB{t}{#1}}
 \providecommand{\dltim}[1]{\mathSUB{d}{#1}}
+
+% vector parts
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\providecommand{\vdata}[1]{\mathSUB{\vec{x}}{#1}}
+% cf https://math.stackexchange.com/a/1169347/610
+\providecommand{\kron}{\otimes}
+\providecommand{\bigkron}{\bigotimes}
+\providecommand{\kpow}[2]{\mathSUP{#1}{\kron {#2}}}
+\providecommand{\komm}[1][{}]{\mathSUB{\mathcal{K}}{#1}}
+\providecommand{\meye}{\MATHIT{\mathbf{I}}}
+\providecommand{\mcoef}[1]{\mathSUB{\mathbf{C}}{#1}}
 
 \providecommand{\fromo}{\Rpackage{fromo}}
 
@@ -539,6 +551,54 @@ and so on.
 
 \end{itemize}
 
+\section{Vector Moments}%FOLDUP
+
+Consider now the case where the data are a $m$ dimensional vector,
+that is we observe $\vdata{1}, \vdata{2},$ and so on.
+Moments will be expressed in terms of the \emph{Kronecker product}.
+While defined for general matrices, we use the Kronecker product only on vectors.
+Given vectors $\vec{a}$ and $\vec{b}$, we write
+$$\vec{a}\kron\vec{b} = \left[\begin{array}{c} a_1 \vec{b}\\a_2\vec{b}\\a_3\vec{b}\\\vdots\\a_k\vec{b}\end{array}\right].
+$$
+Note that the Kronecker product is not commutative.  
+However, there is a special matrix, the \emph{Commutation matrix}, \komm[m,m], that performs commutation \cite{magnus1979commutation}:
+$$
+\vec{a}\kron\vec{b} = \komm[m,m]\left(\vec{b}\kron\vec{a}\right).
+$$
+The subscript refers to the number of columns of the vectors in the Kronecker product, here $m$ and $m$.
+The Commutation matrix is involutary, that is $\komm{m,m}^2 = \meye$.
+
+We use special notation to denote the repeated application of Kronecker product to the same vector:
+$$
+\kpow{\vec{a}}{n} = \bigkron_{i=1}^{n} \vec{a} = \underbrace{\vec{a}\kron\vec{a}\kron \ldots \vec{a}}_{n\,\,\text{times}}.
+$$
+We can now quote a binomial expansion for Kronecker products.
+$$
+\kpow{\left(\vec{a} + \vec{b}\right)}{k} = \sum_j^k \mcoef{j,k} \kpow{\vec{a}}{j} \kron \kpow{\vec{b}}{k-j},
+$$
+for some binomial coefficient matrices, $\mcoef{j,k}$. These coefficients take values:
+\begin{align*}
+\mcoef{0,k} &= \mcoef{k,k} = \meye,\\
+\mcoef{j,k} &= \meye \kron \mcoef{j-1,k-1} + \komm[m(k-1),m]\left(\mcoef{j,k-1}\kron\meye\right),\quad\text{for}\,0 < j < k.
+\end{align*}
+
+Thus in particular,
+\begin{align*}
+	\kpow{\left(\vec{a} + \vec{b}\right)}{2} &= \kpow{\vec{a}}{2} + \left(\meye + \komm\right) \vec{a}\kron\vec{b} + \kpow{\vec{b}}{2},\\
+	\kpow{\left(\vec{a} + \vec{b}\right)}{3} &= \kpow{\vec{a}}{3} + \left(\meye + \komm\right) \vec{a}\kron\vec{b} + \kpow{\vec{b}}{3},
+\end{align*}
+and so on.
+
+
+
+
+
+
+
+
+
+
+%UNFOLD
 
 \section{Running Moments}%FOLDUP
 
@@ -566,6 +626,7 @@ $$
 and then perform the time-based running computation. We also support the case where the \dltim{i} are actually just the \wt{i}.
 
 %UNFOLD
+
 % bibliography%FOLDUP
 %\bibliographystyle{jss}
 %\bibliographystyle{ieeetr}
