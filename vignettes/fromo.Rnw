@@ -112,9 +112,13 @@
 \providecommand{\kron}{\otimes}
 \providecommand{\bigkron}{\bigotimes}
 \providecommand{\kpow}[2]{\mathSUP{#1}{\kron {#2}}}
-\providecommand{\komm}[1][{}]{\mathSUB{\mathcal{K}}{#1}}
-\providecommand{\meye}{\MATHIT{\mathbf{I}}}
+\providecommand{\kommUL}[2]{\mathUL{\mathcal{K}}{#1}{#2}}
+\providecommand{\komm}[1][{}]{\kommUL{}{{#1}}}
+\providecommand{\meye}[1][{}]{\mathSUB{\mathbf{I}}{#1}}
 \providecommand{\mcoef}[1]{\mathSUB{\mathbf{C}}{#1}}
+
+\providecommand{\vwmupow}[2]{\mathUL{\boldsymbol{\mu}}{\mtP{#2}{}{\kron {#2}}}{#1}}
+\providecommand{\vwmu}[1]{\vwmupow{#1}{}}
 
 \providecommand{\fromo}{\Rpackage{fromo}}
 
@@ -191,6 +195,7 @@ by various functions.
 \end{abstract}%UNFOLD
 
 \section{The update formula}
+\label{sec:the_update_formula}
 
 Let \sta be a set of indices over the data \data{i} and corresponding weights
 $\wt{i} > 0$. The weights are \emph{replication weights}, and are intended
@@ -393,12 +398,12 @@ Note that the quantity $\twt{\std}\wrapParens{\wmu{\std} - \wmu{\sta}} =
 \wt{b}\wrapParens{\data{b} - \wmu{\sta}}$ is computed as an intermediary in updating
 the weighted mean, resulting in some computational savings.
 %UNFOLD
-\subsubsection{Removing a single observation}%FOLDUP
+\subsection{Removing a single observation}%FOLDUP
 
 As noted above, removing a single observation should look just like adding a single
 observation, except signs on the weights and weighted sums are flipped. Let $c$ be the
-single index in \stc. Then
-$c$. We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
+single index in \stc. 
+We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
 \begin{align*}
 \wmu{\std} &= \wmu{\sta} - \wt{c}\frac{\data{c} - \wmu{\sta}}{\twt{\std}}.
 \end{align*}
@@ -560,41 +565,219 @@ While defined for general matrices, we use the Kronecker product only on vectors
 Given vectors $\vec{a}$ and $\vec{b}$, we write
 $$\vec{a}\kron\vec{b} = \left[\begin{array}{c} a_1 \vec{b}\\a_2\vec{b}\\a_3\vec{b}\\\vdots\\a_k\vec{b}\end{array}\right].
 $$
+If $\vec{a}, \vec{b}$ are both $m$-dimensional then $\vec{a}\kron\vec{b}$ is an $m^2$-dimensional vector.
+
 Note that the Kronecker product is not commutative.  
 However, there is a special matrix, the \emph{Commutation matrix}, \komm[m,m], that performs commutation \cite{magnus1979commutation}:
 $$
 \vec{a}\kron\vec{b} = \komm[m,m]\left(\vec{b}\kron\vec{a}\right).
 $$
-The subscript refers to the number of columns of the vectors in the Kronecker product, here $m$ and $m$.
-The Commutation matrix is involutary, that is $\komm{m,m}^2 = \meye$.
+The subscript refers to the number of columns of the vectors in the Kronecker product, here $m$ and $m$,
+but the matrix $\komm[m,m]$ is $m^2 \times m^2$.
+The Commutation matrix is involutary, that is $\kommUL{2}{m,m} = \meye$.
 
 We use special notation to denote the repeated application of Kronecker product to the same vector:
 $$
 \kpow{\vec{a}}{n} = \bigkron_{i=1}^{n} \vec{a} = \underbrace{\vec{a}\kron\vec{a}\kron \ldots \vec{a}}_{n\,\,\text{times}}.
 $$
+If $\vec{a}$ is $m$-dimensional, then $\kpow{\vec{a}}{n}$ is $m^n$-dimensional.
+
 We can now quote a binomial expansion for Kronecker products.
 $$
 \kpow{\left(\vec{a} + \vec{b}\right)}{k} = \sum_j^k \mcoef{j,k} \kpow{\vec{a}}{j} \kron \kpow{\vec{b}}{k-j},
 $$
-for some binomial coefficient matrices, $\mcoef{j,k}$. These coefficients take values:
+for some binomial coefficient matrices, $\mcoef{j,k}$. 
+These matrices are $m^k \times m^k$ matrices when $\vec{a}, \vec{b}$ are $m$-dimensional vectors.
+We have the following base and recurrence relationships between the coefficient matrices:
 \begin{align*}
-\mcoef{0,k} &= \mcoef{k,k} = \meye,\\
-\mcoef{j,k} &= \meye \kron \mcoef{j-1,k-1} + \komm[m(k-1),m]\left(\mcoef{j,k-1}\kron\meye\right),\quad\text{for}\,0 < j < k.
+\mcoef{0,k} &= \mcoef{k,k} = \meye[m^k],\\
+	\mcoef{j,k} &= \meye[m] \kron \mcoef{j-1,k-1} + \komm[m^{k-1},m]\left(\mcoef{j,k-1}\kron\meye[m]\right),\quad\text{for}\,0 < j < k.
 \end{align*}
 
 Thus in particular,
 \begin{align*}
-	\kpow{\left(\vec{a} + \vec{b}\right)}{2} &= \kpow{\vec{a}}{2} + \left(\meye + \komm\right) \vec{a}\kron\vec{b} + \kpow{\vec{b}}{2},\\
-	\kpow{\left(\vec{a} + \vec{b}\right)}{3} &= \kpow{\vec{a}}{3} + \left(\meye + \komm\right) \vec{a}\kron\vec{b} + \kpow{\vec{b}}{3},
+	\kpow{\left(\vec{a} + \vec{b}\right)}{2} &= \meye[m^2] \kpow{\vec{a}}{2} + \left(\meye[m^2] + \komm[m,m]\right) \vec{a}\kron\vec{b} + \meye[m^2]\kpow{\vec{b}}{2},\\
+	\kpow{\left(\vec{a} + \vec{b}\right)}{3} &= \meye[m^3]\kpow{\vec{a}}{3} 
+	+ \left(\meye[m^3] + \komm[m^2,m] + \komm[m^2,m]\left(\komm[m,m]\kron\meye[m]\right)\right) \kpow{\vec{a}}{2}\kron\vec{b}\\
+	&\phantom{=}\,
+	+ \left(\meye[m^3] + \meye[m]\kron\komm[m,m] + \komm[m^2,m] \right)\vec{a}\kron\kpow{\vec{b}}{2} 
+	+ \meye[m^3]\kpow{\vec{b}}{3},
 \end{align*}
 and so on.
+Notice how the coefficent matrices generalize the scalar binomial coefficients. For example,
+\begin{equation*}
+	\mcoef{1,3} \vec{a}\kron\kpow{\vec{b}}{2} = 
+	\vec{a}\kron\vec{b}\kron\vec{b} + 
+	\vec{b}\kron\vec{a}\kron\vec{b} + 
+	\vec{b}\kron\vec{b}\kron\vec{a}.
+\end{equation*}
+
+\subsection{Update Formula for Vector Moments}
+
+We can now proceed as in Section~\ref{sec:the_update_formula}.
+Let \sta be a set of indices over the data \vdata{i} and corresponding weights
+$\wt{i} > 0$
+Define the total elements, sum of weights, and (weighted) mean over \sta via
+\begin{align*}
+\ndf{\sta} &= \abs{\sta},\\
+\twt{\sta} &= \sum_{i \in \sta} \wt{i},\\
+\vwmu{\sta} &= \frac{\sum_{i \in \sta} \wt{i} \vdata{i}}{\twt{\sta}}.
+\end{align*}
+Then go on to define the \kth{k} centered weighted sum via
+$$
+\mom{\sta}{k} = \sum_{i \in \sta} \wt{i} \kpow{\wrapParens{\vdata{i} - \vwmu{\sta}}}{k}.
+$$
+Again, $\mom{\sta}{0} = \twt{\sta},$ and $\mom{\sta}{1} = 0$.
+
+Let \stb and \stc be sets of indices with the
+restriction that 
+$\sta \cap \stb = \emptyset$, 
+$\stc \subseteq \sta$, and define
+$$
+\std = \sta \cup \stb \setminus \stc.
+$$
+% Thus \std is \sta `plus' \stb `minus' \stc. 
+We have:
+\begin{align*}
+	\ndf{\std} &= \ndf{\sta} + \ndf{\stb} - \ndf{\stc},\\
+	\twt{\std} &= \twt{\sta} + \twt{\stb} - \twt{\stc},\\
+	\vwmu{\std} &= \frac{\twt{\sta}\vwmu{\sta} + \twt{\stb}\vwmu{\stb} - \twt{\stc}\vwmu{\stc}}{\twt{\std}},\\
+	&= \vwmu{\sta} + \frac{\twt{\stb}\wrapParens{\vwmu{\stb} - \vwmu{\sta}} - \twt{\stc}\wrapParens{\vwmu{\stc}-\vwmu{\sta}}}{\twt{\std}},
+\end{align*}
+and
+\begin{align*}
+	\mom{\std}{k}&=\sum_{i \in \std} \wt{i} \kpow{\wrapParens{\vdata{i} - \vwmu{\std}}}{k},\\
+	%&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \vwmu{\std}}^k +
+	%\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \vwmu{\std}}^k -
+	%\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \vwmu{\std}}^k,\\
+	%&=\sum_{i \in \sta} \wt{i} \wrapParens{\data{i} - \vwmu{\sta} + \vwmu{\sta} - \vwmu{\std}}^k +
+	%\sum_{i \in \stb} \wt{i} \wrapParens{\data{i} - \vwmu{\stb} + \vwmu{\stb} - \vwmu{\std}}^k -
+	%\sum_{i \in \stc} \wt{i} \wrapParens{\data{i} - \vwmu{\stc} + \vwmu{\stc} - \vwmu{\std}}^k,\\
+	%&= \sum_{i \in \sta} \sum_{0 \le j \le k}{k \choose j}
+		%\wt{i} \wrapParens{\data{i} - \vwmu{\sta}}^j \wrapParens{\vwmu{\sta} - \vwmu{\std}}^{k-j}\\
+	%&\phantom{=}\,+
+	%\sum_{i \in \stb} \sum_{0 \le j \le k}{k \choose j}
+		%\wt{i} \wrapParens{\data{i} - \vwmu{\stb}}^j \wrapParens{\vwmu{\stb} - \vwmu{\std}}^{k-j}\\
+	%&\phantom{=}\,-
+	%\sum_{i \in \stc} \sum_{0 \le j \le k}{k \choose j}
+		%\wt{i} \wrapParens{\data{i} - \vwmu{\stc}}^j \wrapParens{\vwmu{\stc} - \vwmu{\std}}^{k-j},\\
+	%&=\sum_{0 \le j \le k}{k \choose j}\wrapBraces{
+		%\mom{\sta}{j} \wrapParens{\vwmu{\sta} - \vwmu{\std}}^{k-j} +
+		%\mom{\stb}{j} \wrapParens{\vwmu{\stb} - \vwmu{\std}}^{k-j} -
+		%\mom{\stc}{j} \wrapParens{\vwmu{\stc} - \vwmu{\std}}^{k-j}},\\
+	&= \mom{\sta}{k} + \mom{\stb}{k} - \mom{\stc}{k}\\
+  &\phantom{=}\, +
+		\twt{\sta} \kpow{\wrapParens{\vwmu{\sta} - \vwmu{\std}}}{k} +
+		\twt{\stb} \kpow{\wrapParens{\vwmu{\stb} - \vwmu{\std}}}{k} -
+		\twt{\stc} \kpow{\wrapParens{\vwmu{\stc} - \vwmu{\std}}}{k}\\
+	&\phantom{=}\,+ \sum_{2 \le j < k}\mcoef{j,k}\wrapBraces{
+		\mom{\sta}{j} \kron \kpow{\wrapParens{\vwmu{\sta} - \vwmu{\std}}}{k-j} +
+		\mom{\stb}{j} \kron \kpow{\wrapParens{\vwmu{\stb} - \vwmu{\std}}}{k-j}}\\
+	&\phantom{=}\,- \sum_{2 \le j < k}\mcoef{j,k}\wrapBraces{
+		\mom{\stc}{j} \kron \kpow{\wrapParens{\vwmu{\stc} - \vwmu{\std}}}{k-j}}.
+\end{align*}
+
+This formula is a bit unweildy for the general case.
+Moreover, the number of elements in $\mom{\std}{k}$ quickly grows in $k$,
+even when accounting for symmetry.
+
+The case $k=2$ is of the highest interest.
+The matrix binomial coefficients do not enter into the computation, and we merely have:
+
+\begin{align*}
+	\mom{\std}{2}
+	&= \mom{\sta}{2} + \mom{\stb}{2} - \mom{\stc}{2}\\
+  &\phantom{=}\, +
+		\twt{\sta} \kpow{\wrapParens{\vwmu{\sta} - \vwmu{\std}}}{2} +
+		\twt{\stb} \kpow{\wrapParens{\vwmu{\stb} - \vwmu{\std}}}{2} -
+		\twt{\stc} \kpow{\wrapParens{\vwmu{\stc} - \vwmu{\std}}}{2}.
+\end{align*}
 
 
+\subsection{Adding a single observation}%FOLDUP
 
+We now consider the special case where \stc is empty, and \stb consists of the single index $b$. 
+We then have 
+\begin{align*}
+\twt{\std} &= \twt{\sta} + \wt{b},\\
+\vwmu{\std} 
+%&= \frac{\twt{\sta}\wmu{\sta} + \wt{b}\data{b}}{\twt{\sta} + \wt{b}},\\
+	%&= \wmu{\sta} + \wt{b}\frac{\data{b} - \wmu{\sta}}{\twt{\sta} + \wt{b}},\\
+	&= \vwmu{\sta} + \wt{b}\frac{\vdata{b} - \vwmu{\sta}}{\twt{\std}}.
+\end{align*}
+For the $k=2$ case the centered moment is updated as
+\begin{align*}
+	\mom{\std}{2} &= \mom{\sta}{2} +	\frac{\twt{\sta} \wt{b}}{\twt{\std}} \kpow{\wrapParens{\vdata{b} - \vwmu{\sta}}}{2},\\
+	%&= \mom{\sta}{2} +	\frac{\twt{\std} \wt{b}}{\twt{\sta}} \wrapParens{\data{b} - \wmu{\std}}^{2},\\
+	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\vdata{b} - \vwmu{\std}} \kron\wrapParens{\vwmu{\std} - \vwmu{\sta}}.
+\end{align*}
+Note that the quantity $\twt{\std}\wrapParens{\vwmu{\std} - \vwmu{\sta}} = 
+\wt{b}\wrapParens{\vdata{b} - \vwmu{\sta}}$ is computed as an intermediary in updating
+the weighted mean, resulting in some computational savings.
+%UNFOLD
+\subsection{Removing a single observation}%FOLDUP
 
+As noted above, removing a single observation should look just like adding a single
+observation, except signs on the weights and weighted sums are flipped. 
+Let $c$ be the single index in \stc. 
+We then have $\twt{\std} = \twt{\sta} - \wt{c},$ and
+\begin{align*}
+\wmu{\std} &= \vwmu{\sta} - \wt{c}\frac{\vdata{c} - \vwmu{\sta}}{\twt{\std}}.
+\end{align*}
+For the $k=2$ case the centered sum computation simplifies to
+\begin{align*}
+	\mom{\std}{2} 
+	%&= \mom{\sta}{2} -\frac{\twt{\sta} \wt{c}}{\twt{\std}} \wrapParens{\data{c} - \wmu{\sta}}^{2},\\
+	%&= \mom{\sta}{2} -\frac{\twt{\std} \wt{c}}{\twt{\sta}} \wrapParens{\data{c} - \wmu{\std}}^{2},\\
+	&= \mom{\sta}{2} + \twt{\std} \wrapParens{\vdata{c} - \vwmu{\std}} \kron\wrapParens{\vwmu{\std} - \vwmu{\sta}}.
+\end{align*}
+%UNFOLD
+\subsection{Adding and removing a single observation}%FOLDUP
 
+Consider the case of adding a single $b \in\stb$ and removing a single
+$c\in\stc$.  
+%The total number elements, \ndf{\sta}, is unchanged, of course. 
+We have
+\begin{align*}
+\twt{\std}&=\twt{\sta} + \wt{b} - \wt{c},\\
+	\vwmu{\std}&=\vwmu{\sta} + \frac{\wt{b}\wrapParens{\vdata{b} - \vwmu{\sta}} - \wt{c}\wrapParens{\vdata{c}-\vwmu{\sta}}}{\twt{\std}}.
+\end{align*}
+%The update formula for \mom{\std}{k} is
+%\begin{align*}
+	%\mom{\std}{k}
+	%&= \mom{\sta}{k} + \mom{\stb}{k} - \mom{\stc}{k} +
+		%\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k} +
+		%\wt{b} \wrapParens{\data{b} - \wmu{\std}}^{k} -
+		%\wt{c} \wrapParens{\data{c} - \wmu{\std}}^{k}\\
+  %&\phantom{=}\,+ \sum_{2 \le j < k}{k \choose j}\wrapBraces{
+		%\mom{\sta}{j} \wrapParens{\wmu{\sta} - \wmu{\std}}^{k-j} +
+		%\mom{\stb}{j} \wrapParens{\data{b} - \wmu{\std}}^{k-j} -
+		%\mom{\stc}{j} \wrapParens{\data{c} - \wmu{\std}}^{k-j}}.
+%\end{align*}
+%In the $k=2$ case this simplifies to 
 
-
+The update formula for \mom{\std}{2} is
+\begin{align*}
+	\mom{\std}{2}
+	%&= \mom{\sta}{2} + 
+		%\twt{\sta} \wrapParens{\wmu{\sta} - \wmu{\std}}^{2} +
+		%\wt{b} \wrapParens{\data{b} - \wmu{\std}}^{2} -
+		%\wt{c} \wrapParens{\data{c} - \wmu{\std}}^{2},\\
+	%&= \mom{\sta}{2} 
+	%+ \wrapParens{\wmu{\sta}-\wmu{\std}}^2 \wrapParens{\twt{\sta} - \twt{\std}}
+	%+ \wt{b} \wrapParens{\data{b} - \wmu{\std}}\wrapParens{\data{b} - \wmu{\sta}}
+	%- \wt{c} \wrapParens{\data{c} - \wmu{\std}}\wrapParens{\data{c} - \wmu{\sta}},\\
+	&= \mom{\sta}{2} 
+	+ \frac{\twt{\sta}\wt{b} \kpow{\wrapParens{\vdata{b}-\vwmu{\sta}}}{2} - \twt{\std}\wt{c}\kpow{\wrapParens{\vdata{c}-\vwmu{\std}}}{2}}{\twt{\sta} + \wt{b}}.
+\end{align*}
+Further simplifications are possible when $\wt{b}=\wt{c}$ (as occurs in the vanilla
+case of equal weighted moments), and we arrive at
+\begin{align*}
+\vwmu{\std}&=\vwmu{\sta} + \frac{\wt{b}\wrapParens{\vdata{b} - \vdata{c}}}{\twt{\std}},\\
+\mom{\std}{2} &= \mom{\sta}{2} 
+	+ \wt{b} \wrapParens{\vdata{b}+\vdata{c}-\vwmu{\sta}-\vwmu{\std}} \kron\wrapParens{\vdata{b}-\vdata{c}}.
+\end{align*}
+%UNFOLD
 
 
 
