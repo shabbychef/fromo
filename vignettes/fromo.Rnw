@@ -770,13 +770,16 @@ The update formula for \mom{\std}{2} is
 	&= \mom{\sta}{2} 
 	+ \frac{\twt{\sta}\wt{b} \kpow{\wrapParens{\vdata{b}-\vwmu{\sta}}}{2} - \twt{\std}\wt{c}\kpow{\wrapParens{\vdata{c}-\vwmu{\std}}}{2}}{\twt{\sta} + \wt{b}}.
 \end{align*}
-Further simplifications are possible when $\wt{b}=\wt{c}$ (as occurs in the vanilla
-case of equal weighted moments), and we arrive at
-\begin{align*}
-\vwmu{\std}&=\vwmu{\sta} + \frac{\wt{b}\wrapParens{\vdata{b} - \vdata{c}}}{\twt{\std}},\\
-\mom{\std}{2} &= \mom{\sta}{2} 
-	+ \wt{b} \wrapParens{\vdata{b}+\vdata{c}-\vwmu{\sta}-\vwmu{\std}} \kron\wrapParens{\vdata{b}-\vdata{c}}.
-\end{align*}
+Because Kronecer products are not commutative, the trick to simplify this expression
+in the case where $\wt{b}=\wt{c}$, involving completing the square, cannot be easily applied.
+
+%Further simplifications are possible when $\wt{b}=\wt{c}$ (as occurs in the vanilla
+%case of equal weighted moments), and we arrive at
+%\begin{align*}
+%\vwmu{\std}&=\vwmu{\sta} + \frac{\wt{b}\wrapParens{\vdata{b} - \vdata{c}}}{\twt{\std}},\\
+%\mom{\std}{2} &= \mom{\sta}{2} 
+	%+ \wt{b} \wrapParens{\vdata{b}+\vdata{c}-\vwmu{\sta}-\vwmu{\std}} \kron\wrapParens{\vdata{b}-\vdata{c}}.
+%\end{align*}
 %UNFOLD
 
 
