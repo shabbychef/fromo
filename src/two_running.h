@@ -43,6 +43,7 @@ using namespace Rcpp;
 // use, I think, to do boolean template magic.
 
 // start here. will have to add new RetWhat thingys for correlation, regression and so on.
+// 2FIX: do we need the renormalize thingy?
 
 template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool renormalize,bool na_rm>
 NumericMatrix two_runQM(T v,
@@ -87,18 +88,11 @@ NumericMatrix two_runQM(T v,
     if (min_df < 0) { stop("require positive min_df"); }
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
-    if ((((retwhat==ret_scaled) || 
-          (retwhat==ret_zscore) || 
-          (retwhat==ret_sharpe) || 
-          (retwhat==ret_tstat) || 
-          (retwhat==ret_stdev) || 
-          (retwhat==ret_sd3)) && (ord < 2)) ||
-        (((retwhat==ret_skew) ||
-          (retwhat==ret_skew4)) && (ord < 3)) ||
-        (((retwhat==ret_sharpese) || 
-          (retwhat==ret_exkurt) ||
-          (retwhat==ret_exkurt5)) && (ord < 4))) { 
+    if ((((retwhat==ret_correlation)) && (ord != 2))) {
         stop("bad code: order too small to support this computation");  // #nocov
+    }
+    if (!((retwhat==ret_correlation))) {
+        stop("NYI: only understand correlation, covariance, etc")  // #nocov
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
     bool aligned = (lookahead == 0);
@@ -112,14 +106,8 @@ NumericMatrix two_runQM(T v,
     // preallocated with zeros; should
     // probably be NA?
     int ncols;
-    if ((retwhat==ret_centmoments) ||
-        (retwhat==ret_stdmoments) ||
-        (retwhat==ret_sd3) || 
-        (retwhat==ret_skew4) ||
-        (retwhat==ret_exkurt5)) {
-        ncols = 1+ord; 
-    } else if ((retwhat==ret_sharpese)) {
-        ncols = 2; 
+    if ((retwhat==ret_correlation)) {
+        ncols = 1;
     } else {
         ncols = 1; 
     }
@@ -149,31 +137,33 @@ NumericMatrix two_runQM(T v,
             if (frets.subcount() >= recom_period) {
                 //zero it out
                 frets.tare();
-                add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
-                                                            v,wts,ord,   
-                                                            0,      //bottom
-                                                            lll+1,  //top
-                                                            false); //no need to check weights as we have done it once above.
+                add_many<T,W,oneW,has_wts,na_rm>(frets,
+                                                 v,vv,
+                                                 wts,
+                                                 0,      //bottom
+                                                 lll+1,  //top
+                                                 false); //no need to check weights as we have done it once above.
             } else {
                 // add on nextv:
                 nextv = double(v[lll]);
+                nextvv = double(vv[lll]);
                 if (has_wts) { nextw = double(wts[lll]); }  
-                frets.add_one(nextv,nextw); 
+                frets.add_one(nextv,nextvv,nextw); 
                 if (check_negative_moments && frets.has_heywood()) {
                     //zero it out
                     frets.tare();
-                    add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
-                                                                v,wts,ord,   
-                                                                0,      //bottom
-                                                                lll+1,  //top
-                                                                false); //no need to check weights as we have done it once above.
+                    add_many<T,W,oneW,has_wts,na_rm>(frets,
+                                                     v,vv,wts,
+                                                     0,      //bottom
+                                                     lll+1,  //top
+                                                     false); //no need to check weights as we have done it once above.
                 }
             }
 
             // fill in the value in the output.
             // 2FIX: give access to v, not v[lll]...
 //yuck!!
-#include "moment_interp.h"
+#include "two_moment_interp.h"
         }//UNFOLD
         if (firstpart < numel) {
             tr_jjj = 0;
@@ -185,31 +175,34 @@ NumericMatrix two_runQM(T v,
                     jjj = tr_jjj+1;
                     //zero it out
                     frets.tare();
-                    add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
-                                                                v,wts,ord,   
-                                                                jjj,    //bottom
-                                                                lll+1,  //top
-                                                                false); //no need to check weights as we have done it once above.
+                    add_many<T,W,oneW,has_wts,na_rm>(frets,
+                                                     v,vv,wts,
+                                                     jjj,    //bottom
+                                                     lll+1,  //top
+                                                     false); //no need to check weights as we have done it once above.
                 } else {
                     // add on nextv:
                     nextv = double(v[lll]);
+                    nextvv = double(vv[lll]);
                     // remove prevv:
                     prevv = double(v[tr_jjj]);
+                    prevvv = double(vv[tr_jjj]);
                     if (has_wts) { 
                         nextw = double(wts[lll]); 
                         prevw = double(wts[tr_jjj]); 
                     }
-                    frets.swap_one(nextv,nextw,prevv,prevw); 
+                    frets.swap_one(nextv,nextvv,nextw,
+                                   prevv,prevvv,prevw); 
                     if (check_negative_moments && frets.has_heywood()) {
                         // fix this
                         jjj = tr_jjj+1;
                         //zero it out
                         frets.tare();
-                        add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
-                                                                    v,wts,ord,   
-                                                                    jjj,    //bottom
-                                                                    lll+1,  //top
-                                                                    false); //no need to check weights as we have done it once above.
+                        add_many<T,W,oneW,has_wts,na_rm>(frets,
+                                                         v,vv,wts,
+                                                         jjj,    //bottom
+                                                         lll+1,  //top
+                                                         false); //no need to check weights as we have done it once above.
                     }
                 }
                 tr_jjj++;
@@ -217,7 +210,7 @@ NumericMatrix two_runQM(T v,
                 // fill in the value in the output.
                 // 2FIX: give access to v, not v[lll]...
     //yuck!!
-#include "moment_interp.h"
+#include "two_moment_interp.h"
             }//UNFOLD
         }
     } else {
@@ -245,32 +238,35 @@ NumericMatrix two_runQM(T v,
                 if (jjj <= iii) {
                     //zero it out
                     frets.tare();
-                    add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
-                                                                v,wts,ord,   
-                                                                jjj,    //bottom
-                                                                iii+1,  //top
-                                                                false); //no need to check weights as we have done it once above.
+                    add_many<T,W,oneW,has_wts,na_rm>(frets,
+                                                     v,vv,wts,
+                                                     jjj,    //bottom
+                                                     iii+1,  //top
+                                                     false); //no need to check weights as we have done it once above.
                 }
             } else {
                 if ((tr_iii < numel) && (tr_iii >= 0)) {
                     // add on nextv:
                     nextv = double(v[tr_iii]);
+                    nextvv = double(vv[tr_iii]);
                     if (has_wts) { nextw = double(wts[tr_iii]); } 
 
                     // maybe swap one off;
                     if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                         prevv = double(v[tr_jjj]);
+                        prevvv = double(vv[tr_jjj]);
                         if (has_wts) { prevw = double(wts[tr_jjj]); }
-                        frets.swap_one(nextv,nextw,prevv,prevw); 
+                        frets.swap_one(nextv,nextvv,nextw,prevv,prevvv,prevw); 
                     } else {
                         // nope, just add this one guy
-                        frets.add_one(nextv,nextw); 
+                        frets.add_one(nextv,nextvv,nextw); 
                     }
                 } else if ((tr_jjj < numel) && (tr_jjj >= 0)) {
                     // remove prevv:
                     prevv = double(v[tr_jjj]);
+                    prevvv = double(vv[tr_jjj]);
                     if (has_wts) { prevw = double(wts[tr_jjj]); }
-                    frets.rem_one(prevv,prevw); 
+                    frets.rem_one(prevv,prevvv,prevw); 
                 }
                 tr_jjj++;
                 if (check_negative_moments && frets.has_heywood()) {
@@ -280,11 +276,11 @@ NumericMatrix two_runQM(T v,
                     if (jjj <= iii) {
                         //zero it out
                         frets.tare();
-                        add_many<T,W,oneW,has_wts,ord_beyond,na_rm>(frets,
-                                                                    v,wts,ord,   
-                                                                    jjj,    //bottom
-                                                                    iii+1,  //top
-                                                                    false); //no need to check weights as we have done it once above.
+                        add_many<T,W,oneW,has_wts,na_rm>(frets,
+                                                         v,wts,
+                                                         jjj,    //bottom
+                                                         iii+1,  //top
+                                                         false); //no need to check weights as we have done it once above.
                     }
                 }
             }
@@ -292,19 +288,19 @@ NumericMatrix two_runQM(T v,
             // fill in the value in the output.
             // 2FIX: give access to v, not v[lll]...
 //yuck!!
-#include "moment_interp.h"
+#include "two_moment_interp.h"
         }//UNFOLD
     }
     return xret;
 }
 
-template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond>
-NumericMatrix runQMCurryZero(T v, 
+// 2FIX: do we need the renormalize thingy?
+template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts>
+NumericMatrix two_runQMCurryZero(T v, T vv, 
                              W wts,
-                             const int ord,
                              const int window,
                              const int recom_period,
-                             const int lookahead,
+                             // const int lookahead,
                              const int min_df,
                              const double used_df,
                              const bool na_rm,
@@ -313,88 +309,123 @@ NumericMatrix runQMCurryZero(T v,
                              const bool check_negative_moments) {
     if (has_wts && normalize_wts) {
         if (na_rm) {
-            return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,true>(v, wts, ord, window, recom_period, lookahead, 
-                                                                        min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
+        return two_runQM<T,retwhat,W,oneW,has_wts,true,true>(v, vv, wts, ord, window, recom_period, //lookahead, 
+                                                         min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
         } else {
-            return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,false>(v, wts, ord, window, recom_period, lookahead, 
-                                                                         min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
+        return two_runQM<T,retwhat,W,oneW,has_wts,true,false>(v, vv, wts, ord, window, recom_period, //lookahead, 
+                                                          min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
         }
     } 
     if (na_rm) {
-        return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,true>(v, wts, ord, window, recom_period, lookahead, 
-                                                                     min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
+        return two_runQM<T,retwhat,W,oneW,has_wts,false,true>(v, vv, wts, ord, window, recom_period, //lookahead, 
+                                                          min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
     } 
-    return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,false>(v, wts, ord, window, recom_period, lookahead, 
-                                                                  min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
+    return two_runQM<T,retwhat,W,oneW,has_wts,false,false>(v, vv, wts, ord, window, recom_period, //lookahead, 
+                                                       min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
 }
 
-template <typename T,ReturnWhat retwhat,bool ord_beyond>
-NumericMatrix runQMCurryOne(T v, 
-                            Rcpp::Nullable< Rcpp::NumericVector > wts,
-                            const int ord,
-                            const int window,
-                            const int recom_period,
-                            const int lookahead,
-                            const int min_df,
-                            const double used_df,
-                            const bool na_rm,
-                            const bool check_wts,
-                            const bool normalize_wts,
-                            const bool check_negative_moments) {
+template <typename T,ReturnWhat retwhat>
+NumericMatrix two_runQMCurryOne(T v, T vv,
+                                Rcpp::Nullable< Rcpp::NumericVector > wts,
+                                const int window,
+                                const int recom_period,
+                                // const int lookahead,
+                                const int min_df,
+                                const double used_df,
+                                const bool na_rm,
+                                const bool check_wts,
+                                const bool normalize_wts,
+                                const bool check_negative_moments) {
 
     //2FIX: typeof wts?
     if (wts.isNotNull()) {
-        return runQMCurryZero<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), ord, window, recom_period, lookahead, 
-                                                                              min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+        return two_runQMCurryZero<T,retwhat,NumericVector,double,true>(v, vv, wts.get(), window, recom_period, // lookahead, 
+                                                                   min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
     }
     NumericVector dummy_wts;
-    return runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, ord, window, recom_period, lookahead, 
-                                                                           min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+    return two_runQMCurryZero<T,retwhat,NumericVector,double,false>(v, vv, dummy_wts,  window, recom_period, //lookahead, 
+                                                                min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
 }
 
-
-
-template <typename T,ReturnWhat retwhat>
-NumericMatrix runQMCurryTwo(T v, 
-                            Rcpp::Nullable< Rcpp::NumericVector > wts,
-                            const int ord,
-                            const int window,
-                            const int recom_period,
-                            const int lookahead,
-                            const int min_df,
-                            const double used_df,
-                            const bool na_rm,
-                            const bool check_wts,
-                            const bool normalize_wts,
-                            const bool check_negative_moments) {
-
-    // ugh, ord < 2 does not go through here, and then it is all awful.
-    if (ord==2) {
-        return runQMCurryOne<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, 
-                                              min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
-    }
-    return runQMCurryOne<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, 
-                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
-}
 
 template <ReturnWhat retwhat>
-NumericMatrix runQMCurryThree(SEXP v, 
-                              Rcpp::Nullable< Rcpp::NumericVector > wts,
-                              const int ord,
-                              const int window,
-                              const int recom_period,
-                              const int lookahead,
-                              const int min_df,
-                              const double used_df,
-                              const bool na_rm,
-                              const bool check_wts,
-                              const bool normalize_wts,
-                              const bool check_negative_moments) {
+NumericMatrix two_runQMCurryTwo(SEXP v, SEXP vv,
+                                Rcpp::Nullable< Rcpp::NumericVector > wts,
+                                const int window,
+                                const int recom_period,
+                                // const int lookahead,
+                                const int min_df,
+                                const double used_df,
+                                const bool na_rm,
+                                const bool check_wts,
+                                const bool normalize_wts,
+                                const bool check_negative_moments) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runQMCurryTwo<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); } 
-        case REALSXP: { return runQMCurryTwo<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); } 
-        case  LGLSXP: { return runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); }  // bools can be upcast to save build size.
-        default: stop("Unsupported weight type"); // #nocov
+        // 2FIX: we might have to case vv to the same type as v?
+        case  INTSXP: 
+            { 
+                switch (TYPEOF(vv)) {
+                    case  INTSXP: 
+                        { 
+                            return two_runQMCurryOne<IntegerVector,retwhat>(v, vv, wts, window, recom_period, //lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        } 
+                    case REALSXP: // cast int to numeric
+                        {  
+                            return two_runQMCurryOne<NumericVector,retwhat>(as<NumericVector>(v), vv, wts, window, recom_period, //lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        }
+                    case  LGLSXP: // cast logical to int
+                        {
+                            return two_runQMCurryOne<IntegerVector,retwhat>(v, as<IntegerVector>(vv), wts, window, recom_period, // lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        }
+                    default: stop("Unsupported data type for vv"); // #nocov
+                }
+            }
+        case REALSXP:
+            {
+                switch (TYPEOF(vv)) {
+                    case  INTSXP: // cast int to numeric
+                        { 
+                            return two_runQMCurryOne<NumericVector, retwhat>(v, as<NumericVector>(vv), wts, window, recom_period, //lookahead, 
+                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        } 
+                    case REALSXP: 
+                        {  
+                            return two_runQMCurryOne<NumericVector,retwhat>(v, vv, wts, window, recom_period, //lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        }
+                    case  LGLSXP: // cast logical to numeric
+                        {
+                            return two_runQMCurryOne<NumericVector,retwhat>(v, as<NumericVector>(vv), wts, window, recom_period, // lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        }
+                    default: stop("Unsupported data type for vv"); // #nocov
+                }
+            }
+        case  LGLSXP: 
+            {
+                switch (TYPEOF(vv)) {
+                    case  INTSXP: // cast logical to int 
+                        { 
+                            return two_runQMCurryOne<IntegerVector, retwhat>(as<IntegerVector>(v), vv, wts, window, recom_period, //lookahead, 
+                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        } 
+                    case REALSXP: // cast logical to numeric
+                        {  
+                            return two_runQMCurryOne<NumericVector,retwhat>(as<NumericVector>(v), vv, wts, window, recom_period, //lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        }
+                    case  LGLSXP: // cast logical to integer
+                        {
+                            return two_runQMCurryOne<IntegerVector,retwhat>(as<IntegerVector>(v), as<IntegerVector>(vv), wts, window, recom_period, // lookahead, 
+                                                                        min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
+                        }
+                    default: stop("Unsupported data type for vv"); // #nocov
+                }
+            }
+        default: stop("Unsupported data type for v"); // #nocov
     }
     // have to have fallthrough for CRAN check.
     NumericMatrix retv;

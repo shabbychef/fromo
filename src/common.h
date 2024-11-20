@@ -122,7 +122,9 @@ enum ReturnWhat { ret_centmaxonly, // maxonly is a *centered* moment
     ret_sd3, ret_skew4, ret_exkurt5,
     ret_centered, ret_scaled, ret_zscore, ret_sharpe, ret_tstat, ret_sharpese, 
     ret_stdev, ret_skew, ret_exkurt, 
-    ret_sum, ret_mean };
+    ret_sum, ret_mean,
+    // x & y needed for these:
+    ret_correlation };
 
 #include <Rcpp.h>
 using namespace Rcpp;
