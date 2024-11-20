@@ -442,7 +442,7 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                                                       time, time_deltas, lb_time,
                                                                       ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
-        default: stop("Unsupported weight type"); // #nocov
+        default: stop("Unsupported data type"); // #nocov
     }
     // have to have fallthrough for CRAN check.
     NumericMatrix retv;
