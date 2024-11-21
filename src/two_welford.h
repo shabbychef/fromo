@@ -79,10 +79,10 @@ class TwoWelford {
         inline TwoWelford(const int &nel, 
                        const W &sumwt, 
                        const NumericVector &xx) : m_nel(nel), m_subc(0), m_wsum(Kahan<W>(sumwt)), m_xx(NumericVector(xx)) {
-            if (m_xx.size() != 6) { stop("wrong sized object, must give 6") } // #nocov
+            if (m_xx.size() != 6) { stop("wrong sized object, must give 6"); } // #nocov
         }
         inline TwoWelford(const NumericVector &xx) :  m_nel(int(xx[0])), m_subc(0), m_wsum(Kahan<W>(W(xx[0]))), m_xx(NumericVector(xx)) {
-            if (m_xx.size() != 6) { stop("wrong sized object, must give 6") } // #nocov
+            if (m_xx.size() != 6) { stop("wrong sized object, must give 6"); } // #nocov
         }
     public:
         // reset to zero
@@ -133,6 +133,14 @@ class TwoWelford {
         }
         inline double correlation() const {
             return m_xx[4] / sqrt(m_xx[3] * m_xx[5]);
+        }
+        inline double regression_slope() const {
+            // assumes that v = x and vv = y and we want the slope for y = mx + b
+            return m_xx[4] / m_xx[3];
+        }
+        inline double regression_intercept() const {
+            // assumes that v = x and vv = y and we want the intercept for y = mx + b
+            return m_xx[2] - m_xx[1] * m_xx[4] / m_xx[3];
         }
 
         // getters 

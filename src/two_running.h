@@ -88,25 +88,29 @@ NumericMatrix two_runQM(T v,
     if (min_df < 0) { stop("require positive min_df"); }
     if (!infwin && (min_df > window)) { stop("must have min_df <= window"); }
 
-    if ((((retwhat==ret_correlation)) && (ord != 2))) {
+    if ((ord != 2)) {
         stop("bad code: order too small to support this computation");  // #nocov
     }
-    if (!((retwhat==ret_correlation))) {
-        stop("NYI: only understand correlation, covariance, etc")  // #nocov
+    if (!((retwhat==ret_correlation) ||
+          (retwhat==ret_regression_slope) ||
+          (retwhat==ret_regression_intercept))) {
+        stop("NYI: only understand correlation, covariance, etc");  // #nocov
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
     bool aligned = (lookahead == 0);
 
     // super gross; I need these for the include later.
-    double sg_denom,renorm,denom,sigmasq,sigma,sigmapow,mydf,dwsum,skew,exkurt,sr;
-    int mmm;
+    // double sg_denom,renorm;
+    // int mmm;
 
     const int firstpart = MIN(numel,quasiwin);
 
     // preallocated with zeros; should
     // probably be NA?
     int ncols;
-    if ((retwhat==ret_correlation)) {
+    if (((retwhat==ret_correlation) ||
+         (retwhat==ret_regression_slope) ||
+         (retwhat==ret_regression_intercept))) {
         ncols = 1;
     } else {
         ncols = 1; 
@@ -214,6 +218,7 @@ NumericMatrix two_runQM(T v,
             }//UNFOLD
         }
     } else {
+        // not used yet...
         // nonaligned case
         // as an invariant, we will start the computation
         // with frets, which is initialized as the summed
@@ -277,7 +282,7 @@ NumericMatrix two_runQM(T v,
                         //zero it out
                         frets.tare();
                         add_many<T,W,oneW,has_wts,na_rm>(frets,
-                                                         v,wts,
+                                                         v,vv,wts,
                                                          jjj,    //bottom
                                                          iii+1,  //top
                                                          false); //no need to check weights as we have done it once above.
@@ -309,18 +314,18 @@ NumericMatrix two_runQMCurryZero(T v, T vv,
                              const bool check_negative_moments) {
     if (has_wts && normalize_wts) {
         if (na_rm) {
-        return two_runQM<T,retwhat,W,oneW,has_wts,true,true>(v, vv, wts, ord, window, recom_period, //lookahead, 
+        return two_runQM<T,retwhat,W,oneW,has_wts,true,true>(v, vv, wts, window, recom_period, //lookahead, 
                                                          min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
         } else {
-        return two_runQM<T,retwhat,W,oneW,has_wts,true,false>(v, vv, wts, ord, window, recom_period, //lookahead, 
+        return two_runQM<T,retwhat,W,oneW,has_wts,true,false>(v, vv, wts, window, recom_period, //lookahead, 
                                                           min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
         }
     } 
     if (na_rm) {
-        return two_runQM<T,retwhat,W,oneW,has_wts,false,true>(v, vv, wts, ord, window, recom_period, //lookahead, 
+        return two_runQM<T,retwhat,W,oneW,has_wts,false,true>(v, vv, wts, window, recom_period, //lookahead, 
                                                           min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
     } 
-    return two_runQM<T,retwhat,W,oneW,has_wts,false,false>(v, vv, wts, ord, window, recom_period, //lookahead, 
+    return two_runQM<T,retwhat,W,oneW,has_wts,false,false>(v, vv, wts,  window, recom_period, //lookahead, 
                                                        min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
 }
 
