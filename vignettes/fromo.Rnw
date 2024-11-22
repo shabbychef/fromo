@@ -80,6 +80,7 @@
 \providecommand{\wmupow}[2]{\mathUL{\mu}{#2}{#1}}
 %\providecommand{\wmu}[1]{\mathSUB{\mu}{#1}}
 \providecommand{\wmu}[1]{\wmupow{#1}{}}
+\providecommand{\mompow}[3]{\mathUL{\mathcal{S}}{#3}{#1,#2}}
 \providecommand{\mom}[2]{\mathSUB{\mathcal{S}}{#1,#2}}
 \providecommand{\cmom}[2]{\mathSUB{\mathcal{M}}{#1,#2}}
 \providecommand{\scmom}[2]{\mathSUB{\mathcal{Y}}{#1,#2}}
@@ -97,6 +98,8 @@
 \providecommand{\stc}{\aset{C}}
 \providecommand{\std}{\aset{D}}
 \providecommand{\data}[1]{\mathSUB{x}{#1}}
+\providecommand{\xdata}[1]{\mathSUB{x}{#1}}
+\providecommand{\ydata}[1]{\mathSUB{y}{#1}}
 \providecommand{\outp}[1]{\mathSUB{y}{#1}}
 \providecommand{\wt}[1]{\mathSUB{w}{#1}}
 \providecommand{\kth}[1]{\MATHIT{#1^{\text{th}}}}
@@ -194,7 +197,7 @@ The update formula used therein is described, as well as the output produced
 by various functions.
 \end{abstract}%UNFOLD
 
-\section{The update formula}
+\section{The update formula}%FOLDUP
 \label{sec:the_update_formula}
 
 Let \sta be a set of indices over the data \data{i} and corresponding weights
@@ -489,72 +492,7 @@ case of equal weighted moments), and we arrive at
 	%- \wt{c}\wrapParens{\data{c}-\wmu{\sta}}\wrapParens{\data{c}-\wmu{\std}},
 %UNFOLD
 
-
-
-\section{The output}
-
-Several kinds of output are produced by the \fromo  package. We describe them in more detail here.
-
-\begin{itemize}
-	\item[mean] The (weighted) mean over the index set \sta is simply \wmu{\sta}.
-	\item[standard deviation] The standard deviation over the index set \sta is 
-$$
-		\sdev{\sta} = \sqrt{\frac{\mom{\sta}{2}}{\twt{\sta} - \nu}},
-$$
-where $\nu$ are the `consumed degrees of freedom', and is typically set to $1$. 
-When the normalization flag is set to true, however, it is intended that the weights
-be normalized to have mean value $1$. In this case the standard deviation over 
-\sta is defined as
-$$
-		\sdev{\sta} = \sqrt{\frac{\mom{\sta}{2}}{\twt{\sta}}\frac{\ndf{\sta}}{\ndf{\sta} - \nu}}.
-$$
-When $\nu=0$, these are identical.
-	\item[centered moment] The \kth{k} centered moment is defined as
-$$
-\cmom{\sta}{k} = \frac{\mom{\sta}{k}}{\twt{\sta}}.
-$$
-Note that for $k>2$ we do not support consumed degrees of freedom, and so
-normalization of weights has no effect.
-		The first centered moment is zero: $\cmom{\sta}{1} = 0$.
-	\item[standardized moment] The \kth{k} standardized (and centered) moment is defined as
-$$
-\scmom{\sta}{k} = \frac{\cmom{\sta}{k}}{\sdevpow{\sta}{k}}.
-$$
-Normalization and consumed degrees of freedom affect the computation of \sdevpow{\sta}{k},
-		and so affect the standardized moments.
-	\item[centered value] For a given index $i$ and some fixed set \sta, the centered version of
-		\data{i} is merely $\data{i} - \wmu{\sta}$.
-	\item[standardized value] For a given index $i$ and some fixed set \sta, the standardized version of
-		\data{i} is merely $\data{i}/\sdev{\sta}$. 
-		It is affected by normalization and consumed degrees of freedom.
-	\item[z-scored value] For a given index $i$ and some fixed set \sta, the z-scored version of
-		\data{i} is $\wrapParens{\data{i} - \wmu{\sta}}/\sdev{\sta}$. 
-		It is affected by normalization and consumed degrees of freedom.
-
-	\item[Cumulants] Sometimes called ``centered cumulants'' in the package, though this is 
-		redundant and not common usage. Cumulants are defined from the centered moments by
-		the recursive formula: \cite{willink2003}
-\begin{equation}
-	\ccum{\sta}{r} = \cmom{\sta}{r} - \sum_{j=1}^{r - 2} {r-1 \choose j} \cmom{\sta}{j} \ccum{\sta}{r-j}.
-\end{equation}
-	%\ccum{\sta}{r} = \cmom{\sta}{r} - \sum_{j=0}^{r - 2} \binom{r-1}{j} \cmom{\sta}{j} \ccum{\sta}{r-j}.
-		Note that the sum is over an empty index for $r=2$, and that $\cmom{\sta}{1} = 0$, so we have
-\begin{align*}
-	\ccum{\sta}{2} &= \cmom{\sta}{2},\\
-	\ccum{\sta}{3} &= \cmom{\sta}{3},\\
-	\ccum{\sta}{4} &= \cmom{\sta}{4} - 3\cmom{\sta}{2}^2,\\
-	\ccum{\sta}{5} &= \cmom{\sta}{5} - 10\cmom{\sta}{3}\cmom{\sta}{2},
-\end{align*}
-and so on.
-
-	\item[Standardized Cumulants] These are the regular cumulants normalized by the
-		computed standard deviation:
-\begin{equation}
-	\sccum{\sta}{r} = \frac{\ccum{\sta}{r}}{\sdevpow{\sta}{r}}.
-\end{equation}
-
-
-\end{itemize}
+%UNFOLD
 
 \section{Vector Moments}%FOLDUP
 
@@ -782,6 +720,146 @@ in the case where $\wt{b}=\wt{c}$, involving completing the square, cannot be ea
 %\end{align*}
 %UNFOLD
 
+
+
+%UNFOLD
+
+\section{The output}%FOLDUP
+
+Several kinds of output are produced by the \fromo  package. We describe them in more detail here.
+
+\begin{itemize}
+	\item[mean] The (weighted) mean over the index set \sta is simply \wmu{\sta}.
+	\item[standard deviation] The standard deviation over the index set \sta is 
+$$
+		\sdev{\sta} = \sqrt{\frac{\mom{\sta}{2}}{\twt{\sta} - \nu}},
+$$
+where $\nu$ are the `consumed degrees of freedom', and is typically set to $1$. 
+When the normalization flag is set to true, however, it is intended that the weights
+be normalized to have mean value $1$. In this case the standard deviation over 
+\sta is defined as
+$$
+		\sdev{\sta} = \sqrt{\frac{\mom{\sta}{2}}{\twt{\sta}}\frac{\ndf{\sta}}{\ndf{\sta} - \nu}}.
+$$
+When $\nu=0$, these are identical.
+	\item[centered moment] The \kth{k} centered moment is defined as
+$$
+\cmom{\sta}{k} = \frac{\mom{\sta}{k}}{\twt{\sta}}.
+$$
+Note that for $k>2$ we do not support consumed degrees of freedom, and so
+normalization of weights has no effect.
+		The first centered moment is zero: $\cmom{\sta}{1} = 0$.
+	\item[standardized moment] The \kth{k} standardized (and centered) moment is defined as
+$$
+\scmom{\sta}{k} = \frac{\cmom{\sta}{k}}{\sdevpow{\sta}{k}}.
+$$
+Normalization and consumed degrees of freedom affect the computation of \sdevpow{\sta}{k},
+		and so affect the standardized moments.
+	\item[centered value] For a given index $i$ and some fixed set \sta, the centered version of
+		\data{i} is merely $\data{i} - \wmu{\sta}$.
+	\item[standardized value] For a given index $i$ and some fixed set \sta, the standardized version of
+		\data{i} is merely $\data{i}/\sdev{\sta}$. 
+		It is affected by normalization and consumed degrees of freedom.
+	\item[z-scored value] For a given index $i$ and some fixed set \sta, the z-scored version of
+		\data{i} is $\wrapParens{\data{i} - \wmu{\sta}}/\sdev{\sta}$. 
+		It is affected by normalization and consumed degrees of freedom.
+
+	\item[Cumulants] Sometimes called ``centered cumulants'' in the package, though this is 
+		redundant and not common usage. Cumulants are defined from the centered moments by
+		the recursive formula: \cite{willink2003}
+\begin{equation}
+	\ccum{\sta}{r} = \cmom{\sta}{r} - \sum_{j=1}^{r - 2} {r-1 \choose j} \cmom{\sta}{j} \ccum{\sta}{r-j}.
+\end{equation}
+	%\ccum{\sta}{r} = \cmom{\sta}{r} - \sum_{j=0}^{r - 2} \binom{r-1}{j} \cmom{\sta}{j} \ccum{\sta}{r-j}.
+		Note that the sum is over an empty index for $r=2$, and that $\cmom{\sta}{1} = 0$, so we have
+\begin{align*}
+	\ccum{\sta}{2} &= \cmom{\sta}{2},\\
+	\ccum{\sta}{3} &= \cmom{\sta}{3},\\
+	\ccum{\sta}{4} &= \cmom{\sta}{4} - 3\cmom{\sta}{2}^2,\\
+	\ccum{\sta}{5} &= \cmom{\sta}{5} - 10\cmom{\sta}{3}\cmom{\sta}{2},
+\end{align*}
+and so on.
+
+	\item[Standardized Cumulants] These are the regular cumulants normalized by the
+		computed standard deviation:
+\begin{equation}
+	\sccum{\sta}{r} = \frac{\ccum{\sta}{r}}{\sdevpow{\sta}{r}}.
+\end{equation}
+
+
+\end{itemize}
+
+\subsection{Output for Bivariate Input}
+
+Consider now the case where the user provides input \xdata{i} and \ydata{i}.
+We denote the (weighted) mean over the index set \sta of the \xdata{i} as \wmu{\sta,x},
+and similarly \wmu{\sta,y} is the (weighted) mean of the \ydata{i}.
+Write $\mom{\sta}{x,x}$, 
+$\mom{\sta}{x,y}$, and
+$\mom{\sta}{y,y}$ for the weighted sums of centered second power terms:
+\begin{align*}
+\mom{\sta}{x,x} &= \sum_{i \in \sta} \wt{i} \wrapParens{\xdata{i} - \wmu{\sta,x}}^2,\\
+\mom{\sta}{x,y} &= \sum_{i \in \sta} \wt{i} \wrapParens{\xdata{i} - \wmu{\sta,x}}\wrapParens{\ydata{i} - \wmu{\sta,y}},\\
+\mom{\sta}{y,y} &= \sum_{i \in \sta} \wt{i} \wrapParens{\ydata{i} - \wmu{\sta,y}}^2.
+\end{align*}
+We then have the following output:
+
+\begin{itemize}
+	\item[correlation] The correlation is computed as
+$$
+\frac{\mom{\sta}{x,y}}{\sqrt{\mom{\sta}{x,x} \mom{\sta}{y,y}}}.
+$$
+	\item[regression slope] We consider the ordinary least squares regression of \ydata{i} against \xdata{i}. 
+		The data are supposed to follow $\ydata{i} = \beta_0 + \beta_1 \xdata{i}$, and this computation estimates $\beta_1$.
+		This has the value
+$$
+\frac{\mom{\sta}{x,y}}{\mom{\sta}{x,x}}.
+$$
+	\item[regression intercept] We again consider the OLS regression of \ydata{i} against \xdata{i} and return an estimate of $\beta_0$
+		taking value
+$$
+\wmu{\sta,y} - \wmu{\sta,x} \frac{\mom{\sta}{x,y}}{\mom{\sta}{x,x}}.
+$$
+	\item[regression standard error] We again consider the OLS regression of \ydata{i} against \xdata{i}. 
+		We write $\sigma^2$ to denote the variance of $\ydata{i} - \wrapParens{\beta_0 + \beta_1 \ydata{i}}$.
+		The ``regression standard error'' is an estimate of $\sigma$.
+It is computed as 
+$$
+	\sqrt{\frac{\mom{\sta}{y,y} - {\mompow{\sta}{x,y}{2}}/{\mom{\sta}{x,x}}}{\ndf{\sta} - \nu}},
+$$
+		where $\nu$ are the `consumed degrees of freedom'. When $\nu=0$ this quantity is often denoted as $\hat{\sigma}^2$;
+		when $\nu=2$ it is often written as $s^2$.
+	\item[regression slope standard error] This estimates the standard error of the estimate of $\beta_1$ in the regression.
+It is computed as
+$$
+\sqrt{\frac{s^2}{\mom{\sta}{x,x}}},
+$$
+where $s^2$ is the regression standard error computed with $\nu=2$.
+	\item[regression intercept std. err.] This estimates the standard error of the estimate of $\beta_0$ in the regression.
+It is computed as
+$$
+\sqrt{\frac{s^2\wrapParens{\mom{\sta}{x,x}/\ndf{\sta} + \wmu{\sta,x}^2}}{\mom{\sta}{x,x}}},
+$$
+where $s^2$ is the regression standard error computed with $\nu=2$.
+	\item[covariance] We estimate the covariance of \ydata{i} and \xdata{i} by computing
+$$
+\frac{\mom{\sta}{x,y}}{\ndf{\sta} - \nu},
+$$
+where $\nu$ are the `consumed degrees of freedom', typically set to $2$. 
+	\item[covariance 3] We estimate the full covariance matrix of \ydata{i} and \xdata{i} by computing the lower triangle of the matrix
+$$
+\frac{1}{\ndf{\sta} - \nu}\left[
+\begin{array}{cc}
+\mom{\sta}{x,x} & \mom{\sta}{x,y}\\
+\mom{\sta}{x,y} & \mom{\sta}{y,y}
+\end{array}
+\right],
+$$
+where $\nu$ are the `consumed degrees of freedom', typically set to $2$. 
+
+
+
+\end{itemize}
 
 
 %UNFOLD
