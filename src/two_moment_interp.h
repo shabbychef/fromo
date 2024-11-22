@@ -42,6 +42,9 @@
 // and that xret, lll (rownum), frets  and min_df are set.
 // do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
 
+// assumes these have been defined:
+//double denom;
+
     if (retwhat==ret_correlation) { //FOLDUP
         if (renormalize) {
             if (frets.nel() >= min_df) {
@@ -84,6 +87,86 @@
                 xret(lll,0) = frets.regression_intercept();
             } else {
                 xret(lll,0) = NAN;
+            }
+        }
+    } //UNFOLD
+    if (retwhat==ret_regression_fit) { //FOLDUP
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                frets.assign_regression_fit(xret, lll);
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+            }
+        } else {
+            if (frets.wsum() >= min_df) {
+                frets.assign_regression_fit(xret, lll);
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+            }
+        }
+    } //UNFOLD
+    if (retwhat==ret_regression_diagnostics) { //FOLDUP
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                frets.assign_regression_diagnostics(xret, lll, renormalize, used_df);
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+                xret(lll,2) = NAN;
+                xret(lll,3) = NAN;
+                xret(lll,4) = NAN;
+            }
+        } else {
+            if (frets.wsum() >= min_df) {
+                frets.assign_regression_diagnostics(xret, lll, renormalize, used_df);
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+                xret(lll,2) = NAN;
+                xret(lll,3) = NAN;
+                xret(lll,4) = NAN;
+            }
+        }
+    } //UNFOLD
+    if (retwhat==ret_covariance) { //FOLDUP
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                xret(lll,0) = frets.covariance(renormalize, used_df);
+            } else {
+                xret(lll,0) = NAN;
+            }
+        } else {
+            if (frets.wsum() >= min_df) {
+                xret(lll,0) = frets.covariance(renormalize, used_df);
+            } else {
+                xret(lll,0) = NAN;
+            }
+        }
+    } //UNFOLD
+    if (retwhat==ret_covariance_matrix) { //FOLDUP
+        if (renormalize) {
+            if (frets.nel() >= min_df) {
+                denom = frets.var_denominator(renormalize, used_df);
+                xret(lll,0) = frets.m_xx[3] / denom;
+                xret(lll,1) = frets.m_xx[4] / denom;
+                xret(lll,2) = frets.m_xx[5] / denom;
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+                xret(lll,2) = NAN;
+            }
+        } else {
+            if (frets.wsum() >= min_df) {
+                denom = frets.var_denominator(renormalize, used_df);
+                xret(lll,0) = frets.m_xx[3] / denom;
+                xret(lll,1) = frets.m_xx[4] / denom;
+                xret(lll,2) = frets.m_xx[5] / denom;
+            } else {
+                xret(lll,0) = NAN;
+                xret(lll,1) = NAN;
+                xret(lll,2) = NAN;
             }
         }
     } //UNFOLD

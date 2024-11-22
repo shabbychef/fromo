@@ -124,7 +124,9 @@ enum ReturnWhat { ret_centmaxonly, // maxonly is a *centered* moment
     ret_stdev, ret_skew, ret_exkurt, 
     ret_sum, ret_mean,
     // x & y needed for these:
-    ret_correlation, ret_regression_slope, ret_regression_intercept
+    ret_correlation, ret_regression_slope, ret_regression_intercept, 
+    ret_regression_fit, ret_regression_diagnostics,
+    ret_covariance, ret_covariance_matrix
 };
 
 #include <Rcpp.h>

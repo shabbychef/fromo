@@ -1065,6 +1065,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// running_covariance
+NumericMatrix running_covariance(SEXP x, SEXP y, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_running_covariance(SEXP xSEXP, SEXP ySEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< double >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_covariance(x, y, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_covariance_3
+NumericMatrix running_covariance_3(SEXP x, SEXP y, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_running_covariance_3(SEXP xSEXP, SEXP ySEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< double >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_covariance_3(x, y, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
 // running_regression_slope
 NumericMatrix running_regression_slope(SEXP x, SEXP y, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, int restart_period, bool check_wts, bool normalize_wts, bool check_negative_moments);
 RcppExport SEXP _fromo_running_regression_slope(SEXP xSEXP, SEXP ySEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
@@ -1102,6 +1144,47 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
     Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
     rcpp_result_gen = Rcpp::wrap(running_regression_intercept(x, y, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_regression_fit
+NumericMatrix running_regression_fit(SEXP x, SEXP y, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, int restart_period, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_running_regression_fit(SEXP xSEXP, SEXP ySEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_regression_fit(x, y, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// running_regression_diagnostics
+NumericMatrix running_regression_diagnostics(SEXP x, SEXP y, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, bool na_rm, int min_df, double used_df, int restart_period, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_running_regression_diagnostics(SEXP xSEXP, SEXP ySEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< double >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(running_regression_diagnostics(x, y, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1159,8 +1242,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_t_running_sum", (DL_FUNC) &_fromo_t_running_sum, 12},
     {"_fromo_t_running_mean", (DL_FUNC) &_fromo_t_running_mean, 12},
     {"_fromo_running_correlation", (DL_FUNC) &_fromo_running_correlation, 10},
+    {"_fromo_running_covariance", (DL_FUNC) &_fromo_running_covariance, 11},
+    {"_fromo_running_covariance_3", (DL_FUNC) &_fromo_running_covariance_3, 11},
     {"_fromo_running_regression_slope", (DL_FUNC) &_fromo_running_regression_slope, 10},
     {"_fromo_running_regression_intercept", (DL_FUNC) &_fromo_running_regression_intercept, 10},
+    {"_fromo_running_regression_fit", (DL_FUNC) &_fromo_running_regression_fit, 10},
+    {"_fromo_running_regression_diagnostics", (DL_FUNC) &_fromo_running_regression_diagnostics, 11},
     {NULL, NULL, 0}
 };
 

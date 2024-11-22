@@ -93,31 +93,28 @@ class TwoWelford {
             for (int iii=0;iii < 6;++iii) { m_xx[iii] = 0; }
             return *this;
         }
-        inline double x_var(const bool normalize,const double used_df) const {
+        inline double var_denominator(const bool normalize,const double used_df) const {
             double renorm;
             if (has_wts) {
                 if (normalize) {
-                    renorm = double(m_nel) / double(m_wsum.as());
-                    return ((renorm * m_xx[3]) / (double(m_nel) - used_df));
+                    if (used_df == 0.0) {
+                        return (double(m_wsum.as()));
+                    } else {
+                        renorm = double(m_nel) / double(m_wsum.as());
+                        return (double(m_nel) - used_df) / renorm;
+                    }
                 } else {
-                    return ((m_xx[3]) / (double(m_wsum.as()) - used_df));
+                    return (double(m_wsum.as()) - used_df);
                 }
             } else {
-                return ((m_xx[3]) / (double(m_nel) - used_df));
+                return (double(m_nel) - used_df);
             }
         }
+        inline double x_var(const bool normalize,const double used_df) const {
+            return m_xx[3] / var_denominator(normalize, used_df);
+        }
         inline double y_var(const bool normalize,const double used_df) const {
-            double renorm;
-            if (has_wts) {
-                if (normalize) {
-                    renorm = double(m_nel) / double(m_wsum.as());
-                    return ((renorm * m_xx[5]) / (double(m_nel) - used_df));
-                } else {
-                    return ((m_xx[5]) / (double(m_wsum.as()) - used_df));
-                }
-            } else {
-                return ((m_xx[5]) / (double(m_nel) - used_df));
-            }
+            return m_xx[5] / var_denominator(normalize, used_df);
         }
         inline double x_mean() const {
             return m_xx[1];
@@ -134,6 +131,9 @@ class TwoWelford {
         inline double correlation() const {
             return m_xx[4] / sqrt(m_xx[3] * m_xx[5]);
         }
+        inline double covariance(const bool normalize,const double used_df) const {
+            return m_xx[4] / var_denominator(normalize, used_df);
+        }
         inline double regression_slope() const {
             // assumes that v = x and vv = y and we want the slope for y = mx + b
             return m_xx[4] / m_xx[3];
@@ -142,7 +142,31 @@ class TwoWelford {
             // assumes that v = x and vv = y and we want the intercept for y = mx + b
             return m_xx[2] - m_xx[1] * m_xx[4] / m_xx[3];
         }
-
+        // I really hate C++. here I will assign values into a matrix at a given position because
+        // returning two values is just too difficult. 
+        inline void assign_regression_fit(NumericMatrix xret, const int rownum) const {
+            const double slope = m_xx[4] / m_xx[3];
+            xret(rownum, 1) = slope;
+            xret(rownum, 0) = m_xx[2] - m_xx[1] * slope;
+        }
+        inline void assign_regression_diagnostics(NumericMatrix xret, const int rownum, const bool normalize,const double used_df) const {
+            // assign_regression_fit(xret, rownum);
+            const double slope = m_xx[4] / m_xx[3];
+            xret(rownum, 1) = slope;
+            xret(rownum, 0) = m_xx[2] - m_xx[1] * slope;
+            const double denom = var_denominator(normalize, used_df);
+            const double reg_se = sqrt((m_xx[5] - m_xx[4] * slope)/denom);
+            const double slope_se = reg_se / sqrt(m_xx[3]);
+            xret(rownum, 2) = reg_se;
+            xret(rownum, 3) = slope_se;
+            double na;
+            if (has_wts) {
+                na = double(m_wsum.as());
+            } else {
+                na = double(m_nel);
+            }
+            xret(rownum, 4) = slope_se * sqrt(m_xx[3]/na + m_xx[1]*m_xx[1]);
+        }
         // getters 
         inline int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
         inline int subcount() const { return m_subc; }

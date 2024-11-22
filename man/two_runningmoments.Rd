@@ -2,8 +2,12 @@
 % Please edit documentation in R/RcppExports.R
 \name{running_correlation}
 \alias{running_correlation}
+\alias{running_covariance}
+\alias{running_covariance_3}
 \alias{running_regression_slope}
 \alias{running_regression_intercept}
+\alias{running_regression_fit}
+\alias{running_regression_diagnostics}
 \title{Compute covariance, correlation, regression over a sliding window}
 \usage{
 running_correlation(
@@ -13,6 +17,34 @@ running_correlation(
   wts = NULL,
   na_rm = FALSE,
   min_df = 0L,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
+)
+
+running_covariance(
+  x,
+  y,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 2,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
+)
+
+running_covariance_3(
+  x,
+  y,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 2,
   restart_period = 100L,
   check_wts = FALSE,
   normalize_wts = TRUE,
@@ -39,6 +71,33 @@ running_regression_intercept(
   wts = NULL,
   na_rm = FALSE,
   min_df = 0L,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
+)
+
+running_regression_fit(
+  x,
+  y,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  restart_period = 100L,
+  check_wts = FALSE,
+  normalize_wts = TRUE,
+  check_negative_moments = TRUE
+)
+
+running_regression_diagnostics(
+  x,
+  y,
+  window = NULL,
+  wts = NULL,
+  na_rm = FALSE,
+  min_df = 0L,
+  used_df = 2,
   restart_period = 100L,
   check_wts = FALSE,
   normalize_wts = TRUE,
@@ -100,20 +159,18 @@ Defaults to \code{TRUE} to avoid negative even moments. Set to \code{FALSE}
 only if you know what you are doing.}
 
 \item{used_df}{the number of degrees of freedom consumed, used in the denominator
-of the centered moments computation. These are subtracted from the number of
-observations. Not sure this is meaningful here yet.}
+of the standard errors computation. These are subtracted from the number of
+observations.}
 }
 \value{
-2FIX Typically a matrix, where the first columns are the kth, k-1th through 2nd standardized, 
-centered moments, then a column of the mean, then a column of the number of (non-nan) elements in the input,
-with the following exceptions:
+Typically a matrix, usually only one row of the output value. More specifically:
 \describe{
-\item{running_cent_moments}{Computes arbitrary order centered moments. When \code{max_order_only} is set,
-only a column of the maximum order centered moment is returned.}
-\item{running_std_moments}{Computes arbitrary order standardized moments, then the standard deviation, the mean,
-and the count. There is not yet an option for \code{max_order_only}, but probably should be.}
-\item{running_cumulants}{Computes arbitrary order cumulants, and returns the kth, k-1th, through the second 
-(which is the variance) cumulant, then the mean, and the count.}
+\item{running_covariance}{Returns a single column of the covariance of \code{x} and \code{y}.}
+\item{running_correlation}{Returns a single column of the correlation of \code{x} and \code{y}.}
+\item{running_covariance_3}{Returns three columns: the variance of \code{x}, the covariance of \code{x} and \code{y}, and the
+variance of \code{y}, in that order.}
+\item{running_regression_slope}{Returns a single column of the slope of the OLS regression.}
+\item{running_regression_intercept}{Returns a single column of the intercept of the OLS regression.}
 }
 }
 \description{
@@ -122,17 +179,9 @@ an infinite or finite sliding window, returning a matrix with the
 correlation, covariance, regression coefficient, and so on.
 }
 \details{
-2FIX
-Computes the number of elements, the mean, and the 2nd through kth
-centered (and typically standardized) moments, for \eqn{k=2,3,4}{k=2,3,4}. These
-are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
-
-Given the length \eqn{n} vector \eqn{x}, we output matrix \eqn{M} where
-\eqn{M_{i,j}}{M_i,j} is the \eqn{order - j + 1} moment (\emph{i.e.}
-excess kurtosis, skewness, standard deviation, mean or number of elements)
-of \eqn{x_{i-window+1},x_{i-window+2},...,x_{i}}{x_(i-window+1),x_(i-window+2),...,x_i}.
-Barring \code{NA} or \code{NaN}, this is over a window of size \code{window}.
-During the 'burn-in' phase, we take fewer elements.
+Computes the correlation or covariance, or OLS regression coefficients and 
+standard errors. 
+These are computed via the numerically robust one-pass method of Bennett \emph{et. al.}
 }
 \note{
 The moment computations provided by fromo are 

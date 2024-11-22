@@ -91,27 +91,34 @@ NumericMatrix two_runQM(T v,
     if ((ord != 2)) {
         stop("bad code: order too small to support this computation");  // #nocov
     }
-    if (!((retwhat==ret_correlation) ||
+    if (!(
+          (retwhat==ret_correlation) ||
+          (retwhat==ret_covariance) ||
+          (retwhat==ret_covariance_matrix) ||
           (retwhat==ret_regression_slope) ||
-          (retwhat==ret_regression_intercept))) {
+          (retwhat==ret_regression_intercept) ||
+          (retwhat==ret_regression_fit) ||
+          (retwhat==ret_regression_diagnostics)
+        )) {
         stop("NYI: only understand correlation, covariance, etc");  // #nocov
     }
     int iii,jjj,lll,tr_iii,tr_jjj;
     bool aligned = (lookahead == 0);
 
     // super gross; I need these for the include later.
-    // double sg_denom,renorm;
-    // int mmm;
+    double denom;
 
     const int firstpart = MIN(numel,quasiwin);
 
     // preallocated with zeros; should
     // probably be NA?
     int ncols;
-    if (((retwhat==ret_correlation) ||
-         (retwhat==ret_regression_slope) ||
-         (retwhat==ret_regression_intercept))) {
-        ncols = 1;
+    if ((retwhat==ret_covariance_matrix)) {
+        ncols = 3;
+    } else if (retwhat==ret_regression_fit) {
+        ncols = 2;
+    } else if (retwhat==ret_regression_diagnostics) {
+        ncols = 5;
     } else {
         ncols = 1; 
     }
