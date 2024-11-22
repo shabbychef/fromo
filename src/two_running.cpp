@@ -109,6 +109,7 @@ NumericMatrix running_correlation(SEXP x, SEXP y,
     return preval;
 }
 
+//2FIX: maybe the used_df should be 1 here? to match R's builtin cov?
 //' @rdname two_runningmoments
 //' @export
 // [[Rcpp::export]]

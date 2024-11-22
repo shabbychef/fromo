@@ -171,6 +171,8 @@ Typically a matrix, usually only one row of the output value. More specifically:
 variance of \code{y}, in that order.}
 \item{running_regression_slope}{Returns a single column of the slope of the OLS regression.}
 \item{running_regression_intercept}{Returns a single column of the intercept of the OLS regression.}
+\item{running_regression_fit}{Returns two columns: the regression intercept and the regression slope of the OLS regression.}
+\item{running_regression_diagnostics}{Returns five columns: the regression intercept, the regression slope, the regression standard error, the standard error of the intercept, the standard error of the slope of the OLS regression.}
 }
 }
 \description{
