@@ -1,6 +1,7 @@
 
 * 0.2.4 on CRAN
 * adding running correlation, covariance, regression coefficients.
+* adding t-running correlation, covariance, regression coefficients.
 
 2024-11-07 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.3 on CRAN
