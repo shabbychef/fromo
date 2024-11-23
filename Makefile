@@ -11,7 +11,7 @@ VMAJOR 						 = 0
 VMINOR 						 = 2
 VPATCH  					 = 3
 #VDEV 							 = 
-VDEV 							 = .003
+VDEV 							 = .004
 PKG_NAME 					:= fromo
 
 RPKG_USES_RCPP 		:= 1
@@ -49,6 +49,10 @@ reame : $(PKG_INSTALLED) $(DOCKER_IMG)
 		--entrypoint="r" $(USER)/$(PKG_LCNAME)-crancheck \
 		"-l" "knitr" "-l" "$(PKG_NAME)" \
 		"-e" 'setwd(".");if (require(knitr)) { knit("README.Rmd") }'
+
+timeit :
+	cd nodist && r --libpath ~/.local/R -l knitr -l fromo -e "setwd('.');require(knitr);knit('timings.Rmd')" 
+	cp nodist/timings.csv nodist/timings_$(PKG_VERSION).csv
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=129:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:tags=.tags;:syn=make:ft=make:ai:si:cin:nu:fo=croqt:cino=p0t0c5(0:
