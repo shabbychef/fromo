@@ -144,13 +144,15 @@ class TwoWelford {
         }
         // I really hate C++. here I will assign values into a matrix at a given position because
         // returning two values is just too difficult. 
+        // assigns the intercept and slope into the row of xret.
         inline void assign_regression_fit(NumericMatrix xret, const int rownum) const {
             const double slope = m_xx[4] / m_xx[3];
             xret(rownum, 1) = slope;
             xret(rownum, 0) = m_xx[2] - m_xx[1] * slope;
         }
+        // assigns the intercept and slope, standard error, s.e. of the intercept and slope into the row of xret.
         inline void assign_regression_diagnostics(NumericMatrix xret, const int rownum, const bool normalize,const double used_df) const {
-            // assign_regression_fit(xret, rownum);
+            // assign_regression_diagnostics(xret, rownum, normalize, used_df);
             const double slope = m_xx[4] / m_xx[3];
             // slope
             xret(rownum, 1) = slope;

@@ -39,6 +39,7 @@
 // required to return data for some of these forms.
 
 // assumes that template parameters retwhat, T, and renormalize are set.
+// note that renormalize could be a template bool or an actual variable.
 // and that xret, lll (rownum), frets  and min_df are set.
 // do_interp<retwhat, Welford<oneW,has_wts,ord_beyond> ,T,renormalize>(xret,lll,ord,frets,v,used_df,min_df);
 
