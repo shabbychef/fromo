@@ -652,29 +652,14 @@ factor over time:
 rho <- t_running_correlation(x = dff4$Mkt, y = dff4$SMB,
     time = index(dff4), window = 365.25, min_df = 180,
     lb_time = mo_ends)
-```
-
-```
-## Error in t_running_correlation(x = dff4$Mkt, y = dff4$SMB, time = index(dff4), : could not find function "t_running_correlation"
-```
-
-``` r
 library(ggplot2)
 library(scales)
 ph <- cbind(data.frame(mo_ends), data.frame(rho)) %>%
     setNames(c("date", "rho")) %>%
     ggplot(aes(date, rho)) + geom_line() + geom_point(alpha = 0.1) +
     geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
-    # scale_y_continuous(labels=scales::percent)
-    # +
-labs(x = "lookback date", y = expression(rho), title = "Rolling 1 year correlation of daily SMB and Mkt factor returns, computed monthly")
-```
-
-```
-## Error: object 'rho' not found
-```
-
-``` r
+    labs(x = "lookback date", y = expression(rho),
+        title = "Rolling 1 year correlation of daily SMB and Mkt factor returns, computed monthly")
 print(ph)
 ```
 
