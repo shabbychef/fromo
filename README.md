@@ -457,7 +457,7 @@ Of these three, it seems that `RollingWindow` implements the optimal algorithm
 of reusing computations, while the other two packages gain efficiency from
 parallelization and implementation in C++.
 
-## Running 'scale' operations
+## Running adjustment operations
 
 Through template magic, the same code was modified to perform running centering, scaling, z-scoring and so on:
 
@@ -552,6 +552,25 @@ print(ph)
 <p class="caption">plot of chunk toy_zscore</p>
 </div>
 
+### Running Bivariate Computations
+
+The package now supports operations on a running window of two aligned input
+series, $x$ and $y$, and can compute the correlation, covariance, and OLS
+regression on the two over a running windo. The following are supported:
+* `running_correlation`: the correlation over the trailing window.
+* `running_covariance`: the covariance of the two series.
+* `running_covariance3`: the full variance-covariance of the two series,
+	returning matrix with three columns.
+* `running_regression_intercept`: the intercept of the OLS regression fit over the
+	trailing window.
+* `running_regression_slope`: the slope of the OLS regression fit over the
+	trailing window.
+* `running_regression_fit`: a matrix of the intercept and slope of the 
+	OLS regression fit over the trailing window.
+* `running_regression_diagnostics`: a matrix of the intercept and slope of the 
+	OLS regression fit, the regression standard error and the standard errors of
+	the intercept and slope, over the trailing window.
+
 ### Time-Based Running Computations
 
 The standard running moments computations listed above work on a running window 
@@ -568,6 +587,11 @@ which are like the `running` functions, but accept also the 'times' at which
 the input are marked, and optionally also the times at which one will
 'look back' to perform the computations.  The times can be computed implicitly
 as the cumulative sum of given (non-negative) time deltas.
+
+The `t_running` functions now also include the bivariate computations
+`t_running_correlation`, `t_running_covariance`, `t_running_covariance3`, 
+`t_running_regression_intercept`, `t_running_regression_slope`, `t_running_regression_fit`, 
+`t_running_regression_diagnostics`. 
 
 Here is an example of computing the volatility of daily 'returns' of the 
 Fama French Market factor, based on a one year window, computed at month ends:
@@ -618,6 +642,45 @@ print(ph)
 <div class="figure">
 <img src="tools/figure/trun_testing-1.png" alt="plot of chunk trun_testing" width="700px" height="600px" />
 <p class="caption">plot of chunk trun_testing</p>
+</div>
+
+Now consider the running correlation of the "SMB" factor against the "Mkt"
+factor over time:
+
+
+``` r
+rho <- t_running_correlation(x = dff4$Mkt, y = dff4$SMB,
+    time = index(dff4), window = 365.25, min_df = 180,
+    lb_time = mo_ends)
+```
+
+```
+## Error in t_running_correlation(x = dff4$Mkt, y = dff4$SMB, time = index(dff4), : could not find function "t_running_correlation"
+```
+
+``` r
+library(ggplot2)
+library(scales)
+ph <- cbind(data.frame(mo_ends), data.frame(rho)) %>%
+    setNames(c("date", "rho")) %>%
+    ggplot(aes(date, rho)) + geom_line() + geom_point(alpha = 0.1) +
+    geom_hline(yintercept = 0, linetype = 2, alpha = 0.5) +
+    # scale_y_continuous(labels=scales::percent)
+    # +
+labs(x = "lookback date", y = expression(rho), title = "Rolling 1 year correlation of daily SMB and Mkt factor returns, computed monthly")
+```
+
+```
+## Error: object 'rho' not found
+```
+
+``` r
+print(ph)
+```
+
+<div class="figure">
+<img src="tools/figure/trun_corr_testing-1.png" alt="plot of chunk trun_corr_testing" width="700px" height="600px" />
+<p class="caption">plot of chunk trun_corr_testing</p>
 </div>
 
 ---------------

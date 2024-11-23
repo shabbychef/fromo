@@ -334,7 +334,7 @@ Of these three, it seems that `RollingWindow` implements the optimal algorithm
 of reusing computations, while the other two packages gain efficiency from
 parallelization and implementation in C++.
 
-## Running 'scale' operations
+## Running adjustment operations
 
 Through template magic, the same code was modified to perform running centering, scaling, z-scoring and so on:
 
@@ -397,6 +397,25 @@ ph <- ggplot(gdf,aes(x=timestamp,y=x,group=smoothing,colour=smoothing)) +
 print(ph)
 ```
 
+### Running Bivariate Computations
+
+The package now supports operations on a running window of two aligned input
+series, $x$ and $y$, and can compute the correlation, covariance, and OLS
+regression on the two over a running windo. The following are supported:
+* `running_correlation`: the correlation over the trailing window.
+* `running_covariance`: the covariance of the two series.
+* `running_covariance3`: the full variance-covariance of the two series,
+	returning matrix with three columns.
+* `running_regression_intercept`: the intercept of the OLS regression fit over the
+	trailing window.
+* `running_regression_slope`: the slope of the OLS regression fit over the
+	trailing window.
+* `running_regression_fit`: a matrix of the intercept and slope of the 
+	OLS regression fit over the trailing window.
+* `running_regression_diagnostics`: a matrix of the intercept and slope of the 
+	OLS regression fit, the regression standard error and the standard errors of
+	the intercept and slope, over the trailing window.
+
 ### Time-Based Running Computations
 
 The standard running moments computations listed above work on a running window 
@@ -413,6 +432,11 @@ which are like the `running` functions, but accept also the 'times' at which
 the input are marked, and optionally also the times at which one will
 'look back' to perform the computations.  The times can be computed implicitly
 as the cumulative sum of given (non-negative) time deltas.
+
+The `t_running` functions now also include the bivariate computations
+`t_running_correlation`, `t_running_covariance`, `t_running_covariance3`, 
+`t_running_regression_intercept`, `t_running_regression_slope`, `t_running_regression_fit`, 
+`t_running_regression_diagnostics`. 
 
 Here is an example of computing the volatility of daily 'returns' of the 
 Fama French Market factor, based on a one year window, computed at month ends:
@@ -434,7 +458,7 @@ knitr::kable(tail(df),row.names=FALSE)
 
 And the plot of the time series:
 
-```{r trun_testing,eval=TRUE,echo=TRUE}
+```{r trun_testing,dependson=c('trun_sd_testing'),eval=TRUE,echo=TRUE}
 library(ggplot2)
 library(scales)
 ph <- df %>%
@@ -443,6 +467,24 @@ ph <- df %>%
 	scale_y_continuous(labels=scales::percent) + 
 	labs(x='lookback date',y='standard deviation of percent returns',
 			 title='rolling 1 year volatility of daily Mkt factor returns, computed monthly')
+print(ph)
+```
+
+Now consider the running correlation of the "SMB" factor against the "Mkt"
+factor over time:
+
+```{r trun_corr_testing,dependson=c('trun_sd_testing'),eval=TRUE,echo=TRUE}
+rho <- t_running_correlation(x=dff4$Mkt,y=dff4$SMB,time=index(dff4),window=365.25,min_df=180,lb_time=mo_ends)
+library(ggplot2)
+library(scales)
+ph <- cbind(data.frame(mo_ends),data.frame(rho)) %>%
+	setNames(c('date','rho')) %>%
+	ggplot(aes(date,rho)) + 
+	geom_line() + geom_point(alpha=0.1) + 
+	geom_hline(yintercept=0,linetype=2,alpha=0.5) + 
+	# scale_y_continuous(labels=scales::percent) + 
+	labs(x='lookback date',y=expression(rho),
+			 title='Rolling 1 year correlation of daily SMB and Mkt factor returns, computed monthly')
 print(ph)
 ```
 
