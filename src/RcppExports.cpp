@@ -1188,6 +1188,180 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// t_running_correlation
+NumericMatrix t_running_correlation(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_correlation(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_correlation(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_covariance
+NumericMatrix t_running_covariance(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, double used_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_covariance(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< double >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_covariance(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_covariance_3
+NumericMatrix t_running_covariance_3(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, double used_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_covariance_3(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< double >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_covariance_3(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_regression_slope
+NumericMatrix t_running_regression_slope(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_regression_slope(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_regression_slope(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_regression_intercept
+NumericMatrix t_running_regression_intercept(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_regression_intercept(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_regression_intercept(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_regression_fit
+NumericMatrix t_running_regression_fit(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_regression_fit(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_regression_fit(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, restart_period, variable_win, wts_as_delta, check_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
+// t_running_regression_diagnostics
+NumericMatrix t_running_regression_diagnostics(SEXP x, SEXP y, Rcpp::Nullable< Rcpp::NumericVector > time, Rcpp::Nullable< Rcpp::NumericVector > time_deltas, SEXP window, Rcpp::Nullable< Rcpp::NumericVector > wts, Rcpp::Nullable< Rcpp::NumericVector > lb_time, bool na_rm, int min_df, double used_df, int restart_period, bool variable_win, bool wts_as_delta, bool check_wts, bool normalize_wts, bool check_negative_moments);
+RcppExport SEXP _fromo_t_running_regression_diagnostics(SEXP xSEXP, SEXP ySEXP, SEXP timeSEXP, SEXP time_deltasSEXP, SEXP windowSEXP, SEXP wtsSEXP, SEXP lb_timeSEXP, SEXP na_rmSEXP, SEXP min_dfSEXP, SEXP used_dfSEXP, SEXP restart_periodSEXP, SEXP variable_winSEXP, SEXP wts_as_deltaSEXP, SEXP check_wtsSEXP, SEXP normalize_wtsSEXP, SEXP check_negative_momentsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x(xSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type time_deltas(time_deltasSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type window(windowSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type wts(wtsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable< Rcpp::NumericVector > >::type lb_time(lb_timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< int >::type min_df(min_dfSEXP);
+    Rcpp::traits::input_parameter< double >::type used_df(used_dfSEXP);
+    Rcpp::traits::input_parameter< int >::type restart_period(restart_periodSEXP);
+    Rcpp::traits::input_parameter< bool >::type variable_win(variable_winSEXP);
+    Rcpp::traits::input_parameter< bool >::type wts_as_delta(wts_as_deltaSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_wts(check_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize_wts(normalize_wtsSEXP);
+    Rcpp::traits::input_parameter< bool >::type check_negative_moments(check_negative_momentsSEXP);
+    rcpp_result_gen = Rcpp::wrap(t_running_regression_diagnostics(x, y, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_fromo_sd3", (DL_FUNC) &_fromo_sd3, 6},
@@ -1248,6 +1422,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_fromo_running_regression_intercept", (DL_FUNC) &_fromo_running_regression_intercept, 10},
     {"_fromo_running_regression_fit", (DL_FUNC) &_fromo_running_regression_fit, 10},
     {"_fromo_running_regression_diagnostics", (DL_FUNC) &_fromo_running_regression_diagnostics, 11},
+    {"_fromo_t_running_correlation", (DL_FUNC) &_fromo_t_running_correlation, 14},
+    {"_fromo_t_running_covariance", (DL_FUNC) &_fromo_t_running_covariance, 16},
+    {"_fromo_t_running_covariance_3", (DL_FUNC) &_fromo_t_running_covariance_3, 16},
+    {"_fromo_t_running_regression_slope", (DL_FUNC) &_fromo_t_running_regression_slope, 14},
+    {"_fromo_t_running_regression_intercept", (DL_FUNC) &_fromo_t_running_regression_intercept, 14},
+    {"_fromo_t_running_regression_fit", (DL_FUNC) &_fromo_t_running_regression_fit, 14},
+    {"_fromo_t_running_regression_diagnostics", (DL_FUNC) &_fromo_t_running_regression_diagnostics, 16},
     {NULL, NULL, 0}
 };
 
