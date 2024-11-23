@@ -101,10 +101,11 @@ NumericMatrix running_correlation(SEXP x, SEXP y,
                                   SEXP window = R_NilValue, 
                                   Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                   bool na_rm=false, int min_df=0, int restart_period=100,
-                                  bool check_wts=false, bool normalize_wts=true,
+                                  bool check_wts=false, 
                                   bool check_negative_moments=true) {
     int wins=get_wins(window);
-    const double used_df=0.0;
+    const double used_df = 0.0;
+    const bool normalize_wts = false;
     NumericMatrix preval = two_runQMCurryTwo<ret_correlation>(x, y, wts, wins, restart_period, min_df, used_df, 
                                                               na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
@@ -117,7 +118,7 @@ NumericMatrix running_correlation(SEXP x, SEXP y,
 NumericMatrix running_covariance(SEXP x, SEXP y, 
                                  SEXP window = R_NilValue, 
                                  Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                                 bool na_rm=false, int min_df=0, double used_df=2.0, int restart_period=100,
+                                 bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                                  bool check_wts=false, bool normalize_wts=true,
                                  bool check_negative_moments=true) {
     int wins=get_wins(window);
@@ -132,7 +133,7 @@ NumericMatrix running_covariance(SEXP x, SEXP y,
 NumericMatrix running_covariance_3(SEXP x, SEXP y, 
                                    SEXP window = R_NilValue, 
                                    Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
-                                   bool na_rm=false, int min_df=0, double used_df=2.0, int restart_period=100,
+                                   bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                                    bool check_wts=false, bool normalize_wts=true,
                                    bool check_negative_moments=true) {
     int wins=get_wins(window);
@@ -149,10 +150,11 @@ NumericMatrix running_regression_slope(SEXP x, SEXP y,
                                        SEXP window = R_NilValue, 
                                        Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                        bool na_rm=false, int min_df=0, int restart_period=100,
-                                       bool check_wts=false, bool normalize_wts=true,
+                                       bool check_wts=false, 
                                        bool check_negative_moments=true) {
     int wins=get_wins(window);
-    const double used_df=0.0;
+    const double used_df = 0.0;
+    const bool normalize_wts = false;
     NumericMatrix preval = two_runQMCurryTwo<ret_regression_slope>(x, y, wts, wins, restart_period, min_df, used_df, 
                                                                    na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
@@ -165,10 +167,11 @@ NumericMatrix running_regression_intercept(SEXP x, SEXP y,
                                            SEXP window = R_NilValue, 
                                            Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                            bool na_rm=false, int min_df=0, int restart_period=100,
-                                           bool check_wts=false, bool normalize_wts=true,
+                                           bool check_wts=false, 
                                            bool check_negative_moments=true) {
     int wins=get_wins(window);
-    const double used_df=0.0;
+    const double used_df = 0.0;
+    const bool normalize_wts = false;
     NumericMatrix preval = two_runQMCurryTwo<ret_regression_intercept>(x, y, wts, wins, restart_period, min_df, used_df, 
                                                                        na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
@@ -181,10 +184,11 @@ NumericMatrix running_regression_fit(SEXP x, SEXP y,
                                      SEXP window = R_NilValue, 
                                      Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                                      bool na_rm=false, int min_df=0, int restart_period=100,
-                                     bool check_wts=false, bool normalize_wts=true,
+                                     bool check_wts=false,
                                      bool check_negative_moments=true) {
     int wins=get_wins(window);
-    const double used_df=0.0;
+    const double used_df = 0.0;
+    const bool normalize_wts = false;
     NumericMatrix preval = two_runQMCurryTwo<ret_regression_fit>(x, y, wts, wins, restart_period, min_df, used_df, 
                                                                  na_rm, check_wts, normalize_wts, check_negative_moments);
     return preval;
