@@ -527,8 +527,9 @@ test_that("covariance correctness",{#FOLDUP
 	skip_on_cran()
 
 	set.char.seed("b81052f6-d7a5-4f3f-95cf-bc8d0030fcf8")
-	window <- 50
-	nel <- window + 10
+	window <- 30
+	maxplus <- 50
+	nel <- window + maxplus
 	xvec <- rnorm(nel)
 	beta_0 <- 0.33
 	beta_1 <- 5
@@ -545,6 +546,8 @@ test_that("covariance correctness",{#FOLDUP
 	expect_error(beta_1 <- running_regression_slope(xvec,yvec,window=window),NA)
 	expect_error(beta_0 <- running_regression_intercept(xvec,yvec,window=window),NA)
 	mod0 <- lm(yvec[1:window] ~ xvec[1:window])
+	ses <- sqrt(diag(vcov(mod0)))
+
 	expect_equal(beta_0[window], coefficients(mod0)[[1]], tolerance=1e-12)
 	expect_equal(beta_1[window], coefficients(mod0)[[2]], tolerance=1e-12)
 	expect_error(beta_ff <- running_regression_fit(xvec,yvec,window=window),NA)
@@ -554,7 +557,53 @@ test_that("covariance correctness",{#FOLDUP
 	expect_equal(beta_dd[,1,drop=FALSE], beta_0, tolerance=1e-12)
 	expect_equal(beta_dd[,2,drop=FALSE], beta_1, tolerance=1e-12)
 	# also compare against diag(vcov(mod0))
+	expect_equal(beta_dd[window,3], summary(mod0)$sigma, tolerance=1e-12)
+	expect_equal(beta_dd[window,4], as.numeric(ses[1]), tolerance=1e-12)
+	expect_equal(beta_dd[window,5], as.numeric(ses[2]), tolerance=1e-12)
 
+	# and a little bit forward
+	for (offs in c(5, maxplus - 1)) {
+		mod1 <- lm(yvec[offs + (1:window)] ~ xvec[offs + (1:window)])
+		ses <- sqrt(diag(vcov(mod1)))
+		expect_equal(beta_0[offs+window], coefficients(mod1)[[1]], tolerance=1e-12)
+		expect_equal(beta_1[offs+window], coefficients(mod1)[[2]], tolerance=1e-12)
+		expect_equal(beta_dd[offs+window,3], summary(mod1)$sigma, tolerance=1e-12)
+		expect_equal(beta_dd[offs+window,4], as.numeric(ses[1]), tolerance=1e-12)
+		expect_equal(beta_dd[offs+window,5], as.numeric(ses[2]), tolerance=1e-12)
+	}
+})#UNFOLD
+test_that("covariance weighting correctness",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("f3d1652c-2d83-4670-998b-f96d18d18374")
+	window <- 50
+	nel <- window
+	xvec <- rnorm(nel)
+	beta_0 <- 0.33
+	beta_1 <- 5
+	sigma <- 0.5
+	yvec <- beta_0 + beta_1 * xvec + rnorm(length(xvec),sd=sigma)
+	wts <- sample(c(1,2,3),nel,replace=TRUE)
+	expect_error(rho <- running_correlation(xvec,yvec,wt=wts,window=window),NA)
+	bigx <- rep(xvec,wts)
+	bigy <- rep(yvec,wts)
+	expect_error(rho2 <- running_correlation(bigx,bigy,window=length(bigx)),NA)
+	expect_equal(rho[window],rho2[length(rho2)], tolerance=1e-12)
+
+	expect_error(rho <- running_covariance(xvec,yvec,wt=wts,window=window,normalize_wts=FALSE,used_df=1),NA)
+	expect_error(rho2 <- running_covariance(bigx,bigy,window=length(bigx),used_df=1),NA)
+	expect_equal(rho[window],rho2[length(rho2)], tolerance=1e-12)
+
+	expect_error(beta_0 <- running_regression_intercept(xvec,yvec,wts=wts,window=window),NA)
+	expect_error(beta_1 <- running_regression_slope(xvec,yvec,wts=wts,window=window),NA)
+	expect_error(beta_02 <- running_regression_intercept(bigx,bigy,window=length(bigx)),NA)
+	expect_error(beta_12 <- running_regression_slope(bigx,bigy,window=length(bigx)),NA)
+	expect_equal(beta_0[window],beta_02[length(bigx)], tolerance=1e-12)
+	expect_equal(beta_1[window],beta_12[length(bigx)], tolerance=1e-12)
+
+	expect_error(beta_dd <- running_regression_diagnostics(xvec,yvec,wts=wts,window=window,normalize_wts=FALSE),NA)
+	expect_error(beta_dd2 <- running_regression_diagnostics(bigx,bigy,window=length(bigx)),NA)
+	expect_equal(beta_dd[window,,drop=TRUE],beta_dd2[length(bigx),,drop=TRUE], tolerance=1e-12)
 })#UNFOLD
 
 #for vim modeline: (do not edit)

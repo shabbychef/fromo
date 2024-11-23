@@ -152,20 +152,24 @@ class TwoWelford {
         inline void assign_regression_diagnostics(NumericMatrix xret, const int rownum, const bool normalize,const double used_df) const {
             // assign_regression_fit(xret, rownum);
             const double slope = m_xx[4] / m_xx[3];
+            // slope
             xret(rownum, 1) = slope;
+            // intercept
             xret(rownum, 0) = m_xx[2] - m_xx[1] * slope;
             const double denom = var_denominator(normalize, used_df);
             const double reg_se = sqrt((m_xx[5] - m_xx[4] * slope)/denom);
             const double slope_se = reg_se / sqrt(m_xx[3]);
             xret(rownum, 2) = reg_se;
-            xret(rownum, 3) = slope_se;
+            // slope se
+            xret(rownum, 4) = slope_se;
             double na;
             if (has_wts) {
                 na = double(m_wsum.as());
             } else {
                 na = double(m_nel);
             }
-            xret(rownum, 4) = slope_se * sqrt(m_xx[3]/na + m_xx[1]*m_xx[1]);
+            // intercept se
+            xret(rownum, 3) = slope_se * sqrt(m_xx[3]/na + m_xx[1]*m_xx[1]);
         }
         // getters 
         inline int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
