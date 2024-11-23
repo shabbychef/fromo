@@ -1057,38 +1057,38 @@ t_running_mean <- function(v, time = NULL, time_deltas = NULL, window = NULL, wt
 #' @template note-heywood
 #' @rdname two_runningmoments
 #' @export
-running_correlation <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
-    .Call('_fromo_running_correlation', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts, check_negative_moments)
+running_correlation <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_correlation', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, check_negative_moments)
 }
 
 #' @rdname two_runningmoments
 #' @export
-running_covariance <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 2.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+running_covariance <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
     .Call('_fromo_running_covariance', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname two_runningmoments
 #' @export
-running_covariance_3 <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 2.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+running_covariance_3 <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
     .Call('_fromo_running_covariance_3', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, used_df, restart_period, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @rdname two_runningmoments
 #' @export
-running_regression_slope <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
-    .Call('_fromo_running_regression_slope', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts, check_negative_moments)
+running_regression_slope <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_regression_slope', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, check_negative_moments)
 }
 
 #' @rdname two_runningmoments
 #' @export
-running_regression_intercept <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
-    .Call('_fromo_running_regression_intercept', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts, check_negative_moments)
+running_regression_intercept <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_regression_intercept', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, check_negative_moments)
 }
 
 #' @rdname two_runningmoments
 #' @export
-running_regression_fit <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
-    .Call('_fromo_running_regression_fit', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, normalize_wts, check_negative_moments)
+running_regression_fit <- function(x, y, window = NULL, wts = NULL, na_rm = FALSE, min_df = 0L, restart_period = 100L, check_wts = FALSE, check_negative_moments = TRUE) {
+    .Call('_fromo_running_regression_fit', PACKAGE = 'fromo', x, y, window, wts, na_rm, min_df, restart_period, check_wts, check_negative_moments)
 }
 
 #' @rdname two_runningmoments

@@ -584,13 +584,13 @@ test_that("covariance weighting correctness",{#FOLDUP
 	sigma <- 0.5
 	yvec <- beta_0 + beta_1 * xvec + rnorm(length(xvec),sd=sigma)
 	wts <- sample(c(1,2,3),nel,replace=TRUE)
-	expect_error(rho <- running_correlation(xvec,yvec,wt=wts,window=window),NA)
+	expect_error(rho <- running_correlation(xvec,yvec,wts=wts,window=window),NA)
 	bigx <- rep(xvec,wts)
 	bigy <- rep(yvec,wts)
 	expect_error(rho2 <- running_correlation(bigx,bigy,window=length(bigx)),NA)
 	expect_equal(rho[window],rho2[length(rho2)], tolerance=1e-12)
 
-	expect_error(rho <- running_covariance(xvec,yvec,wt=wts,window=window,normalize_wts=FALSE,used_df=1),NA)
+	expect_error(rho <- running_covariance(xvec,yvec,wts=wts,window=window,normalize_wts=FALSE,used_df=1),NA)
 	expect_error(rho2 <- running_covariance(bigx,bigy,window=length(bigx),used_df=1),NA)
 	expect_equal(rho[window],rho2[length(rho2)], tolerance=1e-12)
 

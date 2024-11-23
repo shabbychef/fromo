@@ -248,6 +248,7 @@ NumericMatrix two_t_runQM(T v,
                     nextv = double(v[tr_iii]);
                     nextvv = double(vv[tr_iii]);
                     prevv = double(v[tr_jjj]);
+                    prevvv = double(vv[tr_jjj]);
                     if (has_wts) { 
                         nextw = double(wts[tr_iii]); 
                         prevw = double(wts[tr_jjj]); 
