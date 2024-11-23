@@ -177,9 +177,9 @@ class TwoWelford {
         inline int nel() const { if (has_wts) { return m_nel; } else { return int(wsum()); } }  // not sure I understand this...
         inline int subcount() const { return m_subc; }
 
-        // return true if any even order sums are negative
+        // return true if any even order sums are negative, or if the matrix has a negative eigenvalue.
         inline bool has_heywood() const {
-            return ((m_xx[3] < 0) || (m_xx[5] < 0));
+            return ((m_xx[3] < 0) || (m_xx[5] < 0) || (m_xx[3] * m_xx[5] < m_xx[4] * m_xx[4]));
         }
         inline W wsum() const { 
             if (has_wts) { return m_wsum.as(); }
