@@ -45,7 +45,7 @@ using namespace Rcpp;
 // start here. will have to add new RetWhat thingys for correlation, regression and so on.
 // 2FIX: do we need the renormalize thingy?
 
-template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool renormalize,bool na_rm>
+template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool na_rm>
 NumericMatrix two_runQM(T v,
                         T vv,
                         W wts,
@@ -55,7 +55,7 @@ NumericMatrix two_runQM(T v,
                         const int min_df,
                         const double used_df,   // remove this?
                         const bool check_wts,
-                        const bool normalize_wts,
+                        const bool renormalize,  // confusing to have had two versions of this.
                         const bool check_negative_moments) {
 
     // a bit of a hack here, but you must have ord >= 2 for Welford
@@ -319,21 +319,12 @@ NumericMatrix two_runQMCurryZero(T v, T vv,
                              const bool check_wts,
                              const bool normalize_wts,
                              const bool check_negative_moments) {
-    if (has_wts && normalize_wts) {
-        if (na_rm) {
-        return two_runQM<T,retwhat,W,oneW,has_wts,true,true>(v, vv, wts, window, recom_period, //lookahead, 
-                                                         min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
-        } else {
-        return two_runQM<T,retwhat,W,oneW,has_wts,true,false>(v, vv, wts, window, recom_period, //lookahead, 
-                                                          min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
-        }
-    } 
     if (na_rm) {
-        return two_runQM<T,retwhat,W,oneW,has_wts,false,true>(v, vv, wts, window, recom_period, //lookahead, 
-                                                          min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
+        return two_runQM<T,retwhat,W,oneW,has_wts,true>(v, vv, wts, window, recom_period, //lookahead, 
+                                                        min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
     } 
-    return two_runQM<T,retwhat,W,oneW,has_wts,false,false>(v, vv, wts,  window, recom_period, //lookahead, 
-                                                       min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
+    return two_runQM<T,retwhat,W,oneW,has_wts,false>(v, vv, wts,  window, recom_period, //lookahead, 
+                                                     min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
 }
 
 template <typename T,ReturnWhat retwhat>

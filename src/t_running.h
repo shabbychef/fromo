@@ -60,7 +60,7 @@ using namespace Rcpp;
 // if lb_time is given, use it as the lookback period.
 // if not, use time.
 
-template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond,bool renormalize,bool na_rm>
+template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts,bool ord_beyond,bool na_rm>
 NumericMatrix t_runQM(T v,
                       W wts,
                       Rcpp::Nullable< Rcpp::NumericVector > opt_time,
@@ -75,7 +75,7 @@ NumericMatrix t_runQM(T v,
                       const bool check_wts,
                       const bool variable_win,
                       const bool wts_as_delta,
-                      const bool normalize_wts,
+                      const bool renormalize,
                       const bool check_negative_moments) {
 
     // a bit of a hack here, but you must have ord >= 2 for Welford
@@ -315,29 +315,16 @@ NumericMatrix t_runQMCurryZero(T v,
                                const bool wts_as_delta,
                                const bool normalize_wts,
                                const bool check_negative_moments) {
-    if (has_wts && normalize_wts) {
-        if (na_rm) {
-            return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,true>(v, wts, 
-                                                                          time, time_deltas, lb_time,
-                                                                          ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                          variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
-        } else {
-            return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true,false>(v, wts, 
-                                                                          time, time_deltas, lb_time,
-                                                                          ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                          variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
-        }
-    } 
     if (na_rm) {
-        return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,true>(v, wts, 
-                                                                       time, time_deltas, lb_time,
-                                                                       ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
+        return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true>(v, wts, 
+                                                                 time, time_deltas, lb_time,
+                                                                 ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
+                                                                 variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
     } 
-    return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false,false>(v, wts, 
-                                                                       time, time_deltas, lb_time,
-                                                                       ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
-                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
+    return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false>(v, wts, 
+                                                              time, time_deltas, lb_time,
+                                                              ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
+                                                              variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
 }
 
 template <typename T,ReturnWhat retwhat,bool ord_beyond>
