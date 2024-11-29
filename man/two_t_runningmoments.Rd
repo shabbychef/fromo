@@ -179,6 +179,11 @@ be the same size as this vector. If not given, defaults to \code{time}.}
 This can be used to prevent moments from being computed on too few observations.
 Defaults to zero, meaning no restriction.}
 
+\item{restart_period}{the recompute period. because subtraction of elements can cause
+loss of precision, the computation of moments is restarted periodically based on 
+this parameter. Larger values mean fewer restarts and faster, though less accurate
+results.}
+
 \item{variable_win}{if true, and the \code{window} is not a concrete number,
 the computation window becomes the time between lookback times.}
 

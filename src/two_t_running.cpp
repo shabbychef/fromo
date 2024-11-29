@@ -101,6 +101,7 @@ using namespace Rcpp;
 //' y <- rnorm(1e5) + x
 //' rho <- t_running_correlation(x, y, time=seq_along(x), window=100L)
 //'
+//' @inheritParams running_sd3
 //' @template etc
 //' @template ref-romo
 //' @template param-wts

@@ -103,15 +103,12 @@ centsums <- function(sums,order=NULL) {
 #' Computes the raw sums on data, and stuffs the results into a 
 #' \code{centsums} object.
 #'
-#' @usage
-#'
-#' as.centsums(x, order=3, na.rm=TRUE)
-#'
 #' @param x a numeric, array, or matrix.
 #' @param na.rm whether to remove \code{NA}.
 #' @inheritParams centsums
 #' @return A centsums object.
 #' @template etc
+#' @template param-wts
 #' @examples 
 #' set.seed(123)
 #' x <- rnorm(1000)
@@ -125,8 +122,8 @@ as.centsums <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, norma
 #' @export
 #' @method as.centsums default
 #' @aliases as.centsums
-as.centsums.default <- function(x, order=3, na.rm=TRUE, ...) {
-	sums <- cent_sums(x, max_order=order, na_rm=na.rm, ...)
+as.centsums.default <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, normalize_wts=FALSE) {
+	sums <- cent_sums(x, max_order=order, na_rm=na.rm, wts=wts, check_wts=check_wts, normalize_wts=normalize_wts)
 	invisible(centsums(sums,order=order))
 }
 

@@ -82,6 +82,12 @@
 #' \newcommand{\cranfromo}{\CRANpkg{fromo}}
 #' \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 #'
+#' @section \fromo{} Version 0.2.4 (2024-11-29) :
+#' \itemize{
+#' \item adding running correlation, covariance, regression coefficients.
+#' \item adding t-running correlation, covariance, regression coefficients.
+#' }
+#'
 #' @section \fromo{} Version 0.2.3 (2024-11-07) :
 #' \itemize{
 #' \item adding flag and checking for negative even moments due to roundoff.
