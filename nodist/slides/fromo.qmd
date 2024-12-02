@@ -1,0 +1,86 @@
+---
+title: "Fast Robust Moments with `fromo`"
+author: "Steven E. Pav"
+format: 
+  beamer:
+    aspectratio: 43
+    theme: CambridgeUS
+    colortheme: beaver
+    navigation: vertical
+    fontsize: "24pt"
+keep-tex: true
+bibliography: fromo.bib
+---
+
+## `fromo` package
+
+\footnotesize
+
+**R** package to compute Fast Robust Moments.
+
+**Fast**
+
+ * Coded in `Rcpp`, heavy use of templating optimizations.
+ * Running computations add and subtract observations, rather than compute
+entirely from scratch.
+
+**(Numerically) Robust**
+
+ * Uses Welford-Terriberry method to avoid disastrous cancellation.
+[@welford1962note; @terriberry2008computing; @pebay2016numerically]
+
+ * Checks for impossible outcomes (negative even moments) due to numerical
+issues and recomputes.
+
+**Moments**
+
+ * Computes univariate sums, means, centered moments, cumulants; bivariate
+covariance, correlation and regression.
+
+
+## Running Computations I
+
+Running ("rolling") computations performed over a window of size $w$.
+
+![](g55079.png){fig-align="center" width=70%}
+
+To move the window forward, add $x_n$ and remove $x_{n-w}$ from the sum.
+
+This is much more efficient than computing from scratch.
+
+## Time Running Computations I
+
+The time running computations are over a time window of size $w$.
+
+* The data $x_i$ have associated times $t_i$. 
+* Moments are computed as of lookback times $lb_k$:
+  * Includes $x_i$ such that $lb_k - w < t_i \le lb_k$.
+* Lookback times default to the $t_i$.
+
+![](g152441a.png){fig-align="center" width=70%}
+
+## Time Running Computations II
+
+![](g152441a.png){fig-align="center" width=70%}
+
+To move the window forward, add $x_j$ and remove $x_i, x_{i+1}$ from the sum.
+
+![](g152441b.png){fig-align="center" width=70%}
+
+## Other Features
+
+* All computations support optional replication weights.
+	* Optionally the code can auto-normalize the weights to be mean 1.
+* Flag can ignore `NA`, or will propagate them.
+
+---
+nocite: |
+  @fromopkg
+---
+
+## References
+
+\footnotesize
+
+::: {#refs}
+:::
