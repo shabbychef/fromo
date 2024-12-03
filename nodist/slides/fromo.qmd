@@ -3,20 +3,73 @@ title: "Fast Robust Moments with `fromo`"
 author: "Steven E. Pav"
 format: 
   beamer:
+    code-line-numbers: true
     aspectratio: 43
     theme: CambridgeUS
     colortheme: beaver
     navigation: vertical
     fontsize: "24pt"
+    fig-width: 11.5
+    fig-height: 6.8
+    out-width: "100%"
+    out-height: "100%"
+    dpi: 400
+code-line-numbers: true
 keep-tex: true
 bibliography: fromo.bib
 ---
 
+```{r 'quarto_fml'}
+# see https://github.com/quarto-dev/quarto-cli/discussions/2411#discussioncomment-3629364
+
+# the TL;DR is use these functions with expr to generate figure width&height and output width&height and everything will work out in html and pdf
+# these are tuned so that a factor of 1x will correspond to full width, and the recommended height based on aspect ratio of 1.555.
+# a smaller factor will result in smaller width or height.
+# if you use a factor larger than 1x, you will get wider figures up to a limit. you can get taller figures.
+
+# this is fig-width
+fw <- function(factor=1.0) {
+	factor <- pmin(factor,1.25)
+	if (knitr::is_html_output()) {
+		10.0 * factor
+  } else if (knitr::is_latex_output()) {
+		11.0 * factor
+  }
+}
+# this is fig-height
+fh <- function(factor=1.0) {
+	(factor / 1.555) * fw(factor=1.0)
+}
+
+# this is out-width
+ow <- function(factor=1.0) {
+	factor <- pmin(factor,1.25)
+	width <- round(625 * factor)
+	if (knitr::is_html_output()) {
+		paste0(width,"px")
+  } else if (knitr::is_latex_output()) {
+# should this always be 100% not sure
+		paste0(round(100 * factor),"%")
+  }
+}
+# this is out-height
+oh <- function(factor=1.0) {
+	height <- round(402 * factor)
+	if (knitr::is_html_output()) {
+		paste0(height,"px")
+  } else if (knitr::is_latex_output()) {
+		# honestly not sure about this, b/c the factor is not the same as the underwidth factor? ugh.
+# should this always be 100% not sure
+		paste0(round(100 * factor),"%")
+  }
+}
+```
 ## `fromo` package
 
 \footnotesize
 
-**R** package to compute Fast Robust Moments.
+**R** package to compute Fast Robust Moments.   
+Get from CRAN: `install.packages(c('fromo'))`.
 
 **Fast**
 
@@ -69,9 +122,257 @@ To move the window forward, add $x_j$ and remove $x_i, x_{i+1}$ from the sum.
 
 ## Other Features
 
-* All computations support optional replication weights.
-	* Optionally the code can auto-normalize the weights to be mean 1.
-* Flag can ignore `NA`, or will propagate them.
+* Static (non-running) moment objects support algebraic operations.
+* All computations support optional weights.
+  * Replication weights by default, but code can auto-normalize to mean 1.
+* Computations will ignore `NA` or propagate them based on a flag.
+  * Code is faster without `NA` checking.
+* Running computations have tweakable "recompute counter" to trigger compute
+from scratch.
+  * Fine tune between speed and robustness.
+* Time running computations support variable width window.
+  * Computes over all observations since last lookback time.
+* Time running computations can use cumulative weight as time.
+* Running computations support adjustments like Z-scoring or rescaling.
+  * These support lookahead/lookback to adjust to moments over a leading or
+lagging window.
+* Bivariate (time) running computations supported for aligned $x, y$.
+
+## Usage I
+
+Input data are daily Market Returns. [@french_data_library]
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+```{r 'loadem'}
+#| echo: true
+#| dependson: ['quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "The daily percent returns of the Fama French Market Factor."
+
+# remotes::install_github("shabbychef/tsrsa/rpkg")
+library(tsrsa)
+# daily 'returns' of Fama French 4 factors
+data(dff4)
+mkt <- dff4$Mkt
+smb <- dff4$SMB
+plot(mkt)
+```
+
+## Usage II
+
+Compute the running yearly mean returns.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_II'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "The running yearly average percent returns of the Market Factor."
+#| code-line-numbers: true
+
+library(fromo)
+mu_mkt <- running_mean(mkt,win=253,min_df=30)
+mu_mkt <- setNames(.xts(mu_mkt,index=index(mkt)),'mu_Mkt')
+plot(mu_mkt)
+```
+
+## Usage III
+
+Compute the three month (63 day) running stdev of returns.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_III'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "The running 63 day standard devation of percent returns of the Market Factor."
+#| code-line-numbers: true
+
+mkt_sd <- running_sd3(mkt,win=63,min_df=30)
+mkt_sd <- setNames(.xts(mkt_sd[,1],index=index(mkt)),'skew_Mkt')
+plot(mkt_sd)
+```
+
+
+## Usage IV
+
+Compute the running yearly skew of returns.
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_IV'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "The running yearly average percent returns of the Market Factor."
+
+mu_sku <- running_skew4(mkt,win=253,min_df=30)
+mu_sku <- setNames(.xts(mu_sku[,1],index=index(mkt)),'skew_Mkt')
+plot(mu_sku)
+```
+
+## Usage V
+
+Z-score the returns, with a lookback window of 10 trading days.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_V'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "Z-scores of the daily percent returns of the Market Factor."
+
+z_score <- running_zscored(mkt,win=253,lookahead=-10,min_df=30)
+z_score <- setNames(.xts(z_score,index=index(mkt)),'Z of Mkt')
+plot(z_score)
+```
+
+## Usage VI
+
+Compute trailing 3 month total return, using time-running computation.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_VI'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "Total returns over previous 3 months of the Market Factor."
+
+# compute on log returns, which telescope, then convert back to percents.
+t_sum <- t_running_sum(log(1+0.01*mkt),time=index(mkt),window=365/4,min_df=40)
+t_sum <- 100*(exp(t_sum) - 1)
+t_sum <- setNames(.xts(t_sum,index=index(mkt)),'trailing total returns of Mkt')
+plot(t_sum)
+```
+
+## Usage VII
+
+Compute trailing quarterly standard deviation of returns, 
+with non-overlapping windows.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_VII'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "Non-overlapping quarterly stdev of the Market Factor."
+
+times <- index(mkt)
+library(lubridate)
+qt_ends <- unique(lubridate::ceiling_date(times,'quarter') %m-% days(1))
+t_sd <- t_running_sd(mkt,time=times,lb_time=qt_ends,window=NULL,variable_win=TRUE) 
+t_sd <- setNames(.xts(t_sd,index=qt_ends),'trailing quarterly vol, returns of Mkt')
+plot(t_sd)
+```
+
+## Usage VIII
+
+Compute beta of SMB vs Mkt on quarterly basis.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_VIII'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "Non-overlapping quarterly beta of SMB against the Market Factor."
+
+times <- index(mkt)
+library(lubridate)
+qt_ends <- unique(lubridate::ceiling_date(times,'quarter') %m-% days(1))
+beta <- t_running_regression_slope(x=mkt,y=smb,time=times,lb_time=qt_ends,window=NULL,variable_win=TRUE) 
+beta <- setNames(.xts(beta,index=qt_ends),'trailing quarterly beta, SMB vs Mkt')
+plot(beta)
+```
+
+## Usage IX
+
+Compute correlation of SMB vs Mkt on quarterly basis, upweight Fridays by 4x.
+(Just Because.)
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+```{r 'usage_IX'}
+#| echo: true
+#| dependson: ['loadem','quarto_fml']
+#| cache: true
+#| results: asis
+#| out-width: !expr ow()
+#| fig-width: !expr fw()
+#| out-height: !expr oh(0.4)
+#| fig-height: !expr fh(0.4)
+#| fig-dpi: 144
+#| dpi: 144
+#| fig-cap: "Non-overlapping quarterly correlation of SMB against the Market."
+
+times <- index(mkt)
+library(lubridate)
+wts <- 1 + 3 * (weekdays(times)=='Friday')
+qt_ends <- unique(lubridate::ceiling_date(times,'quarter') %m-% days(1))
+rho <- t_running_correlation(x=mkt,y=smb,time=times,wts=wts,lb_time=qt_ends,window=NULL,variable_win=TRUE) 
+rho <- setNames(.xts(rho,index=qt_ends),'trailing weighted quarterly rho, SMB vs Mkt')
+plot(rho)
+```
 
 ---
 nocite: |
