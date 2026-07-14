@@ -1,0 +1,682 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  24pt,
+  ignorenonframetext,
+  aspectratio=43,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsvertical
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{section title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{subsection title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\usetheme[]{CambridgeUS}
+\usecolortheme{beaver}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Fast Robust Moments with fromo},
+  pdfauthor={Steven E. Pav},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Fast Robust Moments with \texttt{fromo}}
+\author{Steven E. Pav}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+
+\begin{frame}[fragile]{\texttt{fromo} package}
+\phantomsection\label{fromo-package}
+\footnotesize
+
+\textbf{R} package to compute Fast Robust Moments.\\
+Get from CRAN:
+\texttt{install.packages(c(\textquotesingle{}fromo\textquotesingle{}))}.
+
+\textbf{Fast}
+
+\begin{itemize}
+\tightlist
+\item
+  Coded in \texttt{Rcpp}, heavy use of templating optimizations.
+\item
+  Running computations add and subtract observations, rather than
+  compute entirely from scratch.
+\end{itemize}
+
+\textbf{(Numerically) Robust}
+
+\begin{itemize}
+\item
+  Uses Welford-Terriberry method to avoid disastrous cancellation.
+  (Welford 1962; Terriberry 2008; Pébay et al. 2016)
+\item
+  Checks for impossible outcomes (negative even moments) due to
+  numerical issues and recomputes.
+\end{itemize}
+
+\textbf{Moments}
+
+\begin{itemize}
+\tightlist
+\item
+  Computes univariate sums, means, centered moments, cumulants;
+  bivariate covariance, correlation and regression.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Running Computations I}
+\phantomsection\label{running-computations-i}
+Running (``rolling'') computations performed over a window of size
+\(w\).
+
+\begin{center}
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{g55079.png}
+\end{center}
+
+To move the window forward, add \(x_n\) and remove \(x_{n-w}\) from the
+sum.
+
+This is much more efficient than computing from scratch.
+\end{frame}
+
+\begin{frame}{Time Running Computations I}
+\phantomsection\label{time-running-computations-i}
+The time running computations are over a time window of size \(w\).
+
+\begin{itemize}
+\tightlist
+\item
+  The data \(x_i\) have associated times \(t_i\).
+\item
+  Moments are computed as of lookback times \(lb_k\):
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Includes \(x_i\) such that \(lb_k - w < t_i \le lb_k\).
+  \end{itemize}
+\item
+  Lookback times default to the \(t_i\).
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{g152441a.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Time Running Computations II}
+\phantomsection\label{time-running-computations-ii}
+\begin{center}
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{g152441a.png}
+\end{center}
+
+To move the window forward, add \(x_j\) and remove \(x_i, x_{i+1}\) from
+the sum.
+
+\begin{center}
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{g152441b.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Other Features}
+\phantomsection\label{other-features}
+\begin{itemize}
+\tightlist
+\item
+  Static (non-running) moment objects support algebraic operations.
+\item
+  All computations support optional weights.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Replication weights by default, but code can auto-normalize to mean
+    1.
+  \end{itemize}
+\item
+  Computations will ignore \texttt{NA} or propagate them based on a
+  flag.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Code is faster without \texttt{NA} checking.
+  \end{itemize}
+\item
+  Running computations have tweakable ``recompute counter'' to trigger
+  compute from scratch.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Fine tune between speed and robustness.
+  \end{itemize}
+\item
+  Time running computations support variable width window.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Computes over all observations since last lookback time.
+  \end{itemize}
+\item
+  Time running computations can use cumulative weight as time.
+\item
+  Running computations support adjustments like Z-scoring or rescaling.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    These support lookahead/lookback to adjust to moments over a leading
+    or lagging window.
+  \end{itemize}
+\item
+  Bivariate (time) running computations supported for aligned \(x, y\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Usage I}
+\phantomsection\label{usage-i}
+Input data are daily Market Returns. (French 2020)
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\CommentTok{\# remotes::install\_github("shabbychef/tsrsa/rpkg")}
+\FunctionTok{library}\NormalTok{(tsrsa)}
+\CommentTok{\# daily \textquotesingle{}returns\textquotesingle{} of Fama French 4 factors}
+\FunctionTok{data}\NormalTok{(dff4)}
+\NormalTok{mkt }\OtherTok{\textless{}{-}}\NormalTok{ dff4}\SpecialCharTok{$}\NormalTok{Mkt}
+\NormalTok{smb }\OtherTok{\textless{}{-}}\NormalTok{ dff4}\SpecialCharTok{$}\NormalTok{SMB}
+\FunctionTok{plot}\NormalTok{(mkt)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/loadem-1.pdf}
+
+}
+
+\caption{The daily percent returns of the Fama French Market Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage II}
+\phantomsection\label{usage-ii}
+Compute the running yearly mean returns.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\FunctionTok{library}\NormalTok{(fromo)}
+\NormalTok{mu\_mkt }\OtherTok{\textless{}{-}} \FunctionTok{running\_mean}\NormalTok{(mkt,}\AttributeTok{win=}\DecValTok{253}\NormalTok{,}\AttributeTok{min\_df=}\DecValTok{30}\NormalTok{)}
+\NormalTok{mu\_mkt }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(mu\_mkt,}\AttributeTok{index=}\FunctionTok{index}\NormalTok{(mkt)),}\StringTok{\textquotesingle{}mu\_Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mu\_mkt)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_II-1.pdf}
+
+}
+
+\caption{The running yearly average percent returns of the Market
+Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage III}
+\phantomsection\label{usage-iii}
+Compute the three month (63 day) running stdev of returns.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\NormalTok{mkt\_sd }\OtherTok{\textless{}{-}} \FunctionTok{running\_sd3}\NormalTok{(mkt,}\AttributeTok{win=}\DecValTok{63}\NormalTok{,}\AttributeTok{min\_df=}\DecValTok{30}\NormalTok{)}
+\NormalTok{mkt\_sd }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(mkt\_sd[,}\DecValTok{1}\NormalTok{],}\AttributeTok{index=}\FunctionTok{index}\NormalTok{(mkt)),}\StringTok{\textquotesingle{}skew\_Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mkt\_sd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_III-1.pdf}
+
+}
+
+\caption{The running 63 day standard devation of percent returns of the
+Market Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage IV}
+\phantomsection\label{usage-iv}
+Compute the running yearly skew of returns.
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\NormalTok{mu\_sku }\OtherTok{\textless{}{-}} \FunctionTok{running\_skew4}\NormalTok{(mkt,}\AttributeTok{win=}\DecValTok{253}\NormalTok{,}\AttributeTok{min\_df=}\DecValTok{30}\NormalTok{)}
+\NormalTok{mu\_sku }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(mu\_sku[,}\DecValTok{1}\NormalTok{],}\AttributeTok{index=}\FunctionTok{index}\NormalTok{(mkt)),}\StringTok{\textquotesingle{}skew\_Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(mu\_sku)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_IV-1.pdf}
+
+}
+
+\caption{The running yearly average percent returns of the Market
+Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage V}
+\phantomsection\label{usage-v}
+Z-score the returns, with a lookback window of 10 trading days.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\NormalTok{z\_score }\OtherTok{\textless{}{-}} \FunctionTok{running\_zscored}\NormalTok{(mkt,}\AttributeTok{win=}\DecValTok{253}\NormalTok{,}\AttributeTok{lookahead=}\SpecialCharTok{{-}}\DecValTok{10}\NormalTok{,}\AttributeTok{min\_df=}\DecValTok{30}\NormalTok{)}
+\NormalTok{z\_score }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(z\_score,}\AttributeTok{index=}\FunctionTok{index}\NormalTok{(mkt)),}\StringTok{\textquotesingle{}Z of Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(z\_score)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_V-1.pdf}
+
+}
+
+\caption{Z-scores of the daily percent returns of the Market Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage VI}
+\phantomsection\label{usage-vi}
+Compute trailing 3 month total return, using time-running computation.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\CommentTok{\# compute on log returns, which telescope, then convert back to percents.}
+\NormalTok{t\_sum }\OtherTok{\textless{}{-}} \FunctionTok{t\_running\_sum}\NormalTok{(}\FunctionTok{log}\NormalTok{(}\DecValTok{1}\FloatTok{+0.01}\SpecialCharTok{*}\NormalTok{mkt),}\AttributeTok{time=}\FunctionTok{index}\NormalTok{(mkt),}\AttributeTok{window=}\DecValTok{365}\SpecialCharTok{/}\DecValTok{4}\NormalTok{,}\AttributeTok{min\_df=}\DecValTok{40}\NormalTok{)}
+\NormalTok{t\_sum }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\NormalTok{(}\FunctionTok{exp}\NormalTok{(t\_sum) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{t\_sum }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(t\_sum,}\AttributeTok{index=}\FunctionTok{index}\NormalTok{(mkt)),}\StringTok{\textquotesingle{}trailing total returns of Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(t\_sum)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_VI-1.pdf}
+
+}
+
+\caption{Total returns over previous 3 months of the Market Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage VII}
+\phantomsection\label{usage-vii}
+Compute trailing quarterly standard deviation of returns, with
+non-overlapping windows.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\NormalTok{times }\OtherTok{\textless{}{-}} \FunctionTok{index}\NormalTok{(mkt)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\NormalTok{qt\_ends }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(lubridate}\SpecialCharTok{::}\FunctionTok{ceiling\_date}\NormalTok{(times,}\StringTok{\textquotesingle{}quarter\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%m{-}\%} \FunctionTok{days}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+\NormalTok{t\_sd }\OtherTok{\textless{}{-}} \FunctionTok{t\_running\_sd}\NormalTok{(mkt,}\AttributeTok{time=}\NormalTok{times,}\AttributeTok{lb\_time=}\NormalTok{qt\_ends,}\AttributeTok{window=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{variable\_win=}\ConstantTok{TRUE}\NormalTok{) }
+\NormalTok{t\_sd }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(t\_sd,}\AttributeTok{index=}\NormalTok{qt\_ends),}\StringTok{\textquotesingle{}trailing quarterly vol, returns of Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(t\_sd)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_VII-1.pdf}
+
+}
+
+\caption{Non-overlapping quarterly stdev of the Market Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage VIII}
+\phantomsection\label{usage-viii}
+Compute beta of SMB vs Mkt on quarterly basis.
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\NormalTok{times }\OtherTok{\textless{}{-}} \FunctionTok{index}\NormalTok{(mkt)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\NormalTok{qt\_ends }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(lubridate}\SpecialCharTok{::}\FunctionTok{ceiling\_date}\NormalTok{(times,}\StringTok{\textquotesingle{}quarter\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%m{-}\%} \FunctionTok{days}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{t\_running\_regression\_slope}\NormalTok{(}\AttributeTok{x=}\NormalTok{mkt,}\AttributeTok{y=}\NormalTok{smb,}\AttributeTok{time=}\NormalTok{times,}\AttributeTok{lb\_time=}\NormalTok{qt\_ends,}\AttributeTok{window=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{variable\_win=}\ConstantTok{TRUE}\NormalTok{) }
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(beta,}\AttributeTok{index=}\NormalTok{qt\_ends),}\StringTok{\textquotesingle{}trailing quarterly beta, SMB vs Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(beta)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_VIII-1.pdf}
+
+}
+
+\caption{Non-overlapping quarterly beta of SMB against the Market
+Factor.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}[fragile]{Usage IX}
+\phantomsection\label{usage-ix}
+Compute correlation of SMB vs Mkt on quarterly basis, upweight Fridays
+by 4x. (Just Because.)
+
+\AddToHookNext{env/Highlighting/begin}{\tiny}
+
+\begin{Shaded}
+\begin{Highlighting}[numbers=left,,]
+\NormalTok{times }\OtherTok{\textless{}{-}} \FunctionTok{index}\NormalTok{(mkt)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\NormalTok{wts }\OtherTok{\textless{}{-}} \DecValTok{1} \SpecialCharTok{+} \DecValTok{3} \SpecialCharTok{*}\NormalTok{ (}\FunctionTok{weekdays}\NormalTok{(times)}\SpecialCharTok{==}\StringTok{\textquotesingle{}Friday\textquotesingle{}}\NormalTok{)}
+\NormalTok{qt\_ends }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(lubridate}\SpecialCharTok{::}\FunctionTok{ceiling\_date}\NormalTok{(times,}\StringTok{\textquotesingle{}quarter\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%m{-}\%} \FunctionTok{days}\NormalTok{(}\DecValTok{1}\NormalTok{))}
+\NormalTok{rho }\OtherTok{\textless{}{-}} \FunctionTok{t\_running\_correlation}\NormalTok{(}\AttributeTok{x=}\NormalTok{mkt,}\AttributeTok{y=}\NormalTok{smb,}\AttributeTok{time=}\NormalTok{times,}\AttributeTok{wts=}\NormalTok{wts,}\AttributeTok{lb\_time=}\NormalTok{qt\_ends,}\AttributeTok{window=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{variable\_win=}\ConstantTok{TRUE}\NormalTok{) }
+\NormalTok{rho }\OtherTok{\textless{}{-}} \FunctionTok{setNames}\NormalTok{(}\FunctionTok{.xts}\NormalTok{(rho,}\AttributeTok{index=}\NormalTok{qt\_ends),}\StringTok{\textquotesingle{}trailing weighted quarterly rho, SMB vs Mkt\textquotesingle{}}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(rho)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\linewidth,height=0.4\textheight]{fromo_files/figure-beamer/usage_IX-1.pdf}
+
+}
+
+\caption{Non-overlapping quarterly correlation of SMB against the
+Market.}
+
+\end{figure}%
+\end{frame}
+
+\begin{frame}{References}
+\phantomsection\label{references}
+\footnotesize
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-french_data_library}
+French, Kenneth. 2020. {``Data Library.''} Privately Published.
+\url{http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html}.
+
+\bibitem[\citeproctext]{ref-fromopkg}
+Pav, Steven E. 2024. \emph{{fromo}: Fast Robust Moments}.
+\url{https://github.com/shabbychef/fromo}.
+
+\bibitem[\citeproctext]{ref-pebay2016numerically}
+Pébay, Philippe, Timothy B Terriberry, Hemanth Kolla, and Janine
+Bennett. 2016. {``Numerically Stable, Scalable Formulas for Parallel and
+Online Computation of Higher-Order Multivariate Central Moments with
+Arbitrary Weights.''} \emph{Computational Statistics} 31: 1305--25.
+\url{https://www.osti.gov/biblio/1426900}.
+
+\bibitem[\citeproctext]{ref-terriberry2008computing}
+Terriberry, Timothy B. 2008. {``Computing Higher-Order Moments
+Online.''}
+\url{https://web.archive.org/web/20140423031833/http://people.xiph.org/~tterribe/notes/homs.html}.
+
+\bibitem[\citeproctext]{ref-welford1962note}
+Welford, Barry Payne. 1962. {``Note on a Method for Calculating
+Corrected Sums of Squares and Products.''} \emph{Technometrics} 4 (3):
+419--20. \url{https://doi.org/10.1080/00401706.1962.10490022}.
+
+\end{CSLReferences}
+\end{frame}
+
+
+
+
+\end{document}
