@@ -1,7 +1,8 @@
 
 2026-??-?? Steven E. Pav <shabbychef@gmail.com>
 * 0.2.5 on CRAN
-* test for positive restart_period, throw error otherwise.
+* now tests for positive restart_period, throw error otherwise.
+* NA restart_period more explicitly means "infinite"
 
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN
