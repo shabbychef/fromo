@@ -54,9 +54,11 @@ RET runningSumish(T v,
                   W wts,
                   int window,
                   const int min_df,
-                  int recom_period,
+                  const int restart_period,
                   const bool check_wts) {
     if (min_df < 0) { stop("BAD CODE: must give positive min_df"); }
+    const int recom_period = IntegerVector::is_na(restart_period) ? INT_MAX : restart_period;
+    if (recom_period < 1) { stop("recompute interval must be positive"); } // #nocov
 
     oneT nextv, prevv;
 
@@ -237,21 +239,21 @@ SEXP runningSumishCurryOne(T v,
                            W wts,
                            int window,
                            const int min_df,
-                           int recom_period,
+                           const int restart_period,
                            const bool na_rm,
                            const bool check_wts,
                            const bool return_int) {
-   if (return_int) {
-       if (na_rm) {
-           return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,true>(v,wts,window,min_df,recom_period,check_wts));
-       } else {
-           return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,false>(v,wts,window,min_df,recom_period,check_wts));
-       }
-   }
-   if (na_rm) {
-       return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,true>(v,wts,window,min_df,recom_period,check_wts));
-   }
-   return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,false>(v,wts,window,min_df,recom_period,check_wts));
+    if (return_int) {
+        if (na_rm) {
+            return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,true>(v,wts,window,min_df,restart_period,check_wts));
+        } else {
+            return wrap(runningSumish<IntegerVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,false>(v,wts,window,min_df,restart_period,check_wts));
+        }
+    }
+    if (na_rm) {
+        return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,true>(v,wts,window,min_df,restart_period,check_wts));
+    }
+    return wrap(runningSumish<NumericVector,T,oneT,v_robustly,W,oneW,w_robustly,retwhat,has_wts,do_recompute,false>(v,wts,window,min_df,restart_period,check_wts));
 }
 
 template <typename T,typename oneT,bool v_robustly,ReturnWhat retwhat,bool do_recompute>
@@ -259,22 +261,22 @@ SEXP runningSumishCurryTwo(T v,
                            SEXP wts,
                            int window,
                            const int min_df,
-                           int recom_period,
+                           const int restart_period,
                            const bool na_rm,
                            const bool check_wts,
                            const bool return_int) {
     // 2FIX: to get smaller images, use IntegerVector instead of logicals and convert to 0/1
     if (!Rf_isNull(wts)) {  
         switch (TYPEOF(wts)) {
-            case  INTSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int); }
-            case REALSXP: { return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,true,do_recompute>(v,wts,window,min_df,recom_period,na_rm,check_wts,false); } // SIC: when double weights, cannot return int
+            case  INTSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,wts,window,min_df,restart_period,na_rm,check_wts,return_int); }
+            case REALSXP: { return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,true,do_recompute>(v,wts,window,min_df,restart_period,na_rm,check_wts,false); } // SIC: when double weights, cannot return int
             // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
-            case  LGLSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,as<IntegerVector>(wts),window,min_df,recom_period,na_rm,check_wts,return_int); }
+            case  LGLSXP: { return runningSumishCurryOne<T,oneT,v_robustly,IntegerVector,int,false,retwhat,true,do_recompute>(v,as<IntegerVector>(wts),window,min_df,restart_period,na_rm,check_wts,return_int); }
             default: stop("Unsupported weight type"); // #nocov
         }
     }
     NumericVector dummy_wts;
-    return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,false,do_recompute>(v,dummy_wts,window,min_df,recom_period,na_rm,check_wts,return_int);
+    return runningSumishCurryOne<T,oneT,v_robustly,NumericVector,double,true,retwhat,false,do_recompute>(v,dummy_wts,window,min_df,restart_period,na_rm,check_wts,return_int);
 }
 
 template <ReturnWhat retwhat,bool do_recompute>
@@ -282,15 +284,15 @@ SEXP runningSumishCurryThree(SEXP v,
                              SEXP wts,
                              int window,
                              const int min_df,
-                             int recom_period,
+                             const int restart_period,
                              const bool na_rm,
                              const bool check_wts,
                              const bool return_int) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(v, wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
-        case REALSXP: { return runningSumishCurryTwo<NumericVector, double, true, retwhat, do_recompute>(v, wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
+        case  INTSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(v, wts, window, min_df, restart_period, na_rm, check_wts, return_int); }
+        case REALSXP: { return runningSumishCurryTwo<NumericVector, double, true, retwhat, do_recompute>(v, wts, window, min_df, restart_period, na_rm, check_wts, return_int); }
         // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
-        case  LGLSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(as<IntegerVector>(v), wts, window, min_df, recom_period, na_rm, check_wts, return_int); }
+        case  LGLSXP: { return runningSumishCurryTwo<IntegerVector, int, false, retwhat, do_recompute>(as<IntegerVector>(v), wts, window, min_df, restart_period, na_rm, check_wts, return_int); }
         default: stop("Unsupported input type"); // #nocov
     }
     // CRAN checks are broken: 'warning: control reaches end of non-void function'
@@ -303,16 +305,16 @@ SEXP runningSumishCurryFour(SEXP v,
                             SEXP wts,
                             int window,
                             const int min_df,
-                            int recom_period,
+                            const int restart_period,
                             const bool na_rm,
                             const bool check_wts) {
     const bool return_int=( ((TYPEOF(v)==INTSXP) || (TYPEOF(v)==LGLSXP)) &&
                               (retwhat==ret_sum) );
-    const bool do_recompute = !IntegerVector::is_na(recom_period);
+    const bool do_recompute = !IntegerVector::is_na(restart_period);
     if (do_recompute) {
-        return runningSumishCurryThree<retwhat,true>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int);
+        return runningSumishCurryThree<retwhat,true>(v,wts,window,min_df,restart_period,na_rm,check_wts,return_int);
     }
-    return runningSumishCurryThree<retwhat,false>(v,wts,window,min_df,recom_period,na_rm,check_wts,return_int);
+    return runningSumishCurryThree<retwhat,false>(v,wts,window,min_df,restart_period,na_rm,check_wts,return_int);
 }
 
 #endif /* __DEF_RUNNINGMEAN__ */

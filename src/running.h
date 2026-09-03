@@ -48,7 +48,7 @@ NumericMatrix runQM(T v,
                     W wts,
                     const int ord,
                     const int window,
-                    const int recom_period,
+                    const int restart_period,
                     const int lookahead,
                     const int min_df,
                     const double used_df,
@@ -75,6 +75,8 @@ NumericMatrix runQM(T v,
 
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
+    const int recom_period = IntegerVector::is_na(restart_period) ? INT_MAX : restart_period;
+    if (recom_period < 1) { stop("recompute interval must be positive"); } // #nocov
 
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
@@ -302,7 +304,7 @@ NumericMatrix runQMCurryZero(T v,
                              W wts,
                              const int ord,
                              const int window,
-                             const int recom_period,
+                             const int restart_period,
                              const int lookahead,
                              const int min_df,
                              const double used_df,
@@ -311,10 +313,10 @@ NumericMatrix runQMCurryZero(T v,
                              const bool normalize_wts,
                              const bool check_negative_moments) {
     if (na_rm) {
-        return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true>(v, wts, ord, window, recom_period, lookahead, 
+        return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true>(v, wts, ord, window, restart_period, lookahead, 
                                                                min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
     } 
-    return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false>(v, wts, ord, window, recom_period, lookahead, 
+    return runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false>(v, wts, ord, window, restart_period, lookahead, 
                                                             min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
 }
 
@@ -323,7 +325,7 @@ NumericMatrix runQMCurryOne(T v,
                             Rcpp::Nullable< Rcpp::NumericVector > wts,
                             const int ord,
                             const int window,
-                            const int recom_period,
+                            const int restart_period,
                             const int lookahead,
                             const int min_df,
                             const double used_df,
@@ -334,11 +336,11 @@ NumericMatrix runQMCurryOne(T v,
 
     //2FIX: typeof wts?
     if (wts.isNotNull()) {
-        return runQMCurryZero<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), ord, window, recom_period, lookahead, 
+        return runQMCurryZero<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), ord, window, restart_period, lookahead, 
                                                                               min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
     }
     NumericVector dummy_wts;
-    return runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, ord, window, recom_period, lookahead, 
+    return runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, ord, window, restart_period, lookahead, 
                                                                            min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
 }
 
@@ -349,7 +351,7 @@ NumericMatrix runQMCurryTwo(T v,
                             Rcpp::Nullable< Rcpp::NumericVector > wts,
                             const int ord,
                             const int window,
-                            const int recom_period,
+                            const int restart_period,
                             const int lookahead,
                             const int min_df,
                             const double used_df,
@@ -360,10 +362,10 @@ NumericMatrix runQMCurryTwo(T v,
 
     // ugh, ord < 2 does not go through here, and then it is all awful.
     if (ord==2) {
-        return runQMCurryOne<T,retwhat,false>(v, wts, ord, window, recom_period, lookahead, 
+        return runQMCurryOne<T,retwhat,false>(v, wts, ord, window, restart_period, lookahead, 
                                               min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
     }
-    return runQMCurryOne<T,retwhat,true>(v, wts, ord, window, recom_period, lookahead, 
+    return runQMCurryOne<T,retwhat,true>(v, wts, ord, window, restart_period, lookahead, 
                                          min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
 }
 
@@ -372,7 +374,7 @@ NumericMatrix runQMCurryThree(SEXP v,
                               Rcpp::Nullable< Rcpp::NumericVector > wts,
                               const int ord,
                               const int window,
-                              const int recom_period,
+                              const int restart_period,
                               const int lookahead,
                               const int min_df,
                               const double used_df,
@@ -381,9 +383,9 @@ NumericMatrix runQMCurryThree(SEXP v,
                               const bool normalize_wts,
                               const bool check_negative_moments) {
     switch (TYPEOF(v)) {
-        case  INTSXP: { return runQMCurryTwo<IntegerVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); } 
-        case REALSXP: { return runQMCurryTwo<NumericVector,retwhat>(v, wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); } 
-        case  LGLSXP: { return runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); }  // bools can be upcast to save build size.
+        case  INTSXP: { return runQMCurryTwo<IntegerVector,retwhat>(v, wts, ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); } 
+        case REALSXP: { return runQMCurryTwo<NumericVector,retwhat>(v, wts, ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); } 
+        case  LGLSXP: { return runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts, ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); }  // bools can be upcast to save build size.
         default: stop("Unsupported data type"); // #nocov
     }
     // have to have fallthrough for CRAN check.

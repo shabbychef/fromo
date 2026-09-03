@@ -53,8 +53,9 @@ using namespace Rcpp;
 //' to an infinite window size. If negative, an error will be thrown.
 //' @param restart_period the recompute period. because subtraction of elements can cause
 //' loss of precision, the computation of moments is restarted periodically based on 
-//' this parameter. Larger values mean fewer restarts and faster, though less accurate
+//' this parameter. Larger values mean fewer restarts and faster execution, though less accurate
 //' results. 
+//' Must be strictly positive, or NA, which is equivalent to an infinite restart period.
 //' @param na_rm whether to remove NA, false by default.
 //' @param max_order the maximum order of the centered moment to be computed.
 //' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.

@@ -1,4 +1,8 @@
 
+2026-??-?? Steven E. Pav <shabbychef@gmail.com>
+* 0.2.5 on CRAN
+* test for positive restart_period, throw error otherwise.
+
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN
 * adding running correlation, covariance, regression coefficients.

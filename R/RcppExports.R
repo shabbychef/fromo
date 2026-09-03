@@ -341,8 +341,9 @@ cent2raw <- function(input) {
 #' to an infinite window size. If negative, an error will be thrown.
 #' @param restart_period the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
-#' this parameter. Larger values mean fewer restarts and faster, though less accurate
+#' this parameter. Larger values mean fewer restarts and faster execution, though less accurate
 #' results. 
+#' Must be strictly positive, or NA, which is equivalent to an infinite restart period.
 #' @param na_rm whether to remove NA, false by default.
 #' @param max_order the maximum order of the centered moment to be computed.
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
@@ -630,9 +631,10 @@ running_tstat <- function(v, window = NULL, wts = NULL, na_rm = FALSE, min_df = 
 #' to an infinite window size. If negative, an error will be thrown.
 #' @param restart_period the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
-#' this parameter. Larger values mean fewer restarts and faster, though potentially less 
+#' this parameter. Larger values mean fewer restarts and faster execution, though potentially less 
 #' accurate results. Unlike in the computation of even order moments, loss of precision
 #' is unlikely to be disastrous, so the default value is rather large.
+#' Must be strictly positive, or NA, which is equivalent to an infinite restart period.
 #' @param na_rm whether to remove NA, false by default.
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned,
 #' only for the means computation.
@@ -958,9 +960,10 @@ t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, w
 #'
 #' @param restart_period the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
-#' this parameter. Larger values mean fewer restarts and faster, though potentially less 
+#' this parameter. Larger values mean fewer restarts and faster execution, though potentially less 
 #' accurate results. Unlike in the computation of even order moments, loss of precision
 #' is unlikely to be disastrous, so the default value is rather large.
+#' Must be strictly positive, or NA, which is equivalent to an infinite restart period.
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned,
 #' only for the means computation.
 #' This can be used to prevent moments from being computed on too few observations.
@@ -1015,8 +1018,9 @@ t_running_mean <- function(v, time = NULL, time_deltas = NULL, window = NULL, wt
 #' to an infinite window size. If negative, an error will be thrown.
 #' @param restart_period the recompute period. because subtraction of elements can cause
 #' loss of precision, the computation of moments is restarted periodically based on 
-#' this parameter. Larger values mean fewer restarts and faster, though less accurate
+#' this parameter. Larger values mean fewer restarts and faster execution, though less accurate
 #' results. 
+#' Must be strictly positive, or NA, which is equivalent to an infinite restart period.
 #' @param na_rm whether to remove NA, false by default.
 #' @param min_df the minimum df to return a value, otherwise \code{NaN} is returned.
 #' This can be used to prevent moments from being computed on too few observations.

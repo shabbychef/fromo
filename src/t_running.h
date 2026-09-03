@@ -68,7 +68,7 @@ NumericMatrix t_runQM(T v,
                       Rcpp::Nullable< Rcpp::NumericVector > opt_lb_time,
                       const int ord,
                       const double window,
-                      const int recom_period,
+                      const int restart_period,
                       const double lookahead,
                       const int min_df,
                       const double used_df,
@@ -136,6 +136,8 @@ NumericMatrix t_runQM(T v,
 
     if (ord < 1) { stop("require positive order"); }
     if (ord > MAX_ORD) { stop("too many moments requested, weirdo"); }
+    const int recom_period = IntegerVector::is_na(restart_period) ? INT_MAX : restart_period;
+    if (recom_period < 1) { stop("recompute interval must be positive"); } // #nocov
 
     // 2FIX: later you should use the infwin to prevent some computations
     // from happening. like subtracting old observations, say.
@@ -305,7 +307,7 @@ NumericMatrix t_runQMCurryZero(T v,
                                Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                                const int ord,
                                const double window,
-                               const int recom_period,
+                               const int restart_period,
                                const double lookahead,
                                const int min_df,
                                const double used_df,
@@ -318,12 +320,12 @@ NumericMatrix t_runQMCurryZero(T v,
     if (na_rm) {
         return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,true>(v, wts, 
                                                                  time, time_deltas, lb_time,
-                                                                 ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
+                                                                 ord, window, restart_period, lookahead, min_df, used_df, check_wts, 
                                                                  variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
     } 
     return t_runQM<T,retwhat,W,oneW,has_wts,ord_beyond,false>(v, wts, 
                                                               time, time_deltas, lb_time,
-                                                              ord, window, recom_period, lookahead, min_df, used_df, check_wts, 
+                                                              ord, window, restart_period, lookahead, min_df, used_df, check_wts, 
                                                               variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
 }
 
@@ -335,7 +337,7 @@ NumericMatrix t_runQMCurryOne(T v,
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                               const int ord,
                               const double window,
-                              const int recom_period,
+                              const int restart_period,
                               const double lookahead,
                               const int min_df,
                               const double used_df,
@@ -350,7 +352,7 @@ NumericMatrix t_runQMCurryOne(T v,
     if (wts.isNotNull()) {
         return t_runQMCurryZero<T,retwhat,NumericVector,double,true,ord_beyond>(v, wts.get(), 
                                                                                 time, time_deltas, lb_time,
-                                                                                ord, window, recom_period, lookahead, 
+                                                                                ord, window, restart_period, lookahead, 
                                                                                 min_df, used_df, na_rm, check_wts, 
                                                                                 variable_win, wts_as_delta, normalize_wts, 
                                                                                 check_negative_moments); 
@@ -358,7 +360,7 @@ NumericMatrix t_runQMCurryOne(T v,
     NumericVector dummy_wts;
     return t_runQMCurryZero<T,retwhat,NumericVector,double,false,ord_beyond>(v, dummy_wts, 
                                                                              time, time_deltas, lb_time,
-                                                                             ord, window, recom_period, lookahead, 
+                                                                             ord, window, restart_period, lookahead, 
                                                                              min_df, used_df, na_rm, check_wts, 
                                                                              variable_win, wts_as_delta, normalize_wts,
                                                                              check_negative_moments);
@@ -374,7 +376,7 @@ NumericMatrix t_runQMCurryTwo(T v,
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                               const int ord,
                               const double window,
-                              const int recom_period,
+                              const int restart_period,
                               const double lookahead,
                               const int min_df,
                               const double used_df,
@@ -388,12 +390,12 @@ NumericMatrix t_runQMCurryTwo(T v,
     if (ord==2) {
         return t_runQMCurryOne<T,retwhat,false>(v, wts, 
                                                 time, time_deltas, lb_time,
-                                                ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
+                                                ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                 variable_win, wts_as_delta, normalize_wts, check_negative_moments);
     }
     return t_runQMCurryOne<T,retwhat,true>(v, wts, 
                                            time, time_deltas, lb_time,
-                                           ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
+                                           ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                            variable_win, wts_as_delta, normalize_wts, check_negative_moments); 
 }
 
@@ -405,7 +407,7 @@ NumericMatrix t_runQMCurryThree(SEXP v,
                                 Rcpp::Nullable< Rcpp::NumericVector > lb_time,
                                 const int ord,
                                 const double window,
-                                const int recom_period,
+                                const int restart_period,
                                 const double lookahead,
                                 const int min_df,
                                 const double used_df,
@@ -418,16 +420,16 @@ NumericMatrix t_runQMCurryThree(SEXP v,
     switch (TYPEOF(v)) {
         case  INTSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(v, wts, 
                                                                       time, time_deltas, lb_time,
-                                                                      ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
+                                                                      ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
         case REALSXP: { return t_runQMCurryTwo<NumericVector,retwhat>(v, wts, 
                                                                       time, time_deltas, lb_time,
-                                                                      ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
+                                                                      ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
         // to make smaller binaries, and because who cares about logicals, I convert them to integers here...
         case  LGLSXP: { return t_runQMCurryTwo<IntegerVector,retwhat>(as<IntegerVector>(v), wts,  
                                                                       time, time_deltas, lb_time,
-                                                                      ord, window, recom_period, lookahead, min_df, used_df, na_rm, check_wts, 
+                                                                      ord, window, restart_period, lookahead, min_df, used_df, na_rm, check_wts, 
                                                                       variable_win, wts_as_delta, normalize_wts, check_negative_moments); }
         default: stop("Unsupported data type"); // #nocov
     }

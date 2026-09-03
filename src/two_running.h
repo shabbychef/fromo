@@ -50,12 +50,14 @@ NumericMatrix two_runQM(T v,
                         T vv,
                         W wts,
                         const int window,
-                        const int recom_period,
+                        const int restart_period,
                         const int min_df,
                         const double used_df,   // remove this?
                         const bool check_wts,
                         const bool renormalize,  // confusing to have had two versions of this.
                         const bool check_negative_moments) {
+    const int recom_period = IntegerVector::is_na(restart_period) ? INT_MAX : restart_period;
+    if (recom_period < 1) { stop("recompute interval must be positive"); } // #nocov
 
     // a bit of a hack here, but you must have ord >= 2 for Welford
     // objects, otherwise it hits a memory leak. I know that previously
@@ -222,7 +224,7 @@ template <typename T,ReturnWhat retwhat,typename W,typename oneW,bool has_wts>
 NumericMatrix two_runQMCurryZero(T v, T vv, 
                              W wts,
                              const int window,
-                             const int recom_period,
+                             const int restart_period,
                              const int min_df,
                              const double used_df,
                              const bool na_rm,
@@ -230,10 +232,10 @@ NumericMatrix two_runQMCurryZero(T v, T vv,
                              const bool normalize_wts,
                              const bool check_negative_moments) {
     if (na_rm) {
-        return two_runQM<T,retwhat,W,oneW,has_wts,true>(v, vv, wts, window, recom_period, 
+        return two_runQM<T,retwhat,W,oneW,has_wts,true>(v, vv, wts, window, restart_period, 
                                                         min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
     } 
-    return two_runQM<T,retwhat,W,oneW,has_wts,false>(v, vv, wts,  window, recom_period, 
+    return two_runQM<T,retwhat,W,oneW,has_wts,false>(v, vv, wts,  window, restart_period, 
                                                      min_df, used_df, check_wts, normalize_wts, check_negative_moments); 
 }
 
@@ -241,7 +243,7 @@ template <typename T,ReturnWhat retwhat>
 NumericMatrix two_runQMCurryOne(T v, T vv,
                                 Rcpp::Nullable< Rcpp::NumericVector > wts,
                                 const int window,
-                                const int recom_period,
+                                const int restart_period,
                                 const int min_df,
                                 const double used_df,
                                 const bool na_rm,
@@ -251,11 +253,11 @@ NumericMatrix two_runQMCurryOne(T v, T vv,
 
     //2FIX: typeof wts?
     if (wts.isNotNull()) {
-        return two_runQMCurryZero<T,retwhat,NumericVector,double,true>(v, vv, wts.get(), window, recom_period, 
+        return two_runQMCurryZero<T,retwhat,NumericVector,double,true>(v, vv, wts.get(), window, restart_period, 
                                                                    min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
     }
     NumericVector dummy_wts;
-    return two_runQMCurryZero<T,retwhat,NumericVector,double,false>(v, vv, dummy_wts,  window, recom_period,
+    return two_runQMCurryZero<T,retwhat,NumericVector,double,false>(v, vv, dummy_wts,  window, restart_period,
                                                                 min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
 }
 
@@ -264,7 +266,7 @@ template <ReturnWhat retwhat>
 NumericMatrix two_runQMCurryTwo(SEXP v, SEXP vv,
                                 Rcpp::Nullable< Rcpp::NumericVector > wts,
                                 const int window,
-                                const int recom_period,
+                                const int restart_period,
                                 const int min_df,
                                 const double used_df,
                                 const bool na_rm,
@@ -278,17 +280,17 @@ NumericMatrix two_runQMCurryTwo(SEXP v, SEXP vv,
                 switch (TYPEOF(vv)) {
                     case  INTSXP: 
                         { 
-                            return two_runQMCurryOne<IntegerVector,retwhat>(v, vv, wts, window, recom_period, 
+                            return two_runQMCurryOne<IntegerVector,retwhat>(v, vv, wts, window, restart_period, 
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         } 
                     case REALSXP: // cast int to numeric
                         {  
-                            return two_runQMCurryOne<NumericVector,retwhat>(as<NumericVector>(v), vv, wts, window, recom_period, 
+                            return two_runQMCurryOne<NumericVector,retwhat>(as<NumericVector>(v), vv, wts, window, restart_period, 
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         }
                     case  LGLSXP: // cast logical to int
                         {
-                            return two_runQMCurryOne<IntegerVector,retwhat>(v, as<IntegerVector>(vv), wts, window, recom_period, 
+                            return two_runQMCurryOne<IntegerVector,retwhat>(v, as<IntegerVector>(vv), wts, window, restart_period, 
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         }
                     default: stop("Unsupported data type for vv"); // #nocov
@@ -299,17 +301,17 @@ NumericMatrix two_runQMCurryTwo(SEXP v, SEXP vv,
                 switch (TYPEOF(vv)) {
                     case  INTSXP: // cast int to numeric
                         { 
-                            return two_runQMCurryOne<NumericVector, retwhat>(v, as<NumericVector>(vv), wts, window, recom_period, 
+                            return two_runQMCurryOne<NumericVector, retwhat>(v, as<NumericVector>(vv), wts, window, restart_period, 
                                                                          min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         } 
                     case REALSXP: 
                         {  
-                            return two_runQMCurryOne<NumericVector,retwhat>(v, vv, wts, window, recom_period, 
+                            return two_runQMCurryOne<NumericVector,retwhat>(v, vv, wts, window, restart_period, 
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         }
                     case  LGLSXP: // cast logical to numeric
                         {
-                            return two_runQMCurryOne<NumericVector,retwhat>(v, as<NumericVector>(vv), wts, window, recom_period,
+                            return two_runQMCurryOne<NumericVector,retwhat>(v, as<NumericVector>(vv), wts, window, restart_period,
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         }
                     default: stop("Unsupported data type for vv"); // #nocov
@@ -320,17 +322,17 @@ NumericMatrix two_runQMCurryTwo(SEXP v, SEXP vv,
                 switch (TYPEOF(vv)) {
                     case  INTSXP: // cast logical to int 
                         { 
-                            return two_runQMCurryOne<IntegerVector, retwhat>(as<IntegerVector>(v), vv, wts, window, recom_period,
+                            return two_runQMCurryOne<IntegerVector, retwhat>(as<IntegerVector>(v), vv, wts, window, restart_period,
                                                                          min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         } 
                     case REALSXP: // cast logical to numeric
                         {  
-                            return two_runQMCurryOne<NumericVector,retwhat>(as<NumericVector>(v), vv, wts, window, recom_period,
+                            return two_runQMCurryOne<NumericVector,retwhat>(as<NumericVector>(v), vv, wts, window, restart_period,
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         }
                     case  LGLSXP: // cast logical to integer
                         {
-                            return two_runQMCurryOne<IntegerVector,retwhat>(as<IntegerVector>(v), as<IntegerVector>(vv), wts, window, recom_period,
+                            return two_runQMCurryOne<IntegerVector,retwhat>(as<IntegerVector>(v), as<IntegerVector>(vv), wts, window, restart_period,
                                                                         min_df, used_df, na_rm, check_wts, normalize_wts, check_negative_moments); 
                         }
                     default: stop("Unsupported data type for vv"); // #nocov
