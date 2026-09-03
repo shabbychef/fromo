@@ -118,6 +118,7 @@ RET t_runningSumish(T v,
     const bool infwin = NumericVector::is_na(window);
     if ((window <= 0) && (!infwin)) { stop("must give positive window"); } // #nocov
     if (variable_win && !infwin) { Rcpp::warning("variable_win specified, but not being used as a non-na window is given."); } // #nocov
+    if (do_recompute && (restart_period < 1)) { stop("recompute interval must be positive"); } // #nocov
 
     // whether to use the gap between the lb_time as the effective window
     const bool gapwin = variable_win && infwin;
