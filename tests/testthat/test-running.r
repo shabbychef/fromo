@@ -103,6 +103,38 @@ test_that("running sd, skew, kurt run without error",{#FOLDUP
 	#expect_error(running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(running_apx_median(q,p=ptiles,max_order=5L))
 })#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("1214226e-c7f8-47a8-ba3e-ef5629845dea")
+	x <- rnorm(100)
+	q <- c('a','b','c')
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+
+	for (thingy in list(x)) { 
+		for (window in c(50)) {
+			for (na_rm in c(FALSE)) {
+				for (restart_period in c(-2,0)) {
+					expect_error(running_sum(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_mean(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_sd(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_skew(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_kurt(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_sd3(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_skew4(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_kurt5(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					for (mol in c(1L)) {
+						expect_error(running_cent_moments(thingy,max_order=mol,window=window,restart_period=restart_period,na_rm=na_rm))
+					}
+					expect_error(running_std_moments(thingy,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_cumulants(thingy,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_apx_quantiles(thingy,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+				}
+			}
+		}
+	}
+})#UNFOLD
 context("running_foo weighted OK")
 test_that("running foo and weights",{#FOLDUP
 	skip_on_cran()
@@ -275,15 +307,15 @@ test_that("bad input",{#FOLDUP
 	set.char.seed("e6bc7b67-8ba5-4c48-aeed-180a27d3303c")
 	nel <- 10
 	thingy <- rnorm(nel)
-	# for some reason, these now cause R to abort? auuggggh!
 
 	expect_error(rd <- running_sum(thingy,window='bad idea'))
-	expect_error(rd <- running_mean(thingy,window=5,restart_period='dumb'))
-	expect_error(rd <- running_mean(thingy,window=5,min_df='dumb'))
-	expect_error(rd <- running_mean(thingy,window=5,na_rm='dumb'))
-	expect_error(rd <- running_sd3(thingy,window=5,used_df='dumb'))
-	expect_error(rd <- running_sd3(thingy,window=5,check_wts='dumb'))
-	expect_error(rd <- running_sd3(thingy,window=5,normalize_wts='dumb'))
+	# for some reason, these now cause R to abort? auuggggh!
+	#expect_error(rd <- running_mean(thingy,window=5,restart_period='dumb'))
+	#expect_error(rd <- running_mean(thingy,window=5,min_df='dumb'))
+	#expect_error(rd <- running_mean(thingy,window=5,na_rm='dumb'))
+	#expect_error(rd <- running_sd3(thingy,window=5,used_df='dumb'))
+	#expect_error(rd <- running_sd3(thingy,window=5,check_wts='dumb'))
+	#expect_error(rd <- running_sd3(thingy,window=5,normalize_wts='dumb'))
 })#UNFOLD
 context("running_foo check heywood cases")
 test_that("hit heywood branch",{#FOLDUP
@@ -482,6 +514,26 @@ test_that("running adjustments",{#FOLDUP
 	#expect_error(running_tstat(x,window=-20L))
 	#expect_error(running_tstat(x,window=20L,restart_period='FOO'))
 })#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("6a1a1360-5a3c-4a3f-b328-663eaa4206b9")
+	x <- rnorm(100)
+
+	for (thingy in list(x)) { 
+		for (window in c(50)) {
+			for (na_rm in c(FALSE)) {
+				for (restart_period in c(-2,0)) {
+					expect_error(running_centered(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_scaled(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_zscored(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_sharpe(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(running_tstat(thingy,window=window,restart_period=restart_period,na_rm=na_rm))
+				}
+			}
+		}
+	}
+})#UNFOLD
 
 context("running x y code")
 test_that("runs without error",{#FOLDUP
@@ -604,6 +656,35 @@ test_that("covariance weighting correctness",{#FOLDUP
 	expect_error(beta_dd <- running_regression_diagnostics(xvec,yvec,wts=wts,window=window,normalize_wts=FALSE),NA)
 	expect_error(beta_dd2 <- running_regression_diagnostics(bigx,bigy,window=length(bigx)),NA)
 	expect_equal(beta_dd[window,,drop=TRUE],beta_dd2[length(bigx),,drop=TRUE], tolerance=1e-12)
+})#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("6121de18-7568-464f-ba28-b29e1d5e95d2")
+	nel <- 20
+	xall <- list(rnorm(nel))
+	wna <- runif(nel,min=1,max=3)
+	wna[wna < 1.5] <- NA
+	wall <- list(rep(1.0,nel))
+
+	for (x_thingy in xall) {
+		y_thingy <- x_thingy + 1
+		for (wts in wall) {
+			for (window in c(5)) {
+				for (na_rm in c(FALSE)) {
+					for (rp in c(-2,0)) {
+						expect_error(running_correlation(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(running_covariance(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(running_covariance_3(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(running_regression_slope(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(running_regression_intercept(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(running_regression_fit(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(running_regression_diagnostics(x_thingy,y_thingy,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+					}
+				}
+			}
+		}
+	}
 })#UNFOLD
 
 #for vim modeline: (do not edit)

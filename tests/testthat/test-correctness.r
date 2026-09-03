@@ -638,6 +638,22 @@ test_that("running adjustments are correct",{#FOLDUP
 		}
 	}
 })#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("df7dc13a-a9f3-4668-ba2f-5995255fb51c")
+	xlen <- 5
+	x <- rnorm(xlen)
+	window <- 3
+	for (restart_period in c(-2, 0)) {
+			expect_error(fastv <- running_centered(x,window=window,restart_period=restart_period,na_rm=na_rm))
+			expect_error(fastv <- running_scaled(x,window=window,restart_period=restart_period,na_rm=na_rm))
+			expect_error(fastv <- running_zscored(x,window=window,restart_period=restart_period,na_rm=na_rm))
+			expect_error(fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm))
+			expect_error(fastv <- running_tstat(x,window=window,restart_period=restart_period,na_rm=na_rm))
+			expect_error(fastv <- running_sharpe(x,window=window,restart_period=restart_period,na_rm=na_rm,compute_se=TRUE))
+	}
+})#UNFOLD
 
 
 context("weighted running ops are correct")
@@ -737,6 +753,29 @@ test_that("running weights work correctly",{#FOLDUP
 			}# UNFOLD
 		}
 	}
+})#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("529e1405-4de9-48dd-ab67-130ae331b67b")
+	na_rm <- FALSE
+
+	restart_period <- 1000
+	xlen <- 10
+	x <- rnorm(xlen)
+	wts <- rep(1L,xlen)
+	window <- 5
+	for (restart_period in c(-2, 0)) {
+		expect_error(fastv <- running_centered(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm))
+		for (nw in c(TRUE,FALSE)) {
+			expect_error(fastv <- running_scaled(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw))
+			expect_error(fastv <- running_zscored(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw))
+			expect_error(fastv <- running_sharpe(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw))
+			expect_error(fastv <- running_tstat(x,wts=wts,window=window,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw))
+			expect_error(fastv <- running_cent_moments(x,wts=wts,window=window,max_order=3L,max_order_only=TRUE,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw))
+			expect_error(fastv <- running_cent_moments(x,wts=wts,window=window,max_order=4L,max_order_only=TRUE,restart_period=restart_period,na_rm=na_rm,normalize_wts=nw))
+		}
+	}# 
 })#UNFOLD
 
 context("t_running for trivial case")

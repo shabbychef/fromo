@@ -102,6 +102,37 @@ test_that("t_running sd, skew, kurt run without error",{#FOLDUP
 	#expect_error(t_running_apx_quantiles(x,p=q,max_order=5L))
 	expect_error(t_running_apx_median(q,p=ptiles,max_order=5L))
 })#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("9e7d0922-0c82-4ebf-a384-51212097c357")
+	x <- rnorm(100)
+	times <- seq_along(x)
+
+	ptiles <- c(0.1,0.25,0.5,0.75,0.9)
+
+	for (thingy in list(x)) { 
+		for (window in c(50)) {
+			for (na_rm in c(FALSE)) {
+				for (restart_period in c(-2,0)) {
+					expect_error(t_running_sum(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_mean(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_sd(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_skew(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_kurt(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_sd3(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_skew4(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_kurt5(thingy,time=times,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_cent_moments(thingy,time=times,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_cent_moments(thingy,time=times,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm,max_order_only=TRUE))
+					expect_error(t_running_std_moments(thingy,time=times,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_cumulants(thingy,time=times,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+					expect_error(t_running_apx_quantiles(thingy,time=times,p=ptiles,max_order=5L,window=window,restart_period=restart_period,na_rm=na_rm))
+				}
+			}
+		}
+	}
+})#UNFOLD
 
 context("code runs: t_running_foo and weights")
 test_that("t_running foo and weights",{#FOLDUP
@@ -578,6 +609,34 @@ test_that("covariance weighting correctness",{#FOLDUP
 	expect_error(beta_dd <- t_running_regression_diagnostics(xvec,yvec,time=times,wts=wts,window=window,normalize_wts=FALSE),NA)
 	expect_error(beta_dd2 <- t_running_regression_diagnostics(bigx,bigy,time=bigtimes,window=length(bigx)),NA)
 	expect_equal(beta_dd[window,,drop=TRUE],beta_dd2[length(bigx),,drop=TRUE], tolerance=1e-12)
+})#UNFOLD
+test_that("catch bad restart_period",{#FOLDUP
+	skip_on_cran()
+
+	set.char.seed("eb8f7cc8-d2a1-4fbb-92dc-86782f44ef34")
+	nel <- 20
+	xall <- list(rnorm(nel))
+	wall <- list(rep(1.0,nel))
+
+	for (x_thingy in xall) {
+		y_thingy <- x_thingy + 1
+		for (wts in wall) {
+			for (window in c(5)) {
+				for (na_rm in c(FALSE)) {
+					for (rp in c(-2,0)) {
+						times <- seq_along(x_thingy)
+						expect_error(t_running_correlation(x_thingy,y_thingy,time=times,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(t_running_covariance(x_thingy,y_thingy,time=times,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(t_running_covariance_3(x_thingy,y_thingy,time=times,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(t_running_regression_slope(x_thingy,y_thingy,time=times,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(t_running_regression_intercept(x_thingy,y_thingy,time=times,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(t_running_regression_fit(x_thingy,y_thingy,wts=wts,time=times,window=window,restart_period=rp,na_rm=na_rm))
+						expect_error(t_running_regression_diagnostics(x_thingy,y_thingy,time=times,wts=wts,window=window,restart_period=rp,na_rm=na_rm))
+					}
+				}
+			}
+		}
+	}
 })#UNFOLD
 
 #for vim modeline: (do not edit)
