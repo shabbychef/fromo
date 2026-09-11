@@ -69,7 +69,7 @@ NumericMatrix two_runQM(T v,
     frets.tare();
 
     const int numel = v.size();
-    if (v.size() != numel) { stop("size of v and vv do not match"); }
+    if (vv.size() != numel) { stop("size of v and vv do not match"); }
 
     double nextv, prevv, nextvv, prevvv, nextw, prevw;
 
