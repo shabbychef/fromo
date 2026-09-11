@@ -65,7 +65,12 @@ test_that("centcosum constructor and such",{#FOLDUP
 
 	expect_error(xobj <- as.centcosums(x,order=2L, na.omit=TRUE),NA)
 })#UNFOLD
-test_that("centsums and centcosum default order",{#FOLDUP
+test_that("centsums and centcosum constructors default order",{#FOLDUP
+  sums_vec <- c(100, 1.2, 0.5)
+  obj <- centsums(sums_vec)
+  expect_true(validObject(obj))
+  expect_equal(obj@order, length(sums_vec) - 1)
+	# default order works for new object.
   expect_true(validObject(new("centsums", sums=c(10, 0, 1))))
   expect_true(validObject(new("centcosums", cosums=matrix(0, 2, 2))))
 })#UNFOLD

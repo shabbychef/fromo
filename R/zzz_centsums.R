@@ -77,14 +77,11 @@ setMethod('initialize',
 
 #'
 #' @param sums a numeric vector.
-#' @param order the order, defaulting to \code{length(sums)+1}.
+#' @param order the order, defaulting to \code{length(sums)-1}.
 #' @name centsums
 #' @rdname centsums-class
 #' @export
 centsums <- function(sums,order=NULL) {
-	if (is.null(order)) {
-		order <- length(sums) + 1
-	}
 	retv <- new("centsums", sums=sums, order=order)
 	invisible(retv)
 }

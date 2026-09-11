@@ -26,7 +26,7 @@ as.centsums(
 \arguments{
 \item{x}{a numeric, array, or matrix.}
 
-\item{order}{the order, defaulting to \code{length(sums)+1}.}
+\item{order}{the order, defaulting to \code{length(sums)-1}.}
 
 \item{na.rm}{whether to remove \code{NA}.}
 

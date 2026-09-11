@@ -17,7 +17,7 @@ centsums(sums, order = NULL)
 
 \item{sums}{a numeric vector.}
 
-\item{order}{the order, defaulting to \code{length(sums)+1}.}
+\item{order}{the order, defaulting to \code{length(sums)-1}.}
 }
 \value{
 An object of class \code{centsums}.
