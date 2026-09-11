@@ -66,7 +66,7 @@ setClass("centsums",
 setMethod('initialize',
 					signature('centsums'),
 					function(.Object,sums,order=NA_real_) {
-						if (is.null(order)) {
+						if (is.null(order) || is.na(order)) {
 							order <- length(sums) - 1
 						}
 					 	.Object@sums <- sums
@@ -309,7 +309,7 @@ setClass("centcosums",
 setMethod('initialize',
 					signature('centcosums'),
 					function(.Object,cosums,order=NA_real_) {
-						if (is.null(order)) {
+						if (is.null(order) || is.na(order)) {
 							order <- 2
 						}
 					 	.Object@cosums <- cosums

@@ -35,7 +35,7 @@ THOROUGHNESS <- getOption('test.thoroughness',1.0)
 #UNFOLD
 
 context("code runs at all")#FOLDUP
-test_that("constructor and such",{#FOLDUP
+test_that("centsums constructor and such",{#FOLDUP
 	set.char.seed("33c133f6-930f-4656-88d4-84493784eee3")
 
 	x <- rnorm(100)
@@ -50,7 +50,7 @@ test_that("constructor and such",{#FOLDUP
 
 	expect_error(xobj <- as.centsums(x,order=5L, na.rm=TRUE),NA)
 })#UNFOLD
-test_that("cosum constructor and such",{#FOLDUP
+test_that("centcosum constructor and such",{#FOLDUP
 	set.char.seed("817d965f-c3fb-439b-92ef-8c42452688ea")
 
 	x <- matrix(rnorm(30*3),ncol=3)
@@ -64,6 +64,10 @@ test_that("cosum constructor and such",{#FOLDUP
 	expect_error(capture_output(show(xobj)),NA)
 
 	expect_error(xobj <- as.centcosums(x,order=2L, na.omit=TRUE),NA)
+})#UNFOLD
+test_that("centsums and centcosum default order",{#FOLDUP
+  expect_true(validObject(new("centsums", sums=c(10, 0, 1))))
+  expect_true(validObject(new("centcosums", cosums=matrix(0, 2, 2))))
 })#UNFOLD
 # 2FIX: check the effects of NA
 #UNFOLD
