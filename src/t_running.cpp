@@ -421,7 +421,7 @@ NumericMatrix t_running_apx_median(SEXP v,
 //' mean and standard deviation possibly using 'future' or 'past' information
 //' by means of a non-zero lookahead. Positive values mean data are taken from
 //' the future. This is in time units, and so should be a real.
-//' @param compute_se for \code{running_sharpe}, return an extra column of the
+//' @param compute_se for \code{t_running_sharpe}, return an extra column of the
 //' standard error, as computed by Mertens' correction.
 //'
 //' @details
@@ -540,7 +540,7 @@ NumericMatrix t_running_tstat(SEXP v,
                               SEXP window = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > wts = R_NilValue, 
                               Rcpp::Nullable< Rcpp::NumericVector > lb_time = R_NilValue, 
-                              bool na_rm=false, bool compute_se=false, int min_df=0, double used_df=1.0, int restart_period=100,
+                              bool na_rm=false, int min_df=0, double used_df=1.0, int restart_period=100,
                               bool variable_win=false, bool wts_as_delta=true, bool check_wts=false, bool normalize_wts=true,
                               bool check_negative_moments=true) {
     double wins = get_double_wins(window);
