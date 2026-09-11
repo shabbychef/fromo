@@ -885,7 +885,7 @@ t_running_apx_median <- function(v, time = NULL, time_deltas = NULL, window = NU
 #' mean and standard deviation possibly using 'future' or 'past' information
 #' by means of a non-zero lookahead. Positive values mean data are taken from
 #' the future. This is in time units, and so should be a real.
-#' @param compute_se for \code{running_sharpe}, return an extra column of the
+#' @param compute_se for \code{t_running_sharpe}, return an extra column of the
 #' standard error, as computed by Mertens' correction.
 #'
 #' @details
@@ -943,8 +943,8 @@ t_running_sharpe <- function(v, time = NULL, time_deltas = NULL, window = NULL, 
 
 #' @rdname t_runningadjustments
 #' @export
-t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, compute_se = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
-    .Call('_fromo_t_running_tstat', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, compute_se, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
+t_running_tstat <- function(v, time = NULL, time_deltas = NULL, window = NULL, wts = NULL, lb_time = NULL, na_rm = FALSE, min_df = 0L, used_df = 1.0, restart_period = 100L, variable_win = FALSE, wts_as_delta = TRUE, check_wts = FALSE, normalize_wts = TRUE, check_negative_moments = TRUE) {
+    .Call('_fromo_t_running_tstat', PACKAGE = 'fromo', v, time, time_deltas, window, wts, lb_time, na_rm, min_df, used_df, restart_period, variable_win, wts_as_delta, check_wts, normalize_wts, check_negative_moments)
 }
 
 #' @title

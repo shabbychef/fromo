@@ -226,8 +226,9 @@ observations.}
 
 \item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
-this parameter. Larger values mean fewer restarts and faster, though less accurate
-results.}
+this parameter. Larger values mean fewer restarts and faster execution, though less accurate
+results. 
+Must be strictly positive, or NA, which is equivalent to an infinite restart period.}
 
 \item{variable_win}{if true, and the \code{window} is not a concrete number,
 the computation window becomes the time between lookback times.}

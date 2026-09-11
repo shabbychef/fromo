@@ -89,7 +89,6 @@ t_running_tstat(
   wts = NULL,
   lb_time = NULL,
   na_rm = FALSE,
-  compute_se = FALSE,
   min_df = 0L,
   used_df = 1,
   restart_period = 100L,
@@ -151,8 +150,9 @@ the future. This is in time units, and so should be a real.}
 
 \item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
-this parameter. Larger values mean fewer restarts and faster, though less accurate
-results.}
+this parameter. Larger values mean fewer restarts and faster execution, though less accurate
+results. 
+Must be strictly positive, or NA, which is equivalent to an infinite restart period.}
 
 \item{variable_win}{if true, and the \code{window} is not a concrete number,
 the computation window becomes the time between lookback times.}
@@ -184,7 +184,7 @@ only if you know what you are doing.}
 \item{lb_time}{a vector of the times from which lookback will be performed. The output should
 be the same size as this vector. If not given, defaults to \code{time}.}
 
-\item{compute_se}{for \code{running_sharpe}, return an extra column of the
+\item{compute_se}{for \code{t_running_sharpe}, return an extra column of the
 standard error, as computed by Mertens' correction.}
 }
 \value{

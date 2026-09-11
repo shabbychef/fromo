@@ -3,6 +3,8 @@
 * 0.2.5 on CRAN
 * now tests for positive restart_period, throw error otherwise.
 * NA restart_period more explicitly means "infinite"
+* remove unused compute_se from t_running_tstat
+* catch size mismatch in running_co* and t_running_co*
 
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN

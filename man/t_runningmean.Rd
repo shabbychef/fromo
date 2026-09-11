@@ -80,9 +80,10 @@ Defaults to zero, meaning no restriction.}
 
 \item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
-this parameter. Larger values mean fewer restarts and faster, though potentially less 
+this parameter. Larger values mean fewer restarts and faster execution, though potentially less 
 accurate results. Unlike in the computation of even order moments, loss of precision
-is unlikely to be disastrous, so the default value is rather large.}
+is unlikely to be disastrous, so the default value is rather large.
+Must be strictly positive, or NA, which is equivalent to an infinite restart period.}
 
 \item{variable_win}{if true, and the \code{window} is not a concrete number,
 the computation window becomes the time between lookback times.}

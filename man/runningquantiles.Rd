@@ -70,8 +70,9 @@ observations.}
 
 \item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
-this parameter. Larger values mean fewer restarts and faster, though less accurate
-results.}
+this parameter. Larger values mean fewer restarts and faster execution, though less accurate
+results. 
+Must be strictly positive, or NA, which is equivalent to an infinite restart period.}
 
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}

@@ -638,6 +638,10 @@ test_that("catch bad restart_period",{#FOLDUP
 		}
 	}
 })#UNFOLD
+test_that("t_running_correlation throws error when lengths of x and y differ", {
+  expect_error(t_running_correlation(1:10, 1:5, time=1:10), "does not match")
+  expect_error(t_running_covariance(1:10, 1:5, time=1:10), "does not match")
+})
 
 #for vim modeline: (do not edit)
 # vim:ts=2:sw=2:tw=79:fdm=marker:fmr=FOLDUP,UNFOLD:cms=#%s:syn=r:ft=r:ai:si:cin:nu:fo=croql:cino=p0t0c5(0:

@@ -127,6 +127,9 @@ NumericMatrix two_t_runQM(T v,
     if (time.size() != numel) {
         stop("size of time does not match v"); // #nocov
     }
+    if (vv.size() != numel) {
+        stop("size of vv does not match v"); // #nocov
+    }
     const int numlb = lb_time.size();
 
     double nextv, prevv, nextvv, prevvv, nextw, prevw;

@@ -48,9 +48,10 @@ checking, an \code{NA} value will cause the output to be \code{NA}.}
 
 \item{restart_period}{the recompute period. because subtraction of elements can cause
 loss of precision, the computation of moments is restarted periodically based on 
-this parameter. Larger values mean fewer restarts and faster, though potentially less 
+this parameter. Larger values mean fewer restarts and faster execution, though potentially less 
 accurate results. Unlike in the computation of even order moments, loss of precision
-is unlikely to be disastrous, so the default value is rather large.}
+is unlikely to be disastrous, so the default value is rather large.
+Must be strictly positive, or NA, which is equivalent to an infinite restart period.}
 
 \item{check_wts}{a boolean for whether the code shall check for negative
 weights, and throw an error when they are found. Default false for speed.}
