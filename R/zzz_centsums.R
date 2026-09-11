@@ -14,11 +14,8 @@
 # along with fromo.  If not, see <http://www.gnu.org/licenses/>.
 
 # Created: 2016.03.30
-# Copyright: Steven E. Pav, 2016
-# Author: Steven E. Pav <steven@corecast.io>
-# Comments: Steven E. Pav
-# Copyright 2016-2016 Steven E. Pav. All Rights Reserved.
-# Author: Steven E. Pav
+# Author: Steven E. Pav <shabbychef@gmail.com>
+# Copyright 2016-2026 Steven E. Pav. All Rights Reserved.
 
 # univariate input#FOLDUP
 

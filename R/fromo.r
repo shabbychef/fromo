@@ -1,4 +1,4 @@
-# Copyright 2016-2016 Steven E. Pav. All Rights Reserved.
+# Copyright 2016-2026 Steven E. Pav. All Rights Reserved.
 # Author: Steven E. Pav
 
 # This file is part of fromo.
