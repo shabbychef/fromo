@@ -33,3 +33,6 @@ nohup.out
 ^.ipynb_checkpoints$
 .tags
 ^\.github$
+junkyard.txt
+issue_*.md
+tod*.md
