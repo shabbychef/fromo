@@ -587,6 +587,9 @@ NumericMatrix join_cent_cosums(NumericMatrix ret1,NumericMatrix ret2) {
         (ret2.ncol() != ret2.nrow())) {
         stop("malformed input"); // #nocov
     }
+    if (ret1.ncol() != ret2.ncol()) {
+        stop("not yet implemented: different orders for the two input"); // #nocov
+    }
 
     const int p=ret1.ncol() - 1;
     double n1,n2,ntot,n2rat,muv;
@@ -636,6 +639,9 @@ NumericMatrix unjoin_cent_cosums(NumericMatrix ret3,NumericMatrix ret2) {
     if ((ret3.ncol() != ret3.nrow()) ||
         (ret2.ncol() != ret2.nrow())) {
         stop("malformed input"); // #nocov
+    }
+    if (ret3.ncol() != ret2.ncol()) {
+        stop("not yet implemented: different orders for the two input"); // #nocov
     }
 
     const int p=ret3.ncol() - 1;

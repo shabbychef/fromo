@@ -134,6 +134,8 @@ test_that("cosums make zero?",{#FOLDUP
 })#UNFOLD
 test_that("cosums bad input?",{#FOLDUP
 	set.char.seed("6e06ef0e-fb0e-4adb-b27d-028db8028f20")
+	# this is subject to change; perhaps in the future
+	# we filter down to the smaller order?
 
 	x <- matrix(rnorm(100*4),ncol=4)
 	y <- matrix(rnorm(100*6),ncol=6)
@@ -142,9 +144,20 @@ test_that("cosums bad input?",{#FOLDUP
 	expect_error(xobj <- as.centcosums(x,order=order, na.omit=TRUE),NA)
 	expect_error(yobj <- as.centcosums(y,order=order, na.omit=TRUE),NA)
 
-	# these should all be erorrs??
-	#expect_error(c(xobj,yobj))
-	#expect_error(xobj %-% yobj)
+	# these should all be errors.
+	expect_error(c(xobj,yobj))
+	expect_error(xobj %-% yobj)
+
+  m5 <- matrix(0, 5, 5); m5[1, 1] <- 10
+  m3 <- matrix(0, 3, 3); m3[1, 1] <- 4
+  expect_error(join_cent_cosums(m5, m3), "not yet implemented")
+  expect_error(unjoin_cent_cosums(m5, m3), "not yet implemented")
+  
+  # Also via S4 methods:
+  xobj <- as.centcosums(matrix(rnorm(20*4), ncol=4))
+  yobj <- as.centcosums(matrix(rnorm(20*2), ncol=2))
+  expect_error(c(xobj, yobj), "not yet implemented")
+  expect_error(xobj %-% yobj, "not yet implemented")
 })#UNFOLD
 
 
