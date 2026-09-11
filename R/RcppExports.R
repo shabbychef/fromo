@@ -189,11 +189,39 @@ std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = 
 }
 
 #' @title
-#' Centered sums; join and unjoined.
+#' Centered sums.
 #'
 #' @description
 #'
-#' Compute, join, or unjoin centered sums.
+#' From a vector of data, returns a vector of the number of non-NA elements, the mean, and the 
+#' 2nd through kth centered sums of the input data.
+#'
+#' @inheritParams cent_moments
+#' @return a vector the same size as the input consisting of the adjusted version of the input.
+#' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+#'
+#' @examples
+#'
+#'  set.seed(1234)
+#'  x1 <- rnorm(1e3,mean=1)
+#'  max_ord <- 6L
+#'  rs1 <- cent_sums(x1,max_ord)
+#'
+#' @template etc
+#' @template ref-romo
+#' @template param-wts
+#' @rdname centsums 
+#' @export
+cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
+    .Call('_fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts, normalize_wts)
+}
+
+#' @title
+#' Join and unjoin centered sums.
+#'
+#' @description
+#'
+#' Join, or unjoin centered sums.  
 #'
 #' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
@@ -201,7 +229,6 @@ std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = 
 #' the count, the mean, then the k through ordth centered sum of some observations.
 #' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 #' the count, the mean, then the k through ordth centered sum of some observations.
-#' @inheritParams cent_moments
 #'
 #' @return a vector the same size as the input consisting of the adjusted version of the input.
 #' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
@@ -225,19 +252,13 @@ std_cumulants <- function(v, max_order = 5L, used_df = 0L, na_rm = FALSE, wts = 
 #' @template etc
 #' @template ref-romo
 #' @template param-wts
-#' @rdname centsums 
-#' @export
-cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = FALSE, normalize_wts = TRUE) {
-    .Call('_fromo_cent_sums', PACKAGE = 'fromo', v, max_order, na_rm, wts, check_wts, normalize_wts)
-}
-
-#' @rdname centsums 
+#' @rdname centsums_join
 #' @export
 join_cent_sums <- function(ret1, ret2) {
     .Call('_fromo_join_cent_sums', PACKAGE = 'fromo', ret1, ret2)
 }
 
-#' @rdname centsums 
+#' @rdname centsums_join
 #' @export
 unjoin_cent_sums <- function(ret3, ret2) {
     .Call('_fromo_unjoin_cent_sums', PACKAGE = 'fromo', ret3, ret2)

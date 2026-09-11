@@ -346,11 +346,41 @@ NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=f
 // monoid mumbo jumbo: add and subtract centered sums//FOLDUP
 
 //' @title
-//' Centered sums; join and unjoined.
+//' Centered sums.
 //'
 //' @description
 //'
-//' Compute, join, or unjoin centered sums.
+//' From a vector of data, returns a vector of the number of non-NA elements, the mean, and the 
+//' 2nd through kth centered sums of the input data.
+//'
+//' @inheritParams cent_moments
+//' @return a vector the same size as the input consisting of the adjusted version of the input.
+//' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
+//'
+//' @examples
+//'
+//'  set.seed(1234)
+//'  x1 <- rnorm(1e3,mean=1)
+//'  max_ord <- 6L
+//'  rs1 <- cent_sums(x1,max_ord)
+//'
+//' @template etc
+//' @template ref-romo
+//' @template param-wts
+//' @rdname centsums 
+//' @export
+// [[Rcpp::export]]
+NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false, bool normalize_wts=true) {
+    if (max_order < 1) { stop("must give largeish max_order"); }
+    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, max_order, na_rm, check_wts, normalize_wts);
+    return preval;
+}
+//' @title
+//' Join and unjoin centered sums.
+//'
+//' @description
+//'
+//' Join, or unjoin centered sums.  
 //'
 //' @param ret1 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
@@ -358,7 +388,6 @@ NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=f
 //' the count, the mean, then the k through ordth centered sum of some observations.
 //' @param ret3 an \eqn{ord+1} vector as output by \code{\link{cent_sums}} consisting of
 //' the count, the mean, then the k through ordth centered sum of some observations.
-//' @inheritParams cent_moments
 //'
 //' @return a vector the same size as the input consisting of the adjusted version of the input.
 //' When there are not sufficient (non-nan) elements for the computation, \code{NaN} are returned.
@@ -382,15 +411,7 @@ NumericVector std_cumulants(SEXP v, int max_order=5, int used_df=0, bool na_rm=f
 //' @template etc
 //' @template ref-romo
 //' @template param-wts
-//' @rdname centsums 
-//' @export
-// [[Rcpp::export]]
-NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_NilValue, bool check_wts=false, bool normalize_wts=true) {
-    if (max_order < 1) { stop("must give largeish max_order"); }
-    NumericVector preval = quasiWeightedMomentsCurryTwo(v, wts, max_order, na_rm, check_wts, normalize_wts);
-    return preval;
-}
-//' @rdname centsums 
+//' @rdname centsums_join
 //' @export
 // [[Rcpp::export]]
 NumericVector join_cent_sums(NumericVector ret1,NumericVector ret2) {
@@ -405,7 +426,7 @@ NumericVector join_cent_sums(NumericVector ret1,NumericVector ret2) {
     frets1.join(frets2);
     return frets1.asvec();
 }
-//' @rdname centsums 
+//' @rdname centsums_join
 //' @export
 // [[Rcpp::export]]
 NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
