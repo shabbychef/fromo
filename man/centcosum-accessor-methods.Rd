@@ -13,14 +13,17 @@ cosums(x)
 
 \S4method{cosums}{centcosums}(x)
 
-comoments(x, type = c("central", "raw"))
+comoments(x, type = c("central", "raw"), used_df = 0)
 
-\S4method{comoments}{centcosums}(x, type = c("central", "raw"))
+\S4method{comoments}{centcosums}(x, type = c("central", "raw"), used_df = 0)
 }
 \arguments{
 \item{x}{a \code{centcosums} object.}
 
 \item{type}{the type of moment to compute.}
+
+\item{used_df}{the number of used degrees of freedom, only for computing
+the covariance, and only for the \sQuote{central} type of comoment.}
 }
 \description{
 Access slot data from a \code{centcosums} object.

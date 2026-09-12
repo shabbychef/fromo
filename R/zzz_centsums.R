@@ -32,7 +32,8 @@
 #' the mean, and the \eqn{k}th centered sum, for \eqn{k} up to some
 #' maximum order.
 #'
-#' @slot sums a numeric vector of the sums.
+#' @slot sums a numeric vector of the sums. 
+#' might be the output of \code{cent_sums} for example.
 #' @slot order the maximum order.
 #'
 #' @return An object of class \code{centsums}.
@@ -40,6 +41,8 @@
 #'
 #' @examples 
 #' obj <- new("centsums",sums=c(1000,1.234,0.235),order=2)
+#' x <- rnorm(100)
+#' obj2 <- centsums(cent_sums(x, max_order=6))
 #'
 #' @template etc
 #' @template ref-romo
@@ -264,21 +267,28 @@ setMethod('show', signature('centsums'),
 #'
 #' An S4 class to store (centered) cosums of data, and to support operations on 
 #' the same.
+#' A cosum is the sum of products of different elements of the vector input.
 #'
 #' @details
 #'
 #' A \code{centcosums} object contains a multidimensional array (now only
-#' 2-diemnsional), as output by \code{cent_cosums}.
+#' 2-dimensional), as output by \code{cent_cosums}.
 #'
 #' @seealso cent_cosums
 #' @slot cosums a multidimensional array of the cosums.
+#' might be the output of \code{cent_cosums}, for example.
 #' @slot order the maximum order. ignored for now.
+#' only a value of 2 is understood for now.
 #'
 #' @return An object of class \code{centcosums}.
 #' @keywords moments
 #'
 #' @examples 
-#' obj <- new("centcosums",cosums=cent_cosums(matrix(rnorm(100*3),ncol=3),max_order=2),order=2)
+#' set.seed(123)
+#' x <- matrix(rnorm(100*3),ncol=3)
+#' obj <- new("centcosums",cosums=cent_cosums(x,max_order=2),order=2)
+#' # equivalently
+#' obj2 <- centcosums(cent_cosums(x, max_order=2),order=2)
 #'
 #' @template etc
 #' @template ref-romo
@@ -385,22 +395,19 @@ setGeneric('cosums', signature="x", function(x) standardGeneric('cosums'))
 setMethod('cosums', 'centcosums', function(x) x@cosums )
 
 # used below
-.cosums2comoments <- function(c_sums,type=c('central','raw')) {
-		# add used_df
+# @param used_df  the number of used df, only for converting the covariance,
+# not the mean.
+.cosums2comoments <- function(c_sums,type=c('central','raw'),used_df=0) {
 		type <- match.arg(type)
-		cmoments <- c(c_sums[1],c_sums[2:length(c_sums)] / c_sums[1])
-
+		retv <- c_sums
+    nsum <- nrow(retv)
+		nobs <- retv[1,1]
 		switch(type,
 			raw={
-				retv <- c_sums
-				retv[1,1] <- 1
-				retv[2:(nrow(retv)),2:(nrow(retv))] <- retv[2:(nrow(retv)),2:(nrow(retv))] + tcrossprod(retv[2:(nrow(retv)),1])
+				retv[2:nsum,2:nsum] <- (retv[2:nsum,2:nsum]/nobs) + tcrossprod(retv[2:nsum,1,drop=FALSE])
 			},
 			central={ 
-				retv <- c_sums
-				retv[1,1] <- 1
-				retv[2:(nrow(retv)),1] <- 0
-				retv[1,2:(nrow(retv))] <- 0
+				retv[2:nsum,2:nsum] <- retv[2:nsum,2:nsum] / (nobs - used_df)
 			})
 			retv
 }
@@ -408,14 +415,15 @@ setMethod('cosums', 'centcosums', function(x) x@cosums )
 #' @rdname centcosum-accessor-methods
 #' @aliases comoments
 #' @exportMethod comoments
-setGeneric('comoments', function(x,type=c('central','raw')) standardGeneric('comoments'))
+setGeneric('comoments', function(x,type=c('central','raw'),used_df=0) standardGeneric('comoments'))
+#' @param used_df  the number of used degrees of freedom, only for computing
+#' the covariance, and only for the \sQuote{central} type of comoment.
 #' @rdname centcosum-accessor-methods
 #' @aliases comoments,centcosums-method
 setMethod('comoments', signature(x='centcosums'),
-	function(x,type=c('central','raw')) {
-		# add used_df
+	function(x,type=c('central','raw'),used_df=0) {
 		type <- match.arg(type)
-		retv <- .cosums2comoments(x@cosums,type)
+		retv <- .cosums2comoments(x@cosums,type,used_df)
 	})
 
 

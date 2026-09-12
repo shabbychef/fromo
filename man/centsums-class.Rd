@@ -34,7 +34,8 @@ maximum order.
 \section{Slots}{
 
 \describe{
-\item{\code{sums}}{a numeric vector of the sums.}
+\item{\code{sums}}{a numeric vector of the sums. 
+might be the output of \code{cent_sums} for example.}
 
 \item{\code{order}}{the maximum order.}
 }}
@@ -49,6 +50,8 @@ the fromo package.
 }
 \examples{
 obj <- new("centsums",sums=c(1000,1.234,0.235),order=2)
+x <- rnorm(100)
+obj2 <- centsums(cent_sums(x, max_order=6))
 
 }
 \references{

@@ -25,17 +25,20 @@ An object of class \code{centcosums}.
 \description{
 An S4 class to store (centered) cosums of data, and to support operations on 
 the same.
+A cosum is the sum of products of different elements of the vector input.
 }
 \details{
 A \code{centcosums} object contains a multidimensional array (now only
-2-diemnsional), as output by \code{cent_cosums}.
+2-dimensional), as output by \code{cent_cosums}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{cosums}}{a multidimensional array of the cosums.}
+\item{\code{cosums}}{a multidimensional array of the cosums.
+might be the output of \code{cent_cosums}, for example.}
 
-\item{\code{order}}{the maximum order. ignored for now.}
+\item{\code{order}}{the maximum order. ignored for now.
+only a value of 2 is understood for now.}
 }}
 
 \note{
@@ -47,7 +50,11 @@ speed and robustness. User assumes all risk from using
 the fromo package.
 }
 \examples{
-obj <- new("centcosums",cosums=cent_cosums(matrix(rnorm(100*3),ncol=3),max_order=2),order=2)
+set.seed(123)
+x <- matrix(rnorm(100*3),ncol=3)
+obj <- new("centcosums",cosums=cent_cosums(x,max_order=2),order=2)
+# equivalently
+obj2 <- centcosums(cent_cosums(x, max_order=2),order=2)
 
 }
 \references{

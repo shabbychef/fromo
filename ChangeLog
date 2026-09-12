@@ -6,6 +6,10 @@
 * remove unused compute_se from t_running_tstat
 * catch size mismatch in running_co* and t_running_co*
 * split out and fix cent_sums man page
+* fix default order in centsums and centcosums
+* fix documentation for t_running comoments
+* adding various size checks.
+* fix computation of comoments
 
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN

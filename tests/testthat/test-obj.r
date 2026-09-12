@@ -159,7 +159,27 @@ test_that("cosums bad input?",{#FOLDUP
   expect_error(c(xobj, yobj), "not yet implemented")
   expect_error(xobj %-% yobj, "not yet implemented")
 })#UNFOLD
+test_that("comoments matches sample covariance and raw moments", {#FOLDUP
+	set.char.seed("f8795adb-cb28-4fd8-9118-c5e0b3532925")
+  x <- matrix(rnorm(100 * 3), ncol=3)
+  expect_error(obj <- as.centcosums(x), NA)
+  
+  # Central comoments should equal sample covariance (population, used_df=0)
+  cm_cent <- comoments(obj, "central", used_df=0)
+  n <- nrow(x)
+  expected_cov <- cov(x) * ((n - 1) / n)
+  expect_equal(cm_cent[2:4, 2:4], expected_cov, tolerance=1e-7)
 
+  cm_cent <- comoments(obj, "central", used_df=1)
+  n <- nrow(x)
+  expected_cov <- cov(x)
+  expect_equal(cm_cent[2:4, 2:4], expected_cov, tolerance=1e-7)
+  
+  # Raw comoments should equal crossprod(x) / n
+  cm_raw <- comoments(obj, "raw")
+  expected_raw <- crossprod(x) / n
+  expect_equal(cm_raw[2:4, 2:4], expected_raw, tolerance=1e-7)
+})#UNFOLD
 
 # 2FIX: check the effects of NA
 #UNFOLD
