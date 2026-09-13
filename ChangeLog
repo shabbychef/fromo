@@ -10,6 +10,7 @@
 * fix documentation for t_running comoments
 * adding various size checks.
 * fix computation of comoments
+* NA variance would have been standardized to 1, fixed.
 
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN

@@ -74,7 +74,17 @@ test_that("centsums and centcosum constructors default order",{#FOLDUP
   expect_true(validObject(new("centsums", sums=c(10, 0, 1))))
   expect_true(validObject(new("centcosums", cosums=matrix(0, 2, 2))))
 })#UNFOLD
-# 2FIX: check the effects of NA
+test_that("moments standardized does not report variance 1 on NA or empty data", {
+  x <- c(1, 2, NA, 4, 5)
+  cs <- as.centsums(x, na.rm=FALSE)
+  m_std <- moments(cs, "standardized")
+  expect_true(is.na(m_std[2]))
+  
+  x_all_na <- c(NA_real_, NA_real_)
+  cs_empty <- as.centsums(x_all_na, na.rm=TRUE)
+  m_empty <- moments(cs_empty, "standardized")
+  expect_true(is.na(m_empty[2]) || is.nan(m_empty[2]))
+})
 #UNFOLD
 context("correctness")#FOLDUP
 test_that("monoidal homomorphism",{#FOLDUP

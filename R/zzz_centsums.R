@@ -160,11 +160,15 @@ setMethod('sums', 'centsums', function(x) x@sums )
 				retv <- cmoments[2:length(cmoments)]
 				retv[1] <- 0.0
 				if (length(retv) > 1) {
-					if (length(retv) > 2) {
-						sigma2 <- retv[2]
-						retv[3:length(retv)] <- retv[3:length(retv)] / (sigma2 ^ ((3:length(retv))/2.0))
+					sigma2 <- retv[2]
+					if (is.na(sigma2)) {
+						retv[2:length(retv)] <- NA_real_
+					} else {
+						if (length(retv) > 2) {
+							retv[3:length(retv)] <- retv[3:length(retv)] / (sigma2 ^ ((3:length(retv))/2.0))
+						}
+						retv[2] <- 1.0
 					}
-					retv[2] <- 1.0
 				}
 			})
 			retv
