@@ -471,11 +471,11 @@ NumericMatrix quasiTheta(T v,bool na_omit = false) {
     for (nnn=0;nnn<n;nnn++) {
         isok = true;
         for (iii=0;iii<p;iii++) {
-            della(iii) = v(nnn,iii) - xret(iii+1,0);
             if (na_omit && ISNAN(v(nnn,iii))) {
                 isok = false;
                 break;
             }
+            della(iii) = v(nnn,iii) - xret(iii+1,0);
         }
         if (isok) {
             nelm = xret(0,0);
