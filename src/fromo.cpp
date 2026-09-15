@@ -452,9 +452,14 @@ NumericVector unjoin_cent_sums(NumericVector ret3,NumericVector ret2) {
 // the 1,1 element is the count.
 // the 1,2:(p+1) subcolumn is the mean
 // the 2:(p+1),2:(p+1) submatrix is the squared sum (the covariance up to scaling by the inverse count)
-// if na_omit is true, ignore rows of the input with any NA/NAN element.
-template <typename T>
-NumericMatrix quasiTheta(T v,bool na_omit = false) {
+// if na_handling = everything, then we do not check for NA, but their presence will pollute the output with NA.
+// if na_handling = pairwise_complete_obs, then each element of the matrix will be on pairwise complete observations,
+//    but the matrix will not in general be positive definite.
+// if na_handling = na_or_complete, then we only include rows that have all non-NA elements. If there are none,
+//    the output is zeros and NAs
+// they will pollute 
+template <typename T,NAHandling na_handling>
+NumericMatrix quasiTheta(T v) {
     const int n=v.nrow();
     const int p=v.ncol();
 
@@ -464,6 +469,9 @@ NumericMatrix quasiTheta(T v,bool na_omit = false) {
     NumericVector della(p);
     NumericVector delnel(p);
     bool isok;
+    if (na_handling==pairwise_complete_obs) {
+        LogicalVector okvec(p);
+    }
 
     // preallocated with zeros:
     NumericMatrix xret(1+p,1+p);
@@ -471,21 +479,45 @@ NumericMatrix quasiTheta(T v,bool na_omit = false) {
     for (nnn=0;nnn<n;nnn++) {
         isok = true;
         for (iii=0;iii<p;iii++) {
-            if (na_omit && ISNAN(v(nnn,iii))) {
-                isok = false;
-                break;
+            if (na_handling==na_or_complete) {
+                if (ISNAN(v(nnn,iii))) {
+                    isok = false;
+                    break;
+                }
             }
-            della(iii) = v(nnn,iii) - xret(iii+1,0);
+            if (na_handling==pairwise_complete_obs) {
+                okvec(iii) = !ISNAN(v(nnn,iii));
+                if (okvec(iii)) {
+                    della(iii) = v(nnn,iii) - xret(iii+1,0);
+                }
+            } else {
+                della(iii) = v(nnn,iii) - xret(iii+1,0);
+            }
         }
         if (isok) {
             nelm = xret(0,0);
             nel = ++xret(0,0);
             for (iii=0;iii<p;iii++) {
+                if (na_handling==pairwise_complete_obs) {
+                    if (!okvec(iii)) {
+                        continue;
+                    }
+                }
                 xret(iii+1,0) += della(iii) / nel;
                 delnel(iii) = della(iii) * (nelm/nel);
             }
             for (iii=0;iii<p;iii++) {
+                if (na_handling==pairwise_complete_obs) {
+                    if (!okvec(iii)) {
+                        continue;
+                    }
+                }
                 for (jjj=iii;jjj<p;jjj++) {
+                    if (na_handling==pairwise_complete_obs) {
+                        if (!okvec(jjj)) {
+                            continue;
+                        }
+                    }
                     xret(1+iii,1+jjj) += della(iii) * delnel(jjj);
                 }
             }
