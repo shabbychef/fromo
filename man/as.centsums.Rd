@@ -11,7 +11,7 @@ as.centsums(
   na.rm = TRUE,
   wts = NULL,
   check_wts = FALSE,
-  normalize_wts = FALSE
+  normalize_wts = TRUE
 )
 
 \method{as.centsums}{default}(
@@ -20,7 +20,7 @@ as.centsums(
   na.rm = TRUE,
   wts = NULL,
   check_wts = FALSE,
-  normalize_wts = FALSE
+  normalize_wts = TRUE
 )
 }
 \arguments{
@@ -69,6 +69,9 @@ same results as the 'standard' implementations,
 due to differences in roundoff. We make every attempt to balance
 speed and robustness. User assumes all risk from using
 the fromo package.
+
+The default value of \code{normalize_wts} has changed recently to
+align with the \code{cent_sums} default, among others.
 }
 \examples{
 set.seed(123)

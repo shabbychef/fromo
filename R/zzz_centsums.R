@@ -112,14 +112,16 @@ centsums <- function(sums,order=NULL) {
 #' cs <- as.centsums(x, order=5)
 #' @rdname as.centsums
 #' @export as.centsums
-as.centsums <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, normalize_wts=FALSE) {
+#' @note The default value of \code{normalize_wts} has changed recently to
+#' align with the \code{cent_sums} default, among others.
+as.centsums <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, normalize_wts=TRUE) {
 	UseMethod("as.centsums", x)
 }
 #' @rdname as.centsums
 #' @export
 #' @method as.centsums default
 #' @aliases as.centsums
-as.centsums.default <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, normalize_wts=FALSE) {
+as.centsums.default <- function(x, order=3, na.rm=TRUE, wts=NULL, check_wts=FALSE, normalize_wts=TRUE) {
 	sums <- cent_sums(x, max_order=order, na_rm=na.rm, wts=wts, check_wts=check_wts, normalize_wts=normalize_wts)
 	invisible(centsums(sums,order=order))
 }
