@@ -129,12 +129,6 @@ enum ReturnWhat { ret_centmaxonly, // maxonly is a *centered* moment
     ret_covariance, ret_covariance_matrix
 };
 
-enum NAHandling { 
-    pairwise_complete_obs, 
-    everything,
-    na_or_complete
-};
-
 #include <Rcpp.h>
 using namespace Rcpp;
 
