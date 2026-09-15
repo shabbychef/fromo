@@ -41,7 +41,8 @@ against other packages:
 
 ```{r timing_I,eval=TRUE,echo=TRUE,cache=FALSE}
 library(fromo)
-library(RollingWindow)
+# will not compile any more
+# library(RollingWindow)
 library(roll)
 library(RcppRoll)
 library(microbenchmark)
@@ -180,6 +181,10 @@ silly_fun <- function(x,wins,fun,...) {
 
 wins <- 250
 
+               #RollingWindow::RollingSum(x,wins,na_method='ignore'),
+               #RollingWindow::RollingSum(x,wins),
+               #RollingWindow::RollingMean(x,wins),
+               #RollingWindow::RollingStd(x,wins),
 checkit <- microbenchmark(silly_fun(x,wins,sum,na.rm=FALSE),
                silly_fun(x,wins,mean,na.rm=FALSE),
                running_sum(x,wins),
@@ -187,10 +192,6 @@ checkit <- microbenchmark(silly_fun(x,wins,sum,na.rm=FALSE),
                roll::roll_sum(xm,wins),
                roll::roll_mean(xm,wins),
                roll::roll_sd(xm,wins),
-               RollingWindow::RollingSum(x,wins,na_method='ignore'),
-               RollingWindow::RollingSum(x,wins),
-               RollingWindow::RollingMean(x,wins),
-               RollingWindow::RollingStd(x,wins),
                RcppRoll::roll_sum(xm,n=wins,align='right',fill=NA),
                RcppRoll::roll_mean(xm,n=wins,align='right',fill=NA),
                RcppRoll::roll_sd(xm,n=wins,align='right',fill=NA),
