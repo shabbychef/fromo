@@ -20,3 +20,6 @@ cache
 .check_tmp
 
 .fromo_*.installed
+issue*.md
+todo.md
+claude*md
