@@ -12,6 +12,9 @@
 #' @param used_df the number of degrees of freedom consumed, used in the denominator
 #' of the centered moments computation. These are subtracted from the number of
 #' observations. 
+#' Note that the \code{used_df} is currently subtracted from the denominator of all
+#' centered moments, from the second on up. This could be surprising to an end user,
+#' and is subject to change in future releases.
 #' @param sg_df the number of degrees of freedom consumed in the computation of
 #' the variance or standard deviation. This defaults to 1 to match the 
 #' \sQuote{Bessel correction}.
@@ -287,9 +290,16 @@ unjoin_cent_sums <- function(ret3, ret2) {
 #' @return a multidimensional arry of dimension \code{max_order}, each side of length
 #' \eqn{1+n}. For the case currently implemented where \code{max_order} must be 2, the
 #' output is a symmetric matrix, where the element in the \code{1,1} position is the count of 
-#' complete) rows of \code{v}, the \code{2:(n+1),1} column is the mean, and the
+#' (complete) rows of \code{v}, the \code{2:(n+1),1} column is the mean, and the
 #' \code{2:(n+1),2:(n+1)} is the co \emph{sums} matrix, which is the covariance up to scaling
 #' by the count. \code{cent_comoments} performs this normalization for you.
+#'
+#' When \code{na_omit} is false, the output can have NA elements in it. Rows and columns without 
+#' NA should be positive definite, and the \code{1,1} element will contain the counts of
+#' the complete observations (the number of rows of the input \code{v}). When \code{na_omit} is true,
+#' an NA in any row of \code{v} means the entire row is skipped. The output should be positive
+#' semidefinite when there is any complete row. If there are no complete observations, the output
+#' will be a matrix of all zeroes.
 #'
 #' @seealso cent_sums
 #'

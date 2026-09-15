@@ -64,6 +64,9 @@ using namespace Rcpp;
 //' @param used_df the number of degrees of freedom consumed, used in the denominator
 //' of the centered moments computation. These are subtracted from the number of
 //' observations. 
+//' Note that the \code{used_df} is currently subtracted from the denominator of all
+//' centered moments, from the second on up. This could be surprising to an end user,
+//' and is subject to change in future releases.
 //' @param sg_df the number of degrees of freedom consumed in the computation of
 //' the variance or standard deviation. This defaults to 1 to match the 
 //' \sQuote{Bessel correction}.
