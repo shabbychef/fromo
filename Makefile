@@ -11,7 +11,7 @@ VMAJOR 						 = 0
 VMINOR 						 = 2
 VPATCH  					 = 4
 # VDEV 							 = 
-VDEV 							 = .900
+VDEV 							 = .901
 PKG_NAME 					:= fromo
 
 RPKG_USES_RCPP 		:= 1
@@ -20,12 +20,7 @@ include ./rpkg_make/Makefile
 
 	# r -l Rcpp -l knitr -l devtools -e 'setwd("$(<D)");if (require(knitr)) { knit("$(<F)") }'
 nodist/%.csv nodist/%.md : nodist/%.Rmd $(PKG_INSTALLED) 
-	$(DOCKER) run -it --rm \
-		--volume $(PWD)/nodist:/srv:rw \
-		--volume $$(readlink -f $(RLIB_D)):/opt/R/lib:rw \
-		$(DOCKER_ENV) \
-		--entrypoint="r" $(USER)/$(PKG_LCNAME)-crancheck \
-		"-l" "knitr" "-l" "$(PKG_NAME)" \
+	cd nodist && r -l "knitr" -l "$(PKG_NAME)" \
 		"-e" 'setwd(".");if (require(knitr)) { knit("$(<F)") }'
 
 nodist/timings_$(PKG_VERSION).csv : nodist/timings.csv
