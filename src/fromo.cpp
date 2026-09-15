@@ -458,7 +458,7 @@ NumericMatrix quasiTheta(T v,bool na_omit = false) {
     const int n=v.nrow();
     const int p=v.ncol();
 
-    double  nelm, nel;
+    double  nelm, nel, nelrat;
     int iii,jjj,nnn;
     NumericVector mu(p);
     NumericVector della(p);
@@ -480,9 +480,10 @@ NumericMatrix quasiTheta(T v,bool na_omit = false) {
         if (isok) {
             nelm = xret(0,0);
             nel = ++xret(0,0);
+            nelrat = (nelm/nel);
             for (iii=0;iii<p;iii++) {
                 xret(iii+1,0) += della(iii) / nel;
-                delnel(iii) = della(iii) * (nelm/nel);
+                delnel(iii) = della(iii) * nelrat;
             }
             for (iii=0;iii<p;iii++) {
                 for (jjj=iii;jjj<p;jjj++) {
