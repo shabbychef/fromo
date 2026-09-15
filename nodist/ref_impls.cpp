@@ -286,7 +286,7 @@ NumericVector ref_running_sd_objecty(NumericVector v,int window=1000) {
 // [[Rcpp::export]]
 NumericVector ref_running_sd_fooz(NumericVector v,int window=1000) {
     NumericVector dummy_wts;
-    return runQM<NumericVector,ret_stdev,NumericVector,double,false,false,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE);
+    return runQM<NumericVector,ret_stdev,NumericVector,double,false,false,false>(v,dummy_wts,2,window,10000,0,0,0.0,FALSE,FALSE,FALSE);
 }
 
 //' @export
@@ -294,7 +294,6 @@ NumericVector ref_running_sd_fooz(NumericVector v,int window=1000) {
 // [[Rcpp::export]]
 NumericVector ref_running_sd_barz(NumericVector v,int window=1000) {
     double nextv, prevv;
-    double nextw;
     NumericVector dummy_wts;
     int ord=2;
     bool na_rm=false;
