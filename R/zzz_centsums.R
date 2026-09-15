@@ -146,8 +146,8 @@ setMethod('sums', 'centsums', function(x) x@sums )
 .csums2moments <- function(c_sums,type=c('central','raw','standardized')) {
 		# add used_df
 		type <- match.arg(type)
+		if ((length(c_sums) < 2) || ((length(c_sums) < 3) && (type %in% c("central", "standardized")))) { return(numeric(0)) } # no-cov
 		cmoments <- c(c_sums[1],c_sums[2:length(c_sums)] / c_sums[1])
-
 		switch(type,
 			raw={
 				retv <- cent2raw(cmoments)
@@ -175,11 +175,18 @@ setMethod('sums', 'centsums', function(x) x@sums )
 }
 
 #' @rdname centsums-accessor-methods
+#' @return for raw type, returns all the raw moments. for central and
+#' standardized, drops the mean, and returns the central or standardized 2nd
+#' through kth moments.
 #' @aliases moments
 #' @exportMethod moments
 setGeneric('moments', function(x,type=c('central','raw','standardized')) standardGeneric('moments'))
 #' @rdname centsums-accessor-methods
 #' @aliases moments,centsums-method
+#' @note Currently \sQuote{raw} moments returns mean and higher order
+#' moments, while \sQuote{central} and \sQuote{standardized} drop the mean,
+#' thus the size of the output depends on the \code{type}. This feels wrong to
+#' me and may be subject to change in upcoming versions.
 setMethod('moments', signature(x='centsums'),
 	function(x,type=c('central','raw','standardized')) {
 		# add used_df

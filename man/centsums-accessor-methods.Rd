@@ -21,6 +21,11 @@ moments(x, type = c("central", "raw", "standardized"))
 
 \item{type}{the type of moment to compute.}
 }
+\value{
+for raw type, returns all the raw moments. for central and
+standardized, drops the mean, and returns the central or standardized 2nd
+through kth moments.
+}
 \description{
 Access slot data from a \code{centsums} object.
 }
@@ -31,6 +36,11 @@ same results as the 'standard' implementations,
 due to differences in roundoff. We make every attempt to balance
 speed and robustness. User assumes all risk from using
 the fromo package.
+
+Currently \sQuote{raw} moments returns mean and higher order
+moments, while \sQuote{central} and \sQuote{standardized} drop the mean,
+thus the size of the output depends on the \code{type}. This feels wrong to
+me and may be subject to change in upcoming versions.
 }
 \author{
 Steven E. Pav \email{shabbychef@gmail.com}

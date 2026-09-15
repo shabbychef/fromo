@@ -11,6 +11,7 @@
 * adding various size checks.
 * fix computation of comoments
 * NA variance would have been standardized to 1, fixed.
+* fix moments output size for edge cases of few moments.
 
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN

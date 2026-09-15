@@ -74,7 +74,7 @@ test_that("centsums and centcosum constructors default order",{#FOLDUP
   expect_true(validObject(new("centsums", sums=c(10, 0, 1))))
   expect_true(validObject(new("centcosums", cosums=matrix(0, 2, 2))))
 })#UNFOLD
-test_that("moments standardized does not report variance 1 on NA or empty data", {
+test_that("moments standardized does not report variance 1 on NA or empty data", {#FOLDUP
   x <- c(1, 2, NA, 4, 5)
   cs <- as.centsums(x, na.rm=FALSE)
   m_std <- moments(cs, "standardized")
@@ -84,6 +84,17 @@ test_that("moments standardized does not report variance 1 on NA or empty data",
   cs_empty <- as.centsums(x_all_na, na.rm=TRUE)
   m_empty <- moments(cs_empty, "standardized")
   expect_true(is.na(m_empty[2]) || is.nan(m_empty[2]))
+})#UNFOLD
+test_that("centsums and moment handles order 0 / length 1 sums cleanly", {
+  expect_error(cz <- centsums(c(10), order=0),NA)
+  expect_error(moments(cz, "raw"), NA)
+  expect_equal(moments(cz, "central"), numeric(0))
+  expect_equal(moments(cz, "standardized"), numeric(0))
+	### 
+  expect_error(cone <- as.centsums(1:10, order=1),NA)
+  expect_error(moments(cone, "raw"), NA)
+  expect_equal(moments(cone, "central"), numeric(0))
+  expect_equal(moments(cone, "standardized"), numeric(0))
 })
 #UNFOLD
 context("correctness")#FOLDUP
