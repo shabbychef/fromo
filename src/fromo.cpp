@@ -413,7 +413,6 @@ NumericVector cent_sums(SEXP v, int max_order=5, bool na_rm=false, SEXP wts=R_Ni
 //'
 //' @template etc
 //' @template ref-romo
-//' @template param-wts
 //' @rdname centsums_join
 //' @export
 // [[Rcpp::export]]

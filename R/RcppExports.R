@@ -254,7 +254,6 @@ cent_sums <- function(v, max_order = 5L, na_rm = FALSE, wts = NULL, check_wts = 
 #'
 #' @template etc
 #' @template ref-romo
-#' @template param-wts
 #' @rdname centsums_join
 #' @export
 join_cent_sums <- function(ret1, ret2) {

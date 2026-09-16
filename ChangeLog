@@ -1,5 +1,5 @@
 
-2026-??-?? Steven E. Pav <shabbychef@gmail.com>
+2026-09-15 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.5 on CRAN
 * now tests for positive restart_period, throw error otherwise.
 * NA restart_period more explicitly means "infinite"

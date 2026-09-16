@@ -82,6 +82,23 @@
 #' \newcommand{\cranfromo}{\CRANpkg{fromo}}
 #' \newcommand{\fromo}{\href{https://github.com/shabbychef/fromo}}
 #'
+#' @section \fromo{} Version 0.2.5 (2026-09-15) :
+#' \itemize{
+#' \item now tests for positive \code{restart_period}, throw error otherwise.
+#' \item NA restart_period more explicitly means "infinite"
+#' \item remove unused \code{compute_se} from \code{t_running_tstat}
+#' \item catch size mismatch in running_co* and t_running_co*
+#' \item split out and fix \code{cent_sums} man page
+#' \item fix default order in \code{centsums} and \code{centcosums}
+#' \item fix documentation for t_running comoments
+#' \item adding various size checks.
+#' \item fix computation of comoments
+#' \item NA variance would have been standardized to 1, fixed.
+#' \item fix moments output size for edge cases of few moments.
+#' \item \code{as.centsums} default value of \code{normalize_wts} changed to true.
+#' \item (t_)running_cent_moments w/ \code{max_order_only} true, \code{max_order=2} previously returned stdev; now returns variance.
+#' }
+#'
 #' @section \fromo{} Version 0.2.4 (2024-11-29) :
 #' \itemize{
 #' \item adding running correlation, covariance, regression coefficients.
