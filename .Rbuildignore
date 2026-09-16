@@ -34,6 +34,6 @@ nohup.out
 .tags
 ^\.github$
 junkyard.txt
-issue_*.md
-tod*.md
-cla*.md
+issue_.*md$
+tod.*md$
+cla.*md$
