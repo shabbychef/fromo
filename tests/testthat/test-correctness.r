@@ -477,6 +477,19 @@ test_that("weights are replication weights",{#FOLDUP
 
 	# 2FIX: add more here to check correctness ... 
 })#UNFOLD
+test_that("cent_moments used_df=1 gives Bessel-corrected variance", {#FOLDUP
+	set.char.seed("c2ea0814-312c-4d44-9c16-5b1953dfa34a")
+	x <- rnorm(100)
+	cm <- cent_moments(x, max_order = 2, used_df = 1)
+	expect_equal(cm[1], var(x), tolerance = 1e-10)
+})#UNFOLD
+test_that("cent_moments used_df=0 gives MLE variance", {#FOLDUP
+	set.char.seed("a61b54c3-08d7-4f81-9d36-51b1a6391cb6")
+	x <- rnorm(100)
+	cm0 <- cent_moments(x, max_order = 2, used_df = 0)
+	mle_var <- mean((x - mean(x))^2)
+	expect_equal(cm0[1], mle_var, tolerance = 1e-10)
+})#UNFOLD
 #UNFOLD
 
 tomat <- function(cbound) {

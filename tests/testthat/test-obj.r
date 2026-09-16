@@ -201,6 +201,34 @@ test_that("comoments matches sample covariance and raw moments", {#FOLDUP
   expected_raw <- crossprod(x) / n
   expect_equal(cm_raw[2:4, 2:4], expected_raw, tolerance=1e-7)
 })#UNFOLD
+test_that("as.centsums and cent_sums agree with weights (normalize_wts consistency)", {#FOLDUP
+	set.char.seed("893d15d4-e896-4d69-bab6-a45f8d9d58f2")
+	x <- rnorm(100)
+	wts <- runif(100, 0.5, 1.5)
+
+	cs1 <- cent_sums(x, max_order = 3, wts = wts, normalize_wts = TRUE)
+	cs2 <- as.centsums(x, order = 3, wts = wts)@sums
+	expect_equal(cs1, cs2, tolerance = 1e-10)
+})#UNFOLD
+test_that("join_cent_cosums and unjoin_cent_cosums are inverses", {#FOLDUP
+	set.char.seed("1b862f99-307a-40f9-9f31-7a37cf983358")
+	x1 <- matrix(rnorm(50 * 2), ncol = 2)
+	x2 <- matrix(rnorm(30 * 2), ncol = 2)
+	x12 <- rbind(x1, x2)
+
+	rs1 <- cent_cosums(x1)
+	rs2 <- cent_cosums(x2)
+	rs12 <- cent_cosums(x12)
+
+	rs12_alt <- join_cent_cosums(rs1, rs2)
+	expect_equal(rs12, rs12_alt, tolerance = 1e-7)
+
+	rs1_alt <- unjoin_cent_cosums(rs12, rs2)
+	expect_equal(rs1, rs1_alt, tolerance = 1e-7)
+
+	rs2_alt <- unjoin_cent_cosums(rs12, rs1)
+	expect_equal(rs2, rs2_alt, tolerance = 1e-7)
+})#UNFOLD
 
 # 2FIX: check the effects of NA
 #UNFOLD
