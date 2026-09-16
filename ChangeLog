@@ -13,6 +13,7 @@
 * NA variance would have been standardized to 1, fixed.
 * fix moments output size for edge cases of few moments.
 * as.centsums default value of normalize_wts changed to true.
+* (t_)running_cent_moments w/ max_order_only true, max_order=2 previously returned stdev; now returns variance.
 
 2024-11-29 Steven E. Pav <shabbychef@gmail.com>
 * 0.2.4 on CRAN

@@ -146,7 +146,7 @@ class Welford {
         // (x - weighted_mean)^ord
         inline double a_cent_mom(const int ord,const bool normalize,const double used_df) const {
             if (ord==2) {
-                return sqrt(var(normalize,used_df));
+                return var(normalize,used_df);
             } else if (ord==1) {
                 // Rcpp::warning("first centered moment is zero."); // #nocov
                 return 0.0;

@@ -537,6 +537,10 @@ test_that("running ops are correct",{#FOLDUP
 						dumbv <- tomat(cbind(dumb_exkurt,dumb_skew,dumb_sd,dumb_mean,dumb_count))
 						expect_equal(dumbv[4:xlen,],fastv[4:xlen,],tolerance=1e-6 * toler)
 
+						expect_error(fastv <- running_cent_moments(x,window=window,max_order=2L,used_df=0L,restart_period=restart_period,na_rm=na_rm,max_order_only=TRUE),NA)
+						dumbv <- tomat(dumb_cmom2)
+						expect_equal(dumbv[6:xlen,],fastv[6:xlen,],tolerance=1e-6 * toler)
+
 						# higher order moments
 
 						expect_error(fastv <- running_cent_moments(x,window=window,max_order=6L,used_df=0L,restart_period=restart_period,na_rm=na_rm),NA)
@@ -836,6 +840,11 @@ test_that("vs running ops",{#FOLDUP
 					expect_error(box <- running_centered(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
 					# the 0.1 is to avoid roundoff issues on the double times.
 					expect_error(tbox <- t_running_centered(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw),NA)
+					expect_equal(box,tbox,tolerance=1e-8)
+
+					expect_error(box <- running_cent_moments(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw,max_order_only=TRUE),NA)
+					# the 0.1 is to avoid roundoff issues on the double times.
+					expect_error(tbox <- t_running_cent_moments(x,time=times,wts=wts,window=t_window,na_rm=na_rm,normalize_wts=nw,max_order_only=TRUE),NA)
 					expect_equal(box,tbox,tolerance=1e-8)
 
 					expect_error(box <- running_scaled(x,wts=wts,window=window,na_rm=na_rm,normalize_wts=nw),NA)
